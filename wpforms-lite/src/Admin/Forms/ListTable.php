@@ -1,24 +1,31 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+namespace WPForms\Admin\Forms;
 
+use WP_List_Table;
+use WP_Post;
+use WP_Screen;
+use WPForms\Admin\Forms\Table\Facades\Columns;
 use WPForms\Forms\Locator;
 use WPForms\Integrations\LiteConnect\LiteConnect;
 use WPForms\Integrations\LiteConnect\Integration as LiteConnectIntegration;
 
+// IMPORTANT NOTICE:
+// This line is needed to prevent fatal errors in the third-party plugins.
+// We know about Jetpack (probably others also) can load WP classes during cron jobs or something similar.
+require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+
 /**
  * Generate the table on the plugin overview page.
  *
- * @since 1.0.0
+ * @since 1.8.6
  */
-class WPForms_Overview_Table extends WP_List_Table {
+class ListTable extends WP_List_Table {
 
 	/**
 	 * Number of forms to show per page.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 *
 	 * @var int
 	 */
@@ -27,7 +34,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Number of forms in different views.
 	 *
-	 * @since 1.7.2
+	 * @since 1.8.6
 	 *
 	 * @var array
 	 */
@@ -36,7 +43,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Current view.
 	 *
-	 * @since 1.7.3
+	 * @since 1.8.6
 	 *
 	 * @var string
 	 */
@@ -45,7 +52,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Primary class constructor.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 */
 	public function __construct() {
 
@@ -58,19 +65,35 @@ class WPForms_Overview_Table extends WP_List_Table {
 			]
 		);
 
-		add_filter( 'default_hidden_columns', [ $this, 'default_hidden_columns' ], 10, 2 );
+		$this->hooks();
 
 		// Determine the current view.
 		$this->view = wpforms()->get( 'forms_views' )->get_current_view();
 
-		// Default number of forms to show per page.
-		$this->per_page = (int) apply_filters( 'wpforms_overview_per_page', 20 );
+		/**
+		 * Filters the default number of forms to show per page.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param int $forms_per_page Number of forms to show per page.
+		 */
+		$this->per_page = (int) apply_filters( 'wpforms_overview_per_page', 20 ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+	}
+
+	/**
+	 * Register hooks.
+	 *
+	 * @since 1.8.6
+	 */
+	private function hooks() {
+
+		add_filter( 'default_hidden_columns', [ $this, 'default_hidden_columns' ], 10, 2 );
 	}
 
 	/**
 	 * Get the instance of a class and store it in itself.
 	 *
-	 * @since 1.7.5
+	 * @since 1.8.6
 	 */
 	public static function get_instance() {
 
@@ -86,32 +109,19 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Retrieve the table columns.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 *
 	 * @return array $columns Array of all the list table columns.
 	 */
 	public function get_columns() {
 
-		$columns = [
-			'cb'        => '<input type="checkbox" />',
-			'name'      => esc_html__( 'Name', 'wpforms-lite' ),
-			'tags'      => esc_html__( 'Tags', 'wpforms-lite' ),
-			'author'    => esc_html__( 'Author', 'wpforms-lite' ),
-			'shortcode' => esc_html__( 'Shortcode', 'wpforms-lite' ),
-			'created'   => esc_html__( 'Date', 'wpforms-lite' ),
-		];
-
-		if ( LiteConnect::is_allowed() && LiteConnect::is_enabled() ) {
-			$columns['entries'] = esc_html__( 'Entries', 'wpforms-lite' );
-		}
-
-		return apply_filters( 'wpforms_overview_table_columns', $columns );
+		return Columns::get_list_table_columns();
 	}
 
 	/**
 	 * Render the checkbox column.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 *
 	 * @param WP_Post $form Form.
 	 *
@@ -125,14 +135,14 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Render the columns.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 *
 	 * @param WP_Post $form        CPT object as a form representation.
 	 * @param string  $column_name Column Name.
 	 *
 	 * @return string
 	 */
-	public function column_default( $form, $column_name ) {
+	public function column_default( $form, $column_name ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity
 
 		switch ( $column_name ) {
 			case 'id':
@@ -202,13 +212,22 @@ class WPForms_Overview_Table extends WP_List_Table {
 				$value = '';
 		}
 
-		return apply_filters( 'wpforms_overview_table_column_value', $value, $form, $column_name );
+		/**
+		 * Filters the Forms Overview list table culumn value.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string  $value       Column value.
+		 * @param WP_Post $form        CPT object as a form representation.
+		 * @param string  $column_name Column Name.
+		 */
+		return apply_filters( 'wpforms_overview_table_column_value', $value, $form, $column_name ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 	}
 
 	/**
 	 * Filter the default list of hidden columns.
 	 *
-	 * @since 1.7.2
+	 * @since 1.8.6
 	 *
 	 * @param string[]  $hidden Array of IDs of columns hidden by default.
 	 * @param WP_Screen $screen WP_Screen object of the current screen.
@@ -221,6 +240,10 @@ class WPForms_Overview_Table extends WP_List_Table {
 			return $hidden;
 		}
 
+		if ( Columns::has_selected_columns() ) {
+			return [];
+		}
+
 		return [
 			'tags',
 			'author',
@@ -231,7 +254,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Render the form name column with action links.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 *
 	 * @param WP_Post $form Form.
 	 *
@@ -246,7 +269,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Render the form tags column.
 	 *
-	 * @since 1.7.5
+	 * @since 1.8.6
 	 *
 	 * @param WP_Post $form Form.
 	 *
@@ -260,7 +283,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Get the form name HTML for the form name column.
 	 *
-	 * @since 1.5.8
+	 * @since 1.8.6
 	 *
 	 * @param WP_Post $form Form object.
 	 *
@@ -327,7 +350,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Get the row actions HTML for the form name column.
 	 *
-	 * @since 1.5.8
+	 * @since 1.8.6
 	 *
 	 * @param WP_Post $form Form object.
 	 *
@@ -336,7 +359,6 @@ class WPForms_Overview_Table extends WP_List_Table {
 	protected function get_column_name_row_actions( $form ) {
 
 		// phpcs:disable WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.PHP.ValidateHooks.InvalidHookName
-
 		/**
 		 * Filters row action links on the 'All Forms' admin page.
 		 *
@@ -346,14 +368,13 @@ class WPForms_Overview_Table extends WP_List_Table {
 		 * @param WP_Post $form        Form object.
 		 */
 		return $this->row_actions( apply_filters( 'wpforms_overview_row_actions', [], $form ) );
-
-		// phpcs:enable
+		// phpcs:enable WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.PHP.ValidateHooks.InvalidHookName
 	}
 
 	/**
 	 * Define bulk actions available for our table listing.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 *
 	 * @return array
 	 */
@@ -365,7 +386,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Generate the table navigation above or below the table.
 	 *
-	 * @since 1.7.2
+	 * @since 1.8.6
 	 *
 	 * @param string $which The location of the table navigation: 'top' or 'bottom'.
 	 */
@@ -399,7 +420,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Extra controls to be displayed between bulk actions and pagination.
 	 *
-	 * @since 1.7.3
+	 * @since 1.8.6
 	 *
 	 * @param string $which The location of the table navigation: 'top' or 'bottom'.
 	 */
@@ -412,7 +433,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Message to be displayed when there are no forms.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 */
 	public function no_items() {
 
@@ -422,7 +443,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Fetch and set up the final data for the table.
 	 *
-	 * @since 1.0.0
+	 * @since 1.8.6
 	 */
 	public function prepare_items() {
 
@@ -434,6 +455,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 
 		// Define which columns can be sorted - form name, author, date.
 		$sortable = [
+			'id'      => [ 'ID', false ],
 			'name'    => [ 'title', false ],
 			'author'  => [ 'author', false ],
 			'created' => [ 'date', false ],
@@ -473,11 +495,11 @@ class WPForms_Overview_Table extends WP_List_Table {
 		 *
 		 * @param array $args Arguments array.
 		 */
-		$args = (array) apply_filters( 'wpforms_overview_table_prepare_items_args', $args );
+		$args = (array) apply_filters( 'wpforms_overview_table_prepare_items_args', $args ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		// Giddy up.
 		$this->items = wpforms()->get( 'form' )->get( '', $args );
-		$per_page    = isset( $args['posts_per_page'] ) ? $args['posts_per_page'] : $this->get_items_per_page( 'wpforms_forms_per_page', $this->per_page );
+		$per_page    = $args['posts_per_page'] ?? $this->get_items_per_page( 'wpforms_forms_per_page', $this->per_page );
 
 		$this->update_count( $args );
 
@@ -496,7 +518,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Calculate and update form counts.
 	 *
-	 * @since 1.7.2
+	 * @since 1.8.6
 	 *
 	 * @param array $args Get forms arguments.
 	 */
@@ -512,7 +534,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 		 * @param array $count Contains counts of forms in different views.
 		 * @param array $args  Arguments of the `get_posts`.
 		 */
-		$this->count = (array) apply_filters( 'wpforms_overview_table_update_count', [], $args );
+		$this->count = (array) apply_filters( 'wpforms_overview_table_update_count', [], $args ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		// We do not need to perform all forms count if we have the result already.
 		if ( isset( $this->count['all'] ) ) {
@@ -521,8 +543,8 @@ class WPForms_Overview_Table extends WP_List_Table {
 
 		// Count all forms.
 		$this->count['all'] = wpforms_current_user_can( 'wpforms_view_others_forms' )
-			 ? (int) wp_count_posts( 'wpforms' )->publish
-			 : (int) count_user_posts( get_current_user_id(), 'wpforms', true );
+			? (int) wp_count_posts( 'wpforms' )->publish
+			: (int) count_user_posts( get_current_user_id(), 'wpforms', true );
 
 		/**
 		 * Filters forms count data after counting all forms.
@@ -535,13 +557,13 @@ class WPForms_Overview_Table extends WP_List_Table {
 		 * @param array $count Contains counts of forms in different views.
 		 * @param array $args  Arguments of the `get_posts`.
 		 */
-		$this->count = (array) apply_filters( 'wpforms_overview_table_update_count_all', $this->count, $args );
+		$this->count = (array) apply_filters( 'wpforms_overview_table_update_count_all', $this->count, $args ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 	}
 
 	/**
 	 * Display the pagination.
 	 *
-	 * @since 1.7.2
+	 * @since 1.8.6
 	 *
 	 * @param string $which The location of the table pagination: 'top' or 'bottom'.
 	 */
@@ -564,21 +586,35 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Extending the `display_rows()` method in order to add hooks.
 	 *
-	 * @since 1.5.6
+	 * @since 1.8.6
 	 */
 	public function display_rows() {
 
-		do_action( 'wpforms_admin_overview_before_rows', $this );
+		/**
+		 * Fires before displaying the table rows.
+		 *
+		 * @since 1.5.6.2
+		 *
+		 * @param ListTable $list_table_obj ListTable instance.
+		 */
+		do_action( 'wpforms_admin_overview_before_rows', $this ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		parent::display_rows();
 
-		do_action( 'wpforms_admin_overview_after_rows', $this );
+		/**
+		 * Fires after displaying the table rows.
+		 *
+		 * @since 1.5.6.2
+		 *
+		 * @param ListTable $list_table_obj ListTable instance.
+		 */
+		do_action( 'wpforms_admin_overview_after_rows', $this ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 	}
 
 	/**
 	 * Forms search markup.
 	 *
-	 * @since 1.7.2
+	 * @since 1.8.6
 	 *
 	 * @param string $text     The 'submit' button label.
 	 * @param string $input_id ID attribute value for the search input field.
@@ -591,7 +627,7 @@ class WPForms_Overview_Table extends WP_List_Table {
 	/**
 	 * Get the list of views available on forms overview table.
 	 *
-	 * @since 1.7.3
+	 * @since 1.8.6
 	 */
 	protected function get_views() {
 
