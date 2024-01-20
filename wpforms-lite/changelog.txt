@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.8.6.3 =
+- Fixed: The Name field was not clickable with Classic Markup and Base Styles.
+
 = 1.8.6.2 =
 - Added: New column selector and column reordering on the Forms Overview and Form Entries page.
 - Added: New right-click context menu in the Form Builder.
