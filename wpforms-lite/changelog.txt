@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.8.6.4 =
+- Fixed: Term notice was removed under the Stripe Credit Card field when Payment Elements were used.
+- Fixed: An additional spinner appeared when the Setup panel button was clicked again.
+- Fixed: Overflow of `img`, `video`, `canvas` and `svg` tags has been set to `clip` by default, as recommended by Google PageSpeed Insights.
+
 = 1.8.6.3 =
 - Fixed: The Name field was not clickable with Classic Markup and Base Styles.
 
