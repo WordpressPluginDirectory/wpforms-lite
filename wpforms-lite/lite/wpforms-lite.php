@@ -554,7 +554,7 @@ class WPForms_Lite {
 
 		wp_enqueue_script(
 			'wpforms-builder-lite',
-			WPFORMS_PLUGIN_URL . "assets/lite/js/admin-builder-lite{$min}.js",
+			WPFORMS_PLUGIN_URL . "assets/lite/js/admin/builder/admin-builder-lite{$min}.js",
 			[ 'jquery', 'jquery-confirm' ],
 			WPFORMS_VERSION,
 			false
