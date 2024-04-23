@@ -2,8 +2,8 @@
 Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
-Tested up to: 6.4
-Stable tag: 1.8.7.2
+Tested up to: 6.5
+Stable tag: 1.8.8.2
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -366,6 +366,50 @@ Thank you
 Syed Balkhi
 
 == Changelog ==
+= 1.8.8.2 =
+- Added: Forms can now be saved as user templates for future use.
+- Added: New `Price Display` option was added for Single Item payment field.
+- Added: Shipping and Billing addresses can now be configured on the Form Builder > Payments > Stripe screen.
+- Added: New filter `wpforms_integrations_stripe_api_common_create_plan_name` to filter Stripe subscription plan name.
+- Added: New filter `wpforms_integrations_lite_connect_api_request_timeout` to filter Lite Connect request timeout.
+- Added: New styling/theming settings in the Block editor.
+- Added: New context menu in the Form Builder for quick actions.
+- Changed: New design for the Email Summaries email template with a weekly total and entry submission trends.
+- Changed: The state of selected stat cards on the Payments Overview chart is preserved when applying date filtering.
+- Changed: Updated `stripe/stripe-php` library to v13.15.0.
+- Changed: Updated `woocommerce/action-scheduler` library to v3.7.2.
+- Changed: Updated DOMPurify library to 3.0.9.
+- Changed: Adjusted notifications on the empty forms screen.
+- Changed: HTML tags are allowed in the Order Summary for the Total payment field.
+- Changed: When the entry is marked as not spam, submit data to Akismet for learning and help make the Web a better place for everyone.
+- Changed: Improved error handling when creating or updating a form.
+- Changed: Improved fields layout on the frontend for better user experience on mobile devices.
+- Changed: Bring the frontend markup of the form more in line with the W3C standards to reduce validator errors.
+- Fixed: Various RTL problems in the admin dashboard, form builder and a form preview page.
+- Fixed: Various responsive issues on admin pages.
+- Fixed: The Paragraph field was allowed horizontal resizing.
+- Fixed: Make sure we output valid robots.txt file rules if the file is empty.
+- Fixed: PHP notices were thrown in some cases when Stripe subscription renewals were created.
+- Fixed: Customer email was shown instead of customer name on the Payments Overview screen for Stipe subscription renewals in some cases.
+- Fixed: The builder sidebar was hidden on the context menu edit actions.
+- Fixed: Fatal error was thrown on the frontend with corrupted form data.
+- Fixed: `0` (zero) as a choices field raw value was not saved.
+- Fixed: The payment single field had the wrong spacing with enabled quantities.
+- Fixed: Long placeholders being broken into multiple lines after Safari 17.3.1 update.
+- Fixed: Media upload did not work in some cases on mobile devices.
+- Fixed: Placeholder option was hidden for the Single Item field with 'user defined' type.
+- Fixed: Incorrect prices in the Order Summary table when items in the Checkbox Items field had the hyphen symbol.
+- Fixed: Modern multiple select fields with long placeholder text overlapped a drop-down arrow.
+- Fixed: Infinite loading button was shown on mobile devices in some cases.
+- Fixed: Multisite activation: plugin should stay activated on a single site after user activated it on a network level.
+- Fixed: There was a race condition with invisible reCaptcha v2, preventing form submission in some edge cases.
+- Fixed: Elementor widget styles were broken due to a conflict with the Gutenberg block.
+- Fixed: Some unnecessary inline styles were applied for email notifications with HTML tags.
+- Fixed: Payment fields weren't reflected properly in the Order Summary table in some cases.
+- Fixed: WPCode Install/Activate modal and Entries Education Modal now look better on mobile screens.
+- Fixed: `{author_*}` smart tags were returning incorrect results in some cases.
+- Fixed: Incorrect styles were applied for "Order Summary" table in some cases.
+- Fixed: Improved handling of corrupted payment submission data.
 
 = 1.8.7.2 =
 - Changed: "What's New" modal should be displayed based on the major version of the plugin.
