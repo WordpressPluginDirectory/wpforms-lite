@@ -602,12 +602,8 @@ class Views {
 			);
 		}
 
-		// Do not allow to duplicate forms if licence is not active.
-		$license           = wpforms()->get( 'license' );
-		$is_license_active = ! is_null( $license ) && $license->is_active();
-
 		// Duplicate.
-		if ( $is_license_active && wpforms_current_user_can( 'create_forms' ) && wpforms_current_user_can( 'view_form_single', $form->ID ) ) {
+		if ( wpforms_current_user_can( 'create_forms' ) && wpforms_current_user_can( 'view_form_single', $form->ID ) ) {
 			$row_actions['duplicate'] = sprintf(
 				'<a href="%1$s" title="%2$s" data-type="%3$s">%4$s</a>',
 				esc_url(

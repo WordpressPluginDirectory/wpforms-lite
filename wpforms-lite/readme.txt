@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.5
-Stable tag: 1.8.8.2
+Stable tag: 1.8.8.3
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -366,6 +366,12 @@ Thank you
 Syed Balkhi
 
 == Changelog ==
+= 1.8.8.3 =
+- Changed: Updated jQuery.Validate library to v1.20.0.
+- Fixed: Screen Options on the Forms Overview and Entries Overview pages could cause PHP error in rare cases due to conflict with 3rd-party code.
+- Fixed: Post Statuses on legacy Nav Menu management page could cause PHP error in rare cases due to conflict with 3rd-party code.
+- Fixed: users couldn't duplicate their forms.
+
 = 1.8.8.2 =
 - Added: Forms can now be saved as user templates for future use.
 - Added: New `Price Display` option was added for Single Item payment field.

@@ -1322,13 +1322,6 @@ class WPForms_Builder {
 			return false;
 		}
 
-		$license = wpforms()->get( 'license' );
-
-		// Do not allow to duplicate forms if licence is not active.
-		if ( is_null( $license ) || ! $license->is_active() ) {
-			return false;
-		}
-
 		return true;
 	}
 }

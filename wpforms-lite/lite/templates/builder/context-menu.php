@@ -22,7 +22,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="wpforms-context-menu wpforms-context-menu-dropdown" id="wpforms-context-menu">
 	<ul class="wpforms-context-menu-list">
 
-		<?php if ( ! $is_form_template ) : ?>
+		<?php if ( $is_form_template ) : ?>
+
+			<li class="wpforms-context-menu-list-item"
+				data-action="duplicate-template"
+				data-action-url="<?php echo esc_url( wp_nonce_url( add_query_arg( [ 'action' => 'duplicate', 'form_id' => $form_id ] ), 'wpforms_duplicate_form_nonce' ) ); ?>"
+			>
+				<span class="wpforms-context-menu-list-item-icon">
+					<i class="fa fa-copy"></i>
+				</span>
+
+				<span class="wpforms-context-menu-list-item-text">
+					<?php esc_html_e( 'Duplicate Template', 'wpforms-lite' ); ?>
+				</span>
+			</li>
+
+		<?php else : ?>
+
+			<li class="wpforms-context-menu-list-item"
+				data-action="duplicate-form"
+				data-action-url="<?php echo esc_url( wp_nonce_url( add_query_arg( [ 'action' => 'duplicate', 'form_id' => $form_id ] ), 'wpforms_duplicate_form_nonce' ) ); ?>"
+			>
+				<span class="wpforms-context-menu-list-item-icon">
+					<i class='fa fa-copy'></i>
+				</span>
+
+				<span class="wpforms-context-menu-list-item-text">
+					<?php esc_html_e( 'Duplicate Form', 'wpforms-lite' ); ?>
+				</span>
+			</li>
 
 			<li class="wpforms-context-menu-list-item"
 				data-action="save-as-template"
@@ -37,9 +65,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</span>
 			</li>
 
-			<li class="wpforms-context-menu-list-divider"></li>
-
 		<?php endif; ?>
+
+		<li class='wpforms-context-menu-list-divider'></li>
 
 		<li class="wpforms-context-menu-list-item education-modal"
 			data-action="upgrade"

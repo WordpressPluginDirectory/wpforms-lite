@@ -110,7 +110,7 @@ class UserTemplates {
 	 *
 	 * @return array
 	 */
-	public function add_template_states( $post_states, $post ): array {
+	public function add_template_states( $post_states, $post ) {
 
 		if ( ! ( wpforms_is_admin_page( 'overview' ) || wpforms_is_admin_page( 'entries' ) ) ) {
 			return $post_states;

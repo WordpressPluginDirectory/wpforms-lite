@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.8.8.2\n"
+"Project-Id-Version: WPForms Lite 1.8.8.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-04-22T19:21:10+00:00\n"
+"POT-Creation-Date: 2024-04-25T20:28:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: wpforms-lite\n"
@@ -5584,10 +5584,18 @@ msgid "Sorry, we didn't find any addons that match your criteria."
 msgstr ""
 
 #: lite/templates/builder/context-menu.php:36
+msgid "Duplicate Template"
+msgstr ""
+
+#: lite/templates/builder/context-menu.php:51
+msgid "Duplicate Form"
+msgstr ""
+
+#: lite/templates/builder/context-menu.php:64
 msgid "Save as Template"
 msgstr ""
 
-#: lite/templates/builder/context-menu.php:55
+#: lite/templates/builder/context-menu.php:83
 #: src/Admin/AdminBarMenu.php:359
 #: src/Admin/Builder/Shortcuts.php:57
 #: src/Forms/Preview.php:238
@@ -5595,18 +5603,18 @@ msgstr ""
 msgid "View Entries"
 msgstr ""
 
-#: lite/templates/builder/context-menu.php:70
+#: lite/templates/builder/context-menu.php:98
 #: src/Admin/AdminBarMenu.php:360
 #: src/Forms/Preview.php:257
 msgid "View Payments"
 msgstr ""
 
-#: lite/templates/builder/context-menu.php:84
+#: lite/templates/builder/context-menu.php:112
 #: src/Admin/Builder/Shortcuts.php:75
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: lite/templates/builder/context-menu.php:98
+#: lite/templates/builder/context-menu.php:126
 msgid "What's New"
 msgstr ""
 
@@ -6700,50 +6708,50 @@ msgstr ""
 msgid "No forms selected when trying to add a tag to them."
 msgstr ""
 
-#: src/Admin/Forms/BulkActions.php:291
-#: src/Admin/Forms/Views.php:697
+#: src/Admin/Forms/BulkActions.php:284
+#: src/Admin/Forms/Views.php:693
 #: src/Admin/Payments/Views/Overview/Table.php:497
 msgid "Restore"
 msgstr ""
 
-#: src/Admin/Forms/BulkActions.php:292
-#: src/Admin/Forms/Views.php:717
+#: src/Admin/Forms/BulkActions.php:285
+#: src/Admin/Forms/Views.php:713
 #: src/Admin/Payments/Views/Overview/Table.php:498
 msgid "Delete Permanently"
 msgstr ""
 
-#: src/Admin/Forms/BulkActions.php:296
+#: src/Admin/Forms/BulkActions.php:289
 #: src/Admin/Payments/Views/Overview/Table.php:503
 msgid "Move to Trash"
 msgstr ""
 
-#: src/Admin/Forms/BulkActions.php:344
+#: src/Admin/Forms/BulkActions.php:337
 msgid "Security check failed. Please try again."
 msgstr ""
 
 #. translators: %d - trashed forms count.
-#: src/Admin/Forms/BulkActions.php:365
+#: src/Admin/Forms/BulkActions.php:358
 msgid "%d form was successfully moved to Trash."
 msgid_plural "%d forms were successfully moved to Trash."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d - restored forms count.
-#: src/Admin/Forms/BulkActions.php:372
+#: src/Admin/Forms/BulkActions.php:365
 msgid "%d form was successfully restored."
 msgid_plural "%d forms were successfully restored."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d - deleted forms count.
-#: src/Admin/Forms/BulkActions.php:379
+#: src/Admin/Forms/BulkActions.php:372
 msgid "%d form was successfully permanently deleted."
 msgid_plural "%d forms were successfully permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d - duplicated forms count.
-#: src/Admin/Forms/BulkActions.php:386
+#: src/Admin/Forms/BulkActions.php:379
 msgid "%d form was successfully duplicated."
 msgid_plural "%d forms were successfully duplicated."
 msgstr[0] ""
@@ -6969,7 +6977,7 @@ msgid "All"
 msgstr ""
 
 #: src/Admin/Forms/Views.php:78
-#: src/Admin/Forms/Views.php:651
+#: src/Admin/Forms/Views.php:647
 #: src/Admin/Payments/Views/Overview/Table.php:1113
 msgid "Trash"
 msgstr ""
@@ -6994,51 +7002,51 @@ msgstr ""
 msgid "View payments"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:625
+#: src/Admin/Forms/Views.php:621
 msgid "Duplicate this template"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:625
+#: src/Admin/Forms/Views.php:621
 msgid "Duplicate this form"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:627
+#: src/Admin/Forms/Views.php:623
 #: templates/builder/field-context-menu.php:34
 msgid "Duplicate"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:650
+#: src/Admin/Forms/Views.php:646
 msgid "Move this form template to trash"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:650
+#: src/Admin/Forms/Views.php:646
 msgid "Move this form to trash"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:696
+#: src/Admin/Forms/Views.php:692
 msgid "Restore this template"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:696
+#: src/Admin/Forms/Views.php:692
 msgid "Restore this form"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:716
+#: src/Admin/Forms/Views.php:712
 msgid "Delete this template permanently"
 msgstr ""
 
-#: src/Admin/Forms/Views.php:716
+#: src/Admin/Forms/Views.php:712
 msgid "Delete this form permanently"
 msgstr ""
 
 #. translators: %1$d - number of forms found in the trash, %2$s - search term.
-#: src/Admin/Forms/Views.php:745
+#: src/Admin/Forms/Views.php:741
 msgid "Found <strong>%1$d form</strong> in <em>the trash</em> containing <em>\"%2$s\"</em>"
 msgid_plural "Found <strong>%1$d forms</strong> in <em>the trash</em> containing <em>\"%2$s\"</em>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Admin/Forms/Views.php:797
+#: src/Admin/Forms/Views.php:793
 msgid "Empty Trash"
 msgstr ""
 

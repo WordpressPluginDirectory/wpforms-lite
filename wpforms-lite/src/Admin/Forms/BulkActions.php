@@ -236,13 +236,6 @@ class BulkActions {
 	 */
 	private function process_action_duplicate( $id ) {
 
-		$license = wpforms()->get( 'license' );
-
-		// Do not allow to duplicate forms if licence is not active.
-		if ( is_null( $license ) || ! $license->is_active() ) {
-			return false;
-		}
-
 		if ( ! wpforms_current_user_can( 'create_forms' ) ) {
 			return false;
 		}

@@ -1,7 +1,12 @@
 == Changelog ==
 
-= 1.8.8.2 =
+= 1.8.8.3 =
+- Changed: Updated jQuery.Validate library to v1.20.0.
+- Fixed: Screen Options on the Forms Overview and Entries Overview pages could cause PHP error in rare cases due to conflict with 3rd-party code.
+- Fixed: Post Statuses on legacy Nav Menu management page could cause PHP error in rare cases due to conflict with 3rd-party code.
+- Fixed: users couldn't duplicate their forms.
 
+= 1.8.8.2 =
 - Added: Forms can now be saved as user templates for future use.
 - Added: New `Price Display` option was added for Single Item payment field.
 - Added: Shipping and Billing addresses can now be configured on the Form Builder > Payments > Stripe screen.
