@@ -84,7 +84,7 @@ class Addons {
 			'<p class="notice-title"><strong>%1$s</strong></p>
              <p>%2$s</p>
              <p class="notice-buttons">
-                 <a href="%3$s" class="wpforms-btn wpforms-btn-orange wpforms-btn-sm" target="_blank" rel="noopener noreferrer">
+                 <a href="%3$s" class="wpforms-btn wpforms-btn-orange wpforms-btn-md" target="_blank" rel="noopener noreferrer">
                      %4$s
                  </a>
              </p>',

@@ -41,10 +41,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 						$upgrade_link_base
 					);
 
-					if ( $addon['slug'] === 'wpforms-stripe' ) {
-						$addon['recommended'] = true;
-					}
-
 					$licenses                 = [ 'basic', 'plus', 'pro', 'elite', 'agency', 'ultimate' ];
 					$addon_licenses           = $addon['license'];
 					$common_licenses          = array_intersect( $licenses, $addon_licenses );
@@ -53,8 +49,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 						__( '%s logo', 'wpforms-lite' ),
 						$addon['title']
 					);
+
+					$badge = Helpers::get_addon_badge( $addon );
+
+					$item_classes = [
+						'wpforms-addons-list-item',
+						'addon-item',
+						! empty( $badge ) ? 'has-badge' : '',
+					];
 				?>
-					<div class="wpforms-addons-list-item addon-item">
+					<div class="<?php echo wpforms_sanitize_classes( $item_classes, true ); ?>">
 						<div class="wpforms-addons-list-item-header">
 							<img src="<?php echo esc_url( WPFORMS_PLUGIN_URL . 'assets/images/' . $addon['icon'] ); ?>" alt="<?php echo esc_attr( $image_alt ); ?>">
 
@@ -69,9 +73,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									);
 									?>
 
-									<?php if ( ! empty( $addon['recommended'] ) ) : ?>
-										<?php Helpers::print_badge( esc_html__( 'Recommended', 'wpforms-lite' ), 'sm', 'inline', 'green', 'rounded', 'fa-star' ); ?>
-									<?php endif; ?>
+									<?php echo $badge; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 								</div>
 
 								<div class="wpforms-addons-list-item-header-meta-excerpt">

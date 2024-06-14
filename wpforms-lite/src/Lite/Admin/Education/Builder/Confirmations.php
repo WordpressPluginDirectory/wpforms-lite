@@ -65,10 +65,10 @@ class Confirmations implements EducationInterface {
 			$settings->form_data,
 			esc_html__( 'Show entry preview after confirmation', 'wpforms-lite' ),
 			[
-				'input_id'    => 'wpforms-panel-field-confirmations-message_entry_preview-' . absint( $field_id ),
+				'input_id'    => 'wpforms-panel-field-confirmations-message_entry_preview-' . wpforms_validate_field_id( $field_id ),
 				'input_class' => 'wpforms-panel-field-confirmations-message_entry_preview education-modal',
 				'parent'      => 'settings',
-				'subsection'  => absint( $field_id ),
+				'subsection'  => wpforms_validate_field_id( $field_id ),
 				'pro_badge'   => true,
 				'data'        => [
 					'action'      => 'upgrade',

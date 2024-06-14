@@ -1,5 +1,46 @@
 == Changelog ==
 
+= 1.8.9.1 =
+- Added: Complex fields now can have separate error messages for each field.
+- Added: Recommended, New, and Featured addons are now displayed first on the addons page.
+- Changed: The Campaign Monitor, ConstantContact, GetResponse and ConvertKit logos were updated.
+- Changed: Users can now see the category and subcategory of the selected template on the Setup panel.
+- Changed: If Akismet is installed and configured for the form, marking entries as spam or not spam helps Akismet learn.
+- Changed: Improved the behavior of Tools > Logs page and settings controls.
+- Changed: Improved compatibility with the Hello Elementor theme.
+- Changed: Process empty selected values for Choices, Checkbox, and Dropdown fields when Show Values option is selected.
+- Changed: Choices.js library has been updated to v10.2.0.
+- Changed: Modern multiple select field with search enabled now is more user-friendly across the admin area.
+- Changed: Improved rendering of Payment Fields according to W3C requirements.
+- Changed: Always display templates added by addons, even if the addon is not installed or activated.
+- Changed: The form builder now hides the placeholder label for Image and Icon choices when left empty, while retaining the placeholder for Payment Choices and Checkboxes to maintain consistency with frontend behavior.
+- Fixed: Incorrect alert modal was shown on the subscription plan removal in some cases.
+- Fixed: Various RTL problems on the form builder screen.
+- Fixed: The minimum payment amount for the Single Item field was not functioning correctly with currencies that use a comma as a decimal separator.
+- Fixed: Validation error for the Postal code of the Stripe Credit Card field displayed twice.
+- Fixed: Inconsistent spacing of Dropdown field in different browsers on desktop and mobile.
+- Fixed: Stripe Credit Card field had incorrect placeholder color with Classic Markup.
+- Fixed: Updated the WPForms Challenge to only start counting when you actually begin creating a form on the Forms Overview page.
+- Fixed: User templates were not deleted on plugin uninstall.
+- Fixed: The radio of the Multiple Choice field wasn't centered in Firefox.
+- Fixed: Stripe processing error occurred on a multi-payments form when all credit card fields were hidden by conditional logic.
+- Fixed: Color of validation errors was incorrect for the Stripe Credit Card field when Payment Element mode was used.
+- Fixed: Additional padding was added for the form title on the Forms Overview page on mobile.
+- Fixed: The plugin update process redirected to the Update page and did not redirect back to the Plugins page after the update.
+- Fixed: The fetching of the new plugin version number and new plugin description has been run not-synchronously.
+- Fixed: MySQL errors occurred when creating a table in some unique configurations.
+- Fixed: Multiple Choice field with Icon Choices could not be selected in Firefox after reloading the page.
+- Fixed: Inline javascript code could be parsed improperly and displayed as text on top pages for some configurations.
+- Fixed: Cached token was not updated properly.
+- Fixed: The Spinner layout of the Save button in the Form Builder was not centered.
+- Fixed: In some exceptions, one-time payments appeared in the Stripe dashboard even though a payment form wasn't submitted.
+- Fixed: Email notifications were not sent when a subject was empty after smart tag processing.
+- Fixed: PHP warnings might have occurred in some cases on PHP 8.0+.
+- Fixed: Upgrade to the Pro link had wrong styling on Bluehost hosted sites.
+- Fixed: WPForms block in the editor showed an error when the selected form was trashed or deleted.
+- Fixed: Some Stripe transactions were refunded almost immediately as the transactions were labeled fraudulent.
+- Fixed: The validation process of Number Slider field could throw a fatal error on PHP 8.0+.
+
 = 1.8.8.3 =
 - Changed: Updated jQuery.Validate library to v1.20.0.
 - Fixed: Screen Options on the Forms Overview and Entries Overview pages could cause PHP error in rare cases due to conflict with 3rd-party code.

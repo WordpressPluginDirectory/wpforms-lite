@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.5
-Stable tag: 1.8.8.3
+Stable tag: 1.8.9.1
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -33,7 +33,7 @@ Create custom contact forms in minutes with our easy-to-use [drag and drop onlin
 
 = Pre-built Form Templates =
 
-WPForms comes with [1500+ pre-built form templates](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
+WPForms comes with [1800+ pre-built form templates](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
 
 Whether you're looking to create a simple contact form, marketing form, request a quote form, donation form, payment order form, registration form, or a subscription form, we have a form template already prepared and ready to use.
 
@@ -45,7 +45,7 @@ You can embed your contact form on any page with an optimized title and descript
 
 = Fields & Features You Need to Succeed =
 
-With star ratings, file uploads, and multi-page contact forms, you can easily integrate your contact forms with an email marketing service or collect payments for bookings and orders.
+With star ratings, file uploads, repeater fields, and multi-page contact forms, you can easily build the right custom form for your site’s needs. Plus, integrate your contact forms with an email marketing service in just a few steps and collect payments for bookings and orders without the need for a dedicated eCommerce plugin.
 
 See what one business owner has to say about their WPForms contact form:
 
@@ -86,7 +86,7 @@ To improve form completion rates, we created Conversational Forms&reg; which hel
 
 You can easily customize your contact forms with our section dividers, HTML blocks, and CSS. Embedding forms in Elementor and Divi has never been easier thanks to our native integrations.
 
-We also knew that our developer friends may want more control, so we added tons of hooks and filters.
+We also know that our developer friends may want more control, so we added tons of hooks and filters.
 
 = Full WPForms Feature List =
 
@@ -104,6 +104,7 @@ We also knew that our developer friends may want more control, so we added tons 
 * [File upload fields](https://wpforms.com/features/file-uploads/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for user submissions.
 * [Multi-page forms](https://wpforms.com/features/multi-page-forms/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) with progress bars.
 * [Smart conditional logic](https://wpforms.com/features/conditional-logic/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to show or hide fields.
+* [Repeater field](https://wpforms.com/docs/using-the-repeater-field/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) that enables the person filling out the form to easily add another field or group of fields to fill out. Perfect for group registration forms, custom order forms, and more.
 * [Signatures](https://wpforms.com/addons/signature-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for agreements or payment forms.
 * [User registration forms](https://wpforms.com/features/user-registration/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) and custom login forms.
 * [Post submission forms](https://wpforms.com/features/post-submissions/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to collect user-generated content.
@@ -204,7 +205,7 @@ WPForms drag & drop form builder combined with our addons is the most powerful W
 * Volunteer Registration Contact Form
 * Offline Contact Form
 
-To see a full list, visit our [Form Template Gallery](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) which has over 1100+ pre-made contact form templates.
+To see a full list, visit our [Form Template Gallery](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) which has over 1800+ pre-made contact form templates.
 
 = Which Form Fields Does WPForms offer? =
 
@@ -232,6 +233,7 @@ Here is a list of our advanced contact form builder fields (Fancy Fields):
 * Password Field
 * Rich Text - Add a WYSIWYG field, perfect for guest blog post forms
 * Layout Field - Position form fields inside columns using custom or premade layouts
+* Repeater Field - Allow users to duplicate fields or groups of fields in your forms
 * Page Break Field - Great for Multi-Page Contact Form with Progress Bar
 * Section Divider - Great for Long Contact Forms
 * HTML Field - add Custom HTML inside your form
@@ -278,7 +280,7 @@ Here is a list of our popular marketing integrations:
 * Brevo (ex Sendinblue)
 * MailerLite
 
-Using our Zapier integration, you can easily connect WPForms with over 5,000+ marketing apps including:
+Using our Zapier integration, you can easily connect WPForms with over 7,000+ marketing apps including:
 
 * PipeDrive CRM
 * Google Sheets
@@ -366,6 +368,47 @@ Thank you
 Syed Balkhi
 
 == Changelog ==
+= 1.8.9.1 =
+- Added: Complex fields now can have separate error messages for each field.
+- Added: Recommended, New, and Featured addons are now displayed first on the addons page.
+- Changed: The Campaign Monitor, ConstantContact, GetResponse and ConvertKit logos were updated.
+- Changed: Users can now see the category and subcategory of the selected template on the Setup panel.
+- Changed: If Akismet is installed and configured for the form, marking entries as spam or not spam helps Akismet learn.
+- Changed: Improved the behavior of Tools > Logs page and settings controls.
+- Changed: Improved compatibility with the Hello Elementor theme.
+- Changed: Process empty selected values for Choices, Checkbox, and Dropdown fields when Show Values option is selected.
+- Changed: Choices.js library has been updated to v10.2.0.
+- Changed: Modern multiple select field with search enabled now is more user-friendly across the admin area.
+- Changed: Improved rendering of Payment Fields according to W3C requirements.
+- Changed: Always display templates added by addons, even if the addon is not installed or activated.
+- Changed: The form builder now hides the placeholder label for Image and Icon choices when left empty, while retaining the placeholder for Payment Choices and Checkboxes to maintain consistency with frontend behavior.
+- Fixed: Incorrect alert modal was shown on the subscription plan removal in some cases.
+- Fixed: Various RTL problems on the form builder screen.
+- Fixed: The minimum payment amount for the Single Item field was not functioning correctly with currencies that use a comma as a decimal separator.
+- Fixed: Validation error for the Postal code of the Stripe Credit Card field displayed twice.
+- Fixed: Inconsistent spacing of Dropdown field in different browsers on desktop and mobile.
+- Fixed: Stripe Credit Card field had incorrect placeholder color with Classic Markup.
+- Fixed: Updated the WPForms Challenge to only start counting when you actually begin creating a form on the Forms Overview page.
+- Fixed: User templates were not deleted on plugin uninstall.
+- Fixed: The radio of the Multiple Choice field wasn't centered in Firefox.
+- Fixed: Stripe processing error occurred on a multi-payments form when all credit card fields were hidden by conditional logic.
+- Fixed: Color of validation errors was incorrect for the Stripe Credit Card field when Payment Element mode was used.
+- Fixed: Additional padding was added for the form title on the Forms Overview page on mobile.
+- Fixed: The plugin update process redirected to the Update page and did not redirect back to the Plugins page after the update.
+- Fixed: The fetching of the new plugin version number and new plugin description has been run not-synchronously.
+- Fixed: MySQL errors occurred when creating a table in some unique configurations.
+- Fixed: Multiple Choice field with Icon Choices could not be selected in Firefox after reloading the page.
+- Fixed: Inline javascript code could be parsed improperly and displayed as text on top pages for some configurations.
+- Fixed: Cached token was not updated properly.
+- Fixed: The Spinner layout of the Save button in the Form Builder was not centered.
+- Fixed: In some exceptions, one-time payments appeared in the Stripe dashboard even though a payment form wasn't submitted.
+- Fixed: Email notifications were not sent when a subject was empty after smart tag processing.
+- Fixed: PHP warnings might have occurred in some cases on PHP 8.0+.
+- Fixed: Upgrade to the Pro link had wrong styling on Bluehost hosted sites.
+- Fixed: WPForms block in the editor showed an error when the selected form was trashed or deleted.
+- Fixed: Some Stripe transactions were refunded almost immediately as the transactions were labeled fraudulent.
+- Fixed: The validation process of Number Slider field could throw a fatal error on PHP 8.0+.
+
 = 1.8.8.3 =
 - Changed: Updated jQuery.Validate library to v1.20.0.
 - Fixed: Screen Options on the Forms Overview and Entries Overview pages could cause PHP error in rare cases due to conflict with 3rd-party code.
@@ -477,13 +520,5 @@ Syed Balkhi
 - Fixed: The recent Chrome version for Windows was not displaying the custom scrollbars correctly.
 - Fixed: `wpforms_plaintext_field_value` filter was unavailable since 1.8.5 version.
 - Fixed: The form submission triggered an error on sites with long-term page caching.
-
-= 1.8.6.4 =
-- Fixed: Term notice was removed under the Stripe Credit Card field when Payment Elements were used.
-- Fixed: An additional spinner appeared when the Setup panel button was clicked again.
-- Fixed: Overflow of `img`, `video`, `canvas` and `svg` tags has been set to `clip` by default, as recommended by Google PageSpeed Insights.
-
-= 1.8.6.3 =
-- Fixed: The Name field was not clickable with Classic Markup and Base Styles.
 
 [See changelog for all versions](https://plugins.svn.wordpress.org/wpforms-lite/trunk/changelog.txt).
