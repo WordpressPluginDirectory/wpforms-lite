@@ -1440,6 +1440,8 @@ class WPForms_Process {
 			$emails->__set( 'from_name', $email['sender_name'] );
 			$emails->__set( 'from_address', $email['sender_address'] );
 			$emails->__set( 'reply_to', $email['replyto'] );
+			// Reset headers to support multiple notifications. They will be set on send.
+			$emails->__set( 'headers', null );
 
 			// Maybe include CC.
 			if ( $is_carboncopy_enabled && ! empty( $email['carboncopy'] ) ) {

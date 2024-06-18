@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.5
-Stable tag: 1.8.9.1
+Stable tag: 1.8.9.2
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -368,6 +368,9 @@ Thank you
 Syed Balkhi
 
 == Changelog ==
+= 1.8.9.2 =
+- Fixed: Reply-to field was not returning the correct email address.
+
 = 1.8.9.1 =
 - Added: Complex fields now can have separate error messages for each field.
 - Added: Recommended, New, and Featured addons are now displayed first on the addons page.
