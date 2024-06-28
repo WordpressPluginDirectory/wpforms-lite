@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.5
-Stable tag: 1.8.9.2
+Stable tag: 1.8.9.4
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -165,14 +165,15 @@ WPForms&reg; is a registered trademark of WPForms LLC. When writing about the co
 
 == Screenshots ==
 
-1. WPForms Drag & Drop Online Form Builder
-2. Adding New Field
+1. WPForms Drag & Drop Form Builder
+2. Adding New Fields
 3. Form Templates
-4. Payments Overview
-5. Single Payment Page
-6. Form Preview
-7. Form Pages with multiple styles
-8. Conversational Forms
+4. WPForms Block With Style Options
+5. Payments Overview
+6. Single Payment
+7. Form Preview
+8. Form Pages with Multiple Styles
+9. Conversational Form
 
 == Frequently Asked Questions ==
 
@@ -368,6 +369,10 @@ Thank you
 Syed Balkhi
 
 == Changelog ==
+= 1.8.9.4 =
+- Added: New filter wpforms_sanitize_amount_before to filter a raw price amount before sanitization.
+- Added: New filter wpforms_sanitize_amount to filter a sanitized price amount.
+
 = 1.8.9.2 =
 - Fixed: Reply-to field was not returning the correct email address.
 
@@ -442,7 +447,7 @@ Syed Balkhi
 - Fixed: The Paragraph field was allowed horizontal resizing.
 - Fixed: Make sure we output valid robots.txt file rules if the file is empty.
 - Fixed: PHP notices were thrown in some cases when Stripe subscription renewals were created.
-- Fixed: Customer email was shown instead of customer name on the Payments Overview screen for Stipe subscription renewals in some cases.
+- Fixed: Customer email was shown instead of customer name on the Payments Overview screen for Stripe subscription renewals in some cases.
 - Fixed: The builder sidebar was hidden on the context menu edit actions.
 - Fixed: Fatal error was thrown on the frontend with corrupted form data.
 - Fixed: `0` (zero) as a choices field raw value was not saved.

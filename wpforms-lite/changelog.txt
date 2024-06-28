@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.8.9.4 =
+- Added: New filter wpforms_sanitize_amount_before to filter a raw price amount before sanitization.
+- Added: New filter wpforms_sanitize_amount to filter a sanitized price amount.
+
 = 1.8.9.2 =
 - Fixed: Reply-to field was not returning the correct email address.
 
@@ -74,7 +78,7 @@
 - Fixed: The Paragraph field was allowed horizontal resizing.
 - Fixed: Make sure we output valid robots.txt file rules if the file is empty.
 - Fixed: PHP notices were thrown in some cases when Stripe subscription renewals were created.
-- Fixed: Customer email was shown instead of customer name on the Payments Overview screen for Stipe subscription renewals in some cases.
+- Fixed: Customer email was shown instead of customer name on the Payments Overview screen for Stripe subscription renewals in some cases.
 - Fixed: The builder sidebar was hidden on the context menu edit actions.
 - Fixed: Fatal error was thrown on the frontend with corrupted form data.
 - Fixed: `0` (zero) as a choices field raw value was not saved.
