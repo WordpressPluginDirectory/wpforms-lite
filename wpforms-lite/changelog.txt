@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.8.9.5 =
+- Fixed: Stripe payment wasn't created when the Credit Card field was optional and users paid through Google Pay / Apple Pay.
+
 = 1.8.9.4 =
 - Added: New filter wpforms_sanitize_amount_before to filter a raw price amount before sanitization.
 - Added: New filter wpforms_sanitize_amount to filter a sanitized price amount.

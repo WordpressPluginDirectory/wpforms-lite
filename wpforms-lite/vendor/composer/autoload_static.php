@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit2a4af6636d76a3ae8f29cb53ba052b82
+class ComposerStaticInitb321fdfe81a7a2ad9e875b1e50fa7f2c
 {
     public static $files = array (
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
@@ -55,7 +55,6 @@ class ComposerStaticInit2a4af6636d76a3ae8f29cb53ba052b82
     );
 
     public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'WPForms\\Vendor\\Stripe\\Account' => __DIR__ . '/../..' . '/vendor_prefixed/stripe/stripe-php/lib/Account.php',
         'WPForms\\Vendor\\Stripe\\AccountLink' => __DIR__ . '/../..' . '/vendor_prefixed/stripe/stripe-php/lib/AccountLink.php',
         'WPForms\\Vendor\\Stripe\\AccountSession' => __DIR__ . '/../..' . '/vendor_prefixed/stripe/stripe-php/lib/AccountSession.php',
@@ -467,9 +466,9 @@ class ComposerStaticInit2a4af6636d76a3ae8f29cb53ba052b82
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit2a4af6636d76a3ae8f29cb53ba052b82::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit2a4af6636d76a3ae8f29cb53ba052b82::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit2a4af6636d76a3ae8f29cb53ba052b82::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb321fdfe81a7a2ad9e875b1e50fa7f2c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb321fdfe81a7a2ad9e875b1e50fa7f2c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb321fdfe81a7a2ad9e875b1e50fa7f2c::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.5
-Stable tag: 1.8.9.4
+Stable tag: 1.8.9.5
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -369,6 +369,9 @@ Thank you
 Syed Balkhi
 
 == Changelog ==
+= 1.8.9.5 =
+- Fixed: Stripe payment wasn't created when the Credit Card field was optional and users paid through Google Pay / Apple Pay.
+
 = 1.8.9.4 =
 - Added: New filter wpforms_sanitize_amount_before to filter a raw price amount before sanitization.
 - Added: New filter wpforms_sanitize_amount to filter a sanitized price amount.
