@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.8.9.6 =
+- Changed: Improved compatibility with OceanWP theme.
+- Fixed: Dropdown fields in forms with the `inline-fields` class had cropped dropdowns.
+- Fixed: Button's hover color was wrong on the Ocean WP theme.
+- Fixed: Form couldn't be submitted when Cloudflare Turnstile anti-spam integration was configured.
+
 = 1.8.9.5 =
 - Fixed: Stripe payment wasn't created when the Credit Card field was optional and users paid through Google Pay / Apple Pay.
 

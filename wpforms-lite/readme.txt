@@ -1,13 +1,13 @@
-=== Contact Form by WPForms - Drag & Drop Form Builder for WordPress ===
+=== WPForms - Easy Form Builder for WordPress - Contact Forms, Payment Forms, Surveys, & More ===
 Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
-Tested up to: 6.5
-Stable tag: 1.8.9.5
+Tested up to: 6.6
+Stable tag: 1.8.9.6
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
-The best WordPress contact form plugin. Drag & Drop form builder to create beautiful contact forms, payment forms, & other custom forms in minutes.
+The best WordPress contact form plugin. Drag & Drop form builder to create beautiful contact forms, payment forms, & other custom forms. 7000+ integrations including Stripe and more.
 
 
 
@@ -15,9 +15,9 @@ The best WordPress contact form plugin. Drag & Drop form builder to create beaut
 
 = WordPress Contact Form Builder Plugin =
 
-[WPForms](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) is a drag & drop WordPress form builder that's EASY and POWERFUL. Create contact forms, feedback forms, subscription forms, payment forms, and other types of forms for your site in minutes, not hours!
+[WPForms](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) is a drag & drop WordPress form builder that's EASY and POWERFUL. Create contact forms, feedback forms, subscription forms, payment forms (including Stripe, Square & PayPal), and other types of forms for your site in minutes with just a few clicks!
 
-At WPForms, user experience is our #1 priority. Our pre-built form templates and workflows make WPForms the most beginner-friendly contact form plugin on the market. You don’t have to hire a developer. Create a form in less than 5 minutes or use a template to get a head start.
+At WPForms, user experience is our #1 priority. Our pre-built form templates and workflows make WPForms the most beginner-friendly contact form plugin on the market. You don't have to hire a developer. Create a form in less than 5 minutes with our drag & drop form builder or use a template to get a head start.
 
 > <strong>WPForms Pro</strong><br />
 > This plugin is the Lite version of WPForms Pro, which comes with email subscription forms, multi-page contact forms, file uploads, conditional logic, and extra payment integrations. [Click here to purchase the best premium WordPress contact form plugin now!](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
@@ -35,17 +35,17 @@ Create custom contact forms in minutes with our easy-to-use [drag and drop onlin
 
 WPForms comes with [1800+ pre-built form templates](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
 
-Whether you're looking to create a simple contact form, marketing form, request a quote form, donation form, payment order form, registration form, or a subscription form, we have a form template already prepared and ready to use.
+Whether you're looking to create a simple contact form, marketing form, request a quote form, donation form, payment order form, registration form, Stripe payment form, or a subscription form, we have a form template already prepared and ready to use.
 
 = Mobile Ready, SEO Friendly, and Optimized for Speed =
 
-WPForms contact forms are 100% responsive and mobile-friendly. We optimized every query on the frontend and the backend to ensure that it’s one of the fastest WordPress contact form plugins.
+WPForms contact forms are 100% responsive and mobile-friendly. We optimized every query on the frontend and the backend to ensure that it's one of the fastest WordPress contact form plugins.
 
 You can embed your contact form on any page with an optimized title and description, so WPForms is one of the most SEO friendly contact form plugins too.
 
 = Fields & Features You Need to Succeed =
 
-With star ratings, file uploads, repeater fields, and multi-page contact forms, you can easily build the right custom form for your site’s needs. Plus, integrate your contact forms with an email marketing service in just a few steps and collect payments for bookings and orders without the need for a dedicated eCommerce plugin.
+With star ratings, file uploads, repeater fields, survey fields, and multi-page contact forms, you can easily build the right custom form for your site's needs. Plus, integrate your contact forms with an email marketing service in just a few steps and collect payments with Stripe, PayPal, and Square for bookings and orders without the need for a dedicated eCommerce plugin.
 
 See what one business owner has to say about their WPForms contact form:
 
@@ -68,13 +68,15 @@ Bloggers and publishers can use our WordPress post submission forms to accept gu
 
 While WPForms started out as a contact form plugin, it has evolved into a powerful custom forms solution for any type of payment or booking form.
 
-WPForms integrates with PayPal, Stripe, Square, and Authorize.Net so you can easily accept credit card payments or take payments via PayPal, and you can also take signatures.
+WPForms integrates with PayPal, Stripe, Square Payments, and Authorize.Net so you can easily accept credit card payments or take payments via PayPal. Bonus: you can also take signatures.
+
+We're proud to be a Stripe Verified Partner. This partnership allows us to build the best Stripe integration with early-access to features. You can use our Stripe integration to accept both one-time payments as well as recurring payments while syncing all form data to your Stripe account.
 
 = Custom Calculator Forms =
 
 Using the [WPForms Calculations addon](https://wpforms.com/features/calculations-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin), you can build custom formulas and display results on the frontend.
 
-Create simple arithmetic calculations or build complex conditional calculations with rounded values, averages, time ranges, and more! It’s the best calculator plugin for WordPress.
+Create simple arithmetic calculations or build complex conditional calculations with rounded values, averages, time ranges, and more! Itâ€™s the best calculator plugin for WordPress.
 
 = Forms Optimized for Conversions =
 
@@ -90,9 +92,10 @@ We also know that our developer friends may want more control, so we added tons 
 
 = Full WPForms Feature List =
 
-* [Online form builder](https://wpforms.com/features/drag-drop-online-form-builder/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) - powerful drag & drop contact form builder. Create WordPress contact forms and other online forms without writing any code.
+* [Online form builder](https://wpforms.com/features/drag-drop-online-form-builder/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) - powerful drag & drop contact form builder. Create WordPress contact forms, payment forms, and other online forms without writing any code.
 * 100% mobile responsive.
 * GDPR friendly.
+* Payment Forms - Take payments, donations, down payments, recurring payments, service payments with our Stripe (FREE) integration.
 * [Form templates](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) pre-built and ready to import.
 * [Form styling](https://wpforms.com/docs/styling-your-forms/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for fields, labels, and buttons.
 * [Spam protection](https://wpforms.com/features/spam-protection/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) built in, plus integrations with hCaptcha, Google reCAPTCHA, and Cloudflare Turnstile.
@@ -125,7 +128,7 @@ We also know that our developer friends may want more control, so we added tons 
 * [Google Sheets](https://wpforms.com/addons/google-sheets-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Zapier](https://wpforms.com/features/zapier-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [PayPal Standard](https://wpforms.com/addons/paypal-standard-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) and [PayPal Commerce](https://wpforms.com/features/paypal-commerce/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [Stripe](https://wpforms.com/addons/stripe-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Stripe](https://wpforms.com/addons/stripe-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) - We're Stripe Verified Partner for Payments.
 * [Square](https://wpforms.com/features/square-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Authorize.Net](https://wpforms.com/addons/authorize-net-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Mailchimp](https://wpforms.com/features/mailchimp-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
@@ -369,6 +372,12 @@ Thank you
 Syed Balkhi
 
 == Changelog ==
+= 1.8.9.6 =
+- Changed: Improved compatibility with OceanWP theme.
+- Fixed: Dropdown fields in forms with the `inline-fields` class had cropped dropdowns.
+- Fixed: Button's hover color was wrong on the Ocean WP theme.
+- Fixed: Form couldn't be submitted when Cloudflare Turnstile anti-spam integration was configured.
+
 = 1.8.9.5 =
 - Fixed: Stripe payment wasn't created when the Credit Card field was optional and users paid through Google Pay / Apple Pay.
 
