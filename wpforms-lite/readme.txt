@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.6
-Stable tag: 1.8.9.6
+Stable tag: 1.9.0.1
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -70,7 +70,7 @@ While WPForms started out as a contact form plugin, it has evolved into a powerf
 
 WPForms integrates with PayPal, Stripe, Square Payments, and Authorize.Net so you can easily accept credit card payments or take payments via PayPal. Bonus: you can also take signatures.
 
-We're proud to be a Stripe Verified Partner. This partnership allows us to build the best Stripe integration with early-access to features. You can use our Stripe integration to accept both one-time payments as well as recurring payments while syncing all form data to your Stripe account.
+We're proud to be a Stripe Verified Partner. This partnership allows us to build the best Stripe integration with early access to features. You can use our Stripe integration to accept both one-time payments as well as recurring payments while syncing all form data to your Stripe account.
 
 = Custom Calculator Forms =
 
@@ -82,7 +82,7 @@ Create simple arithmetic calculations or build complex conditional calculations 
 
 With our Form Pages addon, you can create distraction-free custom form landing pages to increase conversions.
 
-To improve form completion rates, we created Conversational Forms&reg; which helps you make your feedback forms feel more human by adding an interactive layout. ([See Conversational Forms Demo](https://wpforms.com/addons/conversational-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)).
+To improve form completion rates, we created Conversational Forms&reg; which helps you make your feedback forms feel more human by adding an interactive layout. ([See Conversational Forms Demo](https://wpforms.com/features/conversational-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)).
 
 = Easy to Customize and Extend =
 
@@ -102,47 +102,47 @@ We also know that our developer friends may want more control, so we added tons 
 * [Instant form notifications](https://wpforms.com/features/instant-notifications/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) via email.
 * [Custom form confirmations](https://wpforms.com/features/form-confirmation/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) with success messages or thank you pages.
 * [Smart phone field](https://wpforms.com/docs/how-to-choose-the-right-form-field-for-your-forms/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin#phone) that adapts to your visitor's location.
-* [Coupons](https://wpforms.com/addons/coupons-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for free shipping and sale discounts.
+* [Coupons](https://wpforms.com/features/coupons-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for free shipping and sale discounts.
 * [Calculator forms](https://wpforms.com/features/calculations-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for payment, shipping, billing, and more.
 * [File upload fields](https://wpforms.com/features/file-uploads/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for user submissions.
 * [Multi-page forms](https://wpforms.com/features/multi-page-forms/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) with progress bars.
 * [Smart conditional logic](https://wpforms.com/features/conditional-logic/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to show or hide fields.
-* [Repeater field](https://wpforms.com/docs/using-the-repeater-field/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) that enables the person filling out the form to easily add another field or group of fields to fill out. Perfect for group registration forms, custom order forms, and more.
-* [Signatures](https://wpforms.com/addons/signature-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for agreements or payment forms.
+* [Repeater field](https://wpforms.com/features/repeater-field/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) that enables the person filling out the form to easily add another field or group of fields to fill out. Perfect for group registration forms, custom order forms, and more.
+* [Signatures](https://wpforms.com/features/digital-signatures/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) for agreements or payment forms.
 * [User registration forms](https://wpforms.com/features/user-registration/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) and custom login forms.
 * [Post submission forms](https://wpforms.com/features/post-submissions/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to collect user-generated content.
 * [Geolocation](https://wpforms.com/features/geolocation-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to collect location data along with submissions.
 * [Surveys and Polls](https://wpforms.com/features/surveys-and-polls-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) with interactive reports.
 * [Form abandonment detection](https://wpforms.com/features/form-abandonment/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to collect partial form submissions.
-* [Form locker](https://wpforms.com/addons/form-locker-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to control access using passwords, dates, and more.
-* [Offline forms](https://wpforms.com/addons/offline-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to collect submissions without an internet connection.
+* [Form locker](https://wpforms.com/features/form-locker-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to control access using passwords, dates, and more.
+* [Offline forms](https://wpforms.com/features/offline-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to collect submissions without an internet connection.
 * [Form landing pages](https://wpforms.com/features/form-pages-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to boost conversions.
-* [Conversational forms](https://wpforms.com/addons/conversational-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to boost overall completion rates.
-* [Lead forms](https://wpforms.com/addons/lead-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to get more submissions with multi-step layouts.
-* [Webhooks](https://wpforms.com/addons/webhooks-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to send data without third party connectors.
+* [Conversational forms](https://wpforms.com/features/conversational-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to boost overall completion rates.
+* [Lead forms](https://wpforms.com/features/lead-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to get more submissions with multi-step layouts.
+* [Webhooks](https://wpforms.com/features/webhooks-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to send data without third party connectors.
 * [User Journey reports](https://wpforms.com/features/user-journey-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) so you know which content is driving form conversions.
-* [Save and Resume](https://wpforms.com/addons/save-and-resume-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to let visitors save and come back later.
+* [Save and Resume](https://wpforms.com/features/save-and-resume-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) to let visitors save and come back later.
 
 = Integrations =
 
-* [Google Sheets](https://wpforms.com/addons/google-sheets-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Google Sheets](https://wpforms.com/features/google-sheets-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Zapier](https://wpforms.com/features/zapier-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [PayPal Standard](https://wpforms.com/addons/paypal-standard-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) and [PayPal Commerce](https://wpforms.com/features/paypal-commerce/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [Stripe](https://wpforms.com/addons/stripe-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) - We're Stripe Verified Partner for Payments.
+* [PayPal Commerce](https://wpforms.com/features/paypal-commerce/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Stripe](https://wpforms.com/features/stripe-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) - We're a Stripe Verified Partner for Payments.
 * [Square](https://wpforms.com/features/square-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [Authorize.Net](https://wpforms.com/addons/authorize-net-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Authorize.Net](https://wpforms.com/features/authorize-net-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Mailchimp](https://wpforms.com/features/mailchimp-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [AWeber](https://wpforms.com/addons/aweber-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [Campaign Monitor](https://wpforms.com/addons/campaign-monitor-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [GetResponse](https://wpforms.com/addons/getresponse-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [AWeber](https://wpforms.com/features/aweber-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Campaign Monitor](https://wpforms.com/features/campaign-monitor-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [GetResponse](https://wpforms.com/features/getresponse-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Constant Contact](https://wpforms.com/features/constant-contact/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Drip](https://wpforms.com/features/drip-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [ActiveCampaign](https://wpforms.com/addons/activecampaign-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [HubSpot](https://wpforms.com/addons/hubspot-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [ActiveCampaign](https://wpforms.com/features/activecampaign-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [HubSpot](https://wpforms.com/features/hubspot-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Brevo](https://wpforms.com/features/brevo-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [MailerLite](https://wpforms.com/addons/mailerlite-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [MailerLite](https://wpforms.com/features/mailerlite-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [ConvertKit](https://wpforms.com/features/convertkit-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
-* [Salesforce](https://wpforms.com/addons/salesforce-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Salesforce](https://wpforms.com/features/salesforce-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 
 You can see why WPForms is the best WordPress contact form plugin on the market! Want to unlock these features? [Upgrade to our Pro version](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
 
@@ -186,7 +186,7 @@ WPForms is perfect for business owners, bloggers, designers, developers, photogr
 
 = Do I need to have coding skills to use WPForms? =
 
-Absolutely not. You can create and manage forms without any coding knowledge (100% drag & drop form builder). WPForms is the most beginner friendly contact form plugin on the market.
+Absolutely not. You can create and manage forms without any coding knowledge (100% drag & drop form builder). WPForms is the most beginner-friendly contact form plugin on the market.
 
 = What type of WordPress forms can I build with WPForms? =
 
@@ -209,13 +209,13 @@ WPForms drag & drop form builder combined with our addons is the most powerful W
 * Volunteer Registration Contact Form
 * Offline Contact Form
 
-To see a full list, visit our [Form Template Gallery](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) which has over 1800+ pre-made contact form templates.
+To see a full list, visit our [Form Template Gallery](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin), which has over 1800+ pre-made contact form templates.
 
 = Which Form Fields Does WPForms offer? =
 
-We made WPForms form builder to be both easy and powerful.
+We made the WPForms form builder to be both easy and powerful.
 
-Here are the contact form fields that comes with WPForms Form Builder (also known as Standard Fields):
+Here are the contact form fields that come with WPForms Form Builder (also known as Standard Fields):
 
 * Text Field
 * Paragraph Text (Textarea)
@@ -248,13 +248,14 @@ Here is a list of our advanced contact form builder fields (Fancy Fields):
 * Questions CAPTCHA - Great for Preventing Contact Form Spam
 * Math CAPTCHA - Great for Preventing Contact Form Spam
 * Likert Scale - Great for Survey Forms
+* hCAPTCHA - Great for Preventing Contact Form Spam
+* Cloudflare Turnstile - Great for Preventing Contact Form Spam
 * Signature Field - Great for Contracts and Booking Forms
 * Net Promoter Score (NPS Field) - Great for Survey Forms
 * Google ReCAPTCHA - Great for Preventing Contact Form Spam
-* hCAPTCHA - Great for Preventing Contact Form Spam
-* Cloudflare Turnstile - Great for Preventing Contact Form Spam
 
-Here is a list of our Payment Fields that will help you create a order form, donation form, booking form, and other payment forms:
+
+Here is a list of our Payment Fields that will help you create an order form, donation form, booking form, and other payment forms:
 
 * Single Item
 * Multiple Items
@@ -313,7 +314,7 @@ Using our Zapier integration, you can easily connect WPForms with over 7,000+ ma
 
 See all [WPForms Zapier Integrations](https://zapier.com/apps/wpforms/integrations).
 
-Note: WPForms was voted Zapier's 6th fastest growing app in the world.
+Note: WPForms was voted Zapier's 6th fastest-growing app in the world.
 
 = Can I create a Payment Form with WPForms? =
 
@@ -327,7 +328,7 @@ Our PayPal integration allows you to accept PayPal payments online.
 
 = Can I Import / Export Forms with WPForms?
 
-Yes, WPForms makes it easy to import / export your contact forms and other WordPress forms created with WPForms form builder. This is incredibly useful for developers and agencies who are building websites for clients.
+Yes, WPForms makes it easy to import / export your contact forms and other WordPress forms created with the WPForms form builder. This is incredibly useful for developers and agencies who are building websites for clients.
 
 You can also create custom form templates that you can use on client websites. For more see our documentation.
 
@@ -337,17 +338,17 @@ If you're not happy with your WordPress contact form plugin, then definitely giv
 
 = I'd like access to all features. How can I get them? =
 
-You can get access to more features, addons and support by [upgrading to our Pro version](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin). Purchasing a Pro license gets you access to the full version of WPForms, automatic updates, priority support, and all WPForms Addons!
+You can get access to more features, addons, and support by [upgrading to our Pro version](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin). Purchasing a Pro license gets you access to the full version of WPForms, automatic updates, priority support, and all WPForms Addons!
 
 = Is WPForms translation ready? =
 
-Yes, WPForms has full translation and localization support via the wpforms textdomain. Based on your site language, required .mo and .po translation files will be downloaded and placed into the default WordPress languages directory. The same is true for every WPForms Addon as well.
+Yes, WPForms has full translation and localization support via the wpforms textdomain. Based on your site language, required .mo and .po translation files will be downloaded and placed into the default WordPress languages directory. The same is true for every WPForms Addon, as well.
 
 = Does WPForms include spam protection? =
 
 Yes, WPForms includes spam protection which is enabled on all forms by default in the form settings.
 
-Additionally, Google reCAPTCHA, hCaptcha and Cloudflare Turnstile are also supported and can be set up at WPForms > Settings > CAPTCHA.
+Additionally, Google reCAPTCHA, hCaptcha, and Cloudflare Turnstile are also supported and can be set up at WPForms > Settings > CAPTCHA.
 
 WPForms is fully compatible with all versions of Google reCAPTCHA:
 
@@ -355,11 +356,11 @@ WPForms is fully compatible with all versions of Google reCAPTCHA:
 * Invisible reCAPTCHA v2
 * reCAPTCHA v3
 
-Lastly, [Custom Captchas](https://wpforms.com/addons/custom-catpcha-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) are available which allow you to create math or question based captchas for your contact forms.
+Lastly, [Custom Captchas](https://wpforms.com/features/spam-protection//?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) are available which allow you to create math- or question-based CAPTCHAs for your contact forms.
 
 == Notes ==
 
-WPForms is absolutely, positively the most [beginner friendly WordPress contact form plugin](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) on the market. It is both easy and powerful.
+WPForms is absolutely, positively the most [beginner-friendly WordPress contact form plugin](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) on the market. It is both easy and powerful.
 
 We took the pain out of creating online forms and made it easy. Check out all [WPForms features](https://wpforms.com/features/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
 
@@ -367,11 +368,61 @@ Also, I'm the founder of [WPBeginner](https://www.wpbeginner.com/), the largest 
 
 I feel that we have done that here. I hope you enjoy using WPForms.
 
-Thank you
+Thank you,
 
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.0.1 =
+- Added: Modern Antispam protection for new forms.
+- Added: Support conditional logic in the Layout field and add the ability to render the label and description for this field.
+- Added: The notification to check prices is added when the currency is switched.
+- Added: The new filter `wpforms_sanitize_amount_before` to filter a raw price amount before sanitization.
+- Added: The new filter `wpforms_sanitize_amount` to filter a sanitized price amount.
+- Added: The new filter `wpforms_enable_form_data_slashing` to enable the form data slashing.
+- Added: The new filter `wpforms_frontend_js_header_force_load`allows the loading of JS assets in the header.
+- Changed: Improved automatic recreation of custom database tables.
+- Changed: Improved RTL support of plugin admin pages on desktop and mobile screens.
+- Changed: Smart Tags for the Name field now allow retrieving partial data, such as Last Name.
+- Changed: Improved layout of the Settings > Integrations page on small screens.
+- Changed: Added notices for the Default value and Allowlist/Denylist settings on the Email field in case some values were invalid and have been removed.
+- Changed: Improved the multi-select dropdowns UI across the Builder UI.
+- Changed: Updated `stripe/stripe-php` library to v15.1.0.
+- Changed: Updated `woocommerce/action-scheduler` library to v3.8.1.
+- Changed: Allowed using the `&` symbol in Modern style Dropdown field choices.
+- Changed: Improved compatibility with the WP JobSearch plugin.
+- Changed: Updated `jQuery.Validate` library to v1.20.1.
+- Changed: Updated `inputmask` library to v5.0.9.
+- Fixed: Stripe payment form couldn't be submitted in the Elementor popup preview.
+- Fixed: The Trash, Duplicate, Restore, and Delete actions for templates and forms now display a notice with the correct type.
+- Fixed: Multiple Choice, Checkboxes, and Dropdown fields with empty values were displayed incorrectly in email notifications.
+- Fixed: Database error on a single network site after creating a form if the plugin was network activated.
+- Fixed: Fields reacted by hovering over them with the cursor on the Elementor editor screen.
+- Fixed: Modern Dropdown fields were not appropriately loaded on Block (Gutenberg) and Elementor editors.
+- Fixed: Forms with hidden labels had a big horizontal scrollbar when displayed on mobile with RTL languages.
+- Fixed: Conditional logic affected the print page, which did not display hidden fields.
+- Fixed: The RTE field was broken in the Elementor editor preview when the left menu was collapsed.
+- Fixed: Rare exception with how we registered translations for download using the respective transient.
+- Fixed: Pre-populating fields from another form with confirmation redirect URL was not handling multi-select fields.
+- Fixed: The Gutenberg editor was not displaying the page title using Smart Tags.
+- Fixed: The {page_url}Smart Tag value was wrong on the Gutenberg editor's page.
+- Fixed: When all the provider's connections were removed, the check icon remained in the provider title.
+- Fixed: The `{page_url}`Smart Tag was incorrect in the Divi builder.
+- Fixed: Modern Dropdown fields didn't preview correctly for multiple instances of WPForms block on the Gutenberg editor's page.
+- Fixed: The choice-based payment field Smart Tags didn't work in the prefilled URL.
+- Fixed: In Dropdown, the & symbol was rendered as the corresponding HTML entity `&amp;` for Modern Style.
+- Fixed: The modern dropdown field was not loading correctly on the Elementor popup.
+- Fixed: Empty forms couldn't be submitted without enabling the "Minimum time for submit" setting.
+- Fixed: Switching to Live mode on the Payments Overview screen was impossible when all test payments were deleted.
+- Fixed: Dropdown and Checkbox fields with multiple values were inline in email notifications.
+- Fixed: Pressing the Enter key triggered the WPForms Insert Form modal in the Classic editor.
+- Fixed: Dropdown field in forms with the `inline-fields` class had cropped dropdowns on Safari.
+- Fixed: Payment quantity text was not centered on some themes.
+- Fixed: Some fields were visible in the email notifications even if they were hidden by Conditional Logic.
+- Fixed: The Robots.txt file wasn't valid due to the WPForms disallow rule.
+- Fixed: After embedding to the new page, the `{page_title}` Smart Tag was empty in the Block Editor (Gutenberg).
+
 = 1.8.9.6 =
 - Changed: Improved compatibility with OceanWP theme.
 - Fixed: Dropdown fields in forms with the `inline-fields` class had cropped dropdowns.

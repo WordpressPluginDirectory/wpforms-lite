@@ -135,7 +135,7 @@ class Connect {
 				'endpoint' => $endpoint,
 				'version'  => $version,
 				'siteurl'  => admin_url(),
-				'homeurl'  => home_url(),
+				'homeurl'  => site_url(),
 				'redirect' => rawurldecode( base64_encode( $redirect ) ), // phpcs:ignore
 				'v'        => 2,
 			],

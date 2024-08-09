@@ -1,5 +1,54 @@
 == Changelog ==
 
+= 1.9.0.1 =
+- Added: Modern Antispam protection for new forms.
+- Added: Support conditional logic in the Layout field and add the ability to render the label and description for this field.
+- Added: The notification to check prices is added when the currency is switched.
+- Added: The new filter `wpforms_sanitize_amount_before` to filter a raw price amount before sanitization.
+- Added: The new filter `wpforms_sanitize_amount` to filter a sanitized price amount.
+- Added: The new filter `wpforms_enable_form_data_slashing` to enable the form data slashing.
+- Added: The new filter `wpforms_frontend_js_header_force_load`allows the loading of JS assets in the header.
+- Changed: Improved automatic recreation of custom database tables.
+- Changed: Improved RTL support of plugin admin pages on desktop and mobile screens.
+- Changed: Smart Tags for the Name field now allow retrieving partial data, such as Last Name.
+- Changed: Improved layout of the Settings > Integrations page on small screens.
+- Changed: Added notices for the Default value and Allowlist/Denylist settings on the Email field in case some values were invalid and have been removed.
+- Changed: Improved the multi-select dropdowns UI across the Builder UI.
+- Changed: Updated `stripe/stripe-php` library to v15.1.0.
+- Changed: Updated `woocommerce/action-scheduler` library to v3.8.1.
+- Changed: Allowed using the `&` symbol in Modern style Dropdown field choices.
+- Changed: Improved compatibility with the WP JobSearch plugin.
+- Changed: Updated `jQuery.Validate` library to v1.20.1.
+- Changed: Updated `inputmask` library to v5.0.9.
+- Fixed: Stripe payment form couldn't be submitted in the Elementor popup preview.
+- Fixed: The Trash, Duplicate, Restore, and Delete actions for templates and forms now display a notice with the correct type.
+- Fixed: Multiple Choice, Checkboxes, and Dropdown fields with empty values were displayed incorrectly in email notifications.
+- Fixed: Database error on a single network site after creating a form if the plugin was network activated.
+- Fixed: Fields reacted by hovering over them with the cursor on the Elementor editor screen.
+- Fixed: Modern Dropdown fields were not appropriately loaded on Block (Gutenberg) and Elementor editors.
+- Fixed: Forms with hidden labels had a big horizontal scrollbar when displayed on mobile with RTL languages.
+- Fixed: Conditional logic affected the print page, which did not display hidden fields.
+- Fixed: The RTE field was broken in the Elementor editor preview when the left menu was collapsed.
+- Fixed: Rare exception with how we registered translations for download using the respective transient.
+- Fixed: Pre-populating fields from another form with confirmation redirect URL was not handling multi-select fields.
+- Fixed: The Gutenberg editor was not displaying the page title using Smart Tags.
+- Fixed: The {page_url}Smart Tag value was wrong on the Gutenberg editor's page.
+- Fixed: When all the provider's connections were removed, the check icon remained in the provider title.
+- Fixed: The `{page_url}`Smart Tag was incorrect in the Divi builder.
+- Fixed: Modern Dropdown fields didn't preview correctly for multiple instances of WPForms block on the Gutenberg editor's page.
+- Fixed: The choice-based payment field Smart Tags didn't work in the prefilled URL.
+- Fixed: In Dropdown, the & symbol was rendered as the corresponding HTML entity `&amp;` for Modern Style.
+- Fixed: The modern dropdown field was not loading correctly on the Elementor popup.
+- Fixed: Empty forms couldn't be submitted without enabling the "Minimum time for submit" setting.
+- Fixed: Switching to Live mode on the Payments Overview screen was impossible when all test payments were deleted.
+- Fixed: Dropdown and Checkbox fields with multiple values were inline in email notifications.
+- Fixed: Pressing the Enter key triggered the WPForms Insert Form modal in the Classic editor.
+- Fixed: Dropdown field in forms with the `inline-fields` class had cropped dropdowns on Safari.
+- Fixed: Payment quantity text was not centered on some themes.
+- Fixed: Some fields were visible in the email notifications even if they were hidden by Conditional Logic.
+- Fixed: The Robots.txt file wasn't valid due to the WPForms disallow rule.
+- Fixed: After embedding to the new page, the `{page_title}` Smart Tag was empty in the Block Editor (Gutenberg).
+
 = 1.8.9.6 =
 - Changed: Improved compatibility with OceanWP theme.
 - Fixed: Dropdown fields in forms with the `inline-fields` class had cropped dropdowns.
