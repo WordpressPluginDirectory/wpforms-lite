@@ -5,6 +5,8 @@ namespace WPForms\Vendor\Stripe\Service\Terminal;
 
 /**
  * @phpstan-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
+ */
+/**
  * @psalm-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
  */
 class LocationService extends \WPForms\Vendor\Stripe\Service\AbstractService

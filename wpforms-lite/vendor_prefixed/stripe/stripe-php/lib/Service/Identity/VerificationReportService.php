@@ -5,6 +5,8 @@ namespace WPForms\Vendor\Stripe\Service\Identity;
 
 /**
  * @phpstan-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
+ */
+/**
  * @psalm-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
  */
 class VerificationReportService extends \WPForms\Vendor\Stripe\Service\AbstractService

@@ -31,15 +31,6 @@ class WPForms_Field_Email extends WPForms_Field {
 	const RULES = 'rules';
 
 	/**
-	 * Restricted rules.
-	 *
-	 * @since 1.8.9
-	 *
-	 * @var array
-	 */
-	private $restricted_rules = [];
-
-	/**
 	 * Primary class constructor.
 	 *
 	 * @since 1.0.0
@@ -718,7 +709,7 @@ class WPForms_Field_Email extends WPForms_Field {
 	 *
 	 * @return void
 	 */
-	private function ajax_sanitize( $type ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function ajax_sanitize( $type ) {
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-builder', 'nonce' );
@@ -729,8 +720,6 @@ class WPForms_Field_Email extends WPForms_Field {
 		if ( ! $content ) {
 			wp_send_json_error();
 		}
-
-		$this->restricted_rules = [];
 
 		switch ( $type ) {
 			case self::RULES:
@@ -761,10 +750,6 @@ class WPForms_Field_Email extends WPForms_Field {
 
 			default:
 				break;
-		}
-
-		if ( ! empty( $this->restricted_rules ) ) {
-			$content['restricted'] = count( $this->restricted_rules );
 		}
 
 		wp_send_json_success( $content );
@@ -953,8 +938,6 @@ class WPForms_Field_Email extends WPForms_Field {
 
 			if ( ! $email_pattern ) {
 				unset( $patterns[ $key ] );
-				$this->restricted_rules[] = $pattern;
-
 				continue;
 			}
 
@@ -1070,22 +1053,12 @@ class WPForms_Field_Email extends WPForms_Field {
 	 */
 	public function add_builder_strings( $strings, $form ) {
 
-		$email_strings = [
-			'allow_deny_lists_intersect' => esc_html__(
-				'We’ve detected the same text in your allowlist and denylist. To prevent a conflict, we’ve removed the following text from the list you’re currently viewing:',
-				'wpforms-lite'
-			),
-			'restricted_rules'           => esc_html__(
-				'At least one of the emails in your list contained an error and has been removed.',
-				'wpforms-lite'
-			),
-			'restricted_default_email'   => esc_html__(
-				'The provided email is not valid.',
-				'wpforms-lite'
-			),
-		];
+		$strings['allow_deny_lists_intersect'] = esc_html__(
+			'We’ve detected the same text in your allowlist and denylist. To prevent a conflict, we’ve removed the following text from the list you’re currently viewing:',
+			'wpforms-lite'
+		);
 
-		return array_merge( $strings, $email_strings );
+		return $strings;
 	}
 
 	/**

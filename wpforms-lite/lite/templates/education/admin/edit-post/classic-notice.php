@@ -1,6 +1,6 @@
 <?php
 /**
- * Classic Editor notice for Edit Post Education template.
+ * Classic Editor notice for Edit Post Education template for Lite.
  *
  * @since 1.8.1
  *

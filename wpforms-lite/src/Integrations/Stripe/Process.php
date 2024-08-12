@@ -628,7 +628,7 @@ class Process {
 		$args['customer_name'] = ! empty( $args['settings']['customer_name'] ) ? sanitize_text_field( $this->fields[ $args['settings']['customer_name'] ]['value'] ) : '';
 
 		// Customer address.
-		if ( wpforms()->is_pro() && isset( $args['settings']['customer_address'] ) && $args['settings']['customer_address'] !== '' ) {
+		if ( isset( $args['settings']['customer_address'] ) && $args['settings']['customer_address'] !== '' ) {
 			$args['customer_address'] = $this->map_address_field( $this->fields[ $args['settings']['customer_address'] ], $args['settings']['customer_address'] );
 		}
 
@@ -681,33 +681,6 @@ class Process {
 			$args['customer_name'] = sanitize_text_field( $this->fields[ $this->settings['customer_name'] ]['value'] );
 		}
 
-		$args = $this->payment_single_map_address( $args );
-
-		$this->api->process_single( $args );
-
-		// Set payment processing flag.
-		$this->is_payment_processed = true;
-
-		$this->update_credit_card_field_value();
-
-		$this->process_api_error( 'single' );
-	}
-
-	/**
-	 * Map address field for single payment.
-	 *
-	 * @since 1.9.0
-	 *
-	 * @param array $args Payment arguments.
-	 *
-	 * @return array
-	 */
-	private function payment_single_map_address( array $args ): array {
-
-		if ( ! wpforms()->is_pro() ) {
-			return $args;
-		}
-
 		// Customer address.
 		if ( isset( $this->settings['customer_address'] ) && $this->settings['customer_address'] !== '' ) {
 			$args['customer_address'] = $this->map_address_field( $this->fields[ $this->settings['customer_address'] ], $this->settings['customer_address'] );
@@ -719,7 +692,14 @@ class Process {
 			$args['shipping']['address'] = $this->map_address_field( $this->fields[ $this->settings['shipping_address'] ], $this->settings['shipping_address'] );
 		}
 
-		return $args;
+		$this->api->process_single( $args );
+
+		// Set payment processing flag.
+		$this->is_payment_processed = true;
+
+		$this->update_credit_card_field_value();
+
+		$this->process_api_error( 'single' );
 	}
 
 	/**
@@ -752,7 +732,7 @@ class Process {
 			}
 
 			// Customer address.
-			if ( wpforms()->is_pro() && isset( $recurring['customer_address'] ) && $recurring['customer_address'] !== '' ) {
+			if ( isset( $recurring['customer_address'] ) && $recurring['customer_address'] !== '' ) {
 				$args['customer_address'] = $this->map_address_field( $this->fields[ $recurring['customer_address'] ], $recurring['customer_address'] );
 			}
 

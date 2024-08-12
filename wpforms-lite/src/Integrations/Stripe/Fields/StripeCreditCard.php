@@ -188,7 +188,7 @@ class StripeCreditCard extends WPForms_Field {
 			return;
 		}
 
-		if ( wpforms_is_editor_page() ) {
+		if ( $this->is_block_editor() ) {
 			$this->block_editor_field_display( $field );
 
 			return;

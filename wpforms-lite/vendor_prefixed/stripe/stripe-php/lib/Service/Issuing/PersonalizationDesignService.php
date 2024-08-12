@@ -5,6 +5,8 @@ namespace WPForms\Vendor\Stripe\Service\Issuing;
 
 /**
  * @phpstan-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
+ */
+/**
  * @psalm-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
  */
 class PersonalizationDesignService extends \WPForms\Vendor\Stripe\Service\AbstractService

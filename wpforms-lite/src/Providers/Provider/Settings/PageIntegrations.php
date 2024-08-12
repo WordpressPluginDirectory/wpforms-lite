@@ -77,10 +77,7 @@ abstract class PageIntegrations implements PageIntegrationsInterface {
 						);
 						?>
 					</p>
-					<span class="connected-indicator green">
-						<i class="fa fa-check-circle-o"></i>
-						<span><?php esc_html_e( 'Connected', 'wpforms-lite' ); ?></span>
-					</span>
+					<span class="connected-indicator green"><i class="fa fa-check-circle-o"></i>&nbsp;<?php esc_html_e( 'Connected', 'wpforms-lite' ); ?></span>
 				</div>
 
 			</div>
@@ -155,7 +152,7 @@ abstract class PageIntegrations implements PageIntegrationsInterface {
 			? wpforms_date_format( $account['date'], '', true )
 			: esc_html__( 'N/A', 'wpforms-lite' );
 
-		echo '<li>';
+		echo '<li class="wpforms-clear">';
 
 		/**
 		 * Allow adding markup before connected account item.

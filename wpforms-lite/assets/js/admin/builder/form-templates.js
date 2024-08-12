@@ -1,12 +1,6 @@
 /* global List, wpforms_form_templates, wpforms_addons, wpf */
 
 /**
- * @param wpforms_form_templates.template_addon_activate
- * @param wpforms_form_templates.template_addon_prompt
- * @param wpforms_form_templates.template_addons_prompt
- */
-
-/**
  * Form Templates function.
  *
  * @since 1.7.7
@@ -488,32 +482,15 @@ var WPFormsFormTemplates = window.WPFormsFormTemplates || ( function( document, 
 		 *
 		 * @param {string}   formName Name of the form.
 		 * @param {string}   template Template slug.
-		 * @param {jQuery}   $button  Use a template button object.
+		 * @param {jQuery}   $button  Use template button object.
 		 * @param {Function} callback The function to set the template.
 		 */
 		addonsModal( formName, template, $button, callback ) {
 			const templateName = $button.data( 'template-name-raw' );
 			const addonsNames = $button.data( 'addons-names' );
 			const addonsSlugs = $button.data( 'addons' );
-			const installedSlugs = $button.data( 'installed' );
 			const addons = addonsSlugs.split( ',' );
-
-			let prompt;
-
-			switch ( app.action( addons, installedSlugs ) ) {
-				case 'multiple':
-					prompt = wpforms_form_templates.template_addons_prompt;
-					break;
-				case 'activate':
-					prompt = wpforms_form_templates.template_addon_activate;
-					break;
-				case 'install':
-					prompt = wpforms_form_templates.template_addon_prompt;
-					break;
-				default:
-					prompt = wpforms_form_templates.template_addons_prompt;
-					break;
-			}
+			let prompt = addons.length > 1 ? wpforms_form_templates.template_addons_prompt : wpforms_form_templates.template_addon_prompt;
 
 			prompt = prompt.replace( /%template%/g, templateName ).replace( /%addons%/g, addonsNames );
 
@@ -527,7 +504,7 @@ var WPFormsFormTemplates = window.WPFormsFormTemplates || ( function( document, 
 				return;
 			}
 
-			app.userCanInstallAddonsModal( formName, template, addons, prompt, callback, installedSlugs );
+			app.userCanInstallAddonsModal( formName, template, addons, prompt, callback );
 		},
 
 		/**
@@ -535,30 +512,14 @@ var WPFormsFormTemplates = window.WPFormsFormTemplates || ( function( document, 
 		 *
 		 * @since 1.8.2
 		 *
-		 * @param {string}   formName       Name of the form.
-		 * @param {string}   template       Template slug.
-		 * @param {Array}    addons         Array of addon slugs.
-		 * @param {string}   prompt         Modal content.
-		 * @param {Function} callback       The function to set the template.
-		 * @param {string}   installedSlugs Installed slug.
+		 * @param {string}   formName Name of the form.
+		 * @param {string}   template Template slug.
+		 * @param {Array}    addons   Array of addon slugs.
+		 * @param {string}   prompt   Modal content.
+		 * @param {Function} callback The function to set the template.
 		 */
-		userCanInstallAddonsModal( formName, template, addons, prompt, callback, installedSlugs = '' ) {
+		userCanInstallAddonsModal( formName, template, addons, prompt, callback ) {
 			const spinner = '<i class="wpforms-loading-spinner wpforms-loading-white wpforms-loading-inline"></i>';
-
-			let confirm;
-
-			switch ( app.action( addons, installedSlugs ) ) {
-				case 'multiple':
-				case 'install':
-					confirm = wpforms_form_templates.install_confirm;
-					break;
-				case 'activate':
-					confirm = wpforms_form_templates.activate_confirm;
-					break;
-				default:
-					confirm = wpforms_form_templates.install_confirm;
-					break;
-			}
 
 			$.confirm( {
 				title: wpforms_form_templates.heads_up,
@@ -567,7 +528,7 @@ var WPFormsFormTemplates = window.WPFormsFormTemplates || ( function( document, 
 				type: 'orange',
 				buttons: {
 					confirm: {
-						text: confirm,
+						text: wpforms_form_templates.install_confirm,
 						btnClass: 'btn-confirm',
 						keys: [ 'enter' ],
 						action() {
@@ -591,28 +552,6 @@ var WPFormsFormTemplates = window.WPFormsFormTemplates || ( function( document, 
 					},
 				},
 			} );
-		},
-
-		/**
-		 * Get the action for the addons.
-		 *
-		 * @since 1.9.0
-		 *
-		 * @param {Array}  addons    Addons slugs.
-		 * @param {string} installed Installed addon slug.
-		 *
-		 * @return {string} Action.
-		 */
-		action( addons, installed = '' ) {
-			if ( addons.length > 1 ) {
-				return 'multiple';
-			}
-
-			if ( installed.split( ',' ).indexOf( addons[ 0 ] ) > -1 ) {
-				return 'activate';
-			}
-
-			return 'install';
 		},
 
 		/**

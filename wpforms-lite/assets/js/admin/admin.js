@@ -1,11 +1,7 @@
 /* global wpforms_admin, jconfirm, wpCookies, Choices, List, wpf */
 
-/**
- * @param wpforms_admin.recreating
- * @param wpforms_admin.testing
- */
+;( function( $ ) {
 
-( function( $ ) {
 	'use strict';
 
 	// Global settings access.
@@ -262,7 +258,15 @@
 				}
 			} );
 
-			wpf.initializeChoicesEventHandlers();
+			// Show more button for choices.
+			$( document ).on( 'addItem removeItem', '.choices', function() {
+				wpf.showMoreButtonForChoices( this );
+			} );
+
+			// Remove focus from input when dropdown is hidden.
+			$( document ).on( 'hideDropdown', '.choices', function() {
+				$( this ).find( '.choices__inner input.choices__input' ).trigger( 'blur' );
+			} );
 		},
 
 		/**
@@ -818,9 +822,10 @@
 
 			// Open modal and play How To video.
 			$( document ).on( 'click', '#wpforms-welcome .play-video', function( event ) {
+
 				event.preventDefault();
 
-				const video = '<div class="video-container"><iframe width="1280" height="720" src="https://www.youtube-nocookie.com/embed/SQ9kV9SKz5k?rel=0&amp;showinfo=0&amp;autoplay=1" frameborder="0" allowfullscreen></iframe></div>';
+				var video = '<div class="video-container"><iframe width="1280" height="720" src="https://www.youtube-nocookie.com/embed/o2nE1P74WxQ?rel=0&amp;showinfo=0&amp;autoplay=1" frameborder="0" allowfullscreen></iframe></div>';
 
 				$.dialog( {
 					title: false,
@@ -2103,12 +2108,6 @@
 				WPFormsAdmin.verifySSLConnection();
 			} );
 
-			// Recreate database tables.
-			$( document ).on( 'click', '#wpforms-recreate-tables', function( event ) {
-				event.preventDefault();
-				WPFormsAdmin.recreateTables();
-			} );
-
 			// Run import for a specific provider.
 			$( document ).on( 'click', '#wpforms-importer-forms-submit', function( event ) {
 				event.preventDefault();
@@ -2201,48 +2200,6 @@
 					$btn.before( '<div class="wpforms-ssl-error pre-error">' + res.data.debug + '</div>' );
 				}
 
-				$btn.css( 'width', btnWidth ).prop( 'disabled', false ).text( btnLabel );
-			} );
-		},
-
-		/**
-		 * Recreate custom tables.
-		 *
-		 * @since 1.9.0
-		 */
-		recreateTables() {
-			const $btn = $( '#wpforms-recreate-tables' );
-			const btnLabel = $btn.text();
-			const btnWidth = $btn.outerWidth();
-			const $settings = $btn.parent();
-
-			$btn.css( 'width', btnWidth ).prop( 'disabled', true ).text( wpforms_admin.recreating );
-
-			const data = {
-				action: 'wpforms_recreate_tables',
-				nonce:   wpforms_admin.nonce,
-			};
-
-			// Trigger AJAX to recreate tables.
-			$.post( wpforms_admin.ajax_url, data, function( res ) {
-				WPFormsAdmin.debug( res );
-
-				// Remove any previous alerts.
-				$settings.find( '.wpforms-notice' ).remove();
-
-				if ( res.success ) {
-					$btn.before( '<div class="notice wpforms-notice notice-success">' + res.data.msg + '</div>' );
-					$btn.hide();
-				}
-
-				if ( ! res.success && res.data.msg ) {
-					$btn.before( '<div class="notice wpforms-notice notice-error">' + res.data.msg + '</div>' );
-				}
-
-				if ( ! res.success && res.data.debug ) {
-					$btn.before( '<div class="wpforms-ssl-error pre-error">' + res.data.debug + '</div>' );
-				}
-			} ).always( function() {
 				$btn.css( 'width', btnWidth ).prop( 'disabled', false ).text( btnLabel );
 			} );
 		},
@@ -2670,8 +2627,8 @@
 		 * @return {Object} Notice Data object.
 		 */
 		getDeleteAllNoticeData: ( type = '' ) => {
-			// Define delete data for spam or trash.
-			if ( [ 'spam', 'trash' ].includes( type ) ) {
+			// if is trash page show delete data.
+			if ( 'trash' === type ) {
 				return {
 					contentAll : wpforms_admin.entry_delete_all_confirm,
 					content : wpforms_admin.entry_delete_n_confirm,
@@ -2679,7 +2636,7 @@
 				};
 			}
 
-			// Otherwise define trash data.
+			// If not return trash data.
 			return {
 				contentAll : wpforms_admin.entry_trash_all_confirm,
 				content : wpforms_admin.entry_trash_n_confirm,
@@ -2719,4 +2676,4 @@
 
 	window.WPFormsAdmin = WPFormsAdmin;
 
-}( jQuery ) );
+} )( jQuery );

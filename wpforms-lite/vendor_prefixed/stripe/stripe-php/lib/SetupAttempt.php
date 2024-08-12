@@ -28,19 +28,5 @@ namespace WPForms\Vendor\Stripe;
 class SetupAttempt extends ApiResource
 {
     const OBJECT_NAME = 'setup_attempt';
-    /**
-     * Returns a list of SetupAttempts that associate with a provided SetupIntent.
-     *
-     * @param null|array $params
-     * @param null|array|string $opts
-     *
-     * @throws \Stripe\Exception\ApiErrorException if the request fails
-     *
-     * @return \Stripe\Collection<\Stripe\SetupAttempt> of ApiResources
-     */
-    public static function all($params = null, $opts = null)
-    {
-        $url = static::classUrl();
-        return static::_requestPage($url, \WPForms\Vendor\Stripe\Collection::class, $params, $opts);
-    }
+    use ApiOperations\All;
 }

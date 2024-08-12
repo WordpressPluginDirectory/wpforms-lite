@@ -150,8 +150,7 @@ WPForms.Admin.Builder.Setup = WPForms.Admin.Builder.Setup || ( function( documen
 				.on( 'click', '.wpforms-template-select', app.selectTemplate )
 				.on( 'click', '.wpforms-trigger-blank', app.selectBlankTemplate );
 
-			el.$builder
-				.on( 'wpformsBuilderReady wpformsBuilderPanelLoaded', app.filterTemplatesBySelectedCategory );
+			el.$builder.on( 'wpformsBuilderReady wpformsBuilderPanelLoaded', app.filterTemplatesBySelectedCategory );
 		},
 
 		/**
@@ -289,23 +288,14 @@ WPForms.Admin.Builder.Setup = WPForms.Admin.Builder.Setup || ( function( documen
 		 * @since 1.8.9
 		 */
 		filterTemplatesBySelectedCategory() {
-
-			const $subCategory = el.$subcategories.find( 'li.active' );
-
 			// If subcategory is available, trigger its click it will update and category also.
-			if ( $subCategory.length ) {
-				$subCategory.trigger( 'click' );
+			if ( el.$subcategories.find( 'li.active' ).length ) {
+				el.$subcategories.find( ' > li.active' ).trigger( 'click' );
 			}
 
-			const $category = el.$categories.find( '> li.active' );
-
-			// In another case, click on the category.
-			if (
-				! $subCategory.length &&
-				$category.length &&
-				$category.data( 'category' ) !== 'all'
-			) {
-				$category.find( 'div' ).trigger( 'click' );
+			// In other case, check by the category.
+			if ( el.$categories.find( 'li.active' ).length && ! el.$subcategories.find( 'li.active' ).length ) {
+				el.$categories.find( ' > li.active div' ).trigger( 'click' );
 			}
 		},
 

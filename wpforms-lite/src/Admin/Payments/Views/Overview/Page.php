@@ -257,8 +257,10 @@ class Page implements PaymentsViewsInterface {
 
 		static $mode;
 
+		$default_mode = 'live';
+
 		if ( ! wpforms_is_admin_ajax() && ! wpforms_is_admin_page( 'payments' ) && ! wpforms_is_admin_page( 'entries' ) ) {
-			return 'live';
+			return $default_mode;
 		}
 
 		if ( $mode ) {
@@ -278,11 +280,7 @@ class Page implements PaymentsViewsInterface {
 
 		$mode = get_user_meta( $user_id, $meta_key, true );
 
-		if ( empty( $mode ) || ! Helpers::is_test_payment_exists() ) {
-			$mode = 'live';
-		}
-
-		return $mode;
+		return ! empty( $mode ) ? $mode : $default_mode;
 	}
 
 	/**

@@ -161,7 +161,7 @@ function wpforms_log( $title = '', $message = '', $args = [] ) { // phpcs:ignore
 
 	// Make arrays and objects look nice.
 	if ( is_array( $message ) || is_object( $message ) ) {
-		$message = '<pre>' . print_r( $message, true ) . '</pre>'; // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		$message = '<pre>' . print_r( $message, true ) . '</pre>'; // phpcs:ignore
 	}
 
 	// Filter logs types from Tools -> Logs page.

@@ -15,7 +15,6 @@ namespace WPForms\Vendor\Stripe\Service;
  * @property Apps\AppsServiceFactory $apps
  * @property BalanceService $balance
  * @property BalanceTransactionService $balanceTransactions
- * @property Billing\BillingServiceFactory $billing
  * @property BillingPortal\BillingPortalServiceFactory $billingPortal
  * @property ChargeService $charges
  * @property Checkout\CheckoutServiceFactory $checkout
@@ -27,7 +26,6 @@ namespace WPForms\Vendor\Stripe\Service;
  * @property CustomerService $customers
  * @property CustomerSessionService $customerSessions
  * @property DisputeService $disputes
- * @property Entitlements\EntitlementsServiceFactory $entitlements
  * @property EphemeralKeyService $ephemeralKeys
  * @property EventService $events
  * @property ExchangeRateService $exchangeRates
@@ -92,7 +90,6 @@ class CoreServiceFactory extends \WPForms\Vendor\Stripe\Service\AbstractServiceF
         'apps' => Apps\AppsServiceFactory::class,
         'balance' => BalanceService::class,
         'balanceTransactions' => BalanceTransactionService::class,
-        'billing' => Billing\BillingServiceFactory::class,
         'billingPortal' => BillingPortal\BillingPortalServiceFactory::class,
         'charges' => ChargeService::class,
         'checkout' => Checkout\CheckoutServiceFactory::class,
@@ -104,7 +101,6 @@ class CoreServiceFactory extends \WPForms\Vendor\Stripe\Service\AbstractServiceF
         'customers' => CustomerService::class,
         'customerSessions' => CustomerSessionService::class,
         'disputes' => DisputeService::class,
-        'entitlements' => Entitlements\EntitlementsServiceFactory::class,
         'ephemeralKeys' => EphemeralKeyService::class,
         'events' => EventService::class,
         'exchangeRates' => ExchangeRateService::class,

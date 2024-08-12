@@ -1331,10 +1331,7 @@ abstract class WPForms_Provider {
 						);
 						?>
 					</p>
-					<span class="connected-indicator green">
-						<i class="fa fa-check-circle-o"></i>
-						<span><?php esc_html_e( 'Connected', 'wpforms-lite' ); ?></span>
-					</span>
+					<span class="connected-indicator green"><i class="fa fa-check-circle-o"></i>&nbsp;<?php esc_html_e( 'Connected', 'wpforms-lite' ); ?></span>
 				</div>
 
 			</div>
@@ -1346,7 +1343,7 @@ abstract class WPForms_Provider {
 						<?php
 						if ( ! empty( $accounts ) ) {
 							foreach ( $accounts as $key => $account ) {
-								echo '<li>';
+								echo '<li class="wpforms-clear">';
 								echo '<span class="label">' . esc_html( $account['label'] ) . '</span>';
 								echo '<span class="date">';
 								echo esc_html(

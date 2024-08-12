@@ -1,8 +1,5 @@
 <?php
 
-// phpcs:ignore Generic.Commenting.DocComment.MissingShort
-/** @noinspection PhpIllegalPsrClassPathInspection */
-
 namespace WPForms\Logger;
 
 /**
@@ -37,7 +34,7 @@ class Log {
 	 */
 	public function hooks() {
 
-		$this->repository = new Repository();
+		$this->repository = new Repository( new RecordQuery() );
 
 		add_action( 'shutdown', [ $this->repository, 'save' ] );
 

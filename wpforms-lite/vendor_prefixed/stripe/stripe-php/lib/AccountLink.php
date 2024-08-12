@@ -17,25 +17,5 @@ namespace WPForms\Vendor\Stripe;
 class AccountLink extends ApiResource
 {
     const OBJECT_NAME = 'account_link';
-    /**
-     * Creates an AccountLink object that includes a single-use Stripe URL that the
-     * platform can redirect their user to in order to take them through the Connect
-     * Onboarding flow.
-     *
-     * @param null|array $params
-     * @param null|array|string $options
-     *
-     * @throws \Stripe\Exception\ApiErrorException if the request fails
-     *
-     * @return \Stripe\AccountLink the created resource
-     */
-    public static function create($params = null, $options = null)
-    {
-        self::_validateParams($params);
-        $url = static::classUrl();
-        list($response, $opts) = static::_staticRequest('post', $url, $params, $options);
-        $obj = \WPForms\Vendor\Stripe\Util\Util::convertToStripeObject($response->json, $opts);
-        $obj->setLastResponse($response);
-        return $obj;
-    }
+    use ApiOperations\Create;
 }

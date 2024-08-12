@@ -17,11 +17,28 @@ class ModeToggle {
 	public function display() {
 
 		// Bail early if no payments are found in test mode.
-		if ( ! Helpers::is_test_payment_exists() ) {
+		if ( ! $this->should_display() ) {
 			return;
 		}
 
 		$this->render();
+	}
+
+	/**
+	 * Look for at least one payment in test mode.
+	 *
+	 * @since 1.8.2
+	 *
+	 * @return bool
+	 */
+	private function should_display() {
+
+		return wpforms()->get( 'payment' )->get_payments(
+			[
+				'mode'   => 'test',
+				'number' => 1,
+			]
+		);
 	}
 
 	/**

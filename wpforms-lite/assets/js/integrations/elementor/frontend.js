@@ -1,4 +1,4 @@
-/* global wpforms, wpformsElementorVars, wpformsModernFileUpload, wpformsRecaptchaLoad, grecaptcha, WPFormsRepeaterField */
+/* global wpforms, wpformsElementorVars, wpformsModernFileUpload, wpformsRecaptchaLoad, grecaptcha */
 
 'use strict';
 
@@ -17,15 +17,6 @@ var WPFormsElementorFrontend = window.WPFormsElementorFrontend || ( function( do
 	 * @type {object}
 	 */
 	var app = {
-
-		/**
-		 * Flag to force load ChoicesJS.
-		 *
-		 * @since 1.9.0
-		 *
-		 * @type {boolean}
-		 */
-		forceLoadChoices: false,
 
 		/**
 		 * Start the engine.
@@ -55,22 +46,6 @@ var WPFormsElementorFrontend = window.WPFormsElementorFrontend || ( function( do
 
 				app.initFields( $form );
 			} );
-
-			// Force load ChoicesJS for elementor popup.
-			$( document ).on( 'elementor/popup/show', () => {
-				app.forceLoadChoices = true;
-
-				wpforms.loadChoicesJS();
-			} );
-
-			$( document ).on( 'wpformsBeforeLoadElementChoices', ( event, el ) => {
-				// Do not initialize on elementor popup.
-				if ( ! $( el ).parents( 'div[data-elementor-type="popup"]' ).length || app.forceLoadChoices ) {
-					return;
-				}
-
-				event.preventDefault();
-			} );
 		},
 
 		/**
@@ -99,11 +74,6 @@ var WPFormsElementorFrontend = window.WPFormsElementorFrontend || ( function( do
 				} else {
 					wpformsRecaptchaLoad();
 				}
-			}
-
-			// Init Repeater fields.
-			if ( 'undefined' !== typeof WPFormsRepeaterField ) {
-				WPFormsRepeaterField.ready();
 			}
 
 			// Register a custom event.

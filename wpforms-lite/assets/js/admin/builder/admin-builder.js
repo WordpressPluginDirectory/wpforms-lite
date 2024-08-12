@@ -278,8 +278,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			app.initSomeFieldOptions();
 
 			app.dismissNotice();
-
-			wpf.initializeChoicesEventHandlers();
 		},
 
 		checkEmptyDynamicChoices() {
@@ -441,14 +439,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 								$( this.input.element ).addClass( 'choices__input--hidden' );
 							}
 						}
-
-						// Decode allowed HTML entities for choices.
-						$element.find( '.choices__item--selectable' ).each( function() {
-							const $choice = $( this );
-							const text = wpf.decodeAllowedHTMLEntities( $choice.text() );
-
-							$choice.text( text );
-						} );
 					},
 				},
 			},
@@ -721,7 +711,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 						return false;
 					}
 
-					const placeholder = wpf.decodeAllowedHTMLEntities( instance.config.choices[ 0 ].label ),
+					const placeholder = instance.config.choices[ 0 ].label,
 						isMultiple = $( instance.passedElement.element ).prop( 'multiple' ),
 						selected = ! ( isMultiple || hasDefaults );
 
@@ -2151,8 +2141,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 				let $current = 'allow';
 
-				$currentField.next( '.wpforms-alert' ).remove();
-
 				if ( $currentField.val() === '' ) {
 					return;
 				}
@@ -2198,20 +2186,19 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 									},
 								} );
 							}
-
-							const restricted = res.data.restricted || 0;
-							if ( restricted ) {
-								$currentField.after( '<div class="wpforms-alert-warning wpforms-alert"><p>' + wpforms_builder.restricted_rules + '</p></div>' );
-							}
 						}
 					}
 				);
 			} );
 
+			// On any click check if we had focusout event.
+			$builder.on( 'click', function() {
+				app.focusOutEvent();
+			} );
+
 			// Save focusout target.
 			$builder.on( 'focusout', elements.defaultEmailSelector, function() {
 				elements.$focusOutTarget = $( this );
-				app.focusOutEvent();
 			} );
 
 			// Real-time updates for "Size" field option
@@ -2998,8 +2985,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			if ( elements.$defaultEmail.is( elements.$focusOutTarget ) ) {
 				const $field = elements.$focusOutTarget;
 
-				$field.next( '.wpforms-alert' ).remove();
-
 				if ( $field.val() === '' ) {
 					return;
 				}
@@ -3015,10 +3000,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 						if ( res.success ) {
 							$field.val( res.data );
 							$field.trigger( 'input' );
-
-							if ( ! res.data ) {
-								$field.after( '<div class="wpforms-alert-warning wpforms-alert"><p>' + wpforms_builder.restricted_default_email + '</p></div>' );
-							}
 						}
 					}
 				);
@@ -5703,33 +5684,15 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				$parent = $selector.parent(),
 				$id = $parent.data( 'field-id' ),
 				$label = $parent.find( 'label' ),
-				$input = $parent.find( 'input[type=text]' ),
-				layoutClassList = [
-					'wpforms-one-half',
-					'wpforms-first',
-					'wpforms-one-third',
-					'wpforms-one-fourth',
-					'wpforms-two-thirds',
-					'wpforms-two-fourths'
-				];
+				$input = $parent.find( 'input[type=text]' );
 
-			let classes = $this.data( 'classes' ),
-				inputVal = $input.val();
+			let classes = $this.data( 'classes' );
 
-			if ( inputVal ) {
-				// Remove existing wpforms layout classes before adding new.
-				layoutClassList.forEach( ( cls ) => {
-					inputVal = inputVal.replace( new RegExp( '\\b' + cls + '\\b', 'gi' ), '' );
-				} );
-
-				// Remove any extra spaces.
-				inputVal = inputVal.replace( /\s\s+/g, ' ' ).trim();
-
-				// Add new layout classes.
-				classes += ' ' + inputVal;
+			if ( $input.val() ) {
+				classes = ' ' + classes;
 			}
 
-			$input.val( classes );
+			$input.insertAtCaret( classes );
 
 			// Remove the list, all done!
 			$selector.slideUp( 400, function() {
@@ -6870,7 +6833,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 			const data = {
 				action: 'wpforms_save_form',
-				data: JSON.stringify( app.serializeAllData( $( '#wpforms-builder-form' ) ) ),
+				data: JSON.stringify( $( '#wpforms-builder-form' ).serializeArray() ),
 				id: s.formID,
 				nonce: wpforms_builder.nonce,
 			};
@@ -6903,31 +6866,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				$spinner.addClass( 'wpforms-hidden' );
 				$icon.removeClass( 'wpforms-hidden' );
 			} );
-		},
-
-		/**
-		 * Serialize all form data including checkboxes that are not checked.
-		 *
-		 * @since 1.9.0
-		 *
-		 * @param {Object} $form Form jQuery object.
-		 *
-		 * @return {Array} Form data.
-		 */
-		serializeAllData( $form ) {
-			const formData = $form.serializeArray();
-
-			$form.find( '.wpforms-field-option-layout .wpforms-field-option-row-label_hide input[type=checkbox]' ).each( function() {
-				const $checkbox = $( this );
-				const name = $checkbox.attr( 'name' );
-				const value = $checkbox.is( ':checked' ) ? '1' : '';
-
-				if ( ! value ) {
-					formData.push( { name, value } );
-				}
-			} );
-
-			return formData;
 		},
 
 		/**
@@ -7325,11 +7263,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 					} );
 				}
 			} );
-
-			// Re-init Show More button for multiselect instances when it's visible.
-			$builder.on( 'wpformsPanelSectionSwitch wpformsPanelSwitched', function() {
-				wpf.reInitShowMoreChoices( $( '#wpforms-panel-providers, #wpforms-panel-settings' ) );
-			} );
 		},
 
 		/**
@@ -7667,20 +7600,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				? wpf.encodeHTMLEntities( wpf.sanitizeHTML( field.label ) )
 				: wpforms_builder.field + ' #' + field.id;
 
-			let html = `<li><a href="#" data-type="field" data-meta="${ field.id }">${ label }</a></li>`;
-
-			const additionalTags = field.additional || [];
-
-			// Add additional tags for `name`, `date/time` and `address` fields.
-			if ( additionalTags.length > 1 ) {
-				additionalTags.forEach( ( additionalTag ) => {
-					// Capitalize the first letter and add space before numbers.
-					const additionalTagLabel = additionalTag.charAt( 0 ).toUpperCase() + additionalTag.slice( 1 ).replace( /(\D)(\d)/g, '$1 $2' );
-					html += `<li><a href="#" data-type="field" data-meta="${ field.id }" data-additional='${ additionalTag }'>${ label } – ${ additionalTagLabel }</a></li>`;
-				} );
-			}
-
-			return html;
+			return '<li><a href="#" data-type="field" data-meta=\'' + field.id + '\'>' + label + '</a></li>';
 		},
 
 		/**
@@ -7731,9 +7651,8 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				$toggle = $wrapper.find( '.toggle-smart-tag-display' ),
 				$input = $wrapper.find( 'input[type=text], textarea' ),
 				meta = $this.data( 'meta' ),
-				additional = $this.data( 'additional' ) ? '|' + $this.data( 'additional' ) : '',
 				type = $this.data( 'type' );
-			let smartTag = type === 'field' ? '{field_id="' + meta + additional + '"}' : '{' + meta + '}',
+			let smartTag = type === 'field' ? '{field_id="' + meta + '"}' : '{' + meta + '}',
 				editor;
 
 			if ( typeof tinyMCE !== 'undefined' ) {
