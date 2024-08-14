@@ -1,12 +1,24 @@
 <?php
+/**
+ * WPForms_Lite class file.
+ */
+
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpIllegalPsrClassPathInspection */
+/** @noinspection AutoloadingIssuesInspection */
+// phpcs:enable Generic.Commenting.DocComment.MissingShort
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 use WPForms\Admin\Builder\TemplatesCache;
-use WPForms\Lite\Integrations\LiteConnect\LiteConnect;
+use WPForms\Db\Payments\Meta as PaymentsMeta;
+use WPForms\Db\Payments\Payment;
 use WPForms\Lite\Integrations\LiteConnect\Integration as LiteConnectIntegration;
+use WPForms\Lite\Integrations\LiteConnect\LiteConnect;
+use WPForms\Logger\Repository;
+use WPForms\Tasks\Meta as TasksMeta;
 
 /**
  * WPForms Lite. Load Lite-specific features/functionality.
@@ -14,6 +26,18 @@ use WPForms\Lite\Integrations\LiteConnect\Integration as LiteConnectIntegration;
  * @since 1.2.0
  */
 class WPForms_Lite {
+
+	/**
+	 * Custom tables and their handlers.
+	 *
+	 * @since 1.9.0
+	 */
+	const CUSTOM_TABLES = [
+		'wpforms_payments'     => Payment::class,
+		'wpforms_payment_meta' => PaymentsMeta::class,
+		'wpforms_tasks_meta'   => TasksMeta::class,
+		'wpforms_logs'         => Repository::class,
+	];
 
 	/**
 	 * Primary class constructor.
@@ -33,7 +57,7 @@ class WPForms_Lite {
 	private function hooks() {
 
 		add_action( 'wpforms_install', [ $this, 'install' ] );
-		add_action( 'wpforms_form_settings_notifications', [ $this, 'form_settings_notifications' ], 8, 1 );
+		add_action( 'wpforms_form_settings_notifications', [ $this, 'form_settings_notifications' ], 8 );
 		add_action( 'wpforms_form_settings_confirmations', [ $this, 'form_settings_confirmations' ] );
 		add_action( 'wpforms_builder_enqueues_before', [ $this, 'builder_enqueues' ] );
 		add_action( 'wpforms_admin_page', [ $this, 'entries_page' ] );
@@ -55,11 +79,13 @@ class WPForms_Lite {
 	 *
 	 * @since 1.2.3
 	 *
-	 * @param object $settings
+	 * @param object $settings Settings.
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	public function form_settings_notifications( $settings ) {
+	public function form_settings_notifications( $settings ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
-		$cc         = wpforms_setting( 'email-carbon-copy', false );
+		$cc         = wpforms_setting( 'email-carbon-copy' );
 		$from_email = '{admin_email}';
 		$from_name  = sanitize_text_field( get_option( 'blogname' ) );
 
@@ -340,7 +366,7 @@ class WPForms_Lite {
 				);
 
 				/**
-				 * Fires immediately after notification block on lite version.
+				 * Fires after notification block content on the lite version.
 				 *
 				 * @since 1.7.7
 				 *
@@ -353,7 +379,15 @@ class WPForms_Lite {
 		</div>
 
 		<?php
-		do_action( 'wpforms_builder_settings_notifications_after', 'notifications', $settings );
+		/**
+		 * Fires after settings notification block.
+		 *
+		 * @since 1.5.8
+		 *
+		 * @param string $type     Settings block type.
+		 * @param array  $settings Settings.
+		 */
+		do_action( 'wpforms_builder_settings_notifications_after', 'notifications', $settings ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		// phpcs:disable WPForms.PHP.ValidateHooks.InvalidHookName
 
@@ -430,7 +464,7 @@ class WPForms_Lite {
 	 *
 	 * @param WPForms_Builder_Panel_Settings $settings Builder panel settings.
 	 */
-	public function form_settings_confirmations( $settings ) {
+	public function form_settings_confirmations( $settings ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		wp_enqueue_editor();
 
@@ -571,13 +605,23 @@ class WPForms_Lite {
 		</div>
 
 		<?php
-		do_action( 'wpforms_builder_settings_confirmations_after', 'confirmations', $settings );
+		/**
+		 * Fires after builder settings confirmation block.
+		 *
+		 * @since 1.5.8
+		 *
+		 * @param string $type     Settings block type.
+		 * @param array  $settings Settings.
+		 */
+		do_action( 'wpforms_builder_settings_confirmations_after', 'confirmations', $settings ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 	}
 
 	/**
-	 * Load assets for lite version with the admin builder.
+	 * Load assets for the lite version with the admin builder.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
 	public function builder_enqueues() {
 
@@ -830,8 +874,11 @@ class WPForms_Lite {
 	 * @param array $form_data  Form data.
 	 * @param int   $entry_id   Entry ID.
 	 * @param int   $payment_id Payment ID for the payment form.
+	 *
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function update_entry_count( $fields, $entry, $form_data, $entry_id, $payment_id ) {
+	public function update_entry_count( $fields, $entry, $form_data, $entry_id, $payment_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		if ( ! empty( $form_data['spam_reason'] ) ) {
 			return;
@@ -886,6 +933,9 @@ class WPForms_Lite {
 	 * @param array $form_data  Form data.
 	 * @param int   $entry_id   Entry ID.
 	 * @param int   $payment_id Payment ID for the payment form.
+	 *
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function entry_submit( $fields, $entry, $form_data, $entry_id, $payment_id ) {
 
@@ -907,9 +957,9 @@ class WPForms_Lite {
 
 		// Submit entry args and form data to the Lite Connect API.
 		if (
-			 LiteConnect::is_allowed() &&
-			 LiteConnect::is_enabled() &&
-			 ! empty( $entry_args )
+			! empty( $entry_args ) &&
+			LiteConnect::is_allowed() &&
+			LiteConnect::is_enabled()
 		) {
 			( new LiteConnectIntegration() )->submit( $entry_args, $form_data );
 		}

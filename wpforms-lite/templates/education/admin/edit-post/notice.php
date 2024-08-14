@@ -1,6 +1,6 @@
 <?php
 /**
- * Gutenberg Editor notice for Edit Post Education template for Lite.
+ * Gutenberg Editor notice for Edit Post Education template.
  *
  * @since 1.8.1
  *
