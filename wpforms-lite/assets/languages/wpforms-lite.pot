@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.9.0.3\n"
+"Project-Id-Version: WPForms Lite 1.9.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-08-19T08:24:09+00:00\n"
+"POT-Creation-Date: 2024-08-23T10:22:24+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: wpforms-lite\n"
@@ -5432,7 +5432,7 @@ msgstr ""
 
 #: includes/providers/class-base.php:750
 #: includes/providers/class-base.php:1369
-#: includes/providers/class-constant-contact.php:543
+#: includes/providers/class-constant-contact.php:504
 #: src/Providers/Provider/Settings/FormBuilder.php:509
 #: src/Providers/Provider/Settings/PageIntegrations.php:208
 msgid "Add New Account"
@@ -5523,70 +5523,66 @@ msgstr ""
 msgid "Please fill out all of the fields below to add your new provider account."
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:450
-msgid "API list error: Constant API error"
-msgstr ""
-
-#: includes/providers/class-constant-contact.php:546
+#: includes/providers/class-constant-contact.php:507
 msgid "Please fill out all of the fields below to register your new Constant Contact account."
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:549
-#: includes/providers/class-constant-contact.php:688
+#: includes/providers/class-constant-contact.php:510
+#: includes/providers/class-constant-contact.php:649
 msgid "Click here for documentation on connecting WPForms with Constant Contact."
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:554
-#: includes/providers/class-constant-contact.php:693
+#: includes/providers/class-constant-contact.php:515
+#: includes/providers/class-constant-contact.php:654
 msgid "Because Constant Contact requires external authentication, you will need to register WPForms with Constant Contact before you can proceed."
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:560
-#: includes/providers/class-constant-contact.php:699
+#: includes/providers/class-constant-contact.php:521
+#: includes/providers/class-constant-contact.php:660
 msgid "Click here to register with Constant Contact"
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:569
-#: includes/providers/class-constant-contact.php:708
+#: includes/providers/class-constant-contact.php:530
+#: includes/providers/class-constant-contact.php:669
 msgid "Authorization Code"
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:575
-#: includes/providers/class-constant-contact.php:714
+#: includes/providers/class-constant-contact.php:536
+#: includes/providers/class-constant-contact.php:675
 msgid "Account Nickname"
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:581
+#: includes/providers/class-constant-contact.php:542
 msgid "Connect"
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:623
-#: includes/providers/class-constant-contact.php:774
+#: includes/providers/class-constant-contact.php:584
+#: includes/providers/class-constant-contact.php:735
 msgid "Try Constant Contact for Free"
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:631
+#: includes/providers/class-constant-contact.php:592
 msgid "Learn more about the power of email marketing."
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:662
+#: includes/providers/class-constant-contact.php:623
 msgid "The \"Authorization Code\" is required."
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:670
+#: includes/providers/class-constant-contact.php:631
 msgid "The \"Account Nickname\" is required."
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:765
+#: includes/providers/class-constant-contact.php:726
 msgid "Get the most out of the <strong>WPForms</strong> plugin &mdash; use it with an active Constant Contact account."
 msgstr ""
 
-#: includes/providers/class-constant-contact.php:777
+#: includes/providers/class-constant-contact.php:738
 msgid "Connect your existing account"
 msgstr ""
 
 #. translators: %s - WPForms Constant Contact internal URL.
-#: includes/providers/class-constant-contact.php:782
+#: includes/providers/class-constant-contact.php:743
 msgid "Learn More about the <a href=\"%s\">power of email marketing</a>"
 msgstr ""
 

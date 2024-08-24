@@ -1,8 +1,11 @@
 == Changelog ==
+= 1.9.0.4 =
+- Fixed: Unable to send a form with Constant Contact integration and fatal errors in the admin.
+
 = 1.9.0.3 =
-- Compatibility issues with menus and popups on Elementor.
-- A fatal error with wp_remote_retrieve_headers occurred in CacheBase.php in some cases.
-- Compatibility with the Jetpack Boost plugin.
+- Fixed: Compatibility issues with menus and popups on Elementor.
+- Fixed: A fatal error with wp_remote_retrieve_headers occurred in CacheBase.php in some cases.
+- Fixed: Compatibility with the Jetpack Boost plugin.
 
 = 1.9.0.2 =
 - Added: Modern Antispam protection for new forms.
