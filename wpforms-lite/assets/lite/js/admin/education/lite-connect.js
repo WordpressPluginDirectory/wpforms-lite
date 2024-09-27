@@ -69,6 +69,7 @@ WPFormsEducation.liteConnect = window.WPFormsEducation.liteConnect || ( function
 			app.enableLiteConnectButtonClick();
 			app.dismissBuilderTopBarClick();
 			app.autoSaveToggleChange();
+			app.enableLiteConnectAIButtonClick();
 		},
 
 		/**
@@ -144,6 +145,69 @@ WPFormsEducation.liteConnect = window.WPFormsEducation.liteConnect || ( function
 		},
 
 		/**
+		 * Enable Lite Connect button click handler.
+		 *
+		 * @since 1.9.1
+		 */
+		enableLiteConnectAIButtonClick() {
+			$( document ).on(
+				'click',
+				'.enable-lite-connect-modal',
+				app.handleLiteConnectModalClick,
+			);
+		},
+
+		/**
+		 * Finalize the Lite Connect keys setup.
+		 *
+		 * @since 1.9.1
+		 *
+		 * @return {jQuery} AJAX request deferred object.
+		 */
+		finalizeLiteConnectSetup() {
+			return $.get( wpforms_education_lite_connect.ajax_url, {
+				action: 'wpforms_lite_connect_finalize',
+				nonce: wpforms_education_lite_connect.nonce,
+			} );
+		},
+
+		/**
+		 * Handle Lite Connect modal click.
+		 *
+		 * @since 1.9.1
+		 *
+		 * @param {Event} event Event object.
+		 */
+		handleLiteConnectModalClick( event ) {
+			event.preventDefault();
+
+			app.openAILiteConnectEnableModal(
+				function() {
+					app.saveSettingAjaxPost( true, $(), function() {
+						app.switchSettingView( true, $( '#wpforms-builder-lite-connect-top-bar .wpforms-toggle-control' ) );
+
+						// Finalize the Lite Connect keys setup.
+						app.finalizeLiteConnectSetup()
+							.done( () => {
+								app.removeLiteConnectModalOnAIButtons();
+							} );
+					} );
+				}
+			);
+		},
+
+		/**
+		 * Remove Lite Connect modal on AI buttons.
+		 *
+		 * @since 1.9.1
+		 */
+		removeLiteConnectModalOnAIButtons() {
+			$( '.enable-lite-connect-modal.wpforms-ai-modal-disabled' ).each( function() {
+				$( this ).removeClass( 'enable-lite-connect-modal wpforms-ai-modal-disabled' );
+			} );
+		},
+
+		/**
 		 * Enable Lite Connect button modal confirm Callback.
 		 *
 		 * @since 1.7.4
@@ -180,23 +244,63 @@ WPFormsEducation.liteConnect = window.WPFormsEducation.liteConnect || ( function
 		 * @param {Function} confirmCallback Confirm button action.
 		 */
 		openSettingsLiteConnectEnableModal( confirmCallback ) {
+			const $args = {
+				content: wp.template( 'wpforms-settings-lite-connect-modal-content' )(),
+				confirm: {
+					text: wpforms_education_lite_connect.enable_modal.confirm,
+					callback: confirmCallback,
+				},
+			};
+
+			app.enableModal( $args );
+		},
+
+		/**
+		 * AI features enable information modal.
+		 *
+		 * @since 1.9.1
+		 *
+		 * @param {Function} confirmCallback Confirm button action.
+		 */
+		openAILiteConnectEnableModal( confirmCallback ) {
+			const $args = {
+				content: wp.template( 'wpforms-builder-ai-lite-connect-modal-content' )(),
+				confirm: {
+					text: wpforms_education_lite_connect.enable_ai.confirm,
+					callback: confirmCallback,
+				},
+				theme: 'modern, ai-modal',
+			};
+
+			// eslint-disable-next-line camelcase
+			wpforms_education_lite_connect.update_result.enabled_title = wpforms_education_lite_connect.enable_ai.enabled_title;
+
+			app.enableModal( $args );
+		},
+
+		/**
+		 * Render Enable modal.
+		 *
+		 * @param {Object} $args Modal arguments.
+		 */
+		enableModal( $args ) {
 			$.alert( {
 				title: false,
-				content: wp.template( 'wpforms-settings-lite-connect-modal-content' )(),
+				content: $args.content,
 				icon: false,
 				type: 'orange',
-				boxWidth: '550px',
-				theme: 'modern',
+				boxWidth: 550,
+				theme: $args.theme || 'modern',
 				useBootstrap: false,
 				scrollToPreviousElement: false,
 				buttons: {
 					confirm: {
-						text: wpforms_education_lite_connect.enable_modal.confirm,
+						text: $args.confirm.text,
 						btnClass: 'btn-confirm',
 						keys: [ 'enter' ],
 						action() {
-							if ( typeof confirmCallback === 'function' ) {
-								confirmCallback();
+							if ( typeof $args.confirm.callback === 'function' ) {
+								$args.confirm.callback();
 							}
 
 							// Maybe close Challenge popup.
@@ -322,6 +426,10 @@ WPFormsEducation.liteConnect = window.WPFormsEducation.liteConnect || ( function
 
 					app.saveSettingAjaxPost( isEnabled, $toggle, function() {
 						app.switchSettingView( isEnabled, $toggle );
+						app.removeLiteConnectModalOnAIButtons();
+
+						// Finalize the Lite Connect keys setup.
+						app.finalizeLiteConnectSetup();
 					} );
 				}
 			);

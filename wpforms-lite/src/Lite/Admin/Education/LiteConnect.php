@@ -81,6 +81,7 @@ class LiteConnect implements Education\EducationInterface {
 
 		// Ajax action.
 		add_action( 'wp_ajax_wpforms_update_lite_connect_enabled_setting', [ $this, 'ajax_update_lite_connect_enabled_setting' ] );
+		add_action( 'wp_ajax_wpforms_lite_connect_finalize', [ $this, 'ajax_lite_connect_finalize' ] );
 
 		// Content filters.
 		add_filter( 'wpforms_lite_admin_dashboard_widget_content_html_chart_block_before', [ $this, 'dashboard_widget_before_content' ] );
@@ -112,7 +113,7 @@ class LiteConnect implements Education\EducationInterface {
 	private function is_embed_page() {
 
 		if ( function_exists( 'get_current_screen' ) ) {
-			return wpforms()->get( 'challenge' )->is_form_embed_page();
+			return wpforms()->obj( 'challenge' )->is_form_embed_page();
 		}
 
 		global $pagenow;
@@ -201,6 +202,11 @@ class LiteConnect implements Education\EducationInterface {
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo wpforms_render( 'education/lite-connect-modal' );
+
+		if ( wpforms_is_admin_page( 'builder' ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wpforms_render( 'education/builder/lite-connect/ai-modal' );
+		}
 	}
 
 	/**
@@ -219,6 +225,10 @@ class LiteConnect implements Education\EducationInterface {
 			'enable_modal'  => [
 				'confirm' => esc_html__( 'Enable Entry Backups', 'wpforms-lite' ),
 				'cancel'  => esc_html__( 'No Thanks', 'wpforms-lite' ),
+			],
+			'enable_ai'     => [
+				'confirm'       => esc_html__( 'Enable AI Features', 'wpforms-lite' ),
+				'enabled_title' => esc_html__( 'AI Features Enabled', 'wpforms-lite' ),
 			],
 			'disable_modal' => [
 				'title'   => esc_html__( 'Are you sure?', 'wpforms-lite' ),
@@ -386,11 +396,11 @@ class LiteConnect implements Education\EducationInterface {
 	}
 
 	/**
-	 * AJAX action: update Lite Connect Enabled setting.
+	 * AJAX checks.
 	 *
-	 * @since 1.7.4
+	 * @since 1.9.1
 	 */
-	public function ajax_update_lite_connect_enabled_setting() {
+	private function ajax_checks() {
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-lite-connect-toggle', 'nonce' );
@@ -399,11 +409,21 @@ class LiteConnect implements Education\EducationInterface {
 		if ( ! wpforms_current_user_can( wpforms_get_capability_manage_options() ) ) {
 			wp_send_json_error( esc_html__( 'You do not have permission.', 'wpforms-lite' ) );
 		}
+	}
+
+	/**
+	 * AJAX action: update Lite Connect Enabled setting.
+	 *
+	 * @since 1.7.4
+	 */
+	public function ajax_update_lite_connect_enabled_setting() {
+
+		$this->ajax_checks();
 
 		$slug = LiteConnectClass::SETTINGS_SLUG;
 
 		$settings          = get_option( 'wpforms_settings', [] );
-		$settings[ $slug ] = ! empty( $_POST['value'] );
+		$settings[ $slug ] = ! empty( $_POST['value'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 		wpforms_update_settings( $settings );
 
@@ -421,5 +441,21 @@ class LiteConnect implements Education\EducationInterface {
 		( new LiteConnectIntegration() )->update_keys(); // First request here.
 
 		wp_send_json_success( $this->get_lite_connect_entries_since_info() );
+	}
+
+	/**
+	 * AJAX action: Finalize Lite Connect setup.
+	 *
+	 * @since 1.9.1
+	 */
+	public function ajax_lite_connect_finalize() {
+
+		$this->ajax_checks();
+
+		if ( $this->is_enabled ) {
+			( new LiteConnectIntegration() )->update_keys(); // Simulate third request.
+		}
+
+		wp_send_json_success();
 	}
 }

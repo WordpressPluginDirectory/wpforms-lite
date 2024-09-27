@@ -55,7 +55,7 @@ class SendEntryTask extends Integration {
 	 */
 	public function create( $form_id, $entry_data ) {
 
-		$action_id = wpforms()->get( 'tasks' )
+		$action_id = wpforms()->obj( 'tasks' )
 			->create( self::LITE_CONNECT_TASK )
 			->params( $form_id, $entry_data )
 			->once( time() + wp_rand( 10, 60 ) * MINUTE_IN_SECONDS )

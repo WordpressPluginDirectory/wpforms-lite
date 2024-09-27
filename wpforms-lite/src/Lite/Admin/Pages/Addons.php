@@ -69,7 +69,8 @@ class Addons {
 			'listjs',
 			WPFORMS_PLUGIN_URL . 'assets/lib/list.min.js',
 			[ 'jquery' ],
-			'1.5.0'
+			'1.5.0',
+			false
 		);
 	}
 
@@ -107,7 +108,7 @@ class Addons {
 	 */
 	public function output() {
 
-		$addons = wpforms()->get( 'addons' )->get_all();
+		$addons = wpforms()->obj( 'addons' )->get_all();
 
 		if ( empty( $addons ) ) {
 			return;

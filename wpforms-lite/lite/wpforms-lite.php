@@ -841,9 +841,9 @@ class WPForms_Lite {
 	 */
 	public function addon_page_enqueues() {
 
-		_deprecated_function( __METHOD__, '1.6.7 of the WPForms plugin', "wpforms()->get( 'addons_page' )->enqueues()" );
+		_deprecated_function( __METHOD__, '1.6.7 of the WPForms plugin', "wpforms()->obj( 'addons_page' )->enqueues()" );
 
-		wpforms()->get( 'addons_page' )->enqueues();
+		wpforms()->obj( 'addons_page' )->enqueues();
 	}
 
 	/**
@@ -854,13 +854,13 @@ class WPForms_Lite {
 	 */
 	public function addons_page() {
 
-		_deprecated_function( __METHOD__, '1.6.7 of the WPForms plugin', "wpforms()->get( 'addons_page' )->output()" );
+		_deprecated_function( __METHOD__, '1.6.7 of the WPForms plugin', "wpforms()->obj( 'addons_page' )->output()" );
 
 		if ( ! wpforms_is_admin_page( 'addons' ) ) {
 			return;
 		}
 
-		wpforms()->get( 'addons_page' )->output();
+		wpforms()->obj( 'addons_page' )->output();
 	}
 
 	/**
@@ -911,7 +911,7 @@ class WPForms_Lite {
 			return;
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
 			$wpdb->prepare(
 				"UPDATE $wpdb->postmeta
@@ -939,7 +939,7 @@ class WPForms_Lite {
 	 */
 	public function entry_submit( $fields, $entry, $form_data, $entry_id, $payment_id ) {
 
-		$submission = wpforms()->get( 'submission' );
+		$submission = wpforms()->obj( 'submission' );
 
 		$submission->register( $fields, $entry, $form_data['id'], $form_data );
 

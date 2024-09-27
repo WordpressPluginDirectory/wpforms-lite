@@ -58,7 +58,6 @@ class Summaries extends BaseSummaries {
 			return;
 		}
 
-		add_filter( 'cron_schedules', [ $this, 'weekly_entries_count' ] ); // phpcs:ignore
 		add_action( 'wpforms_weekly_entries_count_cron', [ $this, 'entries_count_cron' ] );
 	}
 
@@ -67,7 +66,8 @@ class Summaries extends BaseSummaries {
 	 *
 	 * This function modifies the Lite weekly entries count cron schedule by reducing the interval by 5 seconds.
 	 *
-	 * @since 1.8.8
+	 * @since      1.8.8
+	 * @deprecated 1.9.1
 	 *
 	 * @param array $schedules WP cron schedules.
 	 *
@@ -75,8 +75,10 @@ class Summaries extends BaseSummaries {
 	 */
 	public function weekly_entries_count( $schedules ) {
 
+		_deprecated_function( __METHOD__, '1.9.1 of the WPForms plugin' );
+
 		$schedules['wpforms_weekly_entries_count'] = [
-			'interval' => $this->get_weekly_entries_count_interval() - time(),
+			'interval' => $this->get_next_launch_time() - time(),
 			'display'  => esc_html__( 'Calculate WPForms Lite Weekly Entries Count', 'wpforms-lite' ),
 		];
 
@@ -159,34 +161,36 @@ class Summaries extends BaseSummaries {
 	 */
 	private function register_entries_count_schedule() {
 
-		// Leave early if WPForms Pro is active, and clear the schedule if it exists.
 		if ( ! $this->allow_entries_count_lite && wp_next_scheduled( 'wpforms_weekly_entries_count_cron' ) ) {
 			wp_clear_scheduled_hook( 'wpforms_weekly_entries_count_cron' );
 
 			return;
 		}
 
-		// Register the schedule if it doesn't exist.
 		if ( $this->allow_entries_count_lite && ! wp_next_scheduled( 'wpforms_weekly_entries_count_cron' ) ) {
-			wp_schedule_event( $this->get_weekly_entries_count_interval(), 'wpforms_weekly_entries_count', 'wpforms_weekly_entries_count_cron' );
+			// Since v1.9.1 we use a single event and manually reoccur it
+			// because a recurring event cannot guarantee
+			// its firing at the same time during WP_CLI execution.
+			wp_schedule_single_event( $this->get_next_launch_time(), 'wpforms_weekly_entries_count_cron' );
 		}
 	}
 
 	/**
-	 * Get the interval for the Lite weekly entries count cron schedule.
+	 * Get next Monday midnight with WordPress offset.
 	 *
-	 * This function calculates the interval for the Lite weekly entries count cron schedule.
-	 * It goes back 14 hours from the timestamp of the next Monday at 2pm.
-	 *
-	 * @since 1.8.8
+	 * @since 1.9.1
 	 *
 	 * @return int
 	 */
-	private function get_weekly_entries_count_interval(): int {
+	private function get_next_launch_time(): int {
 
-		$interval = strtotime( 'next monday 2pm' ) - 14 * HOUR_IN_SECONDS;
+		$datetime = date_create( 'next monday', wp_timezone() );
 
-		return absint( $interval - ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) );
+		if ( ! $datetime ) {
+			return time() + WEEK_IN_SECONDS;
+		}
+
+		return absint( $datetime->getTimestamp() );
 	}
 
 	/**
