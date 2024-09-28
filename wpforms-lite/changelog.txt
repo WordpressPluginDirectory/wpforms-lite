@@ -1,4 +1,7 @@
 == Changelog ==
+= 1.9.1.2 =
+- Fixed: There was a conflict with the WooCommerce Subscriptions plugin.
+
 = 1.9.1.1 =
 - Added: State-of-the-art generative AI can help to build forms even faster.
 - Added: New supported currencies.

@@ -127,28 +127,7 @@ class ErrorHandler {
 			E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED
 		);
 
-		$this->set_error_handler();
-		$this->hooks();
-	}
-
-	/**
-	 * Add hooks.
-	 *
-	 * @since 1.9.1
-	 */
-	private function hooks() {
-
-		add_action( 'action_scheduler_before_execute', [ $this, 'set_error_handler' ], 1000 );
-	}
-
-	/**
-	 * Set error handler and save original.
-	 * To chain error handlers, we must not specify the second argument and catch all errors in our handler.
-	 *
-	 * @since 1.9.1
-	 */
-	public function set_error_handler() {
-
+		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
 	}
