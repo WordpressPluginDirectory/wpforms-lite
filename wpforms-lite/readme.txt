@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.6
-Stable tag: 1.9.1.2
+Stable tag: 1.9.1.3
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -171,8 +171,8 @@ WPForms&reg; is a registered trademark of WPForms LLC. When writing about the co
 
 1. WPForms Drag & Drop Form Builder
 2. Adding New Fields
-3. Form Templates
-4. Generate choices using AI
+3. Generate choices using AI
+4. Form Templates
 5. WPForms Block With Style Options
 6. Payments Overview
 7. Single Payment
@@ -375,6 +375,10 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.1.3 =
+- Fixed: HTML tags didn't work in an agreement text of the GDPR field when a field's label was hidden.
+- Fixed: HTML tags in choices of the Checkboxes, Multiple Choice, and Dropdown fields were escaped and didn't work as expected.
 
 = 1.9.1.2 =
 - Fixed: There was a conflict with the WooCommerce Subscriptions plugin.
