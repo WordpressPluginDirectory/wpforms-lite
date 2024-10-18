@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.6
-Stable tag: 1.9.1.3
+Stable tag: 1.9.1.4
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -375,6 +375,9 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.1.4 =
+- Fixed: Multiple sending of weekly summary emails.
 
 = 1.9.1.3 =
 - Fixed: HTML tags didn't work in an agreement text of the GDPR field when a field's label was hidden.

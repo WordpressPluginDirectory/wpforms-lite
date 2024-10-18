@@ -182,7 +182,7 @@ class Summaries extends BaseSummaries {
 	 *
 	 * @return int
 	 */
-	private function get_next_launch_time(): int {
+	protected function get_next_launch_time(): int {
 
 		$datetime = date_create( 'next monday', wp_timezone() );
 
