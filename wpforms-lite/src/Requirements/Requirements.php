@@ -260,6 +260,9 @@ class Requirements {
 		'wpforms-signatures/wpforms-signatures.php'                     => [
 			self::EXT     => 'gd',
 		],
+		'wpforms-slack/wpforms-slack.php'                               => [
+			self::LICENSE => self::PLUS_PRO_AND_TOP,
+		],
 		'wpforms-square/wpforms-square.php'                             => [
 			self::PHP => '7.2',
 		],

@@ -242,6 +242,7 @@ class Help {
 			'providers/zapier'                        => 'zapier',
 			'providers/salesforce'                    => 'salesforce',
 			'providers/sendinblue'                    => 'sendinblue',
+			'providers/slack'                         => 'slack',
 			'providers/hubspot'                       => 'hubspot',
 			'payments'                                => '',
 			'payments/paypal_commerce'                => 'paypal commerce',
@@ -1203,6 +1204,9 @@ class Help {
 			],
 			'sendinblue'                => [
 				'/docs/how-to-install-and-use-the-sendinblue-addon-with-wpforms/',
+			],
+			'slack'                     => [
+				'/docs/slack-addon',
 			],
 			'hubspot'                   => [
 				'/docs/how-to-install-and-use-the-hubspot-addon-in-wpforms/',

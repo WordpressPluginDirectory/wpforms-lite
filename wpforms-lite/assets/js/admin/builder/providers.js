@@ -464,7 +464,7 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 							title: wpforms_builder.heads_up,
 							content: msg.replace( '{provider}', '<strong>' + $titleArea.text().trim() + '</strong>' ),
 							icon: 'fa fa-exclamation-circle',
-							type: 'orange',
+							type: 'red',
 							buttons: {
 								confirm: {
 									text: wpforms_builder.ok,

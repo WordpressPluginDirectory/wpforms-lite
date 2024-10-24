@@ -795,7 +795,7 @@ class WPForms_Builder {
 			'payments_on_entries_off'                 => esc_html__( 'This form is currently accepting payments. Entry storage is required to accept payments. To disable entry storage, please first disable payments.', 'wpforms-lite' ),
 			'previous'                                => esc_html__( 'Previous', 'wpforms-lite' ),
 			'provider_required_flds'                  => sprintf( /* translators: %s - marketing integration name. */
-				esc_html__( "In order to complete your form's %s integration, please check that the dropdowns for all required (*) List Fields have been filled out.", 'wpforms-lite' ),
+				esc_html__( 'In order to complete your form\'s %s integration, please check that all required (*) fields have been filled out.', 'wpforms-lite' ),
 				'{provider}'
 			),
 			'rule_create'                             => esc_html__( 'Create new rule', 'wpforms-lite' ),
