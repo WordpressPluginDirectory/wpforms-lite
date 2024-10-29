@@ -1922,7 +1922,8 @@ class Frontend {
 				continue;
 			}
 
-			$strings[ $key ] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8' );
+			$strings[ $key ] = esc_html( html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8' ) );
+
 		}
 
 		return $strings;

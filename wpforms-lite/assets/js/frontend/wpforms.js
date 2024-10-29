@@ -3420,9 +3420,11 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			$.each( errors, function( type, html ) {
 				switch ( type ) {
 					case 'header':
+					case 'header_styled':
 						handleHeaderError( html );
 						break;
 					case 'footer':
+					case 'footer_styled':
 						handleFooterError( html );
 						break;
 					case 'recaptcha':

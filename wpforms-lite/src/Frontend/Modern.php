@@ -75,6 +75,19 @@ class Modern extends Classic {
 				);
 				break;
 
+			case 'header_styled':
+			case 'footer_styled':
+				printf(
+					'<div id="wpforms-%1$s-%2$s-error" class="wpforms-error-container wpforms-error-styled-container" role="alert">
+						<div class="wpforms-error"><span class="wpforms-hidden" aria-hidden="false">%3$s</span>%4$s</div>
+					</div>',
+					esc_attr( $this->form_data['id'] ),
+					esc_attr( $type ),
+					esc_html__( 'Form error message', 'wpforms-lite' ),
+					wpautop( wpforms_sanitize_error( $error ) ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				);
+				break;
+
 			case 'recaptcha':
 				printf(
 					'<em id="wpforms-field_recaptcha-error" class="wpforms-error" role="alert">

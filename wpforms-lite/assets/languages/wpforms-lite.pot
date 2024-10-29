@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.9.1.5\n"
+"Project-Id-Version: WPForms Lite 1.9.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-21T17:17:53+00:00\n"
+"POT-Creation-Date: 2024-10-25T18:22:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: wpforms-lite\n"
@@ -756,7 +756,7 @@ msgid "Select your column"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:761
-#: src/Frontend/Classic.php:382
+#: src/Frontend/Classic.php:389
 msgid "Loading"
 msgstr ""
 
@@ -2645,7 +2645,7 @@ msgstr ""
 
 #: includes/admin/class-settings.php:547
 #: src/Forms/Fields/PaymentTotal/Field.php:356
-#: src/Frontend/Frontend.php:1953
+#: src/Frontend/Frontend.php:1954
 msgid "Payment is required."
 msgstr ""
 
@@ -2654,7 +2654,7 @@ msgid "Credit Card"
 msgstr ""
 
 #: includes/admin/class-settings.php:553
-#: src/Frontend/Frontend.php:1954
+#: src/Frontend/Frontend.php:1955
 msgid "Please enter a valid credit card number."
 msgstr ""
 
@@ -2968,7 +2968,7 @@ msgid "New Entry: %s"
 msgstr ""
 
 #: includes/class-form.php:598
-#: includes/class-process.php:1296
+#: includes/class-process.php:1297
 #: includes/templates/class-simple-contact-form.php:73
 #: lite/wpforms-lite.php:474
 #: lite/wpforms-lite.php:536
@@ -3015,51 +3015,55 @@ msgid "Error ID: %s."
 msgstr ""
 
 #: includes/class-process.php:396
-#: includes/class-process.php:555
-#: includes/class-process.php:1461
+#: includes/class-process.php:556
+#: includes/class-process.php:1462
 msgid "Form has not been submitted, please see the errors below."
 msgstr ""
 
-#: includes/class-process.php:664
+#: includes/class-process.php:420
+msgid "The form could not be submitted due to a security issue."
+msgstr ""
+
+#: includes/class-process.php:665
 msgid "Anti-spam Honeypot V2 verification was failed, please try again later."
 msgstr ""
 
-#: includes/class-process.php:722
+#: includes/class-process.php:723
 msgid "Direct POST requests are not allowed when the AJAX submission is enabled."
 msgstr ""
 
-#: includes/class-process.php:724
+#: includes/class-process.php:725
 msgid "Direct POST request"
 msgstr ""
 
-#: includes/class-process.php:848
+#: includes/class-process.php:849
 msgid "Please wait a little longer before submitting. We’re running a quick security check."
 msgstr ""
 
-#: includes/class-process.php:917
+#: includes/class-process.php:918
 msgid "Akismet"
 msgstr ""
 
 #. translators: %s - The CAPTCHA provider name.
-#: includes/class-process.php:980
+#: includes/class-process.php:981
 msgid "%s verification failed, please try again later."
 msgstr ""
 
-#: includes/class-process.php:1195
+#: includes/class-process.php:1196
 msgid "Uploaded files combined size exceeds allowed maximum."
 msgstr ""
 
-#: includes/class-process.php:1379
+#: includes/class-process.php:1380
 msgid "Redirecting…"
 msgstr ""
 
 #. translators: %1$.3f - total size of the selected files in megabytes, %2$.3f - allowed file upload limit in megabytes.
-#: includes/class-process.php:1463
+#: includes/class-process.php:1464
 msgid "The total size of the selected files %1$.3f MB exceeds the allowed limit %2$.3f MB."
 msgstr ""
 
 #. translators: %s - form name.
-#: includes/class-process.php:1565
+#: includes/class-process.php:1566
 #: lite/wpforms-lite.php:123
 msgid "New %s Entry"
 msgstr ""
@@ -9461,29 +9465,30 @@ msgid "Country list"
 msgstr ""
 
 #. translators: %s - URL to the troubleshooting guide.
-#: src/Frontend/Frontend.php:2148
+#: src/Frontend/Frontend.php:2149
 msgid "Heads up! WPForms has detected an issue with JavaScript on this page. JavaScript is required for this form to work properly, so this form may not work as expected. See our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">troubleshooting guide</a> to learn more or contact support."
 msgstr ""
 
-#: src/Frontend/Frontend.php:2161
+#: src/Frontend/Frontend.php:2162
 msgid "This message is only displayed to site administrators."
 msgstr ""
 
 #: src/Frontend/Modern.php:73
-#: src/Frontend/Modern.php:277
+#: src/Frontend/Modern.php:86
+#: src/Frontend/Modern.php:290
 msgid "Form error message"
 msgstr ""
 
-#: src/Frontend/Modern.php:83
+#: src/Frontend/Modern.php:96
 msgid "Recaptcha error message"
 msgstr ""
 
-#: src/Frontend/Modern.php:231
-#: src/Frontend/Modern.php:278
+#: src/Frontend/Modern.php:244
+#: src/Frontend/Modern.php:291
 msgid "Error message"
 msgstr ""
 
-#: src/Frontend/Modern.php:279
+#: src/Frontend/Modern.php:292
 msgid "Submit button is disabled during form submission."
 msgstr ""
 

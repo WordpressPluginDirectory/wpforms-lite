@@ -417,7 +417,8 @@ class WPForms_Process {
 				]
 			);
 
-			// Fail silently.
+			$this->errors[ $this->form_data['id'] ]['footer_styled'] = esc_html__( 'The form could not be submitted due to a security issue.', 'wpforms-lite' );
+
 			return;
 		}
 
@@ -1803,7 +1804,7 @@ class WPForms_Process {
 		}
 
 		// General errors are errors that cannot be populated with jQuery Validate plugin.
-		$general_errors = array_intersect_key( $errors, array_flip( [ 'header', 'footer', 'recaptcha' ] ) );
+		$general_errors = array_intersect_key( $errors, array_flip( [ 'header', 'footer', 'header_styled', 'footer_styled', 'recaptcha' ] ) );
 
 		foreach ( $general_errors as $key => $error ) {
 			ob_start();

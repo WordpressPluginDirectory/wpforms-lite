@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.6
-Stable tag: 1.9.1.5
+Stable tag: 1.9.1.6
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -376,6 +376,11 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.1.6 =
+- Fixed: The Dropdown field placeholder was disabled on the Divi Builder preview screen.
+- Fixed: When sending a form with an incorrect nonce field, no error was displayed.
+- Fixed: An extra field was displayed when a form was embedded using a shortcode in the Footer.
 
 = 1.9.1.5 =
 - Fixed: PHP warnings appeared with WordPress widgets.
