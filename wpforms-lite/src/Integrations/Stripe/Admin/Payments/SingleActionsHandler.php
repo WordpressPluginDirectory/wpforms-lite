@@ -190,7 +190,7 @@ class SingleActionsHandler {
 
 		$message = sprintf(
 			wp_kses( /* translators: %s - Payments settings page URL. */
-				__( "The used Stripe payment collection type doesn't support this action.<br><br> Please <a href='%s'>update your payment collection type</a> to continue processing payments successfully." ),
+				__( "The used Stripe payment collection type doesn't support this action.<br><br> Please <a href='%s'>update your payment collection type</a> to continue processing payments successfully.", 'wpforms-lite' ),
 				[
 					'br' => [],
 					'a'  => [

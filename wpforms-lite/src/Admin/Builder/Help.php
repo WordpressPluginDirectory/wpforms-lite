@@ -268,16 +268,19 @@ class Help {
 				'/docs/creating-first-form/',
 				'/docs/how-to-choose-the-right-form-field-for-your-forms/',
 				'/docs/how-to-customize-the-submit-button/',
+				'/docs/generating-forms-with-wpforms-ai/',
 			],
 			'new form'                  => [
 				'/docs/creating-first-form/',
 				'/docs/how-to-choose-the-right-form-field-for-your-forms/',
 				'/docs/how-to-customize-the-submit-button/',
+				'/docs/generating-forms-with-wpforms-ai/',
 			],
 			'create form'               => [
 				'/docs/creating-first-form/',
 				'/docs/how-to-choose-the-right-form-field-for-your-forms/',
 				'/docs/how-to-customize-the-submit-button/',
+				'/docs/generating-forms-with-wpforms-ai/',
 			],
 			'form template'             => [
 				'/docs/how-to-create-a-custom-form-template/',
@@ -1259,6 +1262,7 @@ class Help {
 			],
 			'ai'                        => [
 				'/docs/generating-form-choices-with-wpforms-ai/',
+				'/docs/generating-forms-with-wpforms-ai/',
 			],
 		];
 	}

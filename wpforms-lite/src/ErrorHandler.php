@@ -40,11 +40,21 @@ class ErrorHandler {
 	private $levels;
 
 	/**
+	 * Whether the error handler is handling an error.
+	 *
+	 * @since 1.9.2
+	 *
+	 * @var bool
+	 */
+	private $handling = false;
+
+	/**
 	 * Init class.
 	 *
 	 * @since 1.8.5
 	 *
 	 * @noinspection PhpUndefinedConstantInspection
+	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	public function init() {
 
@@ -53,8 +63,10 @@ class ErrorHandler {
 		}
 
 		$this->dirs = [
+			// WPForms.
 			WPFORMS_PLUGIN_DIR . 'vendor/',
 			WPFORMS_PLUGIN_DIR . 'vendor_prefixed/',
+			// Addons.
 			WP_PLUGIN_DIR . '/wpforms-activecampaign/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-authorize-net/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-aweber/deprecated/',
@@ -62,8 +74,9 @@ class ErrorHandler {
 			WP_PLUGIN_DIR . '/wpforms-calculations/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-campaign-monitor/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-captcha/vendor/',
-			WP_PLUGIN_DIR . '/wpforms-clear-cache/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-conversational-forms/vendor/',
+			WP_PLUGIN_DIR . '/wpforms-convertkit/vendor/',
+			WP_PLUGIN_DIR . '/wpforms-convertkit/vendor_prefixed/',
 			WP_PLUGIN_DIR . '/wpforms-coupons/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-drip/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-e2e-helpers/vendor/',
@@ -103,17 +116,11 @@ class ErrorHandler {
 		 */
 		$this->dirs = (array) apply_filters( 'wpforms_error_handler_dirs', $this->dirs );
 
+		$this->normalize_dirs();
+
 		if ( ! $this->dirs ) {
 			return;
 		}
-
-		$this->dirs = array_map(
-			static function ( $dir ) {
-
-				return str_replace( DIRECTORY_SEPARATOR, '/', $dir );
-			},
-			$this->dirs
-		);
 
 		/**
 		 * Allow modifying the levels of messages to suppress.
@@ -127,9 +134,64 @@ class ErrorHandler {
 			E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED
 		);
 
-		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
+		$this->set_error_handler();
+		$this->hooks();
+	}
+
+	/**
+	 * Add hooks.
+	 *
+	 * @since 1.9.1
+	 */
+	private function hooks() {
+
+		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
+		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
+	}
+
+	/**
+	 * Set error handler and save original.
+	 * To chain error handlers, we must not specify the second argument and catch all errors in our handler.
+	 *
+	 * @since 1.9.1
+	 */
+	public function set_error_handler() {
+
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
+	}
+
+	/**
+	 * The 'plugins_loaded' hook.
+	 *
+	 * @since 0.32
+	 *
+	 * @return void
+	 */
+	public function plugins_loaded() {
+
+		// Constants of plugins that destroy an error handler chain.
+		$constants = [
+			'QM_VERSION', // Query Monitor.
+			'AUTOMATOR_PLUGIN_VERSION', // Uncanny Automator.
+		];
+
+		$found = false;
+
+		foreach ( $constants as $constant ) {
+			if ( defined( $constant ) ) {
+				$found = true;
+
+				break;
+			}
+		}
+
+		if ( ! $found ) {
+			return;
+		}
+
+		// Set this error handler after loading a plugin to chain its error handler.
+		$this->set_error_handler();
 	}
 
 	/**
@@ -147,27 +209,73 @@ class ErrorHandler {
 	 */
 	public function error_handler( int $level, string $message, string $file, int $line ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
-		if ( ( $level & $this->levels ) === 0 ) {
-			// Use standard error handler.
-			return $this->previous_error_handler === null ?
-				false :
-				// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
-				(bool) call_user_func_array( $this->previous_error_handler, func_get_args() );
+		if ( $this->handling ) {
+			$this->handling = false;
+
+			// Prevent infinite recursion and fallback to standard error handler.
+			return false;
 		}
 
+		$this->handling = true;
+
+		if ( ( $level & $this->levels ) === 0 ) {
+			// Not served error level, use fallback error handler.
+			// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
+			return $this->fallback_error_handler( func_get_args() );
+		}
+
+		// Process error.
 		$normalized_file = str_replace( DIRECTORY_SEPARATOR, '/', $file );
 
 		foreach ( $this->dirs as $dir ) {
 			if ( strpos( $normalized_file, $dir ) !== false ) {
+				$this->handling = false;
+
 				// Suppress deprecated errors from this directory.
 				return true;
 			}
 		}
 
-		// Use standard error handler.
+		// Not served directory, use fallback error handler.
+		// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
+		return $this->fallback_error_handler( func_get_args() );
+	}
+
+	/**
+	 * Fallback error handler.
+	 *
+	 * @since 1.9.2
+	 *
+	 * @param array $args Arguments.
+	 *
+	 * @return bool
+	 * @noinspection PhpTernaryExpressionCanBeReplacedWithConditionInspection
+	 */
+	private function fallback_error_handler( array $args ): bool {
+
 		return $this->previous_error_handler === null ?
+			// Use standard error handler.
 			false :
-			// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
-			(bool) call_user_func_array( $this->previous_error_handler, func_get_args() );
+			(bool) call_user_func_array( $this->previous_error_handler, $args );
+	}
+
+	/**
+	 * Normalize dirs.
+	 *
+	 * @since 1.9.2
+	 *
+	 * @return void
+	 */
+	private function normalize_dirs() {
+
+		$this->dirs = array_filter(
+			array_map(
+				static function ( $dir ) {
+
+					return str_replace( DIRECTORY_SEPARATOR, '/', trim( $dir ) );
+				},
+				$this->dirs
+			)
+		);
 	}
 }

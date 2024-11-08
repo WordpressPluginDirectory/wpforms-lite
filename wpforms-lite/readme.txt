@@ -2,8 +2,8 @@
 Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
-Tested up to: 6.6
-Stable tag: 1.9.1.6
+Tested up to: 6.7
+Stable tag: 1.9.2.1
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -82,7 +82,7 @@ Create simple arithmetic calculations or build complex conditional calculations 
 
 With our Form Pages addon, you can create distraction-free custom form landing pages to increase conversions.
 
-To improve form completion rates, we created Conversational Forms&reg; which helps you make your feedback forms feel more human by adding an interactive layout. ([See Conversational Forms Demo](https://wpforms.com/features/conversational-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)).
+To improve form completion rates, we created Conversational Forms which helps you make your feedback forms feel more human by adding an interactive layout. ([See Conversational Forms Demo](https://wpforms.com/features/conversational-forms-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)).
 
 = Easy to Customize and Extend =
 
@@ -376,6 +376,28 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.2.1 =
+- Added: The Settings section in the WPForms admin bar menu.
+- Added: Update Stripe payments status after canceling a refund in the Stripe dashboard.
+- Added: Open the URL in the new tab for Confirmations.
+- Added: New `$row_id` parameter to the `wpforms_pre_update_{$type}` and `wpforms_post_update_{$type}` actions.
+- Added: AI chat warning messages if prohibited code has been removed.
+- Changed: Updated jquery.validate library to 1.21.0.
+- Changed: Updated stripe/stripe-php library to 16.1.0.
+- Changed: Updated DOMPurify library to 3.1.7.
+- Changed: Updated woocommerce/action-scheduler library to 3.8.2.
+- Changed: Updated Chart.js library to v4.4.4.
+- Changed: Smart tags are no longer processed in WordPress builders, such as Gutenberg, Elementor, Divi Builder, etc.
+- Fixed: There was a potential infinite recursion in error handling.
+- Fixed: Improved performance on the Templates page in the Form Builder.
+- Fixed: Field labels were printed in the Order Summary table when the Hide Label option was enabled.
+- Fixed: In some cases, adding a new account in Form Builder did not load the account data correctly.
+- Fixed: Improved translation handling for addon names and descriptions.
+- Fixed: Order Summary performance issue on large forms containing numerous payment conditional logic fields.
+- Fixed: Mapped First/Last Name sub-fields were replaced by another after the initial field was deleted.
+- Fixed: An extra field was displayed when WPForms were embedded using a shortcode in the Footer.
+- Fixed: The non-Latin characters were not supported for the AI Choices prompt.
 
 = 1.9.1.6 =
 - Fixed: The Dropdown field placeholder was disabled on the Divi Builder preview screen.

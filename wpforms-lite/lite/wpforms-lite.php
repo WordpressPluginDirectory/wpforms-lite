@@ -591,6 +591,20 @@ class WPForms_Lite {
 					]
 				);
 
+				wpforms_panel_field(
+					'toggle',
+					'confirmations',
+					'redirect_new_tab',
+					$settings->form_data,
+					esc_html__( 'Open confirmation in new tab', 'wpforms-lite' ),
+					[
+						'input_id'    => 'wpforms-panel-field-confirmations-redirect_new_tab-' . $field_id,
+						'input_class' => 'wpforms-panel-field-confirmations-redirect_new_tab',
+						'parent'      => 'settings',
+						'subsection'  => $field_id,
+					]
+				);
+
 				/**
 				 * Fires after each confirmation to add custom fields.
 				 *
