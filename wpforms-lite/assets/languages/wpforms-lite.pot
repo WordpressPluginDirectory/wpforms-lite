@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.9.2.1\n"
+"Project-Id-Version: WPForms Lite 1.9.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-06T17:45:19+00:00\n"
+"POT-Creation-Date: 2024-11-15T16:43:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: wpforms-lite\n"
@@ -425,6 +425,8 @@ msgstr ""
 #: src/Admin/Builder/Ajax/PanelLoader.php:108
 #: src/Admin/Forms/Ajax/Tags.php:205
 #: src/Admin/Forms/Ajax/Tags.php:245
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:99
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:159
 msgid "You are not allowed to perform this action."
 msgstr ""
 
@@ -10390,44 +10392,44 @@ msgstr ""
 msgid "Missing payment ID."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:105
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:109
 msgid "Payment not found in the database."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:118
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:122
 msgid "Refund failed."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:135
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:139
 msgid "Refund successful."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:138
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:142
 msgid "Saving refund in the database failed."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:151
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:155
 msgid "Payment ID not provided."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:161
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:169
 msgid "Subscription not found in the database."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:167
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:175
 msgid "Subscription cancellation failed."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:171
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:179
 msgid "Subscription cancelled."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:174
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:182
 msgid "Updating subscription in the database failed."
 msgstr ""
 
 #. translators: %s - Payments settings page URL.
-#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:193
+#: src/Integrations/Stripe/Admin/Payments/SingleActionsHandler.php:201
 msgid "The used Stripe payment collection type doesn't support this action.<br><br> Please <a href='%s'>update your payment collection type</a> to continue processing payments successfully."
 msgstr ""
 

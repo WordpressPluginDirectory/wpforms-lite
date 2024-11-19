@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.7
-Stable tag: 1.9.2.1
+Stable tag: 1.9.2.2
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -376,6 +376,10 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.2.2 =
+- Fixed: _load_textdomain_just_in_time notice with WordPress 6.7.
+- Some translations were empty with WordPress 6.5+.
 
 = 1.9.2.1 =
 - Added: The Settings section in the WPForms admin bar menu.

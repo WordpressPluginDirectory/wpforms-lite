@@ -5,6 +5,8 @@
 
 namespace WPForms;
 
+use QM_Collectors;
+
 /**
  * Class ErrorHandler.
  *
@@ -147,6 +149,18 @@ class ErrorHandler {
 
 		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
 		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
+
+		// Suppress the _load_textdomain_just_in_time() notices related the WPForms for WP 6.7+.
+		if ( version_compare( $GLOBALS['wp_version'], '6.7', '>=' ) ) {
+			add_action( 'doing_it_wrong_run', [ $this,'action_doing_it_wrong_run' ], 0, 3 );
+			add_action( 'doing_it_wrong_run', [ $this,'action_doing_it_wrong_run' ], 20, 3 );
+			add_filter( 'doing_it_wrong_trigger_error', [ $this, 'filter_doing_it_wrong_trigger_error' ], 10, 4 );
+		}
+
+		// Fix WP 6.5+ translation error.
+		if ( version_compare( $GLOBALS['wp_version'], '6.5', '>=' ) ) {
+			add_filter( 'gettext', [ $this, 'filter_gettext' ], 10, 3 );
+		}
 	}
 
 	/**
@@ -242,6 +256,98 @@ class ErrorHandler {
 	}
 
 	/**
+	 * Action for _doing_it_wrong() calls.
+	 *
+	 * @since 1.9.2.2
+	 *
+	 * @param string $function_name The function that was called.
+	 * @param string $message       A message explaining what has been done incorrectly.
+	 * @param string $version       The version of WordPress where the message was added.
+	 *
+	 * @return void
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function action_doing_it_wrong_run( $function_name, $message, $version ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+
+		global $wp_filter;
+
+		$function_name = (string) $function_name;
+		$message       = (string) $message;
+
+		if ( ! class_exists( 'QM_Collectors' ) || ! $this->is_just_in_time_for_wpforms_domain( $function_name, $message ) ) {
+			return;
+		}
+
+		$qm_collector_doing_it_wrong = QM_Collectors::get( 'doing_it_wrong' );
+		$current_priority            = $wp_filter['doing_it_wrong_run']->current_priority();
+
+		if ( $qm_collector_doing_it_wrong === null || $current_priority === false ) {
+			return;
+		}
+
+		switch ( $current_priority ) {
+			case 0:
+				remove_action( 'doing_it_wrong_run', [ $qm_collector_doing_it_wrong, 'action_doing_it_wrong_run' ] );
+				break;
+
+			case 20:
+				add_action( 'doing_it_wrong_run', [ $qm_collector_doing_it_wrong, 'action_doing_it_wrong_run' ], 10, 3 );
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * Filter for _doing_it_wrong() calls.
+	 *
+	 * @since 1.9.2.2
+	 *
+	 * @param bool|mixed $trigger       Whether to trigger the error for _doing_it_wrong() calls. Default true.
+	 * @param string     $function_name The function that was called.
+	 * @param string     $message       A message explaining what has been done incorrectly.
+	 * @param string     $version       The version of WordPress where the message was added.
+	 *
+	 * @return bool
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function filter_doing_it_wrong_trigger_error( $trigger, $function_name, $message, $version ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		$trigger       = (bool) $trigger;
+		$function_name = (string) $function_name;
+		$message       = (string) $message;
+
+		return $this->is_just_in_time_for_wpforms_domain( $function_name, $message ) ? false : $trigger;
+	}
+
+	/**
+	 * Filter for gettext.
+	 *
+	 * @since 1.9.2.2
+	 *
+	 * @param string|mixed $translation Translated text.
+	 * @param string|mixed $text        Text to translate.
+	 * @param string|mixed $domain      Text domain. Unique identifier for retrieving translated strings.
+	 *
+	 * @return string
+	 */
+	public function filter_gettext( $translation, $text, $domain ): string {
+
+		$translation = (string) $translation;
+		$text        = (string) $text;
+		$domain      = (string) $domain;
+
+		if ( $translation === '' && strpos( $domain, 'wpforms' ) === 0 ) {
+			$translation = $text;
+		}
+
+		return $translation;
+	}
+
+	/**
 	 * Fallback error handler.
 	 *
 	 * @since 1.9.2
@@ -277,5 +383,20 @@ class ErrorHandler {
 				$this->dirs
 			)
 		);
+	}
+
+	/**
+	 * Whether it is the just_in_time_error for WPForms-related domains.
+	 *
+	 * @since 1.9.2.2
+	 *
+	 * @param string $function_name Function name.
+	 * @param string $message       Message.
+	 *
+	 * @return bool
+	 */
+	private function is_just_in_time_for_wpforms_domain( string $function_name, string $message ): bool {
+
+		return $function_name === '_load_textdomain_just_in_time' && strpos( $message, '<code>wpforms' ) !== false;
 	}
 }

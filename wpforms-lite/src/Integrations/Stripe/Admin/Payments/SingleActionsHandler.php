@@ -95,6 +95,10 @@ class SingleActionsHandler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Missing payment ID.', 'wpforms-lite' ) ] );
 		}
 
+		if ( ! wpforms_current_user_can( wpforms_get_capability_manage_options() ) ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'You are not allowed to perform this action.', 'wpforms-lite' ) ] );
+		}
+
 		$this->check_payment_collection_type();
 		check_ajax_referer( 'wpforms-admin', 'nonce' );
 
@@ -149,6 +153,10 @@ class SingleActionsHandler {
 
 		if ( ! isset( $_POST['payment_id'] ) ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Payment ID not provided.', 'wpforms-lite' ) ] );
+		}
+
+		if ( ! wpforms_current_user_can( wpforms_get_capability_manage_options() ) ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'You are not allowed to perform this action.', 'wpforms-lite' ) ] );
 		}
 
 		$this->check_payment_collection_type();
