@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.7
-Stable tag: 1.9.2.2
+Stable tag: 1.9.2.3
 Requires PHP: 7.0
 License: GNU General Public License v2.0 or later
 
@@ -377,9 +377,16 @@ Syed Balkhi
 
 == Changelog ==
 
+= 1.9.2.3 =
+- Changed: Creating a custom form theme is now available only to Administrators.
+- Fixed: Translated form action notices had an "s" letter appended to the form/template translated name.
+- Fixed: The Minimum time to submit setting consistently blocked form submissions on sites created in WordPress Studio.
+- Fixed: The '_load_textdomain_just_in_time was called incorrectly' error with child themes.
+- Fixed: In rare cases, a fatal error could happen on plugin activation.
+
 = 1.9.2.2 =
 - Fixed: _load_textdomain_just_in_time notice with WordPress 6.7.
-- Some translations were empty with WordPress 6.5+.
+- Fixed: Some translations were empty with WordPress 6.5+.
 
 = 1.9.2.1 =
 - Added: The Settings section in the WPForms admin bar menu.

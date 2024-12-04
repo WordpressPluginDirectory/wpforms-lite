@@ -216,6 +216,7 @@ class Requirements {
 		'wpforms-drip/wpforms-drip.php'                                 => [
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
 		],
+		'wpforms-dropbox/wpforms-dropbox.php'                           => [],
 		'wpforms-form-abandonment/wpforms-form-abandonment.php'         => [],
 		'wpforms-form-locker/wpforms-form-locker.php'                   => [
 			self::ADDON  => '2.8.0',
@@ -415,6 +416,11 @@ class Requirements {
 	 */
 	public function is_validated( string $basename ): bool {
 
+		if ( ! $this->is_wpforms_addon( $basename ) ) {
+			// No more actions if it is not a wpforms addon.
+			return true;
+		}
+
 		// We didn't check the addon before.
 		if ( ! isset( $this->not_validated[ $basename ], $this->is_validated[ $basename ] ) ) {
 			$addon_load_function = $this->get_addon_load_function( $basename );
@@ -507,6 +513,10 @@ class Requirements {
 		if ( strpos( $plugin, 'wpforms-' ) !== 0 ) {
 			// No more actions for general plugin.
 			return false;
+		}
+
+		if ( ! function_exists( 'get_plugin_data' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
 		/**

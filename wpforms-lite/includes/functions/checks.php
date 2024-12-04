@@ -419,6 +419,25 @@ function wpforms_is_gutenberg_active(): bool {
 }
 
 /**
+ * Check if website support Divi Builder.
+ *
+ * @since 1.9.2.3
+ *
+ * @return bool True if Divi builder plugin or Divi or Extra theme is active.
+ */
+function wpforms_is_divi_active(): bool {
+
+	if ( function_exists( 'et_divi_builder_init_plugin' ) ) {
+		return true;
+	}
+
+	$allow_themes = [ 'Divi', 'Extra' ];
+	$theme_name   = get_template();
+
+	return in_array( $theme_name, $allow_themes, true );
+}
+
+/**
  * Determines whether the current request is a WP CLI request.
  *
  * @since 1.7.6

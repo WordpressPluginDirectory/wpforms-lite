@@ -488,3 +488,26 @@ function wpforms_esc_unselected_choices( $formatted_field ) {
 
 	return wp_kses( $formatted_field, $allowed_html );
 }
+
+/**
+ * Decode HTML entities in a string.
+ * Do it cycle to decode all possible entities, including cases like `&amp;lt;`.
+ *
+ * @since 1.9.2.3
+ *
+ * @param string      $html     HTML.
+ * @param int         $flags    Flags.
+ * @param string|null $encoding Encoding.
+ *
+ * @return string
+ * @noinspection PhpMissingParamTypeInspection
+ */
+function wpforms_html_entity_decode_deep( string $html, int $flags = ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, $encoding = null ): string {
+
+	do {
+		$previous_html = $html;
+		$html          = html_entity_decode( $html, $flags, $encoding );
+	} while ( $html !== $previous_html );
+
+	return $html;
+}

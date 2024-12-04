@@ -40,7 +40,7 @@ export default ( function( document, window, $ ) {
 	 *
 	 * @since 1.8.8
 	 */
-	const { isPro, isLicenseActive, strings, route_namespace: routeNamespace } = wpforms_gutenberg_form_selector;
+	const { isAdmin, isPro, isLicenseActive, strings, route_namespace: routeNamespace } = wpforms_gutenberg_form_selector;
 
 	/**
 	 * Form selector common module.
@@ -127,6 +127,10 @@ export default ( function( document, window, $ ) {
 		 */
 		events() {
 			wp.data.subscribe( function() { // eslint-disable-line complexity
+				if ( ! isAdmin ) {
+					return;
+				}
+
 				const isSavingPost = wp.data.select( 'core/editor' )?.isSavingPost();
 				const isAutosavingPost = wp.data.select( 'core/editor' )?.isAutosavingPost();
 				const isSavingWidget = wp.data.select( 'core/edit-widgets' )?.isSavingWidgetAreas();
@@ -563,13 +567,13 @@ export default ( function( document, window, $ ) {
 
 			// Get event handlers.
 			const handlers = app.getEventHandlers( props );
-			const showCustomThemeOptions = formSelectorCommonModule.isFullStylingEnabled() && app.maybeCreateCustomTheme( props );
+			const showCustomThemeOptions = isAdmin && formSelectorCommonModule.isFullStylingEnabled() && app.maybeCreateCustomTheme( props );
 			const checked = formSelectorCommonModule.isFullStylingEnabled() ? props.attributes.theme : 'classic';
 			const isLeadFormsEnabled = formSelectorCommonModule.isLeadFormsEnabled( formSelectorCommonModule.getBlockContainer( props ) );
 			const displayLeadFormNotice = isLeadFormsEnabled ? 'block' : 'none';
 			const modernNoticeStyles = displayLeadFormNotice === 'block' ? { display: 'none' } : {};
 
-			let classes = formSelectorCommon.getPanelClass( props );
+			let classes = formSelectorCommon.getPanelClass( props, 'themes' );
 
 			classes += isLeadFormsEnabled ? ' wpforms-lead-forms-enabled' : '';
 			classes += app.isMac() ? ' wpforms-is-mac' : '';

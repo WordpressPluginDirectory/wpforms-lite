@@ -677,6 +677,7 @@ abstract class FormSelector implements IntegrationInterface {
 			],
 			'forms'             => $this->get_form_list(),
 			'strings'           => $strings,
+			'isAdmin'           => current_user_can( 'manage_options' ),
 			'isPro'             => wpforms()->is_pro(),
 			'defaults'          => self::DEFAULT_ATTRIBUTES,
 			'is_modern_markup'  => $this->render_engine === 'modern',

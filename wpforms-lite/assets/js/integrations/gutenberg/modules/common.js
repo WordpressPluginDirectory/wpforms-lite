@@ -59,7 +59,7 @@ export default ( function( document, window, $ ) {
 	 *
 	 * @since 1.8.8
 	 */
-	const { strings, defaults, sizes, urls, isPro, isLicenseActive } = wpforms_gutenberg_form_selector;
+	const { strings, defaults, sizes, urls, isPro, isLicenseActive, isAdmin } = wpforms_gutenberg_form_selector;
 	const defaultStyleSettings = defaults;
 
 	// noinspection JSUnusedLocalSymbols
@@ -1071,14 +1071,20 @@ export default ( function( document, window, $ ) {
 		 * @since 1.8.1
 		 *
 		 * @param {Object} props Block properties.
+		 * @param {string} panel Panel name.
 		 *
 		 * @return {string} Style Settings panel class.
 		 */
-		getPanelClass( props ) {
+		getPanelClass( props, panel = '' ) {
 			let cssClass = 'wpforms-gutenberg-panel wpforms-block-settings-' + props.clientId;
 
 			if ( ! app.isFullStylingEnabled() ) {
 				cssClass += ' disabled_panel';
+			}
+
+			// Restrict styling panel for non-admins.
+			if ( ! ( isAdmin || panel === 'themes' ) ) {
+				cssClass += ' wpforms-gutenberg-panel-restricted';
 			}
 
 			return cssClass;

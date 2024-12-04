@@ -717,14 +717,18 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 			 *
 			 * @since 1.4.7
 			 * @since 1.5.9 Added a new parameter - provider.
+			 * @since 1.9.2.3 Added the ability to set default connection name.
 			 *
 			 * @param {string} provider Current provider slug.
 			 */
 			connectionAdd( provider ) {
+				const providerClass = app.getProviderClass( provider ),
+					defaultValue = providerClass && typeof providerClass.setDefaultModalValue === 'function' ? providerClass.setDefaultModalValue() : '';
+
 				$.confirm( {
 					title: false,
 					content: wpforms_builder_providers.prompt_connection.replace( /%type%/g, 'connection' ) +
-						'<input autofocus="" type="text" id="wpforms-builder-provider-connection-name" placeholder="' + wpforms_builder_providers.prompt_placeholder + '">' +
+						'<input ' + ( defaultValue === '' ? ' autofocus=""' : '' ) + 'type="text" id="wpforms-builder-provider-connection-name" placeholder="' + wpforms_builder_providers.prompt_placeholder + '" value="' + defaultValue + '">' +
 						'<p class="error">' + wpforms_builder_providers.error_name + '</p>',
 					icon: 'fa fa-info-circle',
 					type: 'blue',
@@ -747,6 +751,15 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 						cancel: {
 							text: wpforms_builder.cancel,
 						},
+					},
+					onContentReady() {
+						// Update autofocus to be at the end of string when the default value is set.
+						const input = this.$content.find( '#wpforms-builder-provider-connection-name' )[ 0 ];
+
+						if ( defaultValue ) {
+							input.setSelectionRange( defaultValue.length, defaultValue.length );
+							input.focus();
+						}
 					},
 				} );
 			},
@@ -985,6 +998,24 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 		 */
 		getProviderHolder( provider ) {
 			return $( '#' + provider + '-provider' );
+		},
+
+		/**
+		 * Get a provider JS object.
+		 *
+		 * @since 1.9.2.3
+		 *
+		 * @param {string} provider Provider name.
+		 *
+		 * @return {Object|null} Return provider object or null.
+		 */
+		getProviderClass( provider ) {
+			const getClassName = provider.charAt( 0 ).toUpperCase() + provider.slice( 1 );
+
+			if ( typeof WPForms.Admin.Builder.Providers[ getClassName ] === 'undefined' ) {
+				return null;
+			}
+			return WPForms.Admin.Builder.Providers[ getClassName ];
 		},
 	};
 

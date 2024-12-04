@@ -836,6 +836,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 						};
 					}
 					form.validate( properties );
+					app.loadValidationGroups( form );
 				} );
 			}
 		},
@@ -2108,7 +2109,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 */
 		maybeSetStartTime( $form ) {
 			if ( ! $form.data( 'start_timestamp' ) ) {
-				$form.data( 'start_timestamp', Date.now() );
+				$form.data( 'start_timestamp', app.getTimestampSec() );
 			}
 		},
 
@@ -3377,7 +3378,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			}
 
 			$form.append( '<input type="hidden" name="start_timestamp" value="' + $form.data( 'start_timestamp' ) + '">' );
-			$form.append( '<input type="hidden" name="end_timestamp" value="' + Date.now() + '">' );
+			$form.append( '<input type="hidden" name="end_timestamp" value="' + app.getTimestampSec() + '">' );
 
 			$form.get( 0 ).submit();
 		},
@@ -3725,7 +3726,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 			formData.append( 'action', 'wpforms_submit' );
 			formData.append( 'start_timestamp', $form.data( 'start_timestamp' ) );
-			formData.append( 'end_timestamp', Date.now() );
+			formData.append( 'end_timestamp', app.getTimestampSec() );
 
 			const args = {
 				type       : 'post',
@@ -4057,6 +4058,76 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					} );
 				}
 			};
+		},
+
+		/**
+		 * We need separate method for loading validation groups
+		 * because we may dynamically extend them.
+		 *
+		 * @since 1.9.2.3
+		 *
+		 * @param {jQuery} $context Form element or some container inside specific form.
+		 */
+		loadValidationGroups( $context ) {
+			const validator = $context.closest( '.wpforms-form' ).data( 'validator' );
+
+			if ( ! validator ) {
+				return;
+			}
+
+			$.extend( validator.groups, app.getDateTimeValidationGroups( $context ) );
+		},
+
+		/**
+		 * Return validation groups for Date / Time field with
+		 * dropdown and there should only one error message for whole field.
+		 *
+		 * @since 1.9.2.3
+		 *
+		 * @param {jQuery} $context Container to search for Date/Time fields.
+		 *
+		 * @return {Object} Object with validation groups, e.g. {
+		 * "wpforms[fields][1][date][m]": "wpforms-198-field_1",
+		 * "wpforms[fields][1][date][d]": "wpforms-198-field_1"
+		 * "wpforms[fields][1][date][y]": "wpforms-198-field_1",
+		 * ...
+		 * }
+		 */
+		getDateTimeValidationGroups( $context ) {
+			const groups = {};
+
+			// Create groups for the Date / Time field.
+			$context.find( '.wpforms-field.wpforms-field-date-time' ).each( function() {
+				const $field = $( this );
+
+				// Bail out if the date dropdown is NOT used for this field.
+				if ( ! $field.find( '.wpforms-field-date-dropdown-wrap' ).length ) {
+					return;
+				}
+
+				// e.g. wpforms-198-field_1
+				const groupName = $field.attr( 'id' ).replace( '-container', '' );
+
+				$.each( [ 'month', 'day', 'year' ], function( i, subfield ) {
+					const $subfield = $( `#${ groupName }-${ subfield }` );
+					const subFieldName = $subfield.attr( 'name' );
+
+					groups[ subFieldName ] = groupName;
+				} );
+			} );
+
+			return groups;
+		},
+
+		/**
+		 * Retrieve current timestamp in seconds.
+		 *
+		 * @since 1.9.2.3
+		 *
+		 * @return {number} Current timestamp in seconds.
+		 */
+		getTimestampSec() {
+			return Math.floor( Date.now() / 1000 );
 		},
 	};
 

@@ -19,18 +19,9 @@ class Divi implements IntegrationInterface {
 	 *
 	 * @return bool
 	 */
-	public function allow_load() {
+	public function allow_load(): bool {
 
-		if ( function_exists( 'et_divi_builder_init_plugin' ) ) {
-			return true;
-		}
-
-		$allow_themes = [ 'Divi', 'Extra' ];
-		$theme        = wp_get_theme();
-		$theme_name   = $theme->get_template();
-		$theme_parent = $theme->parent();
-
-		return (bool) array_intersect( [ $theme_name, $theme_parent ], $allow_themes );
+		return wpforms_is_divi_active();
 	}
 
 	/**

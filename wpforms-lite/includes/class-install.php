@@ -182,7 +182,7 @@ class WPForms_Install {
 
 		// Store the date when the initial activation was performed.
 		$type      = class_exists( 'WPForms_Lite', false ) ? 'lite' : 'pro';
-		$activated = get_option( 'wpforms_activated', [] );
+		$activated = (array) get_option( 'wpforms_activated', [] );
 
 		if ( empty( $activated[ $type ] ) ) {
 			$activated[ $type ] = time();

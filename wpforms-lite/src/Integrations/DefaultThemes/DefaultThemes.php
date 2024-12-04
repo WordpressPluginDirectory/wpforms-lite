@@ -48,15 +48,12 @@ class DefaultThemes implements IntegrationInterface {
 	 *
 	 * @return string
 	 */
-	private function get_current_default_theme() {
+	private function get_current_default_theme(): string {
 
-		$allowed_themes = [ self::TT, self::TT1, self::OCEANWP ];
-		$theme          = wp_get_theme();
-		$theme_name     = $theme->get_template();
-		$theme_parent   = $theme->parent();
-		$default_themes = array_intersect( array_filter( [ $theme_name, $theme_parent ] ), $allowed_themes );
+		$allow_themes = [ self::TT, self::TT1, self::OCEANWP ];
+		$theme_name   = get_template();
 
-		return ! empty( $default_themes[0] ) ? $default_themes[0] : '';
+		return in_array( $theme_name, $allow_themes, true ) ? $theme_name : '';
 	}
 
 	/**

@@ -1331,9 +1331,10 @@ class WPForms_About {
 									'Drip',
 									'MailerLite',
 									'Kit',
+									'Slack',
 								]
 							),
-							'Slack'
+							'Dropbox'
 						),
 						'',
 						wp_kses(
@@ -1365,9 +1366,10 @@ class WPForms_About {
 									'Drip',
 									'MailerLite',
 									'Kit',
+									'Slack',
 								]
 							),
-							'Slack'
+							'Dropbox'
 						),
 						'',
 						wp_kses(
@@ -1399,9 +1401,10 @@ class WPForms_About {
 									'Drip',
 									'MailerLite',
 									'Kit',
+									'Slack',
 								]
 							),
-							'Slack'
+							'Dropbox'
 						),
 						'',
 						wp_kses(
@@ -1433,9 +1436,10 @@ class WPForms_About {
 									'Drip',
 									'MailerLite',
 									'Kit',
+									'Slack',
 								]
 							),
-							'Slack'
+							'Dropbox'
 						),
 						'',
 						wp_kses(
@@ -1576,7 +1580,7 @@ class WPForms_About {
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Pro Addons Included', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, and more (30 total)', 'wpforms-lite' ),
+						esc_html__( 'Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, and more (30+ total)', 'wpforms-lite' ),
 					],
 				],
 				'elite'    => [

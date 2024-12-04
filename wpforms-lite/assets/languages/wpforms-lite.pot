@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.9.2.2\n"
+"Project-Id-Version: WPForms Lite 1.9.2.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-15T16:43:09+00:00\n"
+"POT-Creation-Date: 2024-11-28T20:40:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: wpforms-lite\n"
@@ -1377,7 +1377,7 @@ msgid "General"
 msgstr ""
 
 #: includes/admin/builder/panels/class-settings.php:59
-#: includes/admin/class-about.php:1741
+#: includes/admin/class-about.php:1745
 #: src/Admin/Builder/AntiSpam.php:57
 msgid "Spam Protection and Security"
 msgstr ""
@@ -2059,210 +2059,210 @@ msgstr ""
 #. translators: %1$s – list of addons separated by comma, %2%s – and one more addon.
 #: includes/admin/class-about.php:1297
 #: includes/admin/class-about.php:1321
-#: includes/admin/class-about.php:1352
-#: includes/admin/class-about.php:1386
-#: includes/admin/class-about.php:1420
+#: includes/admin/class-about.php:1353
+#: includes/admin/class-about.php:1388
+#: includes/admin/class-about.php:1423
 msgid "%1$s, and %2$s"
 msgstr ""
 
-#: includes/admin/class-about.php:1340
-#: includes/admin/class-about.php:1374
-#: includes/admin/class-about.php:1408
-#: includes/admin/class-about.php:1442
+#: includes/admin/class-about.php:1341
+#: includes/admin/class-about.php:1376
+#: includes/admin/class-about.php:1411
+#: includes/admin/class-about.php:1446
 msgid "<strong>Bonus:</strong> 7000+ integrations with Zapier."
 msgstr ""
 
-#: includes/admin/class-about.php:1350
-#: includes/admin/class-about.php:1384
-#: includes/admin/class-about.php:1418
+#: includes/admin/class-about.php:1351
+#: includes/admin/class-about.php:1386
+#: includes/admin/class-about.php:1421
 msgid "All Marketing Integrations"
 msgstr ""
 
-#: includes/admin/class-about.php:1454
-#: includes/admin/class-about.php:1461
-#: includes/admin/class-about.php:1468
+#: includes/admin/class-about.php:1458
+#: includes/admin/class-about.php:1465
+#: includes/admin/class-about.php:1472
 msgid "Limited Payment Forms"
 msgstr ""
 
-#: includes/admin/class-about.php:1455
-#: includes/admin/class-about.php:1462
-#: includes/admin/class-about.php:1469
+#: includes/admin/class-about.php:1459
+#: includes/admin/class-about.php:1466
+#: includes/admin/class-about.php:1473
 msgid "Accept payments using Stripe only"
 msgstr ""
 
-#: includes/admin/class-about.php:1475
-#: includes/admin/class-about.php:1482
-#: includes/admin/class-about.php:1489
-#: includes/admin/class-about.php:1496
+#: includes/admin/class-about.php:1479
+#: includes/admin/class-about.php:1486
+#: includes/admin/class-about.php:1493
+#: includes/admin/class-about.php:1500
 msgid "Create Payment Forms"
 msgstr ""
 
-#: includes/admin/class-about.php:1476
+#: includes/admin/class-about.php:1480
 msgid "Accept payments using PayPal Commerce, Stripe, Square, and PayPal Standard"
 msgstr ""
 
-#: includes/admin/class-about.php:1483
-#: includes/admin/class-about.php:1490
-#: includes/admin/class-about.php:1497
+#: includes/admin/class-about.php:1487
+#: includes/admin/class-about.php:1494
+#: includes/admin/class-about.php:1501
 msgid "Accept payments using PayPal Commerce, Stripe, Square, PayPal Standard, and Authorize.Net"
 msgstr ""
 
-#: includes/admin/class-about.php:1505
-#: includes/admin/class-about.php:1511
-#: includes/admin/class-about.php:1517
+#: includes/admin/class-about.php:1509
+#: includes/admin/class-about.php:1515
+#: includes/admin/class-about.php:1521
 msgid "Not Available"
 msgstr ""
 
-#: includes/admin/class-about.php:1523
+#: includes/admin/class-about.php:1527
 msgid "Create interactive Surveys and Polls with beautiful reports"
 msgstr ""
 
-#: includes/admin/class-about.php:1531
+#: includes/admin/class-about.php:1535
 msgid "No Advanced Features"
 msgstr ""
 
-#: includes/admin/class-about.php:1537
-#: includes/admin/class-about.php:1544
+#: includes/admin/class-about.php:1541
+#: includes/admin/class-about.php:1548
 msgid "Limited Advanced Features"
 msgstr ""
 
-#: includes/admin/class-about.php:1538
+#: includes/admin/class-about.php:1542
 msgid "Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation"
 msgstr ""
 
-#: includes/admin/class-about.php:1545
+#: includes/admin/class-about.php:1549
 msgid "Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation, Save and Resume Form"
 msgstr ""
 
-#: includes/admin/class-about.php:1551
+#: includes/admin/class-about.php:1555
 msgid "All Advanced Features"
 msgstr ""
 
-#: includes/admin/class-about.php:1552
+#: includes/admin/class-about.php:1556
 msgid "Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation, Custom CAPTCHA, Offline Forms, Signature Forms, Save and Resume Form, Coupons"
 msgstr ""
 
-#: includes/admin/class-about.php:1560
-#: includes/admin/class-about.php:1566
+#: includes/admin/class-about.php:1564
+#: includes/admin/class-about.php:1570
 msgid "No Addons Included"
 msgstr ""
 
-#: includes/admin/class-about.php:1572
+#: includes/admin/class-about.php:1576
 msgid "Email Marketing Addons included"
 msgstr ""
 
-#: includes/admin/class-about.php:1578
+#: includes/admin/class-about.php:1582
 msgid "Pro Addons Included"
 msgstr ""
 
-#: includes/admin/class-about.php:1579
-msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, and more (30 total)"
+#: includes/admin/class-about.php:1583
+msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, and more (30+ total)"
 msgstr ""
 
-#: includes/admin/class-about.php:1585
-#: includes/admin/class-about.php:1592
-#: includes/admin/class-about.php:1599
+#: includes/admin/class-about.php:1589
+#: includes/admin/class-about.php:1596
+#: includes/admin/class-about.php:1603
 msgid "All Addons Included"
 msgstr ""
 
-#: includes/admin/class-about.php:1586
-#: includes/admin/class-about.php:1593
-#: includes/admin/class-about.php:1600
+#: includes/admin/class-about.php:1590
+#: includes/admin/class-about.php:1597
+#: includes/admin/class-about.php:1604
 msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Webhooks, Google Sheets, Coupons, and more (30+ total)"
 msgstr ""
 
-#: includes/admin/class-about.php:1608
+#: includes/admin/class-about.php:1612
 msgid "Limited Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1614
-#: includes/admin/class-about.php:1620
+#: includes/admin/class-about.php:1618
+#: includes/admin/class-about.php:1624
 msgid "Standard Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1626
+#: includes/admin/class-about.php:1630
 msgid "Priority Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1632
-#: includes/admin/class-about.php:1638
-#: includes/admin/class-about.php:1644
+#: includes/admin/class-about.php:1636
+#: includes/admin/class-about.php:1642
+#: includes/admin/class-about.php:1648
 msgid "Premium Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1652
+#: includes/admin/class-about.php:1656
 msgid "1 Site"
 msgstr ""
 
-#: includes/admin/class-about.php:1658
+#: includes/admin/class-about.php:1662
 msgid "3 Sites"
 msgstr ""
 
-#: includes/admin/class-about.php:1664
+#: includes/admin/class-about.php:1668
 msgid "5 Sites"
 msgstr ""
 
-#: includes/admin/class-about.php:1670
-#: includes/admin/class-about.php:1676
-#: includes/admin/class-about.php:1682
+#: includes/admin/class-about.php:1674
+#: includes/admin/class-about.php:1680
+#: includes/admin/class-about.php:1686
 msgid "Unlimited Sites"
 msgstr ""
 
-#: includes/admin/class-about.php:1738
+#: includes/admin/class-about.php:1742
 #: includes/admin/class-menu.php:79
 msgid "Form Entries"
 msgstr ""
 
-#: includes/admin/class-about.php:1739
+#: includes/admin/class-about.php:1743
 msgid "Form Fields"
 msgstr ""
 
-#: includes/admin/class-about.php:1740
+#: includes/admin/class-about.php:1744
 #: includes/admin/class-menu.php:108
 #: includes/admin/class-welcome.php:196
 #: src/Admin/Pages/Templates.php:98
 msgid "Form Templates"
 msgstr ""
 
-#: includes/admin/class-about.php:1742
+#: includes/admin/class-about.php:1746
 #: includes/admin/class-welcome.php:208
 #: src/Integrations/Stripe/Admin/Builder/Settings.php:299
 #: src/Lite/Admin/Education/Builder/Fields.php:79
 msgid "Smart Conditional Logic"
 msgstr ""
 
-#: includes/admin/class-about.php:1743
+#: includes/admin/class-about.php:1747
 #: includes/admin/class-welcome.php:279
 #: src/Admin/Builder/Help.php:152
 msgid "Marketing Integrations"
 msgstr ""
 
-#: includes/admin/class-about.php:1744
+#: includes/admin/class-about.php:1748
 #: includes/admin/class-welcome.php:270
 #: src/Admin/Builder/Help.php:153
 msgid "Payment Forms"
 msgstr ""
 
-#: includes/admin/class-about.php:1745
+#: includes/admin/class-about.php:1749
 #: includes/admin/class-welcome.php:271
 msgid "Surveys & Polls"
 msgstr ""
 
-#: includes/admin/class-about.php:1746
+#: includes/admin/class-about.php:1750
 msgid "Advanced Form Features"
 msgstr ""
 
-#: includes/admin/class-about.php:1747
+#: includes/admin/class-about.php:1751
 #: includes/admin/class-menu.php:147
 #: lite/templates/admin/addons.php:21
 msgid "WPForms Addons"
 msgstr ""
 
-#: includes/admin/class-about.php:1748
+#: includes/admin/class-about.php:1752
 msgid "Customer Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1749
+#: includes/admin/class-about.php:1753
 msgid "Number of Sites"
 msgstr ""
 
@@ -3008,7 +3008,7 @@ msgid "New Entry: %s"
 msgstr ""
 
 #: includes/class-form.php:598
-#: includes/class-process.php:1371
+#: includes/class-process.php:1368
 #: includes/templates/class-simple-contact-form.php:73
 #: lite/wpforms-lite.php:474
 #: lite/wpforms-lite.php:536
@@ -3056,7 +3056,7 @@ msgstr ""
 
 #: includes/class-process.php:397
 #: includes/class-process.php:564
-#: includes/class-process.php:1555
+#: includes/class-process.php:1552
 msgid "Form has not been submitted, please see the errors below."
 msgstr ""
 
@@ -3076,34 +3076,34 @@ msgstr ""
 msgid "Direct POST request"
 msgstr ""
 
-#: includes/class-process.php:923
+#: includes/class-process.php:920
 msgid "Please wait a little longer before submitting. We’re running a quick security check."
 msgstr ""
 
-#: includes/class-process.php:992
+#: includes/class-process.php:989
 msgid "Akismet"
 msgstr ""
 
 #. translators: %s - The CAPTCHA provider name.
-#: includes/class-process.php:1055
+#: includes/class-process.php:1052
 msgid "%s verification failed, please try again later."
 msgstr ""
 
-#: includes/class-process.php:1270
+#: includes/class-process.php:1267
 msgid "Uploaded files combined size exceeds allowed maximum."
 msgstr ""
 
-#: includes/class-process.php:1426
+#: includes/class-process.php:1423
 msgid "Redirecting…"
 msgstr ""
 
 #. translators: %1$.3f - total size of the selected files in megabytes, %2$.3f - allowed file upload limit in megabytes.
-#: includes/class-process.php:1557
+#: includes/class-process.php:1554
 msgid "The total size of the selected files %1$.3f MB exceeds the allowed limit %2$.3f MB."
 msgstr ""
 
 #. translators: %s - form name.
-#: includes/class-process.php:1669
+#: includes/class-process.php:1666
 #: lite/wpforms-lite.php:123
 msgid "New %s Entry"
 msgstr ""
@@ -6566,7 +6566,7 @@ msgstr[1] ""
 
 #: src/Admin/Education/Admin/EditPost.php:173
 #: src/Admin/Splash/SplashTrait.php:104
-#: src/Integrations/Divi/Divi.php:233
+#: src/Integrations/Divi/Divi.php:224
 #: templates/admin/empty-states/payments/get-started.php:34
 #: templates/integrations/elementor/no-forms.php:26
 #: assets/js/integrations/gutenberg/formselector-legacy.es5.js:261
@@ -6575,10 +6575,10 @@ msgstr[1] ""
 #: assets/js/integrations/gutenberg/formselector-legacy.js:275
 #: assets/js/integrations/gutenberg/modules/common.js:746
 #: assets/js/integrations/gutenberg/modules/common.js:973
-#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3110
-#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3308
-#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3121
-#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3319
+#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3111
+#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3309
+#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3122
+#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3320
 msgid "Get Started"
 msgstr ""
 
@@ -7044,31 +7044,59 @@ msgstr ""
 msgid "Security check failed. Please try again."
 msgstr ""
 
-#. translators: %1$d - trashed forms count, %2$s - post type (form or template).
-#: src/Admin/Forms/BulkActions.php:366
-msgid "%1$d %2$s was successfully moved to Trash."
-msgid_plural "%1$d %2$ss were successfully moved to Trash."
+#. translators: %1$d - restored forms count.
+#: src/Admin/Forms/BulkActions.php:426
+msgid "%1$d form was successfully restored."
+msgid_plural "%1$d forms were successfully restored."
 msgstr[0] ""
 msgstr[1] ""
 
-#. translators: %1$d - trashed forms count, %2$s - post type (form or template).
-#: src/Admin/Forms/BulkActions.php:374
-msgid "%1$d %2$s was successfully restored."
-msgid_plural "%1$d %2$ss were successfully restored."
+#. translators: %1$d - deleted forms count.
+#: src/Admin/Forms/BulkActions.php:431
+msgid "%1$d form was successfully permanently deleted."
+msgid_plural "%1$d forms were successfully permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#. translators: %1$d - trashed forms count, %2$s - post type (form or template).
-#: src/Admin/Forms/BulkActions.php:382
-msgid "%1$d %2$s was successfully permanently deleted."
-msgid_plural "%1$d %2$ss were successfully permanently deleted."
+#. translators: %1$d - duplicated forms count.
+#: src/Admin/Forms/BulkActions.php:436
+msgid "%1$d form was successfully duplicated."
+msgid_plural "%1$d forms were successfully duplicated."
 msgstr[0] ""
 msgstr[1] ""
 
-#. translators: %1$d - trashed forms count, %2$s - post type (form or template).
-#: src/Admin/Forms/BulkActions.php:390
-msgid "%1$d %2$s was successfully duplicated."
-msgid_plural "%1$d %2$ss were successfully duplicated."
+#. translators: %1$d - trashed forms count.
+#: src/Admin/Forms/BulkActions.php:441
+msgid "%1$d form was successfully moved to Trash."
+msgid_plural "%1$d forms were successfully moved to Trash."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %1$d - restored templates count.
+#: src/Admin/Forms/BulkActions.php:468
+msgid "%1$d template was successfully restored."
+msgid_plural "%1$d templates were successfully restored."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %1$d - deleted templates count.
+#: src/Admin/Forms/BulkActions.php:473
+msgid "%1$d template was successfully permanently deleted."
+msgid_plural "%1$d templates were successfully permanently deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %1$d - duplicated templates count.
+#: src/Admin/Forms/BulkActions.php:478
+msgid "%1$d template was successfully duplicated."
+msgid_plural "%1$d templates were successfully duplicated."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %1$d - trashed templates count.
+#: src/Admin/Forms/BulkActions.php:483
+msgid "%1$d template was successfully moved to Trash."
+msgid_plural "%1$d templates were successfully moved to Trash."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -9677,19 +9705,19 @@ msgctxt "Theme starter content"
 msgid "Create your <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">contact form</a> with WPForms in minutes."
 msgstr ""
 
-#: src/Integrations/Divi/Divi.php:227
+#: src/Integrations/Divi/Divi.php:218
 #: templates/integrations/elementor/no-forms.php:20
 #: assets/js/integrations/gutenberg/modules/common.js:956
-#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3300
-#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3311
+#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3301
+#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3312
 msgid "You can use <b>WPForms</b> to build contact forms, surveys, payment forms, and more with just a few clicks."
 msgstr ""
 
-#: src/Integrations/Divi/Divi.php:235
+#: src/Integrations/Divi/Divi.php:226
 msgid "comprehensive guide"
 msgstr ""
 
-#: src/Integrations/Divi/Divi.php:236
+#: src/Integrations/Divi/Divi.php:227
 msgid "Need some help? Check out our"
 msgstr ""
 
@@ -10106,7 +10134,7 @@ msgstr ""
 msgid "It looks like the form you had selected is in the Trash or has been permanently deleted."
 msgstr ""
 
-#: src/Integrations/Gutenberg/FormSelector.php:962
+#: src/Integrations/Gutenberg/FormSelector.php:963
 msgid "The form cannot be displayed."
 msgstr ""
 
@@ -10114,11 +10142,15 @@ msgstr ""
 msgid "This route is private."
 msgstr ""
 
-#: src/Integrations/Gutenberg/RestApi.php:186
+#: src/Integrations/Gutenberg/RestApi.php:146
+msgid "This route is accessible only to administrators."
+msgstr ""
+
+#: src/Integrations/Gutenberg/RestApi.php:203
 msgid "Can't create themes storage file."
 msgstr ""
 
-#: src/Integrations/Gutenberg/RestApi.php:200
+#: src/Integrations/Gutenberg/RestApi.php:217
 msgid "Can't save theme data."
 msgstr ""
 
@@ -11389,54 +11421,54 @@ msgstr ""
 msgid "Missing required data in payload."
 msgstr ""
 
-#: src/Requirements/Requirements.php:918
+#: src/Requirements/Requirements.php:928
 msgid "WPForms plugin"
 msgstr ""
 
 #. translators: translators: %1$s - WPForms addon name.
-#: src/Requirements/Requirements.php:922
+#: src/Requirements/Requirements.php:932
 msgid "%1$s addon"
 msgstr ""
 
 #. translators: translators: %1$s - WPForms plugin or addon name, %2$d - requirements message.
-#: src/Requirements/Requirements.php:929
+#: src/Requirements/Requirements.php:939
 msgid "The %1$s requires %2$s."
 msgstr ""
 
 #. translators: %s - required PHP version.
-#: src/Requirements/Requirements.php:936
+#: src/Requirements/Requirements.php:946
 msgid "<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Read more</a> for additional information."
 msgstr ""
 
 #. translators: %s - PHP extension name(s).
-#: src/Requirements/Requirements.php:1020
+#: src/Requirements/Requirements.php:1030
 msgid "%s PHP extension"
 msgid_plural "%s PHP extensions"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s - license name(s).
-#: src/Requirements/Requirements.php:1091
+#: src/Requirements/Requirements.php:1101
 msgid "%s license"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1200
+#: src/Requirements/Requirements.php:1210
 msgid "%1$s %2$s or above"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1202
+#: src/Requirements/Requirements.php:1212
 msgid "%1$s %2$s or below"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1205
+#: src/Requirements/Requirements.php:1215
 msgid "a newer version of %1$s than %2$s"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1207
+#: src/Requirements/Requirements.php:1217
 msgid "an older version of %1$s than %2$s"
 msgstr ""
 
@@ -12515,21 +12547,21 @@ msgstr ""
 #: assets/js/integrations/gutenberg/formselector-legacy.es5.js:298
 #: assets/js/integrations/gutenberg/formselector-legacy.js:265
 #: assets/js/integrations/gutenberg/modules/common.js:736
-#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3104
-#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3115
+#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3105
+#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3116
 msgid "You haven’t created a form, yet!"
 msgstr ""
 
 #: assets/js/integrations/gutenberg/formselector-legacy.es5.js:298
 #: assets/js/integrations/gutenberg/formselector-legacy.js:266
 #: assets/js/integrations/gutenberg/modules/common.js:737
-#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3104
-#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3115
+#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3105
+#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3116
 msgid "What are you waiting for?"
 msgstr ""
 
 #: assets/js/integrations/gutenberg/modules/common.js:978
-#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3310
-#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3321
+#: assets/lite/js/integrations/gutenberg/formselector.es5.js:3311
+#: assets/pro/js/integrations/gutenberg/formselector.es5.js:3322
 msgid "Need some help? Check out our <a>comprehensive guide.</a>"
 msgstr ""

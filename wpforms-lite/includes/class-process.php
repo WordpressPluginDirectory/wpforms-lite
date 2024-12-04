@@ -897,9 +897,6 @@ class WPForms_Process {
 			return;
 		}
 
-		// Convert seconds to milliseconds.
-		$duration *= 1000;
-
 		//phpcs:disable WordPress.Security.NonceVerification.Missing
 		$start = ! empty( $_POST['start_timestamp'] ) ? absint( $_POST['start_timestamp'] ) : 0;
 		$end   = ! empty( $_POST['end_timestamp'] ) ? absint( $_POST['end_timestamp'] ) : 0;

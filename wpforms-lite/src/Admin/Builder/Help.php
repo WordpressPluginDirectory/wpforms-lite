@@ -234,6 +234,7 @@ class Help {
 			'providers/constant_contact'              => 'constant contact',
 			'providers/convertkit'                    => 'convertkit',
 			'providers/drip'                          => 'drip',
+			'providers/dropbox'                       => 'dropbox',
 			'providers/getresponse'                   => 'getresponse',
 			'providers/getresponse_v3'                => 'getresponse',
 			'providers/mailchimp'                     => 'mailchimp',
@@ -1185,6 +1186,9 @@ class Help {
 			],
 			'drip'                      => [
 				'/docs/how-to-install-and-use-the-drip-addon-in-wpforms/',
+			],
+			'dropbox'                   => [
+				'/docs/dropbox-addon/',
 			],
 			'getresponse'               => [
 				'/docs/how-to-install-and-use-getresponse-addon-with-wpforms/',
