@@ -12,8 +12,8 @@ namespace WPForms\Vendor\Symfony\Component\CssSelector\Parser\Handler;
 
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Reader;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Token;
-use WPForms\Vendor\Symfony\Component\CssSelector\Parser\TokenStream;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerPatterns;
+use WPForms\Vendor\Symfony\Component\CssSelector\Parser\TokenStream;
 /**
  * CSS selector comment handler.
  *
@@ -26,13 +26,7 @@ use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerPatte
  */
 class NumberHandler implements HandlerInterface
 {
-    /**
-     * @var TokenizerPatterns
-     */
     private $patterns;
-    /**
-     * @param TokenizerPatterns $patterns
-     */
     public function __construct(TokenizerPatterns $patterns)
     {
         $this->patterns = $patterns;

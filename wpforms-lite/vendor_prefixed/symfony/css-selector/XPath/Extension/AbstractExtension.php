@@ -27,34 +27,34 @@ abstract class AbstractExtension implements ExtensionInterface
      */
     public function getNodeTranslators()
     {
-        return array();
+        return [];
     }
     /**
      * {@inheritdoc}
      */
     public function getCombinationTranslators()
     {
-        return array();
+        return [];
     }
     /**
      * {@inheritdoc}
      */
     public function getFunctionTranslators()
     {
-        return array();
+        return [];
     }
     /**
      * {@inheritdoc}
      */
     public function getPseudoClassTranslators()
     {
-        return array();
+        return [];
     }
     /**
      * {@inheritdoc}
      */
     public function getAttributeMatchingTranslators()
     {
-        return array();
+        return [];
     }
 }

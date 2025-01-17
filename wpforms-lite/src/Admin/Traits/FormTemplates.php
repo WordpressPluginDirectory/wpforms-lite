@@ -286,6 +286,15 @@ trait FormTemplates {
 	public function template_select_options( $templates = [], $slug = '' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		/**
+		 * Action hook before the list of form templates.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param array $templates List of form templates.
+		 */
+		do_action( 'wpforms_admin_form_templates_list_before', $templates );
+
+		/**
 		 * Filter the number of templates to display.
 		 *
 		 * Useful for speeding up the setup panel loading while debugging.

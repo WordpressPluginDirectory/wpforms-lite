@@ -387,15 +387,7 @@ class WidgetModern extends Widget {
 			return;
 		}
 
-		static $is_root_vars_displayed = false;
-		$widget_id                     = $this->get_id();
-
-		// Do not output root CSS variables more than once or if it is a library template preview.
-		if ( ! $is_root_vars_displayed && ! isset( $_GET['elementor_library'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$this->css_vars_obj->output_root( true );
-			$is_root_vars_displayed = true;
-		}
-
+		$widget_id      = $this->get_id();
 		$attr           = $this->get_settings_for_display();
 		$css_vars       = $this->css_vars_obj->get_customized_css_vars( $attr );
 		$custom_classes = ! empty( $attr['className'] ) ? trim( $attr['className'] ) : '';

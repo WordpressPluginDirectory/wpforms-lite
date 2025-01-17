@@ -53,7 +53,7 @@ class WPForms_Builder_Panel_Providers extends WPForms_Builder_Panel {
 			'wpforms-builder-providers',
 			'wpforms_builder_providers',
 			[
-				'url'                       => esc_url( remove_query_arg( 'newform', add_query_arg( [ 'view' => 'providers' ] ) ) ),
+				'url'                       => esc_url( remove_query_arg( [ 'newform', 'section' ], add_query_arg( [ 'view' => 'providers' ] ) ) ),
 				'confirm_save'              => esc_html__( 'We need to save your progress to continue to the Marketing panel. Is that OK?', 'wpforms-lite' ),
 				'confirm_connection'        => esc_html__( 'Are you sure you want to delete this connection?', 'wpforms-lite' ),
 				/* translators: %s - connection type. */

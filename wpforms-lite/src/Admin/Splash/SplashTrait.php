@@ -7,6 +7,33 @@ use WPForms\Migrations\Base as MigrationsBase;
 trait SplashTrait {
 
 	/**
+	 * Default plugin version.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @var string
+	 */
+	private $default_plugin_version = '1.8.6'; // The last version before the "What's New?" feature.
+
+	/**
+	 * Previous plugin version.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @var string
+	 */
+	private $previous_plugin_version;
+
+	/**
+	 * Latest splash version.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @var string
+	 */
+	private $latest_splash_version;
+
+	/**
 	 * Get splash data version.
 	 *
 	 * @since 1.8.7
@@ -39,7 +66,20 @@ trait SplashTrait {
 	 */
 	private function get_latest_splash_version(): string {
 
-		return get_option( 'wpforms_splash_version', '' );
+		if ( $this->latest_splash_version ) {
+			return $this->latest_splash_version;
+		}
+
+		$this->latest_splash_version = get_option( 'wpforms_splash_version', '' );
+
+		// Create option if it doesn't exist.
+		if ( empty( $this->latest_splash_version ) ) {
+			$this->latest_splash_version = $this->default_plugin_version;
+
+			update_option( 'wpforms_splash_version', $this->latest_splash_version );
+		}
+
+		return $this->latest_splash_version;
 	}
 
 	/**
@@ -225,12 +265,16 @@ trait SplashTrait {
 	 */
 	private function get_previous_plugin_version(): string {
 
-		$previous_version = get_option( MigrationsBase::PREVIOUS_CORE_VERSION_OPTION_NAME, '' );
-
-		if ( ! empty( $previous_version ) ) {
-			return $previous_version;
+		if ( $this->previous_plugin_version ) {
+			return $this->previous_plugin_version;
 		}
 
-		return '1.8.6'; // The last version before the "What's New?" feature.
+		$this->previous_plugin_version = get_option( MigrationsBase::PREVIOUS_CORE_VERSION_OPTION_NAME, '' );
+
+		if ( empty( $this->previous_plugin_version ) ) {
+			$this->previous_plugin_version = $this->default_plugin_version; // The last version before the "What's New?" feature.
+		}
+
+		return $this->previous_plugin_version;
 	}
 }

@@ -785,8 +785,8 @@ class Table extends \WP_List_Table {
 	 */
 	private function get_column_title( array $item ) {
 
-		$title      = $this->get_payment_title( $item );
-		$na_status  = empty( $title ) ? sprintf( '<span class="payment-title-is-empty">- %s</span>', Helpers::get_placeholder_na_text() ) : '';
+		$title     = $this->get_payment_title( $item );
+		$na_status = empty( $title ) ? sprintf( '<span class="payment-title-is-empty">- %s</span>', Helpers::get_placeholder_na_text() ) : '';
 
 		if ( ! $item['is_published'] ) {
 			return sprintf( '<span>#%1$d %2$s</span> %3$s', $item['id'], esc_html( $title ), $na_status );
@@ -813,15 +813,22 @@ class Table extends \WP_List_Table {
 	 *
 	 * @return string
 	 */
-	private function get_column_date( $item ) {
+	private function get_column_date( array $item ): string {
 
-		$date      = $item['date_updated_gmt'];
-		$timestamp = strtotime( $date );
+		$item_date_gmt      = $item['date_updated_gmt'];
+		$item_date          = get_date_from_gmt( $item_date_gmt, 'Y-m-d H:i' );
+		$item_timestamp     = strtotime( $item_date );
+		$item_timestamp_gmt = strtotime( $item_date_gmt );
 
-		/* translators: %s - relative time difference, e.g. "5 minutes", "12 days". */
-		$human = sprintf( esc_html__( '%s ago', 'wpforms-lite' ), human_time_diff( $timestamp ) );
+		// Check if the $timestamp represents a time within the last 24 hours and is not in the future.
+		if ( $item_timestamp_gmt <= time() ) {
+			/* translators: %s - relative time difference, e.g. "5 minutes", "12 days". */
+			$human = sprintf( esc_html__( '%s ago', 'wpforms-lite' ), human_time_diff( $item_timestamp_gmt ) );
+		} else {
+			$human = wpforms_datetime_format( $item_timestamp, 'M j, Y', false );
+		}
 
-		return sprintf( '<span title="%s">%s</span>', gmdate( 'Y-m-d H:i', $timestamp ), $human );
+		return sprintf( '<span title="%s">%s</span>', wpforms_datetime_format( $item_timestamp, 'Y-m-d H:i', false ), $human );
 	}
 
 	/**

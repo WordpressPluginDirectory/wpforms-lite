@@ -381,6 +381,8 @@ WPForms.Admin.Builder.Help = WPForms.Admin.Builder.Help || ( function( document,
 
 			e.preventDefault();
 
+			$( 'body' ).addClass( 'wpforms-builder-help-open' );
+
 			var $firstCategory = el.$categories.find( '.wpforms-builder-help-category' ).first(),
 				builderContextTerm = app.getBuilderContextTerm();
 
@@ -413,6 +415,8 @@ WPForms.Admin.Builder.Help = WPForms.Admin.Builder.Help || ( function( document,
 		closeHelp: function( e ) {
 
 			e.preventDefault();
+
+			$( 'body' ).removeClass( 'wpforms-builder-help-open' );
 
 			ui.fadeOut( el.$result );
 			ui.fadeOut( el.$categories );

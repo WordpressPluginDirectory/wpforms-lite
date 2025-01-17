@@ -666,7 +666,6 @@ class WPForms_Form_Handler {
 			$data = wp_unslash( $data );
 		}
 
-
 		$title = empty( $data['settings']['form_title'] ) ? get_the_title( $form_id ) : $data['settings']['form_title'];
 		$desc  = empty( $data['settings']['form_desc'] ) ? '' : $data['settings']['form_desc'];
 
@@ -674,6 +673,9 @@ class WPForms_Form_Handler {
 
 		// Preserve explicit "Do not store spam entries" state.
 		$data['settings']['store_spam_entries'] = $data['settings']['store_spam_entries'] ?? '0';
+
+		// Use default submit button text if not provided.
+		$data['settings']['submit_text'] = ! empty( $data['settings']['submit_text'] ) ? $data['settings']['submit_text'] : esc_html__( 'Submit', 'wpforms-lite' );
 
 		// Preserve form meta.
 		$meta = $this->get_meta( $form_id );

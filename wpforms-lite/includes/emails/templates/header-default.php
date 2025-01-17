@@ -335,7 +335,8 @@ $text_direction   = is_rtl() ? 'rtl' : 'ltr';
 			border-bottom: none;
 		}
 		.wpforms-order-summary-container table.wpforms-order-summary-preview caption,
-		.wpforms-order-summary-container table.wpforms-order-summary-preview .wpforms-order-summary-placeholder-hidden {
+		.wpforms-order-summary-container table.wpforms-order-summary-preview .wpforms-order-summary-placeholder-hidden,
+		.wpforms-order-summary-container table.wpforms-order-summary-preview .wpforms-order-summary-item-quantity-label-short {
 			display: none;
 		}
 		.wpforms-order-summary-container table.wpforms-order-summary-preview tr.wpforms-order-summary-preview-coupon-total td.wpforms-order-summary-item-price {

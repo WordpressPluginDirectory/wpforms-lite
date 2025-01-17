@@ -245,600 +245,607 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 */
 		loadValidation() { // eslint-disable-line max-lines-per-function
 			// Only load if jQuery validation library exists.
-			if ( typeof $.fn.validate !== 'undefined' ) {
-				// jQuery Validation library will not correctly validate
-				// fields that do not have a name attribute, so we use the
-				// `wpforms-input-temp-name` class to add a temporary name
-				// attribute before validation is initialized, then remove it
-				// before the form submits.
-				$( '.wpforms-input-temp-name' ).each( function( index, el ) {
-					const random = Math.floor( Math.random() * 9999 ) + 1;
-					$( this ).attr( 'name', 'wpf-temp-' + random );
-				} );
-
-				// Prepend URL field contents with https:// if user input doesn't contain a schema.
-				$( document ).on( 'change', '.wpforms-validate input[type=url]', function() {
-					const url = $( this ).val();
-					if ( ! url ) {
-						return false;
-					}
-					if ( url.substr( 0, 7 ) !== 'http://' && url.substr( 0, 8 ) !== 'https://' ) {
-						$( this ).val( 'https://' + url );
-					}
-				} );
-
-				$.validator.messages.required = wpforms_settings.val_required;
-				$.validator.messages.url = wpforms_settings.val_url;
-				$.validator.messages.email = wpforms_settings.val_email;
-				$.validator.messages.number = wpforms_settings.val_number;
-
-				// Payments: Validate method for Credit Card Number.
-				if ( typeof $.fn.payment !== 'undefined' ) {
-					$.validator.addMethod( 'creditcard', function( value, element ) {
-						//var type  = $.payment.cardType(value);
-						const valid = $.payment.validateCardNumber( value );
-						return this.optional( element ) || valid;
-					}, wpforms_settings.val_creditcard );
-
-					// @todo validate CVC and expiration
+			if ( typeof $.fn.validate === 'undefined' ) {
+				if ( window.location.hash && '#wpformsdebug' === window.location.hash ) {
+					// eslint-disable-next-line no-console
+					console.log( 'jQuery Validation library not found.' );
 				}
 
-				// Validate method for file extensions.
-				$.validator.addMethod( 'extension', function( value, element, param ) {
-					param = 'string' === typeof param ? param.replace( /,/g, '|' ) : 'png|jpe?g|gif';
-					return this.optional( element ) || value.match( new RegExp( '\\.(' + param + ')$', 'i' ) );
-				}, wpforms_settings.val_fileextension );
+				return;
+			}
 
-				// Validate method for file size.
-				$.validator.addMethod( 'maxsize', function( value, element, param ) {
-					const maxSize = param,
-						optionalValue = this.optional( element );
-					let i, len, file;
+			// jQuery Validation library will not correctly validate
+			// fields that do not have a name attribute, so we use the
+			// `wpforms-input-temp-name` class to add a temporary name
+			// attribute before validation is initialized, then remove it
+			// before the form submits.
+			$( '.wpforms-input-temp-name' ).each( function( index, el ) {
+				const random = Math.floor( Math.random() * 9999 ) + 1;
+				$( this ).attr( 'name', 'wpf-temp-' + random );
+			} );
 
-					if ( optionalValue ) {
-						return optionalValue;
+			// Prepend URL field contents with https:// if user input doesn't contain a schema.
+			$( document ).on( 'change', '.wpforms-validate input[type=url]', function() {
+				const url = $( this ).val();
+				if ( ! url ) {
+					return false;
+				}
+				if ( url.substr( 0, 7 ) !== 'http://' && url.substr( 0, 8 ) !== 'https://' ) {
+					$( this ).val( 'https://' + url );
+				}
+			} );
+
+			$.validator.messages.required = wpforms_settings.val_required;
+			$.validator.messages.url = wpforms_settings.val_url;
+			$.validator.messages.email = wpforms_settings.val_email;
+			$.validator.messages.number = wpforms_settings.val_number;
+
+			// Payments: Validate method for Credit Card Number.
+			if ( typeof $.fn.payment !== 'undefined' ) {
+				$.validator.addMethod( 'creditcard', function( value, element ) {
+					//var type  = $.payment.cardType(value);
+					const valid = $.payment.validateCardNumber( value );
+					return this.optional( element ) || valid;
+				}, wpforms_settings.val_creditcard );
+
+				// @todo validate CVC and expiration
+			}
+
+			// Validate method for file extensions.
+			$.validator.addMethod( 'extension', function( value, element, param ) {
+				param = 'string' === typeof param ? param.replace( /,/g, '|' ) : 'png|jpe?g|gif';
+				return this.optional( element ) || value.match( new RegExp( '\\.(' + param + ')$', 'i' ) );
+			}, wpforms_settings.val_fileextension );
+
+			// Validate method for file size.
+			$.validator.addMethod( 'maxsize', function( value, element, param ) {
+				const maxSize = param,
+					optionalValue = this.optional( element );
+				let i, len, file;
+
+				if ( optionalValue ) {
+					return optionalValue;
+				}
+
+				if ( element.files && element.files.length ) {
+					i = 0;
+					len = element.files.length;
+					for ( ; i < len; i++ ) {
+						file = element.files[ i ];
+						if ( file.size > maxSize ) {
+							return false;
+						}
+					}
+				}
+
+				return true;
+			}, wpforms_settings.val_filesize );
+
+			$.validator.addMethod( 'step', function( value, element, param ) {
+				const decimalPlaces = function( num ) {
+					if ( Math.floor( num ) === num ) {
+						return 0;
 					}
 
-					if ( element.files && element.files.length ) {
-						i = 0;
-						len = element.files.length;
-						for ( ; i < len; i++ ) {
-							file = element.files[ i ];
-							if ( file.size > maxSize ) {
-								return false;
-							}
+					return num.toString().split( '.' )[ 1 ].length || 0;
+				};
+				const decimals = decimalPlaces( param );
+				const decimalToInt = function( num ) {
+					return Math.round( num * Math.pow( 10, decimals ) );
+				};
+				const min = decimalToInt( $( element ).attr( 'min' ) );
+
+				value = decimalToInt( value ) - min;
+
+				return this.optional( element ) || decimalToInt( value ) % decimalToInt( param ) === 0;
+			} );
+
+			// Validate email addresses.
+			$.validator.methods.email = function( value, element ) {
+				/**
+				 * This function combines is_email() from WordPress core
+				 * and wpforms_is_email() to validate email addresses.
+				 *
+				 * @see https://developer.wordpress.org/reference/functions/is_email/
+				 * @see https://github.com/awesomemotive/wpforms-plugin/blob/develop/wpforms/includes/functions/checks.php#L45
+				 *
+				 * @param {string} value The email address to validate.
+				 *
+				 * @return {boolean} True if the email address is valid, false otherwise.
+				 */
+				const isEmail = function( value ) { // eslint-disable-line complexity
+					if ( typeof value !== 'string' ) {
+						// Do not allow callables, arrays, and objects.
+						return false;
+					}
+
+					// Check the length and position of the @ character.
+					const atIndex = value.indexOf( '@', 1 );
+					if ( value.length < 6 || value.length > 254 || atIndex === -1 ) {
+						return false;
+					}
+
+					// Check for more than one "@" symbol.
+					if ( value.indexOf( '@', atIndex + 1 ) !== -1 ) {
+						return false;
+					}
+
+					// Split email address into local and domain parts.
+					const [ local, domain ] = value.split( '@' );
+
+					// Check local and domain parts for existence.
+					if ( ! local || ! domain ) {
+						return false;
+					}
+
+					// Check local part for invalid characters and length.
+					const localRegex = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/;
+					if ( ! localRegex.test( local ) || local.length > 63 ) {
+						return false;
+					}
+
+					// Check domain part for sequences of periods, leading and trailing periods, and whitespace.
+					const domainRegex = /\.{2,}/;
+					if ( domainRegex.test( domain ) || domain.trim( ' \t\n\r\0\x0B.' ) !== domain ) {
+						return false;
+					}
+
+					// Check domain part for length.
+					const domainArr = domain.split( '.' );
+					if ( domainArr.length < 2 ) {
+						return false;
+					}
+
+					// Check domain label for length, leading and trailing periods, and whitespace.
+					const domainLabelRegex = /^[a-z0-9-]+$/i;
+					for ( const domainLabel of domainArr ) {
+						if (
+							domainLabel.length > 63 ||
+							domainLabel.trim( ' \t\n\r\0\x0B-' ) !== domainLabel ||
+							! domainLabelRegex.test( domainLabel )
+						) {
+							return false;
 						}
 					}
 
 					return true;
-				}, wpforms_settings.val_filesize );
-
-				$.validator.addMethod( 'step', function( value, element, param ) {
-					const decimalPlaces = function( num ) {
-						if ( Math.floor( num ) === num ) {
-							return 0;
-						}
-
-						return num.toString().split( '.' )[ 1 ].length || 0;
-					};
-					const decimals = decimalPlaces( param );
-					const decimalToInt = function( num ) {
-						return Math.round( num * Math.pow( 10, decimals ) );
-					};
-					const min = decimalToInt( $( element ).attr( 'min' ) );
-
-					value = decimalToInt( value ) - min;
-
-					return this.optional( element ) || decimalToInt( value ) % decimalToInt( param ) === 0;
-				} );
-
-				// Validate email addresses.
-				$.validator.methods.email = function( value, element ) {
-					/**
-					 * This function combines is_email() from WordPress core
-					 * and wpforms_is_email() to validate email addresses.
-					 *
-					 * @see https://developer.wordpress.org/reference/functions/is_email/
-					 * @see https://github.com/awesomemotive/wpforms-plugin/blob/develop/wpforms/includes/functions/checks.php#L45
-					 *
-					 * @param {string} value The email address to validate.
-					 *
-					 * @return {boolean} True if the email address is valid, false otherwise.
-					 */
-					const isEmail = function( value ) { // eslint-disable-line complexity
-						if ( typeof value !== 'string' ) {
-							// Do not allow callables, arrays, and objects.
-							return false;
-						}
-
-						// Check the length and position of the @ character.
-						const atIndex = value.indexOf( '@', 1 );
-						if ( value.length < 6 || value.length > 254 || atIndex === -1 ) {
-							return false;
-						}
-
-						// Check for more than one "@" symbol.
-						if ( value.indexOf( '@', atIndex + 1 ) !== -1 ) {
-							return false;
-						}
-
-						// Split email address into local and domain parts.
-						const [ local, domain ] = value.split( '@' );
-
-						// Check local and domain parts for existence.
-						if ( ! local || ! domain ) {
-							return false;
-						}
-
-						// Check local part for invalid characters and length.
-						const localRegex = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/;
-						if ( ! localRegex.test( local ) || local.length > 63 ) {
-							return false;
-						}
-
-						// Check domain part for sequences of periods, leading and trailing periods, and whitespace.
-						const domainRegex = /\.{2,}/;
-						if ( domainRegex.test( domain ) || domain.trim( ' \t\n\r\0\x0B.' ) !== domain ) {
-							return false;
-						}
-
-						// Check domain part for length.
-						const domainArr = domain.split( '.' );
-						if ( domainArr.length < 2 ) {
-							return false;
-						}
-
-						// Check domain label for length, leading and trailing periods, and whitespace.
-						const domainLabelRegex = /^[a-z0-9-]+$/i;
-						for ( const domainLabel of domainArr ) {
-							if (
-								domainLabel.length > 63 ||
-								domainLabel.trim( ' \t\n\r\0\x0B-' ) !== domainLabel ||
-								! domainLabelRegex.test( domainLabel )
-							) {
-								return false;
-							}
-						}
-
-						return true;
-					};
-
-					// Congratulations! The email address is valid.
-					return this.optional( element ) || isEmail( value );
 				};
 
-				// Validate email by allowlist/blocklist.
-				$.validator.addMethod( 'restricted-email', function( value, element ) {
-					const $el = $( element );
+				// Congratulations! The email address is valid.
+				return this.optional( element ) || isEmail( value );
+			};
 
-					if ( ! $el.val().length ) {
-						return true;
-					}
+			// Validate email by allowlist/blocklist.
+			$.validator.addMethod( 'restricted-email', function( value, element ) {
+				const $el = $( element );
 
-					const $form = $el.closest( '.wpforms-form' ),
-						formId = $form.data( 'formid' );
-
-					if (
-						! Object.prototype.hasOwnProperty.call( app.cache, formId ) ||
-						! Object.prototype.hasOwnProperty.call( app.cache[ formId ], 'restrictedEmailValidation' ) ||
-						! Object.prototype.hasOwnProperty.call( app.cache[ formId ].restrictedEmailValidation, value )
-					) {
-						app.restrictedEmailRequest( element, value );
-
-						return 'pending';
-					}
-
-					return app.cache[ formId ].restrictedEmailValidation[ value ];
-				}, wpforms_settings.val_email_restricted );
-
-				// Validate confirmations.
-				$.validator.addMethod( 'confirm', function( value, element, param ) {
-					const field = $( element ).closest( '.wpforms-field' );
-					return $( field.find( 'input' )[ 0 ] ).val() === $( field.find( 'input' )[ 1 ] ).val();
-				}, wpforms_settings.val_confirm );
-
-				// Validate required payments.
-				$.validator.addMethod( 'required-payment', function( value, element ) {
-					return app.amountSanitize( value ) > 0;
-				}, wpforms_settings.val_requiredpayment );
-
-				// Validate 12-hour time.
-				$.validator.addMethod( 'time12h', function( value, element ) {
-					// noinspection RegExpRedundantEscape
-					return this.optional( element ) || /^((0?[1-9]|1[012])(:[0-5]\d){1,2}(\ ?[AP]M))$/i.test( value ); // eslint-disable-line no-useless-escape
-				}, wpforms_settings.val_time12h );
-
-				// Validate 24-hour time.
-				$.validator.addMethod( 'time24h', function( value, element ) {
-					// noinspection RegExpRedundantEscape
-					return this.optional( element ) || /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(\ ?[AP]M)?$/i.test( value ); // eslint-disable-line no-useless-escape
-				}, wpforms_settings.val_time24h );
-
-				// Validate Turnstile captcha.
-				$.validator.addMethod( 'turnstile', function( value ) {
-					return value;
-				}, wpforms_settings.val_turnstile_fail_msg );
-
-				// Validate time limits.
-				$.validator.addMethod( 'time-limit', function( value, element ) { // eslint-disable-line complexity
-					const $input = $( element ),
-						minTime = $input.data( 'min-time' ),
-						isLimited = typeof minTime !== 'undefined';
-
-					if ( ! isLimited ) {
-						return true;
-					}
-
-					const isRequired = $input.prop( 'required' );
-
-					if ( ! isRequired && app.empty( value ) ) {
-						return true;
-					}
-
-					const maxTime = $input.data( 'max-time' );
-
-					if ( app.compareTimesGreaterThan( maxTime, minTime ) ) {
-						return app.compareTimesGreaterThan( value, minTime ) && app.compareTimesGreaterThan( maxTime, value );
-					}
-
-					return ( app.compareTimesGreaterThan( value, minTime ) && app.compareTimesGreaterThan( value, maxTime ) ) ||
-						( app.compareTimesGreaterThan( minTime, value ) && app.compareTimesGreaterThan( maxTime, value ) );
-				}, function( params, element ) {
-					const $input = $( element );
-					let minTime = $input.data( 'min-time' ),
-						maxTime = $input.data( 'max-time' );
-
-					// Replace `00:**pm` with `12:**pm`.
-					minTime = minTime.replace( /^00:([0-9]{2})pm$/, '12:$1pm' );
-					maxTime = maxTime.replace( /^00:([0-9]{2})pm$/, '12:$1pm' );
-
-					// Proper format time: add space before AM/PM, make uppercase.
-					minTime = minTime.replace( /(am|pm)/g, ' $1' ).toUpperCase();
-					maxTime = maxTime.replace( /(am|pm)/g, ' $1' ).toUpperCase();
-
-					return wpforms_settings.val_time_limit
-						.replace( '{minTime}', minTime )
-						.replace( '{maxTime}', maxTime );
-				} );
-
-				// Validate checkbox choice limit.
-				$.validator.addMethod( 'check-limit', function( value, element ) {
-					const $ul = $( element ).closest( 'ul' ),
-						choiceLimit = parseInt( $ul.attr( 'data-choice-limit' ) || 0, 10 );
-
-					if ( 0 === choiceLimit ) {
-						return true;
-					}
-
-					const $checked = $ul.find( 'input[type="checkbox"]:checked' );
-
-					return $checked.length <= choiceLimit;
-				}, function( params, element ) {
-					const	choiceLimit = parseInt( $( element ).closest( 'ul' ).attr( 'data-choice-limit' ) || 0, 10 );
-					return wpforms_settings.val_checklimit.replace( '{#}', choiceLimit );
-				} );
-
-				// Validate Smartphone Field.
-				if ( typeof window.intlTelInput !== 'undefined' ) {
-					$.validator.addMethod( 'smart-phone-field', function( value, element ) {
-						if ( value.match( /[^\d()\-+\s]/ ) ) {
-							return false;
-						}
-
-						const iti = window.intlTelInputGlobals?.getInstance( element );
-						const result = $( element ).triggerHandler( 'validate' );
-
-						return this.optional( element ) || iti?.isValidNumberPrecise() || result;
-					}, wpforms_settings.val_phone );
+				if ( ! $el.val().length ) {
+					return true;
 				}
 
-				// Validate Inputmask completeness.
-				$.validator.addMethod( 'inputmask-incomplete', function( value, element ) {
-					if ( value.length === 0 || typeof $.fn.inputmask === 'undefined' ) {
-						return true;
-					}
-					return $( element ).inputmask( 'isComplete' );
-				}, wpforms_settings.val_inputmask_incomplete );
+				const $form = $el.closest( '.wpforms-form' ),
+					formId = $form.data( 'formid' );
 
-				// Validate Payment item value on zero.
-				$.validator.addMethod( 'required-positive-number', function( value, element ) {
-					return app.amountSanitize( value ) > 0;
-				}, wpforms_settings.val_number_positive );
+				if (
+					! Object.prototype.hasOwnProperty.call( app.cache, formId ) ||
+					! Object.prototype.hasOwnProperty.call( app.cache[ formId ], 'restrictedEmailValidation' ) ||
+					! Object.prototype.hasOwnProperty.call( app.cache[ formId ].restrictedEmailValidation, value )
+				) {
+					app.restrictedEmailRequest( element, value );
+
+					return 'pending';
+				}
+
+				return app.cache[ formId ].restrictedEmailValidation[ value ];
+			}, wpforms_settings.val_email_restricted );
+
+			// Validate confirmations.
+			$.validator.addMethod( 'confirm', function( value, element, param ) {
+				const field = $( element ).closest( '.wpforms-field' );
+				return $( field.find( 'input' )[ 0 ] ).val() === $( field.find( 'input' )[ 1 ] ).val();
+			}, wpforms_settings.val_confirm );
+
+			// Validate required payments.
+			$.validator.addMethod( 'required-payment', function( value, element ) {
+				return app.amountSanitize( value ) > 0;
+			}, wpforms_settings.val_requiredpayment );
+
+			// Validate 12-hour time.
+			$.validator.addMethod( 'time12h', function( value, element ) {
+				// noinspection RegExpRedundantEscape
+				return this.optional( element ) || /^((0?[1-9]|1[012])(:[0-5]\d){1,2}(\ ?[AP]M))$/i.test( value ); // eslint-disable-line no-useless-escape
+			}, wpforms_settings.val_time12h );
+
+			// Validate 24-hour time.
+			$.validator.addMethod( 'time24h', function( value, element ) {
+				// noinspection RegExpRedundantEscape
+				return this.optional( element ) || /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(\ ?[AP]M)?$/i.test( value ); // eslint-disable-line no-useless-escape
+			}, wpforms_settings.val_time24h );
+
+			// Validate Turnstile captcha.
+			$.validator.addMethod( 'turnstile', function( value ) {
+				return value;
+			}, wpforms_settings.val_turnstile_fail_msg );
+
+			// Validate time limits.
+			$.validator.addMethod( 'time-limit', function( value, element ) { // eslint-disable-line complexity
+				const $input = $( element ),
+					minTime = $input.data( 'min-time' ),
+					isLimited = typeof minTime !== 'undefined';
+
+				if ( ! isLimited ) {
+					return true;
+				}
+
+				const isRequired = $input.prop( 'required' );
+
+				if ( ! isRequired && app.empty( value ) ) {
+					return true;
+				}
+
+				const maxTime = $input.data( 'max-time' );
+
+				if ( app.compareTimesGreaterThan( maxTime, minTime ) ) {
+					return app.compareTimesGreaterThan( value, minTime ) && app.compareTimesGreaterThan( maxTime, value );
+				}
+
+				return ( app.compareTimesGreaterThan( value, minTime ) && app.compareTimesGreaterThan( value, maxTime ) ) ||
+					( app.compareTimesGreaterThan( minTime, value ) && app.compareTimesGreaterThan( maxTime, value ) );
+			}, function( params, element ) {
+				const $input = $( element );
+				let minTime = $input.data( 'min-time' ),
+					maxTime = $input.data( 'max-time' );
+
+				// Replace `00:**pm` with `12:**pm`.
+				minTime = minTime.replace( /^00:([0-9]{2})pm$/, '12:$1pm' );
+				maxTime = maxTime.replace( /^00:([0-9]{2})pm$/, '12:$1pm' );
+
+				// Proper format time: add space before AM/PM, make uppercase.
+				minTime = minTime.replace( /(am|pm)/g, ' $1' ).toUpperCase();
+				maxTime = maxTime.replace( /(am|pm)/g, ' $1' ).toUpperCase();
+
+				return wpforms_settings.val_time_limit
+					.replace( '{minTime}', minTime )
+					.replace( '{maxTime}', maxTime );
+			} );
+
+			// Validate checkbox choice limit.
+			$.validator.addMethod( 'check-limit', function( value, element ) {
+				const $ul = $( element ).closest( 'ul' ),
+					choiceLimit = parseInt( $ul.attr( 'data-choice-limit' ) || 0, 10 );
+
+				if ( 0 === choiceLimit ) {
+					return true;
+				}
+
+				const $checked = $ul.find( 'input[type="checkbox"]:checked' );
+
+				return $checked.length <= choiceLimit;
+			}, function( params, element ) {
+				const	choiceLimit = parseInt( $( element ).closest( 'ul' ).attr( 'data-choice-limit' ) || 0, 10 );
+				return wpforms_settings.val_checklimit.replace( '{#}', choiceLimit );
+			} );
+
+			// Validate Smartphone Field.
+			if ( typeof window.intlTelInput !== 'undefined' ) {
+				$.validator.addMethod( 'smart-phone-field', function( value, element ) {
+					if ( value.match( /[^\d()\-+\s]/ ) ) {
+						return false;
+					}
+
+					const iti = window.intlTelInputGlobals?.getInstance( element );
+					const result = $( element ).triggerHandler( 'validate' );
+
+					return this.optional( element ) || iti?.isValidNumberPrecise() || result;
+				}, wpforms_settings.val_phone );
+			}
+
+			// Validate Inputmask completeness.
+			$.validator.addMethod( 'inputmask-incomplete', function( value, element ) {
+				if ( value.length === 0 || typeof $.fn.inputmask === 'undefined' ) {
+					return true;
+				}
+				return $( element ).inputmask( 'isComplete' );
+			}, wpforms_settings.val_inputmask_incomplete );
+
+			// Validate Payment item value on zero.
+			$.validator.addMethod( 'required-positive-number', function( value, element ) {
+				return app.amountSanitize( value ) > 0;
+			}, wpforms_settings.val_number_positive );
+
+			/**
+			 * Validate Payment item minimum price value.
+			 *
+			 * @since 1.8.6
+			 */
+			$.validator.addMethod( 'required-minimum-price', function( value, element, param ) {
+				const $el = $( element );
 
 				/**
-				 * Validate Payment item minimum price value.
-				 *
-				 * @since 1.8.6
+				 * The validation is passed in the following cases:
+				 * 1) if a field is not filled in and not required.
+				 * 2) if the minimum required price is equal to or less than the typed value.
+				 * Note: since the param is returned in decimal format at all times, we need to format the value to compare it.
 				 */
-				$.validator.addMethod( 'required-minimum-price', function( value, element, param ) {
-					const $el = $( element );
+				return ( value === '' && ! $el.hasClass( 'wpforms-field-required' ) ) || Number( app.amountSanitize( app.amountFormat( param ) ) ) <= Number( app.amountSanitize( value ) );
+			}, wpforms_settings.val_minimum_price );
 
-					/**
-					 * The validation is passed in the following cases:
-					 * 1) if a field is not filled in and not required.
-					 * 2) if the minimum required price is equal to or less than the typed value.
-					 * Note: since the param is returned in decimal format at all times, we need to format the value to compare it.
-					 */
-					return ( value === '' && ! $el.hasClass( 'wpforms-field-required' ) ) || Number( app.amountSanitize( app.amountFormat( param ) ) ) <= Number( app.amountSanitize( value ) );
-				}, wpforms_settings.val_minimum_price );
+			// Validate US Phone Field.
+			$.validator.addMethod( 'us-phone-field', function( value, element ) {
+				if ( value.match( /[^\d()\-+\s]/ ) ) {
+					return false;
+				}
+				return this.optional( element ) || value.replace( /[^\d]/g, '' ).length === 10;
+			}, wpforms_settings.val_phone );
 
-				// Validate US Phone Field.
-				$.validator.addMethod( 'us-phone-field', function( value, element ) {
-					if ( value.match( /[^\d()\-+\s]/ ) ) {
-						return false;
-					}
-					return this.optional( element ) || value.replace( /[^\d]/g, '' ).length === 10;
-				}, wpforms_settings.val_phone );
+			// Validate International Phone Field.
+			$.validator.addMethod( 'int-phone-field', function( value, element ) {
+				if ( value.match( /[^\d()\-+\s]/ ) ) {
+					return false;
+				}
+				return this.optional( element ) || value.replace( /[^\d]/g, '' ).length > 0;
+			}, wpforms_settings.val_phone );
 
-				// Validate International Phone Field.
-				$.validator.addMethod( 'int-phone-field', function( value, element ) {
-					if ( value.match( /[^\d()\-+\s]/ ) ) {
-						return false;
-					}
-					return this.optional( element ) || value.replace( /[^\d]/g, '' ).length > 0;
-				}, wpforms_settings.val_phone );
+			// Validate password strength.
+			$.validator.addMethod( 'password-strength', function( value, element ) {
+				const $el = $( element );
 
-				// Validate password strength.
-				$.validator.addMethod( 'password-strength', function( value, element ) {
-					const $el = $( element );
+				// Need to check if the password strength to remove the error message.
+				const strength = WPFormsPasswordField.passwordStrength( value, element );
 
-					// Need to check if the password strength to remove the error message.
-					const strength = WPFormsPasswordField.passwordStrength( value, element );
+				/**
+				 * The validation is passed in the following cases:
+				 * 1) if a field is not filled in and not required.
+				 * 2) if the password strength is equal to or greater than the specified level.
+				 */
+				return ( value === '' && ! $el.hasClass( 'wpforms-field-required' ) ) || strength >= Number( $el.data( 'password-strength-level' ) );
+			}, wpforms_settings.val_password_strength );
 
-					/**
-					 * The validation is passed in the following cases:
-					 * 1) if a field is not filled in and not required.
-					 * 2) if the password strength is equal to or greater than the specified level.
-					 */
-					return ( value === '' && ! $el.hasClass( 'wpforms-field-required' ) ) || strength >= Number( $el.data( 'password-strength-level' ) );
-				}, wpforms_settings.val_password_strength );
+			// Finally, load jQuery Validation library for our forms.
+			$( '.wpforms-validate' ).each( function() { // eslint-disable-line max-lines-per-function
+				const form = $( this ),
+					formID = form.data( 'formid' );
+				let	properties;
 
-				// Finally, load jQuery Validation library for our forms.
-				$( '.wpforms-validate' ).each( function() { // eslint-disable-line max-lines-per-function
-					const form = $( this ),
-						formID = form.data( 'formid' );
-					let	properties;
+				// TODO: cleanup this BC with wpforms_validate.
+				if ( typeof window[ 'wpforms_' + formID ] !== 'undefined' && window[ 'wpforms_' + formID ].hasOwnProperty( 'validate' ) ) {
+					properties = window[ 'wpforms_' + formID ].validate;
+				} else if ( typeof wpforms_validate !== 'undefined' ) {
+					properties = wpforms_validate;
+				} else {
+					properties = {
+						errorElement: app.isModernMarkupEnabled() ? 'em' : 'label',
+						errorClass: 'wpforms-error',
+						validClass: 'wpforms-valid',
+						ignore: ':hidden:not(textarea.wp-editor-area), .wpforms-conditional-hide textarea.wp-editor-area',
+						ignoreTitle: true,
+						errorPlacement( error, element ) { // eslint-disable-line complexity
+							if ( app.isLikertScaleField( element ) ) {
+								element.closest( 'table' ).hasClass( 'single-row' )
+									? element.closest( '.wpforms-field' ).append( error )
+									: element.closest( 'tr' ).find( 'th' ).append( error );
+							} else if ( app.isWrappedField( element ) ) {
+								element.closest( '.wpforms-field' ).append( error );
+							} else if ( app.isDateTimeField( element ) ) {
+								app.dateTimeErrorPlacement( element, error );
+							} else if ( app.isFieldInColumn( element ) ) {
+								element.parent().append( error );
+							} else if ( app.isFieldHasHint( element ) ) {
+								element.parent().append( error );
+							} else if ( app.isLeadFormsSelect( element ) ) {
+								element.parent().parent().append( error );
+							} else if ( element.hasClass( 'wp-editor-area' ) ) {
+								element.parent().parent().parent().append( error );
+							} else {
+								error.insertAfter( element );
+							}
 
-					// TODO: cleanup this BC with wpforms_validate.
-					if ( typeof window[ 'wpforms_' + formID ] !== 'undefined' && window[ 'wpforms_' + formID ].hasOwnProperty( 'validate' ) ) {
-						properties = window[ 'wpforms_' + formID ].validate;
-					} else if ( typeof wpforms_validate !== 'undefined' ) {
-						properties = wpforms_validate;
-					} else {
-						properties = {
-							errorElement: app.isModernMarkupEnabled() ? 'em' : 'label',
-							errorClass: 'wpforms-error',
-							validClass: 'wpforms-valid',
-							ignore: ':hidden:not(textarea.wp-editor-area), .wpforms-conditional-hide textarea.wp-editor-area',
-							ignoreTitle: true,
-							errorPlacement( error, element ) { // eslint-disable-line complexity
-								if ( app.isLikertScaleField( element ) ) {
-									element.closest( 'table' ).hasClass( 'single-row' )
-										? element.closest( '.wpforms-field' ).append( error )
-										: element.closest( 'tr' ).find( 'th' ).append( error );
-								} else if ( app.isWrappedField( element ) ) {
-									element.closest( '.wpforms-field' ).append( error );
-								} else if ( app.isDateTimeField( element ) ) {
-									app.dateTimeErrorPlacement( element, error );
-								} else if ( app.isFieldInColumn( element ) ) {
-									element.parent().append( error );
-								} else if ( app.isFieldHasHint( element ) ) {
-									element.parent().append( error );
-								} else if ( app.isLeadFormsSelect( element ) ) {
-									element.parent().parent().append( error );
-								} else if ( element.hasClass( 'wp-editor-area' ) ) {
-									element.parent().parent().parent().append( error );
-								} else {
-									error.insertAfter( element );
-								}
+							if ( app.isModernMarkupEnabled() ) {
+								error.attr( {
+									role: 'alert',
+									'aria-label': wpforms_settings.errorMessagePrefix,
+									for: '',
+								} );
+							}
+						},
+						highlight( element, errorClass, validClass ) { // eslint-disable-line complexity
+							const $element = $( element ),
+								$field = $element.closest( '.wpforms-field' ),
+								inputName = $element.attr( 'name' );
+
+							if ( 'radio' === $element.attr( 'type' ) || 'checkbox' === $element.attr( 'type' ) ) {
+								$field.find( 'input[name="' + inputName + '"]' ).addClass( errorClass ).removeClass( validClass );
+							} else {
+								$element.addClass( errorClass ).removeClass( validClass );
+							}
+
+							// Remove password strength container for empty required password field.
+							if (
+								$element.attr( 'type' ) === 'password' &&
+								$element.val().trim() === '' &&
+								window.WPFormsPasswordField &&
+								$element.data( 'rule-password-strength' ) &&
+								$element.hasClass( 'wpforms-field-required' )
+							) {
+								WPFormsPasswordField.passwordStrength( '', element );
+							}
+
+							$field.addClass( 'wpforms-has-error' );
+						},
+						unhighlight( element, errorClass, validClass ) {
+							const $element = $( element ),
+								$field = $element.closest( '.wpforms-field' ),
+								inputName = $element.attr( 'name' );
+
+							if ( 'radio' === $element.attr( 'type' ) || 'checkbox' === $element.attr( 'type' ) ) {
+								$field.find( 'input[name="' + inputName + '"]' ).addClass( validClass ).removeClass( errorClass );
+							} else {
+								$element.addClass( validClass ).removeClass( errorClass );
+							}
+
+							// Remove the error class from the field container if there are no subfield errors.
+							if ( ! $field.find( ':input.wpforms-error,[data-dz-errormessage]:not(:empty)' ).length ) {
+								$field.removeClass( 'wpforms-has-error' );
+							}
+
+							// Remove an error message to be sure the next time the `errorPlacement` method will be executed.
+							if ( app.isModernMarkupEnabled() ) {
+								$element.parent().find( 'em.wpforms-error' ).remove();
+							}
+						},
+						submitHandler( form ) {
+							/**
+							 * Captcha error handler.
+							 *
+							 * @since 1.8.4
+							 *
+							 * @param {jQuery} $form      current form element.
+							 * @param {jQuery} $container current form container.
+							 */
+							const captchaErrorDisplay = function( $form, $container ) {
+								let errorTag = 'label',
+									errorRole = '';
 
 								if ( app.isModernMarkupEnabled() ) {
-									error.attr( {
-										role: 'alert',
-										'aria-label': wpforms_settings.errorMessagePrefix,
-										for: '',
+									errorTag = 'em';
+									errorRole = 'role="alert"';
+								}
+
+								const error = `<${ errorTag } id="wpforms-field_recaptcha-error" class="wpforms-error" ${ errorRole }> ${ wpforms_settings.val_recaptcha_fail_msg }</${ errorTag }>`;
+
+								$form.find( '.wpforms-recaptcha-container' ).append( error );
+								app.restoreSubmitButton( $form, $container );
+							};
+
+							/**
+							 * Submit handler routine.
+							 *
+							 * @since 1.7.2
+							 *
+							 * @return {boolean|void} False if form won't submit.
+							 */
+							const submitHandlerRoutine = function() { // eslint-disable-line complexity
+								const $form = $( form ),
+									$container = $form.closest( '.wpforms-container' ),
+									$submit = $form.find( '.wpforms-submit' ),
+									isCaptchaInvalid = $submit.data( 'captchaInvalid' ),
+									altText = $submit.data( 'alt-text' ),
+									recaptchaID = $submit.get( 0 ).recaptchaID;
+
+								if ( $form.data( 'token' ) && 0 === $( '.wpforms-token', $form ).length ) {
+									$( '<input type="hidden" class="wpforms-token" name="wpforms[token]" />' )
+										.val( $form.data( 'token' ) )
+										.appendTo( $form );
+								}
+
+								$form.find( '#wpforms-field_recaptcha-error' ).remove();
+								$submit.prop( 'disabled', true );
+
+								WPFormsUtils.triggerEvent( $form, 'wpformsFormSubmitButtonDisable', [ $form, $submit ] );
+
+								// Display processing text.
+								if ( altText ) {
+									$submit.text( altText );
+								}
+
+								if ( isCaptchaInvalid ) {
+									return captchaErrorDisplay( $form, $container );
+								}
+
+								if ( ! app.empty( recaptchaID ) || recaptchaID === 0 ) {
+									// The Form contains invisible reCAPTCHA.
+									grecaptcha.execute( recaptchaID ).then( null, function() {
+										if ( grecaptcha.getResponse() ) {
+											return;
+										}
+
+										captchaErrorDisplay( $form, $container );
 									} );
-								}
-							},
-							highlight( element, errorClass, validClass ) { // eslint-disable-line complexity
-								const $element = $( element ),
-									$field = $element.closest( '.wpforms-field' ),
-									inputName = $element.attr( 'name' );
-
-								if ( 'radio' === $element.attr( 'type' ) || 'checkbox' === $element.attr( 'type' ) ) {
-									$field.find( 'input[name="' + inputName + '"]' ).addClass( errorClass ).removeClass( validClass );
-								} else {
-									$element.addClass( errorClass ).removeClass( validClass );
+									return false;
 								}
 
-								// Remove password strength container for empty required password field.
-								if (
-									$element.attr( 'type' ) === 'password' &&
-									$element.val().trim() === '' &&
-									window.WPFormsPasswordField &&
-									$element.data( 'rule-password-strength' ) &&
-									$element.hasClass( 'wpforms-field-required' )
-								) {
-									WPFormsPasswordField.passwordStrength( '', element );
+								// Remove name attributes if needed.
+								$( '.wpforms-input-temp-name' ).removeAttr( 'name' );
+
+								app.formSubmit( $form );
+							};
+
+							// In the case of active Google reCAPTCHA v3, first, we should call `grecaptcha.execute`.
+							// This is needed to get a proper grecaptcha token before submitting the form.
+							if ( typeof wpformsRecaptchaV3Execute === 'function' ) {
+								return wpformsRecaptchaV3Execute( submitHandlerRoutine );
+							}
+
+							return submitHandlerRoutine();
+						},
+						invalidHandler( event, validator ) {
+							if ( typeof validator.errorList[ 0 ] !== 'undefined' ) {
+								app.scrollToError( $( validator.errorList[ 0 ].element ) );
+							}
+						},
+						onkeyup: WPFormsUtils.debounce( // eslint-disable-next-line complexity
+							function( element, event ) {
+								// This code is copied from JQuery Validate 'onkeyup' method with only one change: 'wpforms-novalidate-onkeyup' class check.
+								const excludedKeys = [ 16, 17, 18, 20, 35, 36, 37, 38, 39, 40, 45, 144, 225 ];
+
+								if ( $( element ).hasClass( 'wpforms-novalidate-onkeyup' ) ) {
+									return; // Disable onkeyup validation for some elements (e.g. remote calls).
 								}
 
-								$field.addClass( 'wpforms-has-error' );
-							},
-							unhighlight( element, errorClass, validClass ) {
-								const $element = $( element ),
-									$field = $element.closest( '.wpforms-field' ),
-									inputName = $element.attr( 'name' );
-
-								if ( 'radio' === $element.attr( 'type' ) || 'checkbox' === $element.attr( 'type' ) ) {
-									$field.find( 'input[name="' + inputName + '"]' ).addClass( validClass ).removeClass( errorClass );
-								} else {
-									$element.addClass( validClass ).removeClass( errorClass );
-								}
-
-								// Remove the error class from the field container if there are no subfield errors.
-								if ( ! $field.find( ':input.wpforms-error,[data-dz-errormessage]:not(:empty)' ).length ) {
-									$field.removeClass( 'wpforms-has-error' );
-								}
-
-								// Remove an error message to be sure the next time the `errorPlacement` method will be executed.
-								if ( app.isModernMarkupEnabled() ) {
-									$element.parent().find( 'em.wpforms-error' ).remove();
-								}
-							},
-							submitHandler( form ) {
-								/**
-								 * Captcha error handler.
-								 *
-								 * @since 1.8.4
-								 *
-								 * @param {jQuery} $form      current form element.
-								 * @param {jQuery} $container current form container.
-								 */
-								const captchaErrorDisplay = function( $form, $container ) {
-									let errorTag = 'label',
-										errorRole = '';
-
-									if ( app.isModernMarkupEnabled() ) {
-										errorTag = 'em';
-										errorRole = 'role="alert"';
-									}
-
-									const error = `<${ errorTag } id="wpforms-field_recaptcha-error" class="wpforms-error" ${ errorRole }> ${ wpforms_settings.val_recaptcha_fail_msg }</${ errorTag }>`;
-
-									$form.find( '.wpforms-recaptcha-container' ).append( error );
-									app.restoreSubmitButton( $form, $container );
-								};
-
-								/**
-								 * Submit handler routine.
-								 *
-								 * @since 1.7.2
-								 *
-								 * @return {boolean|void} False if form won't submit.
-								 */
-								const submitHandlerRoutine = function() { // eslint-disable-line complexity
-									const $form = $( form ),
-										$container = $form.closest( '.wpforms-container' ),
-										$submit = $form.find( '.wpforms-submit' ),
-										isCaptchaInvalid = $submit.data( 'captchaInvalid' ),
-										altText = $submit.data( 'alt-text' ),
-										recaptchaID = $submit.get( 0 ).recaptchaID;
-
-									if ( $form.data( 'token' ) && 0 === $( '.wpforms-token', $form ).length ) {
-										$( '<input type="hidden" class="wpforms-token" name="wpforms[token]" />' )
-											.val( $form.data( 'token' ) )
-											.appendTo( $form );
-									}
-
-									$form.find( '#wpforms-field_recaptcha-error' ).remove();
-									$submit.prop( 'disabled', true );
-
-									WPFormsUtils.triggerEvent( $form, 'wpformsFormSubmitButtonDisable', [ $form, $submit ] );
-
-									// Display processing text.
-									if ( altText ) {
-										$submit.text( altText );
-									}
-
-									if ( isCaptchaInvalid ) {
-										return captchaErrorDisplay( $form, $container );
-									}
-
-									if ( ! app.empty( recaptchaID ) || recaptchaID === 0 ) {
-										// The Form contains invisible reCAPTCHA.
-										grecaptcha.execute( recaptchaID ).then( null, function() {
-											if ( grecaptcha.getResponse() ) {
-												return;
-											}
-
-											captchaErrorDisplay( $form, $container );
-										} );
-										return false;
-									}
-
-									// Remove name attributes if needed.
-									$( '.wpforms-input-temp-name' ).removeAttr( 'name' );
-
-									app.formSubmit( $form );
-								};
-
-								// In the case of active Google reCAPTCHA v3, first, we should call `grecaptcha.execute`.
-								// This is needed to get a proper grecaptcha token before submitting the form.
-								if ( typeof wpformsRecaptchaV3Execute === 'function' ) {
-									return wpformsRecaptchaV3Execute( submitHandlerRoutine );
-								}
-
-								return submitHandlerRoutine();
-							},
-							invalidHandler( event, validator ) {
-								if ( typeof validator.errorList[ 0 ] !== 'undefined' ) {
-									app.scrollToError( $( validator.errorList[ 0 ].element ) );
-								}
-							},
-							onkeyup: WPFormsUtils.debounce( // eslint-disable-next-line complexity
-								function( element, event ) {
-									// This code is copied from JQuery Validate 'onkeyup' method with only one change: 'wpforms-novalidate-onkeyup' class check.
-									const excludedKeys = [ 16, 17, 18, 20, 35, 36, 37, 38, 39, 40, 45, 144, 225 ];
-
-									if ( $( element ).hasClass( 'wpforms-novalidate-onkeyup' ) ) {
-										return; // Disable onkeyup validation for some elements (e.g. remote calls).
-									}
-
-									// eslint-disable-next-line no-mixed-operators
-									if ( event.which === 9 && this.elementValue( element ) === '' || $.inArray( event.keyCode, excludedKeys ) !== -1 ) {
-									} else if ( element.name in this.submitted || element.name in this.invalid ) {
-										this.element( element );
-									}
-								},
-								1000
-							),
-							onfocusout: function( element ) { // eslint-disable-line complexity, object-shorthand
-								// This code is copied from JQuery Validate 'onfocusout' method with only one change: 'wpforms-novalidate-onkeyup' class check.
-								let validate = false;
-
-								if ( $( element ).hasClass( 'wpforms-novalidate-onkeyup' ) && ! element.value ) {
-									validate = true; // Empty value error handling for elements with onkeyup validation disabled.
-								}
-
-								if ( ! this.checkable( element ) && ( element.name in this.submitted || ! this.optional( element ) ) ) {
-									validate = true;
-								}
-
-								// If the error comes from server validation, we don't need to validate it again,
-								// because it will clean the error message too early.
-								if ( $( element ).data( 'server-error' ) ) {
-									validate = false;
-								}
-
-								if ( validate ) {
+								// eslint-disable-next-line no-mixed-operators
+								if ( event.which === 9 && this.elementValue( element ) === '' || $.inArray( event.keyCode, excludedKeys ) !== -1 ) {
+								} else if ( element.name in this.submitted || element.name in this.invalid ) {
 									this.element( element );
 								}
 							},
-							onclick( element ) {
-								let validate = false;
-								const type = ( element || {} ).type;
-								let $el = $( element );
+							1000
+						),
+						onfocusout: function( element ) { // eslint-disable-line complexity, object-shorthand
+							// This code is copied from JQuery Validate 'onfocusout' method with only one change: 'wpforms-novalidate-onkeyup' class check.
+							let validate = false;
 
-								if ( [ 'checkbox', 'radio' ].indexOf( type ) > -1 ) {
-									if ( $el.hasClass( 'wpforms-likert-scale-option' ) ) {
-										$el = $el.closest( 'tr' );
-									} else {
-										$el = $el.closest( '.wpforms-field' );
-									}
-									$el.find( 'label.wpforms-error, em.wpforms-error' ).remove();
-									validate = true;
-								}
+							if ( $( element ).hasClass( 'wpforms-novalidate-onkeyup' ) && ! element.value ) {
+								validate = true; // Empty value error handling for elements with onkeyup validation disabled.
+							}
 
-								if ( validate ) {
-									this.element( element );
+							if ( ! this.checkable( element ) && ( element.name in this.submitted || ! this.optional( element ) ) ) {
+								validate = true;
+							}
+
+							// If the error comes from server validation, we don't need to validate it again,
+							// because it will clean the error message too early.
+							if ( $( element ).data( 'server-error' ) ) {
+								validate = false;
+							}
+
+							if ( validate ) {
+								this.element( element );
+							}
+						},
+						onclick( element ) {
+							let validate = false;
+							const type = ( element || {} ).type;
+							let $el = $( element );
+
+							if ( [ 'checkbox', 'radio' ].indexOf( type ) > -1 ) {
+								if ( $el.hasClass( 'wpforms-likert-scale-option' ) ) {
+									$el = $el.closest( 'tr' );
+								} else {
+									$el = $el.closest( '.wpforms-field' );
 								}
-							},
-						};
-					}
-					form.validate( properties );
-					app.loadValidationGroups( form );
-				} );
-			}
+								$el.find( 'label.wpforms-error, em.wpforms-error' ).remove();
+								validate = true;
+							}
+
+							if ( validate ) {
+								this.element( element );
+							}
+						},
+					};
+				}
+				form.validate( properties );
+				app.loadValidationGroups( form );
+			} );
 		},
 
 		/**
@@ -2225,14 +2232,6 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				return;
 			}
 
-			if ( validator.pendingRequest > 0 ) {
-				setTimeout( function() {
-					app.checkForInvalidFields( $form, $page, callback );
-				}, 800 );
-
-				return;
-			}
-
 			let valid = true;
 
 			$page.find( ':input' ).each( function( index, el ) {
@@ -2253,6 +2252,14 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					valid = false;
 				}
 			} );
+
+			if ( validator.pendingRequest > 0 ) {
+				setTimeout( function() {
+					app.checkForInvalidFields( $form, $page, callback );
+				}, 800 );
+
+				return;
+			}
 
 			if ( ! valid ) {
 				app.scrollToError( $page );
@@ -3655,7 +3662,14 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 			// Set data attribute for each field with server error.
 			$.each( errors, function( field, message ) {
-				$( '[name="' + field + '"]', $form ).attr( 'data-server-error', message );
+				const $field = $( '[name="' + field + '"]', $form );
+
+				if ( $field.length ) {
+					$field.attr( 'data-server-error', message );
+				} else {
+					// unset error, validator.showErrors() will not work if the field is not found.
+					delete errors[ field ];
+				}
 			} );
 
 			validator.showErrors( errors );

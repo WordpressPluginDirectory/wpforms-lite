@@ -1,18 +1,18 @@
-/* global wpforms_admin */
+/* global wpforms_admin, htmx */
 
 /**
  * WPForms admin. Extend list tables functionality.
  *
- * @param  wpforms_admin.column_selector_title
- * @param  wpforms_admin.save_changes
- * @param  wpforms_admin.uh_oh
- * @param  wpforms_admin.unknown_error
- * @param  wpforms_admin.column_selector_no_fields
- * @param  wpforms_admin.column_selector_no_meta
+ * @param wpforms_admin.column_selector_title
+ * @param wpforms_admin.save_changes
+ * @param wpforms_admin.uh_oh
+ * @param wpforms_admin.unknown_error
+ * @param wpforms_admin.column_selector_no_fields
+ * @param wpforms_admin.column_selector_no_meta
  *
  * @since 1.8.6
  */
-const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( document, window, $ ) {
+var WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( document, window, $ ) { // eslint-disable-line no-var
 	/**
 	 * Supported pages' CSS selectors.
 	 * It is the ids of the `.wpforms-admin-wrap` container, which reflects `page` + `view` URL attributes.
@@ -75,6 +75,7 @@ const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( 
 		 * @since 1.8.6
 		 */
 		ready() {
+			app.initPagination();
 			app.prepareTableFootColumns();
 			app.initTableScrollColumns();
 			app.initTableSortableColumns();
@@ -91,7 +92,11 @@ const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( 
 			el.$doc
 				.on( 'click', selectors.cogIcon, app.onClickCog )
 				.on( 'wpforms_multiselect_checkbox_list_toggle', app.onMenuToggle )
-				.on( 'click', selectors.submitButton, app.onSaveChanges );
+				.on( 'click', selectors.submitButton, app.onSaveChanges )
+				.on( 'click', '.tablenav-pages a.button', app.clickPaginationButton )
+				.on( 'keydown', '#wpforms-overview-search-term', app.searchTermKeydown )
+				.on( 'htmx:beforeSwap', app.htmxBeforeSwap )
+				.on( 'htmx:afterSettle', app.htmxAfterSettle );
 
 			el.$tableScroll?.on( 'scroll', app.tableScroll );
 
@@ -108,6 +113,7 @@ const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( 
 		 */
 		initElements() {
 			el.$doc = $( document );
+			el.$body = $( 'body' );
 			el.$header = $( '#wpforms-header' );
 			el.$page = $( supportedPages.join( ',' ) );
 			el.$table = el.$page.find( '.wp-list-table' );
@@ -115,6 +121,8 @@ const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( 
 			el.$menu = $( '#wpforms-list-table-ext-edit-columns-select-container' );
 			el.$cog = app.initCogIcon();
 			el.$wpcontent = $( '#wpcontent' );
+			el.$tablenavPages = $( '.tablenav-pages' );
+			el.$tablenavPagesLinks = $( '.tablenav-pages .pagination-links a' );
 
 			// The Forms Overview page has no table container, wrap the table.
 			if ( ! el.$tableContainer.hasClass( 'wpforms-table-container' ) ) {
@@ -124,6 +132,105 @@ const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( 
 
 			// Add specific classes to the page container.
 			el.$page.addClass( 'wpforms-list-table-ext-page' );
+		},
+
+		/**
+		 * Init pagination.
+		 *
+		 * @since 1.9.3
+		 */
+		initPagination() {
+			// Prevent the error messages in console.
+			htmx.config.historyCacheSize = 2;
+
+			const perPage = $( '#pagination_per_page, #wpforms_entries_per_page' ).val();
+
+			// Do not proceed if the perPage value is too high.
+			// The HTMX pagination will be disabled in this case to avoid console errors coused by the large size of the page HTML.
+			if ( perPage > 200 ) {
+				return;
+			}
+
+			$( '.tablenav-pages .pagination-links a' ).each( function() {
+				const $link = $( this );
+				const url = $link.attr( 'href' );
+
+				$link
+					.attr( {
+						'hx-get': url,
+						'hx-target': '.wpforms-admin-content',
+						'hx-swap': 'outerHTML',
+						'hx-select': '.wpforms-admin-content',
+						'hx-replace-url': 'true',
+					} );
+
+				htmx.process( $link[ 0 ] );
+			} );
+		},
+
+		/**
+		 * Click pagination button event handler.
+		 *
+		 * @since 1.9.3
+		 */
+		clickPaginationButton() {
+			el.$body.addClass( 'wpforms-loading' );
+		},
+
+		/**
+		 * The search term keydown event handler.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {Event} e Event.
+		 */
+		searchTermKeydown( e ) {
+			if ( e.keyCode === 13 ) {
+				$( '#current-page-selector' ).val( 1 );
+			}
+		},
+
+		/**
+		 * The `htmx:beforeSwap` event handler.
+		 *
+		 * @since 1.9.3
+		 */
+		htmxBeforeSwap() {
+			el.$cog.detach();
+		},
+
+		/**
+		 * The `htmx:afterSettle` event handler.
+		 *
+		 * @since 1.9.3
+		 */
+		htmxAfterSettle() {
+			app.initElements();
+			app.initMultiSelect();
+			app.prepareTableFootColumns();
+			app.initTableSortableColumns();
+			app.initTableScrollColumns();
+
+			el.$tableScroll?.on( 'scroll', app.tableScroll );
+			app.windowResize();
+			app.initPagination();
+			app.initMobileRowExpander();
+
+			window.WPFormsForms?.Overview.htmxAfterSettle();
+			window.WPFormsPagesEntries?.htmxAfterSettle();
+
+			el.$body.removeClass( 'wpforms-loading' );
+		},
+
+		/**
+		 * Init mobile view row expander.
+		 *
+		 * @since 1.9.3
+		 */
+		initMobileRowExpander() {
+			$( 'tbody' ).on( 'click', '.toggle-row', function() {
+				$( this ).closest( 'tr' ).toggleClass( 'is-expanded' );
+			} );
 		},
 
 		/**
@@ -555,9 +662,17 @@ const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( 
 			}
 
 			el.$menu.find( '.wpforms-list-table-ext-edit-columns-select' ).each( function() {
-				const isLongList = $( this ).find( 'option' ).length > 10;
+				const $select = $( this );
+				const isLongList = $select.find( 'option' ).length > 10;
 				const isEntriesPage = el.$page.is( '#wpforms-entries-list' );
 				const showSearch = isEntriesPage && isLongList;
+				const $selectWrapper = $select.parent( '.wpforms-multiselect-checkbox-dropdown' );
+
+				// If the multiselect is already initialized, skip.
+				if ( $selectWrapper.length ) {
+					return;
+				}
+
 				const multiSelectColumns = new window.WPFormsMultiSelectCheckbox(
 					this,
 					{
@@ -567,9 +682,10 @@ const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( 
 					}
 				);
 
+				// Initialize the multiselect.
 				multiSelectColumns.init();
 
-				const $wrapper = $( this ).next( '.wpforms-multiselect-checkbox-wrapper' );
+				const $wrapper = $select.next( '.wpforms-multiselect-checkbox-wrapper' );
 				const $list = $wrapper.find( '.wpforms-multiselect-checkbox-list' );
 
 				app.appendNoResultsText( $list );
@@ -614,14 +730,15 @@ const WPFormsAdminListTableExt = window.WPFormsAdminListTableExt || ( function( 
 		 * @return {jQuery} Cog icon object.
 		 */
 		initCogIcon() {
-			if ( el.$cog ) {
-				return el.$cog;
-			}
-
 			const $lastColumnHeader = el.$table.find( 'thead th:not(.hidden):last' );
 
 			if ( ! $lastColumnHeader.length ) {
 				return $();
+			}
+
+			if ( el.$cog ) {
+				$lastColumnHeader.append( el.$cog );
+				return el.$cog;
 			}
 
 			const cogId = selectors.cogIcon.replace( '#', '' );

@@ -665,7 +665,7 @@ class WPForms_Field_Email extends WPForms_Field {
 	 * Ajax handler to detect restricted email.
 	 *
 	 * @since 1.6.3
-	 * @since {VERSION Added repeater field compatibility.
+	 * @since 1.9.1 Added repeater field compatibility.
 	 */
 	public function ajax_check_restricted_email() {
 

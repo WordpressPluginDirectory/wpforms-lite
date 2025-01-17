@@ -26,17 +26,17 @@ class InvoiceCreated extends Base {
 	 */
 	public function handle() {
 
-		if ( ! isset( $this->data->billing_reason ) || $this->data->billing_reason !== 'subscription_cycle' ) {
+		if ( ! isset( $this->data->object->billing_reason ) || $this->data->object->billing_reason !== 'subscription_cycle' ) {
 			return false; // Webhook handler for Invoice.Create supports only billing_reason = subscription_cycle.
 		}
 
-		$original_subscription = ( new Queries() )->get_subscription( $this->data->subscription );
+		$original_subscription = ( new Queries() )->get_subscription( $this->data->object->subscription );
 
 		if ( is_null( $original_subscription ) ) {
 			return false; // Original subscription not found.
 		}
 
-		$renewal = ( new Queries() )->get_renewal_by_invoice_id( $this->data->id );
+		$renewal = ( new Queries() )->get_renewal_by_invoice_id( $this->data->object->id );
 
 		if ( ! is_null( $renewal ) ) {
 			return false; // Renewal already exists.
@@ -54,7 +54,7 @@ class InvoiceCreated extends Base {
 			$renewal_id,
 			sprintf(
 				'Stripe renewal was created (Invoice ID: %1$s).',
-				$this->data->id
+				$this->data->object->id
 			)
 		);
 
@@ -74,8 +74,8 @@ class InvoiceCreated extends Base {
 	 */
 	private function insert_renewal( $original_subscription ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
-		$currency = strtoupper( $this->data->currency );
-		$amount   = $this->data->amount_due / Helpers::get_decimals_amount( $currency );
+		$currency = strtoupper( $this->data->object->currency );
+		$amount   = $this->data->object->amount_due / Helpers::get_decimals_amount( $currency );
 
 		return wpforms()->obj( 'payment' )->add(
 			[
@@ -92,7 +92,7 @@ class InvoiceCreated extends Base {
 				'transaction_id'   => '',
 				'subscription_id'  => $original_subscription->subscription_id,
 				'customer_id'      => $original_subscription->customer_id,
-				'date_created_gmt' => gmdate( 'Y-m-d H:i:s', $this->data->lines->data[0]->period->start ),
+				'date_created_gmt' => gmdate( 'Y-m-d H:i:s', $this->data->object->lines->data[0]->period->start ),
 				'date_updated_gmt' => gmdate( 'Y-m-d H:i:s' ),
 			]
 		);
@@ -110,8 +110,8 @@ class InvoiceCreated extends Base {
 
 		$meta = $this->copy_meta_from_db( $original_subscription->id );
 
-		$meta['invoice_id']     = $this->data->id;
-		$meta['customer_email'] = isset( $this->data->customer_email ) ? $this->data->customer_email : '';
+		$meta['invoice_id']     = $this->data->object->id;
+		$meta['customer_email'] = isset( $this->data->object->customer_email ) ? $this->data->object->customer_email : '';
 
 		wpforms()->obj( 'payment_meta' )->bulk_add( $renewal_id, $meta );
 	}
@@ -157,7 +157,7 @@ class InvoiceCreated extends Base {
 
 		try {
 			$invoice = new Invoice();
-			$invoice = $invoice->retrieve( $this->data->id, Helpers::get_auth_opts() );
+			$invoice = $invoice->retrieve( $this->data->object->id, Helpers::get_auth_opts() );
 
 			if ( empty( $invoice->finalized_at ) ) {
 				$invoice->finalizeInvoice();

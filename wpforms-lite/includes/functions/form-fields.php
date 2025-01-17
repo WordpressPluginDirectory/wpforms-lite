@@ -639,3 +639,29 @@ function wpforms_get_multi_fields(): array {
 		'payment-checkbox',
 	];
 }
+
+/**
+ * Get column width.
+ *
+ * @since 1.9.3
+ *
+ * @param array $column Column data.
+ *
+ * @return float
+ */
+function wpforms_get_column_width( array $column ): float {
+
+	$preset_width = ! empty( $column['width_preset'] ) ? (int) $column['width_preset'] : 50;
+
+	if ( $preset_width === 33 ) {
+		$preset_width = 33.33333;
+	} elseif ( $preset_width === 67 ) {
+		$preset_width = 66.66666;
+	}
+
+	if ( ! empty( $column['width_custom'] ) ) {
+		$preset_width = $column['width_custom'];
+	}
+
+	return (float) $preset_width;
+}

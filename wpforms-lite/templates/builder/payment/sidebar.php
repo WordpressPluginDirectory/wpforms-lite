@@ -31,7 +31,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<i class="fa fa-angle-right wpforms-toggle-arrow"></i>
 
-	<?php if ( ! empty( $configured ) ) : ?>
-	<i class="fa fa-check-circle-o"></i>
-	<?php endif; ?>
+	<i class="fa fa-check-circle-o <?php echo empty( $configured ) ? 'wpforms-hidden' : ''; ?>"></i>
 </a>

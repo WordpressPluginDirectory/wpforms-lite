@@ -620,6 +620,9 @@ class WPForms_WP_Emails {
 						! apply_filters( 'wpforms_email_display_empty_fields', false ) &&
 						( ! isset( $this->fields[ $field_id ]['value'] ) || (string) $this->fields[ $field_id ]['value'] === '' )
 					) {
+						/** This filter is documented in wpforms/includes/emails/class-emails.php */
+						$message .= apply_filters( 'wpforms_wp_emails_html_field_value_message_html', '' , $field, $this->form_data );
+
 						continue;
 					}
 
@@ -685,7 +688,16 @@ class WPForms_WP_Emails {
 					$field_item
 				);
 
-				$message .= wpautop( $field_item );
+				/**
+				 * Filter the field item before it is added to the email message.
+				 *
+				 * @since 1.9.3
+				 *
+				 * @param string $field_message Field message.
+				 * @param array  $field         Field data.
+				 * @param array  $form_data     Form data and settings.
+				 */
+				$message .= apply_filters( 'wpforms_wp_emails_html_field_value_message_html', wpautop( $field_item ), $field, $this->form_data );
 
 				$x ++;
 			}

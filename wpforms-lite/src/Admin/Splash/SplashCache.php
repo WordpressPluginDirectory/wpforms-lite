@@ -20,7 +20,7 @@ class SplashCache extends CacheBase {
 	 *
 	 * @var string
 	 */
-	const REMOTE_SOURCE = 'https://plugin.wpforms.com/wp-content/splash.json';
+	const REMOTE_SOURCE = 'https://wpformsapi.com/feeds/v1/splash/';
 
 	/**
 	 * Determine if the class is allowed to load.

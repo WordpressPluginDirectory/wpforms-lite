@@ -128,8 +128,15 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 		 * @since 1.8.2
 		 */
 		setupStripeForm() {
-			const $form = $( this ),
-				formId = $form.data( 'formid' );
+			const $form = $( this );
+
+			const setupEvent = WPFormsUtils.triggerEvent( $( document ), 'wpformsBeforeStripePaymentElementSetup', [ $form ] );
+
+			if ( setupEvent.isDefaultPrevented() ) {
+				return;
+			}
+
+			const formId = $form.data( 'formid' );
 
 			// Bail early if form was already setup.
 			if ( typeof app.forms[ formId ] !== 'undefined' ) {
@@ -290,10 +297,13 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 				$stripeDiv = $form.find( '.wpforms-field-stripe-credit-card' ),
 				isHidden = ( pass && action === 'hide' ) || ( ! pass && action !== 'hide' );
 
+			const forms = app.forms[ formID ] || [];
+			const paymentElement = forms.paymentElement || null;
+
 			if (
 				! $stripeDiv.length ||
 				$stripeDiv.data( 'field-id' ).toString() !== fieldID ||
-				app.forms[ formID ].paymentElement ||
+				paymentElement ||
 				isHidden
 			) {
 				return;
@@ -525,6 +535,22 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 			app.forms[ formId ].paymentElement.on( 'loaderror', function( event ) {
 				app.displayStripeLoadError( $form, event.error.message );
 			} );
+
+			// Trigger event when payment element is focused.
+			app.forms[ formId ].paymentElement.on( 'focus', function() {
+				app.triggerPaymentElementFocusEvent( $form );
+			} );
+		},
+
+		/**
+		 * Trigger Payment Element Focus Event.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {jQuery} $form Form element.
+		 */
+		triggerPaymentElementFocusEvent( $form ) {
+			$( document ).trigger( 'wpformsStripePaymentElementFocus', [ $form ] );
 		},
 
 		/**
@@ -636,6 +662,11 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 
 			app.forms[ formId ].linkElement.on( 'loaderror', function( event ) {
 				app.displayStripeLoadError( $form, event.error.message );
+			} );
+
+			// Trigger event when link element is focused.
+			app.forms[ formId ].linkElement.on( 'focus', function() {
+				app.triggerPaymentElementFocusEvent( $form );
 			} );
 		},
 

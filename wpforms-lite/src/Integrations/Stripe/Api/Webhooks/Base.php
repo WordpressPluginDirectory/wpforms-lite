@@ -39,7 +39,7 @@ abstract class Base {
 	 */
 	public function setup( StripeEvent $event ) {
 
-		$this->data = $event->data->object;
+		$this->data = $event->data;
 
 		$this->hooks();
 	}
@@ -76,15 +76,15 @@ abstract class Base {
 		// When it's dropped from the addon, this line can be safely removed.
 		$is_legacy_api = Helpers::is_pro() && absint( wpforms_setting( 'stripe-api-version' ) ) === 2;
 
-		if ( $is_legacy_api && ! isset( $this->data->id ) ) {
+		if ( $is_legacy_api && ! isset( $this->data->object->id ) ) {
 			return; // Payment id not found.
 		}
 
-		if ( ! $is_legacy_api && ! isset( $this->data->payment_intent ) ) {
+		if ( ! $is_legacy_api && ! isset( $this->data->object->payment_intent ) ) {
 			return; // Payment intent not found.
 		}
 
-		$transaction_id = $is_legacy_api ? $this->data->id : $this->data->payment_intent;
+		$transaction_id = $is_legacy_api ? $this->data->object->id : $this->data->object->payment_intent;
 
 		$this->db_payment = wpforms()->obj( 'payment' )->get_by( 'transaction_id', $transaction_id );
 	}
@@ -109,9 +109,13 @@ abstract class Base {
 	 *
 	 * @since 1.8.4
 	 *
+	 * @depecated 1.9.3
+	 *
 	 * @return bool
 	 */
 	protected function is_previous_statuses_matched(): bool {
+
+		_deprecated_function( __METHOD__, '1.9.3 of the WPForms plugin' );
 
 		$db_stripe = [
 			'partrefund' => 'refunded',

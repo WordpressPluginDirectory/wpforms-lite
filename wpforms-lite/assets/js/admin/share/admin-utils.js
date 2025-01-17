@@ -55,22 +55,24 @@ const wpf = {
 	 */
 	bindUIActions() {
 		// The following items should all trigger the fieldUpdate trigger.
-		jQuery( document ).on( 'wpformsFieldAdd', wpf.setFieldOrders );
-		jQuery( document ).on( 'wpformsFieldDelete', wpf.setFieldOrders );
-		jQuery( document ).on( 'wpformsFieldMove', wpf.setFieldOrders );
-		jQuery( document ).on( 'wpformsFieldAdd', wpf.setChoicesOrders );
-		jQuery( document ).on( 'wpformsFieldChoiceAdd', wpf.setChoicesOrders );
-		jQuery( document ).on( 'wpformsFieldChoiceDelete', wpf.setChoicesOrders );
-		jQuery( document ).on( 'wpformsFieldChoiceMove', wpf.setChoicesOrders );
-		jQuery( document ).on( 'wpformsFieldAdd', wpf.fieldUpdate );
-		jQuery( document ).on( 'wpformsFieldDelete', wpf.fieldUpdate );
-		jQuery( document ).on( 'wpformsFieldMove', wpf.fieldUpdate );
-		jQuery( document ).on( 'focusout', '.wpforms-field-option-row-label input', wpf.fieldUpdate );
-		jQuery( document ).on( 'wpformsFieldChoiceAdd', wpf.fieldUpdate );
-		jQuery( document ).on( 'wpformsFieldChoiceDelete', wpf.fieldUpdate );
-		jQuery( document ).on( 'wpformsFieldChoiceMove', wpf.fieldUpdate );
-		jQuery( document ).on( 'wpformsFieldDynamicChoiceToggle', wpf.fieldUpdate );
-		jQuery( document ).on( 'focusout', '.wpforms-field-option-row-choices input.label', wpf.fieldUpdate );
+		jQuery( document )
+			.on( 'wpformsFieldAdd', wpf.setFieldOrders )
+			.on( 'wpformsFieldDuplicated', wpf.setFieldOrders )
+			.on( 'wpformsFieldDelete', wpf.setFieldOrders )
+			.on( 'wpformsFieldMove', wpf.setFieldOrders )
+			.on( 'wpformsFieldAdd', wpf.setChoicesOrders )
+			.on( 'wpformsFieldChoiceAdd', wpf.setChoicesOrders )
+			.on( 'wpformsFieldChoiceDelete', wpf.setChoicesOrders )
+			.on( 'wpformsFieldChoiceMove', wpf.setChoicesOrders )
+			.on( 'wpformsFieldAdd', wpf.fieldUpdate )
+			.on( 'wpformsFieldDelete', wpf.fieldUpdate )
+			.on( 'wpformsFieldMove', wpf.fieldUpdate )
+			.on( 'wpformsFieldChoiceAdd', wpf.fieldUpdate )
+			.on( 'wpformsFieldChoiceDelete', wpf.fieldUpdate )
+			.on( 'wpformsFieldChoiceMove', wpf.fieldUpdate )
+			.on( 'wpformsFieldDynamicChoiceToggle', wpf.fieldUpdate )
+			.on( 'focusout', '.wpforms-field-option-row-label input', wpf.fieldUpdate )
+			.on( 'focusout', '.wpforms-field-option-row-choices input.label', wpf.fieldUpdate );
 	},
 
 	/**
@@ -356,8 +358,10 @@ const wpf = {
 				// Get the name format and split it into an array.
 				const nameFormat = fields[ key ].format;
 
-				// Add the name fields to the fields object
-				fields[ key ].additional = nameFormat.split( '-' );
+				if ( nameFormat ) {
+					// Add the name fields to the field object
+					fields[ key ].additional = nameFormat.split( '-' );
+				}
 			}
 
 			if ( fields[ key ]?.type === 'address' ) {

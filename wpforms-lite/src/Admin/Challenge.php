@@ -185,9 +185,10 @@ class Challenge {
 				'wpforms-challenge-admin',
 				'wpforms_challenge_admin',
 				[
-					'nonce'        => wp_create_nonce( 'wpforms_challenge_ajax_nonce' ),
-					'minutes_left' => absint( $this->minutes ),
-					'option'       => $this->get_challenge_option(),
+					'nonce'          => wp_create_nonce( 'wpforms_challenge_ajax_nonce' ),
+					'minutes_left'   => absint( $this->minutes ),
+					'option'         => $this->get_challenge_option(),
+					'frozen_tooltip' => esc_html__( 'Challenge is frozen.', 'wpforms-lite' ),
 				]
 			);
 		}

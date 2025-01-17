@@ -57,12 +57,16 @@ foreach ( $fields as $field ) :
 	// Close a row.
 	$rows_html .= '</tr>';
 
-	// If a product item is not hidden (pre-selected), then hide the placeholder.
-	if ( $is_placeholder_visible && isset( $field['is_hidden'] ) && $field['is_hidden'] === false ) {
-		$is_placeholder_visible = false;
-	}
-
 endforeach;
+
+$visible_items = array_filter(
+	$items,
+	function ( $item ) {
+		return ! isset( $item['is_hidden'] ) || $item['is_hidden'] === false;
+	}
+);
+
+$is_placeholder_visible = empty( $visible_items );
 
 $placeholder_display = $is_placeholder_visible ? 'display: table-row;' : 'display: none;';
 $placeholder_classes = $is_placeholder_visible ? 'wpforms-order-summary-placeholder' : 'wpforms-order-summary-placeholder wpforms-order-summary-placeholder-hidden';
@@ -74,7 +78,10 @@ $placeholder_classes = $is_placeholder_visible ? 'wpforms-order-summary-placehol
 		<thead>
 			<tr>
 				<th class="wpforms-order-summary-item-label" valign="top"><?php esc_html_e( 'Item', 'wpforms-lite' ); ?></th>
-				<th class="wpforms-order-summary-item-quantity" valign="top"><?php esc_html_e( 'Quantity', 'wpforms-lite' ); ?></th>
+				<th class="wpforms-order-summary-item-quantity" valign="top">
+					<span class="wpforms-order-summary-item-quantity-label-full"><?php esc_html_e( 'Quantity', 'wpforms-lite' ); ?></span>
+					<span class="wpforms-order-summary-item-quantity-label-short"><?php esc_html_e( 'Qty', 'wpforms-lite' ); ?></span>
+				</th>
 				<th class="wpforms-order-summary-item-price" valign="top" style="<?php echo esc_attr( $total_width ); ?>"><?php esc_html_e( 'Total', 'wpforms-lite' ); ?></th>
 			</tr>
 		</thead>

@@ -106,10 +106,10 @@ class Status {
 		$revision  = $revisions ? $revisions->get_revision() : null;
 
 		if ( $revision ) {
-			$form_id = $revision->ID;
+			$this->form_data = wpforms_decode( $revision->post_content );
+		} else {
+			$this->form_data = wpforms()->obj( 'form' )->get( (int) $form_id, [ 'content_only' => true ] );
 		}
-
-		$this->form_data = wpforms()->obj( 'form' )->get( (int) $form_id, [ 'content_only' => true ] );
 
 		if ( ! empty( $this->form_data['providers'][ $this->provider ] ) ) {
 			$is_connected = $this->check_valid_connections();

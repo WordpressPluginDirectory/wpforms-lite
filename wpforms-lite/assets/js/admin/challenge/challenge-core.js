@@ -756,6 +756,78 @@ WPFormsChallenge.core = window.WPFormsChallenge.core || ( function( document, wi
 		},
 
 		/**
+		 * Freeze/Unfreeze Challenge.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {boolean} freeze      True to freeze, false to unfreeze.
+		 * @param {string}  tooltipText Tooltip text.
+		 */
+		async freezeChallenge( freeze = true, tooltipText = '' ) {
+			// Freeze the Challenge.
+			if ( freeze ) {
+				const closed = el.$listBlock.hasClass( 'closed' );
+
+				el.$challenge.addClass( 'frozen' ).data( 'was-closed', closed );
+				el.$listBlock.addClass( 'closed' ).find( 'p' ).hide();
+				app.initFrozenTooltip( tooltipText.length ? tooltipText : wpforms_challenge_admin.frozen_tooltip );
+				app.pauseResumeChallenge( 'pause' );
+
+				return;
+			}
+
+			// Do not unfreeze if it's not frozen.
+			if ( ! el.$challenge.hasClass( 'frozen' ) ) {
+				return;
+			}
+
+			// Unfreeze the Challenge.
+			el.$challenge.removeClass( 'frozen' );
+			el.$progressBar.tooltipster( 'close' );
+			app.pauseResumeChallenge( 'resume' );
+
+			// Restore the opened state.
+			if ( ! el.$challenge.data( 'was-closed' ) ) {
+				el.$listBlock.removeClass( 'closed' ).find( 'p' ).show();
+			}
+		},
+
+		/**
+		 * Init the frozen Challenge tooltip.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {string} tooltipText Tooltip text.
+		 */
+		initFrozenTooltip( tooltipText ) {
+			let instance = el.$progressBar.data( 'tooltipster' );
+
+			if ( ! instance ) {
+				const args = {
+					content: '',
+					trigger: 'manual',
+					interactive: false,
+					animationDuration: 100,
+					maxWidth: 230,
+					delay: 0,
+					distance: 36,
+					side: [ 'top' ],
+					theme: [ 'tooltipster-default', 'wpforms-challenge-frozen-tooltip' ],
+					contentAsHTML: true,
+				};
+
+				// Initialize.
+				el.$progressBar.tooltipster( args );
+				instance = el.$progressBar.tooltipster( 'instance' );
+				el.$progressBar.data( 'tooltipster', instance );
+			}
+
+			el.$challenge.show();
+			instance.content( tooltipText );
+			instance.open();
+		},
+
+		/**
 		 * Refresh Page in order to re-init current step.
 		 *
 		 * @since 1.6.2

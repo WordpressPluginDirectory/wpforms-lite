@@ -13,5 +13,5 @@ namespace WPForms\Vendor\Stripe\V2\Billing;
  */
 class MeterEventSession extends \WPForms\Vendor\Stripe\ApiResource
 {
-    const OBJECT_NAME = 'billing.meter_event_session';
+    const OBJECT_NAME = 'v2.billing.meter_event_session';
 }

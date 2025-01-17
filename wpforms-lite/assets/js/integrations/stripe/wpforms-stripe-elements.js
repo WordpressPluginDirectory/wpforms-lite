@@ -122,6 +122,10 @@ var WPFormsStripeElements = window.WPFormsStripeElements || ( function( document
 				app.displayStripeError( $form, message );
 			} );
 
+			cardElement.on( 'focus', function() {
+				$( document ).trigger( 'wpformsStripePaymentElementFocus', [ $form ] );
+			} );
+
 			$hiddenInput.data( 'stripe-element', cardElement );
 
 			return cardElement;

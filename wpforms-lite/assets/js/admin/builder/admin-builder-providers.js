@@ -1,4 +1,4 @@
-/* global wpforms_builder_providers, wpforms_builder, wpf */
+/* global wpforms_builder_providers, wpforms_builder, wpf, WPForms */
 
 ( function( $ ) {
 
@@ -177,9 +177,10 @@
 				$connections = $this.parent().parent(),
 				$container   = $this.parent(),
 				provider     = $this.data( 'provider' ),
+				defaultValue = WPFormsProviders.getDefaultConnectionName( provider ).trim(),
 				type         = $this.data( 'type' ),
 				namePrompt   = wpforms_builder_providers.prompt_connection,
-				nameField    = '<input autofocus="" type="text" id="provider-connection-name" placeholder="' + wpforms_builder_providers.prompt_placeholder + '">',
+				nameField = '<input ' + ( defaultValue === '' ? ' autofocus=""' : '' ) + ' type="text" id="provider-connection-name" placeholder="' + wpforms_builder_providers.prompt_placeholder + '" value="' + defaultValue + '">',
 				nameError    = '<p class="error">' + wpforms_builder_providers.error_name + '</p>',
 				modalContent = namePrompt + nameField + nameError;
 
@@ -405,7 +406,16 @@
 								action: function() {
 									$( '#wpforms-save' ).trigger( 'click' );
 									$( document ).on( 'wpformsSaved', function() {
-										window.location.href = wpforms_builder_providers.url;
+										let wpforms_builder_provider_url = wpforms_builder_providers.url;
+										const $section = $( `#wpforms-panel-${ targetPanel } .wpforms-panel-sidebar-section.active` );
+										const section = $section.length && $section.data( 'section' ) !== 'default' ? $section.data( 'section' ) : null;
+
+										// Adding an active section parameter.
+										if ( section ) {
+											wpforms_builder_provider_url += `&section=${ section }`;
+										}
+
+										window.location.href = wpforms_builder_provider_url;
 									} );
 								},
 							},
@@ -515,6 +525,69 @@
 				}
 			} );
 			return fields.serialize();
+		},
+
+		/**
+		 * Get the default name for a new connection.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {string} provider Current provider slug.
+		 *
+		 * @return {string} Returns the default name for a new connection.
+		 */
+		getDefaultConnectionName( provider ) {
+			const providerClass = WPFormsProviders.getProviderClass( provider );
+
+			// Check if the provider has a method to set the custom connection name.
+			if ( typeof providerClass?.setDefaultModalValue === 'function' ) {
+				return providerClass.setDefaultModalValue();
+			}
+
+			const providerName = $( `#${ provider }-provider` ).data( 'provider-name' );
+			const numberOfConnections = WPFormsProviders.getCountConnectionsOf( provider );
+			const defaultName = `${ providerName } ${ wpforms_builder.connection_label }`;
+
+			if ( numberOfConnections === 0 ) {
+				return defaultName;
+			}
+
+			return `${ defaultName } #${ numberOfConnections + 1 }`;
+		},
+
+		/**
+		 * Get the number of connections for the provider.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {string} provider Current provider slug.
+		 *
+		 * @return {number} Returns the number of connections for the provider.
+		 */
+		getCountConnectionsOf( provider ) {
+			return $( `#${ provider }-provider .wpforms-provider-connection` ).length;
+		},
+
+		/**
+		 * Get a provider JS object.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {string} provider Provider name.
+		 *
+		 * @return {Object|null} Return provider object or null.
+		 */
+		getProviderClass( provider ) {
+			const upperProviderPart = ( providerPart ) => (
+				providerPart.charAt( 0 ).toUpperCase() + providerPart.slice( 1 )
+			);
+
+			const getClassName = provider.split( '-' ).map( upperProviderPart ).join( '' );
+
+			if ( typeof WPForms?.Admin?.Builder?.Providers?.[ getClassName ] === 'undefined' ) {
+				return null;
+			}
+			return WPForms.Admin.Builder.Providers[ getClassName ];
 		},
 	};
 

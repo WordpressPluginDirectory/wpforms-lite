@@ -12,9 +12,9 @@ namespace WPForms\Vendor\Symfony\Component\CssSelector\Parser\Handler;
 
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Reader;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Token;
-use WPForms\Vendor\Symfony\Component\CssSelector\Parser\TokenStream;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerEscaping;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerPatterns;
+use WPForms\Vendor\Symfony\Component\CssSelector\Parser\TokenStream;
 /**
  * CSS selector comment handler.
  *
@@ -27,18 +27,8 @@ use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerPatte
  */
 class HashHandler implements HandlerInterface
 {
-    /**
-     * @var TokenizerPatterns
-     */
     private $patterns;
-    /**
-     * @var TokenizerEscaping
-     */
     private $escaping;
-    /**
-     * @param TokenizerPatterns $patterns
-     * @param TokenizerEscaping $escaping
-     */
     public function __construct(TokenizerPatterns $patterns, TokenizerEscaping $escaping)
     {
         $this->patterns = $patterns;

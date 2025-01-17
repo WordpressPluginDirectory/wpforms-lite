@@ -18,7 +18,7 @@ class AddonsCache extends CacheBase {
 	 *
 	 * @var string
 	 */
-	const REMOTE_SOURCE = 'https://wpforms.com/wp-content/addons.json';
+	const REMOTE_SOURCE = 'https://wpformsapi.com/feeds/v1/addons/';
 
 	/**
 	 * Determine if the class is allowed to load.

@@ -22,13 +22,7 @@ namespace WPForms\Vendor\Symfony\Component\CssSelector\Node;
  */
 class ElementNode extends AbstractNode
 {
-    /**
-     * @var string|null
-     */
     private $namespace;
-    /**
-     * @var string|null
-     */
     private $element;
     /**
      * @param string|null $namespace
@@ -40,14 +34,14 @@ class ElementNode extends AbstractNode
         $this->element = $element;
     }
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getNamespace()
     {
         return $this->namespace;
     }
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getElement()
     {

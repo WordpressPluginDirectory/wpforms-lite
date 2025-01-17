@@ -51,9 +51,17 @@ class Loader {
 			'PopupMaker\PopupMaker',
 			'WooCommerce\Notifications',
 			'AI\AI',
+			'ConstantContact\V3\ConstantContact',
 		];
 
-		$class_names = (array) apply_filters( 'wpforms_integrations_available', $core_class_names );
+		/**
+		 * Filter available integrations.
+		 *
+		 * @since 1.7.0
+		 *
+		 * @param array $core_class_names Array of core class names.
+		 */
+		$class_names = (array) apply_filters( 'wpforms_integrations_available', $core_class_names ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		foreach ( $class_names as $class_name ) {
 			$integration = $this->register_class( $class_name );

@@ -22,17 +22,8 @@ namespace WPForms\Vendor\Symfony\Component\CssSelector\Parser;
  */
 class Reader
 {
-    /**
-     * @var string
-     */
     private $source;
-    /**
-     * @var int
-     */
     private $length;
-    /**
-     * @var int
-     */
     private $position = 0;
     /**
      * @param string $source

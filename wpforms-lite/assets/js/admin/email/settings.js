@@ -410,7 +410,6 @@ const WPFormsEmailSettings = window.WPFormsEmailSettings || ( function( document
 					new Choices( $newSelect.get( 0 ), {
 						searchEnabled: false,
 						shouldSort: false,
-						itemSelectText: '',
 					} );
 
 					// Check if it's a legacy template and adjust settings accordingly.

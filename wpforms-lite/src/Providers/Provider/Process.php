@@ -99,6 +99,10 @@ abstract class Process {
 			return true;
 		}
 
+		if ( ! wpforms()->is_pro() ) {
+			return true;
+		}
+
 		$process = wpforms_conditional_logic()->process( $fields, $form_data, $connection['conditionals'] );
 
 		if (

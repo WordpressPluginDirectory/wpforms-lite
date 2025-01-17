@@ -29,17 +29,8 @@ class Token
     const TYPE_HASH = 'hash';
     const TYPE_NUMBER = 'number';
     const TYPE_STRING = 'string';
-    /**
-     * @var int
-     */
     private $type;
-    /**
-     * @var string
-     */
     private $value;
-    /**
-     * @var int
-     */
     private $position;
     /**
      * @param int    $type
@@ -81,11 +72,9 @@ class Token
         return self::TYPE_FILE_END === $this->type;
     }
     /**
-     * @param array $values
-     *
      * @return bool
      */
-    public function isDelimiter(array $values = array())
+    public function isDelimiter(array $values = [])
     {
         if (self::TYPE_DELIMITER !== $this->type) {
             return \false;

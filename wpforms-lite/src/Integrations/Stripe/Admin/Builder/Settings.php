@@ -164,9 +164,11 @@ class Settings {
 	 *
 	 * @return bool
 	 */
-	private function is_payments_enabled() {
+	private function is_payments_enabled(): bool {
 
-		return ! empty( $this->form_data['payments'][ $this->slug ]['enable'] );
+		return ! empty( $this->form_data['payments'][ $this->slug ]['enable'] ) ||
+			! empty( $this->form_data['payments'][ $this->slug ]['enable_one_time'] ) ||
+			! empty( $this->form_data['payments'][ $this->slug ]['enable_recurring'] );
 	}
 
 	/**

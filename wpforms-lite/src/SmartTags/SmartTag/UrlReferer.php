@@ -20,14 +20,16 @@ class UrlReferer extends SmartTag {
 	 *
 	 * @return string
 	 */
-	public function get_value( $form_data, $fields = [], $entry_id = '' ) {
+	public function get_value( $form_data, $fields = [], $entry_id = '' ): string {
 
 		$referer = $this->get_meta( $entry_id, 'referer' );
 
 		if ( ! empty( $referer ) ) {
-			return esc_url( $referer );
+			return esc_url( urldecode( $referer ) );
 		}
 
-		return esc_url( (string) wp_get_referer() );
+		$referer = urldecode( (string) wp_get_referer() );
+
+		return esc_url( $referer );
 	}
 }

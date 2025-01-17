@@ -57,15 +57,17 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
 		$type                = ! empty( $args['smarttags']['type'] ) ? esc_attr( $args['smarttags']['type'] ) : 'fields';
 		$fields              = ! empty( $args['smarttags']['fields'] ) ? esc_attr( $args['smarttags']['fields'] ) : '';
 		$is_repeater_allowed = ! empty( $args['smarttags']['allow-repeated-fields'] ) ? esc_attr( $args['smarttags']['allow-repeated-fields'] ) : '';
+		$location            = ! empty( $args['location'] ) ? esc_attr( $args['location'] ) : '';
 
 		$smarttags_toggle = sprintf(
-			'<a href="#" class="toggle-smart-tag-display toggle-unfoldable-cont" data-type="%1$s" data-fields="%2$s" data-allow-repeated-fields="%3$s">
+			'<a href="#" class="toggle-smart-tag-display toggle-unfoldable-cont" data-location="%5$s" data-type="%1$s" data-fields="%2$s" data-allow-repeated-fields="%3$s">
 				<i class="fa fa-tags"></i><span>%4$s</span>
 			</a>',
 			esc_attr( $type ),
 			esc_attr( $fields ),
 			esc_attr( $is_repeater_allowed ),
-			esc_html__( 'Show Smart Tags', 'wpforms-lite' )
+			esc_html__( 'Show Smart Tags', 'wpforms-lite' ),
+			esc_attr( $location )
 		);
 	}
 

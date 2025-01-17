@@ -35,23 +35,23 @@ class ChargeRefundUpdated extends Base {
 		}
 
 		// Proceed only if the refund status is 'canceled'.
-		if ( $this->data->status !== 'canceled' ) {
+		if ( $this->data->object->status !== 'canceled' ) {
 			return false;
 		}
 
-		$charge = ( new PaymentIntents() )->get_charge( $this->data->charge );
+		$charge = ( new PaymentIntents() )->get_charge( $this->data->object->charge );
 
 		if ( ! isset( $charge->amount_refunded ) ) {
 			return false;
 		}
 
 		$db_refunded_amount = $this->get_refunded_amount();
-		$currency           = strtoupper( $this->data->currency );
+		$currency           = strtoupper( $this->data->object->currency );
 		$decimals_amount    = Helpers::get_decimals_amount( $currency );
 
 		// We need to format amount since it doesn't contain decimals, e.g. 525 instead of 5.25.
 		$refunded_amount        = $charge->amount_refunded / $decimals_amount;
-		$canceled_refund_amount = $this->data->amount / $decimals_amount;
+		$canceled_refund_amount = $this->data->object->amount / $decimals_amount;
 
 		// Prevent duplicate webhook processing.
 		if ( ! $this->is_valid_refund_amount( $refunded_amount, $db_refunded_amount, $canceled_refund_amount ) ) {

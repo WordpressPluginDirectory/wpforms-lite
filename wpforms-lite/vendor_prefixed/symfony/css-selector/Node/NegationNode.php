@@ -22,18 +22,8 @@ namespace WPForms\Vendor\Symfony\Component\CssSelector\Node;
  */
 class NegationNode extends AbstractNode
 {
-    /**
-     * @var NodeInterface
-     */
     private $selector;
-    /**
-     * @var NodeInterface
-     */
     private $subSelector;
-    /**
-     * @param NodeInterface $selector
-     * @param NodeInterface $subSelector
-     */
     public function __construct(NodeInterface $selector, NodeInterface $subSelector)
     {
         $this->selector = $selector;

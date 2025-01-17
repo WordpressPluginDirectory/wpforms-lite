@@ -28,38 +28,20 @@ use WPForms\Vendor\Symfony\Component\CssSelector\Parser\ParserInterface;
  */
 class Translator implements TranslatorInterface
 {
-    /**
-     * @var ParserInterface
-     */
     private $mainParser;
     /**
      * @var ParserInterface[]
      */
-    private $shortcutParsers = array();
+    private $shortcutParsers = [];
     /**
-     * @var Extension\ExtensionInterface
+     * @var Extension\ExtensionInterface[]
      */
-    private $extensions = array();
-    /**
-     * @var array
-     */
-    private $nodeTranslators = array();
-    /**
-     * @var array
-     */
-    private $combinationTranslators = array();
-    /**
-     * @var array
-     */
-    private $functionTranslators = array();
-    /**
-     * @var array
-     */
-    private $pseudoClassTranslators = array();
-    /**
-     * @var array
-     */
-    private $attributeMatchingTranslators = array();
+    private $extensions = [];
+    private $nodeTranslators = [];
+    private $combinationTranslators = [];
+    private $functionTranslators = [];
+    private $pseudoClassTranslators = [];
+    private $attributeMatchingTranslators = [];
     public function __construct(ParserInterface $parser = null)
     {
         $this->mainParser = $parser ?: new Parser();
@@ -79,7 +61,7 @@ class Translator implements TranslatorInterface
             return '"' . $element . '"';
         }
         $string = $element;
-        $parts = array();
+        $parts = [];
         while (\true) {
             if (\false !== ($pos = \strpos($string, "'"))) {
                 $parts[] = \sprintf("'%s'", \substr($string, 0, $pos));
@@ -90,7 +72,7 @@ class Translator implements TranslatorInterface
                 break;
             }
         }
-        return \sprintf('concat(%s)', \implode($parts, ', '));
+        return \sprintf('concat(%s)', \implode(', ', $parts));
     }
     /**
      * {@inheritdoc}
@@ -116,8 +98,6 @@ class Translator implements TranslatorInterface
     }
     /**
      * Registers an extension.
-     *
-     * @param Extension\ExtensionInterface $extension
      *
      * @return $this
      */
@@ -148,8 +128,6 @@ class Translator implements TranslatorInterface
     /**
      * Registers a shortcut parser.
      *
-     * @param ParserInterface $shortcut
-     *
      * @return $this
      */
     public function registerParserShortcut(ParserInterface $shortcut)
@@ -158,8 +136,6 @@ class Translator implements TranslatorInterface
         return $this;
     }
     /**
-     * @param NodeInterface $node
-     *
      * @return XPathExpr
      *
      * @throws ExpressionErrorException
@@ -172,9 +148,7 @@ class Translator implements TranslatorInterface
         return \call_user_func($this->nodeTranslators[$node->getNodeName()], $node, $this);
     }
     /**
-     * @param string        $combiner
-     * @param NodeInterface $xpath
-     * @param NodeInterface $combinedXpath
+     * @param string $combiner
      *
      * @return XPathExpr
      *
@@ -188,9 +162,6 @@ class Translator implements TranslatorInterface
         return \call_user_func($this->combinationTranslators[$combiner], $this->nodeToXPath($xpath), $this->nodeToXPath($combinedXpath));
     }
     /**
-     * @param XPathExpr    $xpath
-     * @param FunctionNode $function
-     *
      * @return XPathExpr
      *
      * @throws ExpressionErrorException
@@ -203,8 +174,7 @@ class Translator implements TranslatorInterface
         return \call_user_func($this->functionTranslators[$function->getName()], $xpath, $function);
     }
     /**
-     * @param XPathExpr $xpath
-     * @param string    $pseudoClass
+     * @param string $pseudoClass
      *
      * @return XPathExpr
      *
@@ -218,10 +188,9 @@ class Translator implements TranslatorInterface
         return \call_user_func($this->pseudoClassTranslators[$pseudoClass], $xpath);
     }
     /**
-     * @param XPathExpr $xpath
-     * @param string    $operator
-     * @param string    $attribute
-     * @param string    $value
+     * @param string $operator
+     * @param string $attribute
+     * @param string $value
      *
      * @return XPathExpr
      *

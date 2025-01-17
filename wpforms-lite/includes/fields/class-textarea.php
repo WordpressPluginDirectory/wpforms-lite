@@ -226,7 +226,7 @@ class WPForms_Field_Textarea extends WPForms_Field {
 		$value   = '';
 
 		if ( isset( $primary['attr']['value'] ) ) {
-			$value = esc_textarea( $primary['attr']['value'] );
+			$value = esc_textarea( html_entity_decode( $primary['attr']['value'] ) );
 
 			unset( $primary['attr']['value'] );
 		}

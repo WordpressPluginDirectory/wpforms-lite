@@ -225,17 +225,6 @@ class CSSVars {
 	public function init() {
 
 		$this->init_vars();
-		$this->hooks();
-	}
-
-	/**
-	 * Register hooks.
-	 *
-	 * @since 1.8.1
-	 */
-	private function hooks() {
-
-		add_action( 'wp_head', [ $this, 'output_root' ], PHP_INT_MAX );
 	}
 
 	/**
@@ -313,10 +302,13 @@ class CSSVars {
 	 *
 	 * @since 1.8.1
 	 * @since 1.8.1.2 Added $force argument.
+	 * @deprecated 1.9.3
 	 *
 	 * @param bool $force Force output root variables.
 	 */
 	public function output_root( $force = false ) {
+
+		_deprecated_function( __METHOD__, '1.9.3 of the WPForms plugin' );
 
 		if ( ! empty( $this->is_root_vars_displayed ) && empty( $force ) ) {
 			return;
@@ -325,6 +317,18 @@ class CSSVars {
 		$this->output_selector_vars( ':root', $this->css_vars[':root'] );
 
 		$this->is_root_vars_displayed = true;
+	}
+
+	/**
+	 * Get root variables CSS.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @return string
+	 */
+	public function get_root_vars_css(): string {
+
+		return $this->get_selector_vars_css( ':root', $this->css_vars[':root'] );
 	}
 
 	/**
@@ -351,13 +355,32 @@ class CSSVars {
 
 		printf(
 			'<style id="%1$s">
-				%2$s {
-					%3$s
-				}
+				%2$s
 			</style>',
 			sanitize_key( $style_id ),
+			$this->get_selector_vars_css( $selector, $vars, $form_id ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		);
+	}
+
+	/**
+	 * Get selector variables CSS.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param string     $selector Selector.
+	 * @param array      $vars     Variables data.
+	 * @param string|int $form_id  Form ID. Optional. Default is empty string.
+	 *
+	 * @return string
+	 */
+	private function get_selector_vars_css( string $selector, array $vars, $form_id = '' ): string {
+
+		return sprintf(
+			'%1$s {
+				%2$s
+			}',
 			$selector, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
- 			esc_html( $this->get_vars_css( $vars, $form_id ) )
+			esc_html( $this->get_vars_css( $vars, $form_id ) )
 		);
 	}
 

@@ -41,23 +41,13 @@ export default ( function() {
 	 */
 	const { PanelColorSettings } = wp.blockEditor || wp.editor;
 	const { SelectControl, PanelBody, Flex, FlexBlock, __experimentalUnitControl, TextControl, Button } = wp.components;
-	const { useState, useEffect } = wp.element;
 
 	/**
 	 * Localized data aliases.
 	 *
 	 * @since 1.8.8
 	 */
-	const { strings, defaults, isPro, isLicenseActive } = wpforms_gutenberg_form_selector;
-
-	/**
-	 * Whether the background is selected.
-	 *
-	 * @since 1.8.8
-	 *
-	 * @type {boolean}
-	 */
-	let backgroundSelected = false;
+	const { strings, defaults } = wpforms_gutenberg_form_selector;
 
 	/**
 	 * Public functions and properties.
@@ -125,25 +115,19 @@ export default ( function() {
 		 * @param {Object} handlers           Block handlers.
 		 * @param {Object} formSelectorCommon Block properties.
 		 * @param {Object} stockPhotos        Stock Photos module.
+		 * @param {Object} uiState            UI state.
 		 *
 		 * @return {Object} Field styles JSX code.
 		 */
-		getBackgroundStyles( props, handlers, formSelectorCommon, stockPhotos ) { // eslint-disable-line max-lines-per-function, complexity
-			const [ showBackgroundPreview, setShowBackgroundPreview ] = useState( app._showBackgroundPreview( props ) ); // eslint-disable-line react-hooks/rules-of-hooks
-			const [ lastBgImage, setLastBgImage ] = useState( '' ); // eslint-disable-line react-hooks/rules-of-hooks
-			const [ isNotDisabled, _setIsNotDisabled ] = useState( isPro && isLicenseActive ); // eslint-disable-line react-hooks/rules-of-hooks, no-unused-vars
-			const [ isProEnabled, _setIsProEnabled ] = useState( isPro ); // eslint-disable-line react-hooks/rules-of-hooks, no-unused-vars
-
+		getBackgroundStyles( props, handlers, formSelectorCommon, stockPhotos, uiState ) { // eslint-disable-line max-lines-per-function, complexity
+			const isNotDisabled = uiState.isNotDisabled;
+			const isProEnabled = uiState.isProEnabled;
+			const showBackgroundPreview = uiState.showBackgroundPreview;
+			const setShowBackgroundPreview = uiState.setShowBackgroundPreview;
+			const lastBgImage = uiState.lastBgImage;
+			const setLastBgImage = uiState.setLastBgImage;
 			const tabIndex = isNotDisabled ? 0 : -1;
 			const cssClass = formSelectorCommon.getPanelClass( props ) + ( isNotDisabled ? '' : ' wpforms-gutenberg-panel-disabled' );
-
-			useEffect( () => { // eslint-disable-line react-hooks/rules-of-hooks
-				setShowBackgroundPreview(
-					props.attributes.backgroundImage !== 'none' &&
-					props.attributes.backgroundUrl &&
-					props.attributes.backgroundUrl !== 'url()'
-				);
-			}, [ backgroundSelected, props.attributes.backgroundImage, props.attributes.backgroundUrl ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 			return (
 				<PanelBody className={ cssClass } title={ strings.background_styles }>
@@ -616,17 +600,6 @@ export default ( function() {
 			setShowBackgroundPreview( false );
 			handlers.styleAttrChange( 'backgroundUrl', 'url()' );
 			setLastBgImage( '' );
-		},
-
-		/**
-		 * Handle theme change.
-		 *
-		 * @since 1.8.8
-		 *
-		 * @param {Object} props Block properties.
-		 */
-		onSetTheme( props ) {
-			backgroundSelected = props.attributes.backgroundImage !== 'url()';
 		},
 	};
 

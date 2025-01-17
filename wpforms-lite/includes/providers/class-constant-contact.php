@@ -1,5 +1,13 @@
 <?php
 
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpIllegalPsrClassPathInspection */
+/** @noinspection AutoloadingIssuesInspection */
+// phpcs:enable Generic.Commenting.DocComment.MissingShort
+
+use WPForms\Admin\Notice;
+use WPForms\Integrations\ConstantContact\V3\Core;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -57,14 +65,37 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	public $sign_up = 'https://constant-contact.evyy.net/c/11535/341874/3411?sharedid=wpforms';
 
 	/**
+	 * Constructor.
+	 *
+	 * Empty to overload parent constructor and allow method to be instantiated without running parents' logic.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @noinspection MagicMethodsValidityInspection
+	 * @noinspection PhpMissingParentConstructorInspection
+	 */
+	public function __construct() {}
+
+	/**
+	 * Setup.
+	 *
+	 * @since 1.9.3
+	 */
+	public function setup() {
+
+		parent::__construct();
+	}
+
+	/**
 	 * Initialize.
 	 *
 	 * @since 1.3.6
 	 */
-	public function init() {
+	public function init() {  //phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
+		$name_append    = ( defined( 'WPFORMS_DEBUG' ) && WPFORMS_DEBUG ) ? ' (V2)' : '';
 		$this->version  = '1.3.6';
-		$this->name     = 'Constant Contact';
+		$this->name     = 'Constant Contact' . $name_append;
 		$this->slug     = 'constant-contact';
 		$this->priority = 14;
 		$this->icon     = WPFORMS_PLUGIN_URL . 'assets/images/icon-provider-constant-contact.png';
@@ -74,7 +105,10 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 			$this->connect_request();
 
 			add_action( 'wpforms_admin_notice_dismiss_ajax', [ $this, 'connect_dismiss' ] );
-			add_filter( "wpforms_providers_provider_settings_formbuilder_display_content_default_screen_{$this->slug}", [ $this, 'builder_settings_default_content' ] );
+			add_filter(
+				"wpforms_providers_provider_settings_formbuilder_display_content_default_screen_{$this->slug}",
+				[ $this, 'builder_settings_default_content' ]
+			);
 
 			// Provide option to override sign up link.
 			$sign_up = get_option( 'wpforms_constant_contact_signup', false );
@@ -97,7 +131,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 *
 	 * @return void
 	 */
-	public function process_entry( $fields, $entry, $form_data, $entry_id = 0 ) {
+	public function process_entry( $fields, $entry, $form_data, $entry_id = 0 ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.NestingLevel.MaxExceeded
 
 		// Only run if this form has a connections for this provider.
 		if ( empty( $form_data['providers'][ $this->slug ] ) ) {
@@ -147,7 +181,9 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 
 			$this->form_id  = $form_data['id'] ?? 0;
 			$this->entry_id = $entry_id;
-			$contact        = $this->request( 'https://api.constantcontact.com/v2/contacts?email=' . $email );
+			$contact        = $this->request(
+				add_query_arg( 'email', rawurlencode( $email ), 'https://api.constantcontact.com/v2/contacts' )
+			);
 
 			if ( is_wp_error( $contact ) ) {
 				continue;
@@ -162,7 +198,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 			foreach ( $connection['fields'] as $name => $merge_var ) {
 
 				// Don't include Email or Full name fields.
-				if ( 'email' === $name ) {
+				if ( $name === 'email' ) {
 					continue;
 				}
 
@@ -332,6 +368,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 * @param string $form_id Form ID.
 	 *
 	 * @return WP_Error|string Unique ID or error object
+	 * @noinspection NonSecureUniqidUsageInspection
 	 */
 	public function api_auth( $data = [], $form_id = '' ) {
 
@@ -351,6 +388,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 				'access_token' => sanitize_text_field( $data['authcode'] ),
 				'label'        => sanitize_text_field( $data['label'] ),
 				'date'         => time(),
+				'email'        => sanitize_text_field( $user['email'] ),
 			],
 			$id
 		);
@@ -375,7 +413,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 *
 	 * @since 1.3.6
 	 *
-	 * @param string $account_id
+	 * @param string $account_id Account ID.
 	 *
 	 * @return mixed array or error object.
 	 */
@@ -383,14 +421,15 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 
 		if ( ! empty( $this->api[ $account_id ] ) ) {
 			return $this->api[ $account_id ];
+		}
+
+		$providers = wpforms_get_providers_options();
+
+		if ( ! empty( $providers[ $this->slug ][ $account_id ] ) ) {
+			$this->api[ $account_id ] = true;
+			$this->access_token       = $providers[ $this->slug ][ $account_id ]['access_token'];
 		} else {
-			$providers = wpforms_get_providers_options();
-			if ( ! empty( $providers[ $this->slug ][ $account_id ] ) ) {
-				$this->api[ $account_id ] = true;
-				$this->access_token       = $providers[ $this->slug ][ $account_id ]['access_token'];
-			} else {
-				return $this->error( 'API error' );
-			}
+			return $this->error( 'API error' );
 		}
 	}
 
@@ -399,14 +438,16 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 *
 	 * @since 1.3.6
 	 *
-	 * @param string $connection_id
-	 * @param string $account_id
+	 * @param string $connection_id Connection ID.
+	 * @param string $account_id    Account ID.
 	 *
 	 * @return array|WP_Error array or error object
 	 */
 	public function api_lists( $connection_id = '', $account_id = '' ) {
 
-		$this->api_connect( $account_id );
+		if ( $account_id && empty( $this->access_token ) ) {
+			$this->api_connect( $account_id );
+		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$this->form_id = ! empty( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
@@ -419,15 +460,15 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 *
 	 * @since 1.3.6
 	 *
-	 * @param string $connection_id
-	 * @param string $account_id
-	 * @param string $list_id
+	 * @param string $connection_id Connection ID.
+	 * @param string $account_id    Account ID.
+	 * @param string $list_id       List ID.
 	 *
-	 * @return mixed array or error object
+	 * @return array array or error object
 	 */
 	public function api_fields( $connection_id = '', $account_id = '', $list_id = '' ) {
 
-		$provider_fields = [
+		return [
 			[
 				'name'       => 'Email',
 				'field_type' => 'email',
@@ -475,8 +516,6 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 				'tag'        => 'company_name',
 			],
 		];
-
-		return $provider_fields;
 	}
 
 
@@ -555,7 +594,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 *
 	 * @since 1.3.6
 	 *
-	 * @param string $connection_id Connection Id.
+	 * @param string $connection_id Connection ID.
 	 * @param array  $connection    Connection data.
 	 *
 	 * @return string
@@ -574,6 +613,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 * @param string $content Default content.
 	 *
 	 * @return string
+	 * @noinspection HtmlUnknownTarget
 	 */
 	public function builder_settings_default_content( $content ) {
 
@@ -598,6 +638,20 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 		return $content . ob_get_clean();
 	}
 
+	/**
+	 * Display content inside the panel sidebar area.
+	 *
+	 * @since 1.0.0
+	 */
+	public function builder_sidebar() {
+
+		if ( ! empty( wpforms_get_providers_options( Core::SLUG ) ) ) {
+			return;
+		}
+
+		parent::builder_sidebar();
+	}
+
 	/*************************************************************************
 	 * Integrations tab methods - these methods relate to the settings page. *
 	 *************************************************************************/
@@ -615,7 +669,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
-		$data = ! empty( $_POST['data'] ) ? wp_parse_args( wp_unslash( $_POST['data'] ), [] ) : [];
+		$data = ! empty( $_POST['data'] ) ? wp_parse_args( wp_unslash( $_POST['data'] ) ) : [];
 
 		if ( empty( $data['authcode'] ) ) {
 			wp_send_json_error(
@@ -640,15 +694,27 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 * Form fields to add a new provider account.
 	 *
 	 * @since 1.3.6
+	 * @noinspection HtmlUnknownTarget
 	 */
 	public function integrations_tab_new_form() {
 
+		printf(
+			'<p>' . wp_kses( /* translators: %1$s - Documentation URL. */
+				__(
+					'If you need help connecting WPForms to Constant Contact, <a href="%1$s" rel="noopener noreferrer" target="_blank">read our documentation</a>.',
+					'wpforms-lite'
+				),
+				[
+					'a' => [
+						'href'   => [],
+						'rel'    => [],
+						'target' => [],
+					],
+				]
+			) . '</p>',
+			esc_url( wpforms_utm_link( 'https://wpforms.com/docs/how-to-connect-constant-contact-with-wpforms/', 'Settings - Integration', 'Constant Contact Documentation' ) )
+		);
 		?>
-		<p>
-			<a href="<?php echo esc_url( wpforms_utm_link( 'https://wpforms.com/docs/how-to-connect-constant-contact-with-wpforms/', 'Settings - Integration', 'Constant Contact Documentation' ) ); ?>" target="_blank" rel="noopener noreferrer">
-				<?php esc_html_e( 'Click here for documentation on connecting WPForms with Constant Contact.', 'wpforms-lite' ); ?>
-			</a>
-		</p>
 
 		<p class="wpforms-alert wpforms-alert-warning">
 			<?php esc_html_e( 'Because Constant Contact requires external authentication, you will need to register WPForms with Constant Contact before you can proceed.', 'wpforms-lite' ); ?>
@@ -676,6 +742,23 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 		);
 	}
 
+	/**
+	 * Add provider to the Settings Integrations tab.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $active   Array of active connections.
+	 * @param array $settings Array of all connection settings.
+	 */
+	public function integrations_tab_options( $active, $settings ) {
+
+		if ( ! empty( wpforms_get_providers_options( Core::SLUG ) ) ) {
+			return;
+		}
+
+		parent::integrations_tab_options( $active, $settings );
+	}
+
 	/************************
 	 * Other functionality. *
 	 ************************/
@@ -684,6 +767,7 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	 * Add admin notices to connect to Constant Contact.
 	 *
 	 * @since 1.3.6
+	 * @noinspection HtmlUnknownTarget
 	 */
 	public function connect_request() {
 
@@ -770,10 +854,10 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 
 		$notice = ob_get_clean();
 
-		\WPForms\Admin\Notice::info(
+		Notice::info(
 			$notice,
 			[
-				'dismiss' => \WPForms\Admin\Notice::DISMISS_GLOBAL,
+				'dismiss' => Notice::DISMISS_GLOBAL,
 				'slug'    => 'constant_contact_connect',
 				'autop'   => false,
 				'class'   => 'wpforms-constant-contact-notice',
@@ -882,4 +966,4 @@ class WPForms_Constant_Contact extends WPForms_Provider {
 	}
 }
 
-new WPForms_Constant_Contact();
+( new WPForms_Constant_Contact() )->setup();

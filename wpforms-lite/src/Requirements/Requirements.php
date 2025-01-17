@@ -115,7 +115,7 @@ class Requirements {
 	 * @var string[]
 	 */
 	private $defaults = [
-		self::PHP      => '7.0',
+		self::PHP      => '7.1',
 		self::WP       => '5.5',
 		self::WPFORMS  => self::WPFORMS_DEV_VERSION_IN_ADDON,
 		self::LICENSE  => self::PRO_AND_TOP,
@@ -194,7 +194,7 @@ class Requirements {
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
 		],
 		'wpforms-calculations/wpforms-calculations.php'                 => [
-			self::ADDON  => '1.3.0',
+			self::ADDON  => '1.4.1',
 		],
 		'wpforms-campaign-monitor/wpforms-campaign-monitor.php'         => [
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
@@ -246,6 +246,9 @@ class Requirements {
 		'wpforms-mailerlite/wpforms-mailerlite.php'                     => [
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
 		],
+		'wpforms-mailpoet/wpforms-mailpoet.php'                         => [
+			self::LICENSE => self::PLUS_PRO_AND_TOP,
+		],
 		'wpforms-offline-forms/wpforms-offline-forms.php'               => [],
 		'wpforms-paypal-commerce/wpforms-paypal-commerce.php'           => [],
 		'wpforms-paypal-standard/wpforms-paypal-standard.php'           => [],
@@ -270,6 +273,9 @@ class Requirements {
 		],
 		'wpforms-stripe/wpforms-stripe.php'                             => [],
 		'wpforms-surveys-polls/wpforms-surveys-polls.php'               => [],
+		'wpforms-twilio/wpforms-twilio.php'                             => [
+			self::LICENSE => self::PLUS_PRO_AND_TOP,
+		],
 		'wpforms-user-journey/wpforms-user-journey.php'                 => [],
 		'wpforms-user-registration/wpforms-user-registration.php'       => [],
 		'wpforms-webhooks/wpforms-webhooks.php'                         => [
@@ -422,7 +428,7 @@ class Requirements {
 		}
 
 		// We didn't check the addon before.
-		if ( ! isset( $this->not_validated[ $basename ], $this->is_validated[ $basename ] ) ) {
+		if ( ! isset( $this->not_validated[ $basename ], $this->validated[ $basename ] ) ) {
 			$addon_load_function = $this->get_addon_load_function( $basename );
 
 			if ( ! is_callable( $addon_load_function ) ) {
@@ -899,6 +905,44 @@ class Requirements {
 		}
 
 		return $notices;
+	}
+
+	/**
+	 * Get addon compatible message.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param string $basename Plugin basename.
+	 *
+	 * @return string
+	 */
+	public function get_addon_compatible_message( string $basename ): string {
+
+		if ( ! $this->not_validated[ $basename ] ) {
+			return '';
+		}
+
+		$errors  = $this->not_validated[ $basename ];
+		$message = $this->get_validation_message( $errors, $basename );
+
+		if ( ! $message ) {
+			return '';
+		}
+
+		$notice = sprintf(
+			/* translators: translators: %1$s - requirements message. */
+			__( 'It requires %1$s.', 'wpforms-lite' ),
+			$message
+		);
+
+		if ( self::SHOW_PHP_NOTICE && in_array( self::PHP, $errors, true ) ) {
+			$notice .= ' ' . sprintf( /* translators: %s - required PHP version. */
+				__( '<a href="%s" target="_blank" rel="noopener noreferrer">Learn more</a>', 'wpforms-lite' ),
+				esc_url( wpforms_utm_link( 'https://wpforms.com/docs/supported-php-version/', 'all-plugins', 'Addon Compatible Message' ) )
+			);
+		}
+
+		return $notice;
 	}
 
 	/**

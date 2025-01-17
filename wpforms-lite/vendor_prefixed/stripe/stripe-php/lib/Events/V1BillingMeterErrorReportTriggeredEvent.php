@@ -19,7 +19,16 @@ class V1BillingMeterErrorReportTriggeredEvent extends \WPForms\Vendor\Stripe\V2\
      */
     public function fetchRelatedObject()
     {
-        list($object, $options) = $this->_request('get', $this->related_object->url, [], ['stripe_account' => $this->context], [], 'v2');
-        return \WPForms\Vendor\Stripe\Util\Util::convertToStripeObject($object, $options, 'v2');
+        $apiMode = \WPForms\Vendor\Stripe\Util\Util::getApiMode($this->related_object->url);
+        list($object, $options) = $this->_request('get', $this->related_object->url, [], ['stripe_account' => $this->context], [], $apiMode);
+        return \WPForms\Vendor\Stripe\Util\Util::convertToStripeObject($object, $options, $apiMode);
+    }
+    public static function constructFrom($values, $opts = null, $apiMode = 'v2')
+    {
+        $evt = parent::constructFrom($values, $opts, $apiMode);
+        if (null !== $evt->data) {
+            $evt->data = \WPForms\Vendor\Stripe\EventData\V1BillingMeterErrorReportTriggeredEventData::constructFrom($evt->data, $opts, $apiMode);
+        }
+        return $evt;
     }
 }

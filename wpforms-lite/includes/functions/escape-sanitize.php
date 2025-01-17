@@ -6,6 +6,9 @@
  */
 
 use WPForms\Helpers\Templates;
+use WPForms\Vendor\HTMLPurifier;
+use WPForms\Vendor\HTMLPurifier_Config;
+use WPForms\Helpers\File;
 
 /**
  * Decode special characters, both alpha- (<) and numeric-based (').
@@ -288,7 +291,8 @@ function wpforms_get_allowed_html_tags_for_richtext_field() {
  *
  * @param array $array Data to sanitize.
  *
- * @return mixed If not an array is passed (or empty var) - return unmodified var. Otherwise - a merged array into multiline string.
+ * @return mixed If not an array is passed (or empty var) - return unmodified var.
+ *               Otherwise - a merged array into multiline string.
  */
 function wpforms_sanitize_array_combine( $array ) {
 
@@ -510,4 +514,106 @@ function wpforms_html_entity_decode_deep( string $html, int $flags = ENT_QUOTES 
 	} while ( $html !== $previous_html );
 
 	return $html;
+}
+
+/**
+ * Sanitize form data.
+ *
+ * @since 1.9.3
+ *
+ * @param array $data Form data.
+ *
+ * @return array
+ */
+function wpforms_sanitize_form_data( array $data ): array {
+
+	foreach ( $data['fields'] as & $field ) {
+		$field = wpforms_sanitize_field( $field );
+	}
+
+	unset( $field );
+
+	return $data;
+}
+
+/**
+ * Sanitize form field.
+ *
+ * @since 1.9.3
+ *
+ * @param array $field Field.
+ *
+ * @return array
+ */
+function wpforms_sanitize_field( array $field ): array {
+
+	$raw_field_options = [
+		'html' => [ 'code' ],
+	];
+
+	$field_type  = $field['type'] ?? '';
+	$raw_options = $raw_field_options[ $field_type ] ?? [];
+
+	/**
+	 * Filter raw options for a field type.
+	 * Allows modifying options that should not be sanitized.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array  $raw_options Raw options.
+	 * @param string $field_type  Field type.
+	 */
+	$raw_options = (array) apply_filters( 'wpforms_raw_options', $raw_options, $field_type );
+
+	$purifier          = wpforms_get_html_purifier();
+	$decode_and_purify = static function ( $item ) use ( $purifier ) {
+		return $purifier->purify( wpforms_html_entity_decode_deep( $item ) );
+	};
+
+	foreach ( $field as $option => & $value ) {
+		if ( in_array( $option, $raw_options, true ) ) {
+			continue;
+		}
+
+		$value = wp_unslash( $value );
+
+		if ( is_array( $value ) ) {
+			array_walk_recursive( $value, $decode_and_purify );
+		} else {
+			$value = $decode_and_purify( $value );
+		}
+
+		$value = wp_slash( $value );
+	}
+
+	unset( $value );
+
+	return $field;
+}
+
+/**
+ * Get allowed HTML purifier object.
+ *
+ * @since 1.9.3
+ *
+ * @return HTMLPurifier
+ */
+function wpforms_get_html_purifier(): HTMLPurifier {
+
+	static $purifier;
+
+	if ( $purifier ) {
+		return $purifier;
+	}
+
+	require_once WPFORMS_PLUGIN_DIR . '/vendor_prefixed/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+
+	$config    = HTMLPurifier_Config::createDefault();
+	$cache_dir = trailingslashit( File::get_upload_dir() ) . 'htmlpurifier-cache';
+
+	$config->set( 'Cache.SerializerPath', $cache_dir );
+
+	$purifier = new HTMLPurifier( $config );
+
+	return $purifier;
 }

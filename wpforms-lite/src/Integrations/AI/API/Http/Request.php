@@ -70,7 +70,31 @@ class Request {
 			'body'    => wp_json_encode( $args ),
 		];
 
-		return new Response( wp_remote_request( self::URL . $endpoint, $options ) );
+		$url = $this->get_request_url( $endpoint );
+
+		return new Response( wp_remote_request( $url, $options ) );
+	}
+
+	/**
+	 * Get AI API request URL.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param string $endpoint Endpoint to request.
+	 *
+	 * @return string
+	 */
+	private function get_request_url( string $endpoint ): string {
+
+		/**
+		 * Filter AI API request URL.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param string $url      API request URL.
+		 * @param string $endpoint Endpoint to request.
+		 */
+		return (string) apply_filters( 'wpforms_integrations_aiapi_http_request_url', self::URL . $endpoint, $endpoint );
 	}
 
 	/**

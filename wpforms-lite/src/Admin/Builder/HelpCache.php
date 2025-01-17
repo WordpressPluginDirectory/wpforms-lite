@@ -12,6 +12,15 @@ use WPForms\Helpers\CacheBase;
 class HelpCache extends CacheBase {
 
 	/**
+	 * Remote source URL.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @var string
+	 */
+	const REMOTE_SOURCE = 'https://wpformsapi.com/feeds/v1/docs/';
+
+	/**
 	 * Determine if the class is allowed to load.
 	 *
 	 * @since 1.8.2
@@ -39,7 +48,7 @@ class HelpCache extends CacheBase {
 	protected function setup() {
 
 		return [
-			'remote_source' => 'https://wpforms.com/wp-content/docs.json',
+			'remote_source' => self::REMOTE_SOURCE,
 			'cache_file'    => 'docs.json',
 			/**
 			 * Allow modifying Help Docs cache TTL (time to live).

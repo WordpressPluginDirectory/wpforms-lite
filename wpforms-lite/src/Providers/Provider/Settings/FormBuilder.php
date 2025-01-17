@@ -99,17 +99,20 @@ abstract class FormBuilder implements FormBuilderInterface {
 	 */
 	public function builder_templates() {
 
-		$cl_builder_block = wpforms_conditional_logic()->builder_block(
-			[
-				'form'       => $this->form_data,
-				'type'       => 'panel',
-				'parent'     => 'providers',
-				'panel'      => esc_attr( $this->core->slug ),
-				'subsection' => '%connection_id%',
-				'reference'  => esc_html__( 'Marketing provider connection', 'wpforms-lite' ),
-			],
-			false
-		);
+		$cl_builder_block =
+			wpforms()->is_pro() ?
+				wpforms_conditional_logic()->builder_block(
+					[
+						'form'       => $this->form_data,
+						'type'       => 'panel',
+						'parent'     => 'providers',
+						'panel'      => esc_attr( $this->core->slug ),
+						'subsection' => '%connection_id%',
+						'reference'  => esc_html__( 'Marketing provider connection', 'wpforms-lite' ),
+					],
+					false
+				) :
+				'';
 		?>
 
 		<!-- Single connection block sub-template: FIELDS -->
@@ -431,7 +434,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 	public function display_content() {
 		?>
 
-		<div class="wpforms-panel-content-section wpforms-builder-provider wpforms-panel-content-section-<?php echo esc_attr( $this->core->slug ); ?>" id="<?php echo esc_attr( $this->core->slug ); ?>-provider" data-provider="<?php echo esc_attr( $this->core->slug ); ?>">
+		<div class="wpforms-panel-content-section wpforms-builder-provider wpforms-panel-content-section-<?php echo esc_attr( $this->core->slug ); ?>" id="<?php echo esc_attr( $this->core->slug ); ?>-provider" data-provider="<?php echo esc_attr( $this->core->slug ); ?>" data-provider-name="<?php echo esc_attr( $this->core->name ); ?>">
 
 			<!-- Provider content goes here. -->
 			<?php
@@ -521,17 +524,20 @@ abstract class FormBuilder implements FormBuilderInterface {
 	 */
 	protected function display_content_header() {
 
-		$is_configured = Status::init( $this->core->slug )->is_configured();
+		$provider_status = Status::init( $this->core->slug );
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$form_id = isset( $_GET['form_id'] ) ? sanitize_text_field( wp_unslash( $_GET['form_id'] ) ) : 0;
+		$form_id = isset( $_GET['form_id'] ) ? absint( $_GET['form_id'] ) : 0;
+
+		$is_configured = $provider_status->is_configured();
+		$is_connected  = $provider_status->is_ready( $form_id );
 		?>
 
 		<div class="wpforms-builder-provider-title wpforms-panel-content-section-title">
 
 			<?php echo esc_html( $this->core->name ); ?>
 
-			<span class="wpforms-builder-provider-title-spinner">
+			<span class="wpforms-builder-provider-title-spinner <?php echo $is_connected ? '' : 'hidden'; ?>">
 				<i class="wpforms-loading-spinner wpforms-loading-md wpforms-loading-inline"></i>
 			</span>
 
@@ -606,5 +612,120 @@ abstract class FormBuilder implements FormBuilderInterface {
 		}
 
 		return $form;
+	}
+
+	/**
+	 * Sanitize custom fields.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $connection Connection data.
+	 */
+	protected function sanitize_connection_fields_meta( array &$connection ) {
+
+		if ( ! isset( $connection['fields_meta'] ) ) {
+			return;
+		}
+
+		if ( ! is_array( $connection['fields_meta'] ) ) {
+			unset( $connection['fields_meta'] );
+
+			return;
+		}
+
+		foreach ( $connection['fields_meta'] as $row_number => $field ) {
+			if ( ! isset( $field['field_id'], $field['name'] ) ) {
+				unset( $connection['fields_meta'][ $row_number ] );
+
+				continue;
+			}
+
+			// Field ID can contain subfield, e.g. `1.first`.
+			$field_id = sanitize_text_field( $field['field_id'] );
+			$name     = sanitize_text_field( $field['name'] );
+
+			if ( wpforms_is_empty_string( $field_id ) || wpforms_is_empty_string( $name ) ) {
+				unset( $connection['fields_meta'][ $row_number ] );
+
+				continue;
+			}
+
+			$connection['fields_meta'][ $row_number ] = [
+				'name'     => $name,
+				'field_id' => $field_id,
+			];
+		}
+	}
+
+	/**
+	 * Sanitize conditional logic connection fields.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $connection Connection data.
+	 */
+	protected function sanitize_connection_conditionals( array &$connection ) {
+
+		if ( ! isset( $connection['conditionals'] ) ) {
+			return;
+		}
+
+		if ( ! is_array( $connection['conditionals'] ) ) {
+			unset( $connection['conditionals'] );
+
+			return;
+		}
+
+		foreach ( $connection['conditionals'] as $group_id => $group ) {
+			foreach ( $group as $rule ) {
+				$this->sanitize_connection_conditional_rule( $rule );
+			}
+
+			$group = array_filter( $group );
+
+			if ( empty( $group ) ) {
+				unset( $connection['conditionals'][ $group_id ] );
+
+				continue;
+			}
+
+			$connection['conditionals'][ $group_id ] = $group;
+		}
+	}
+
+	/**
+	 * Sanitize conditional logic rule.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $rule Conditional logic rule.
+	 */
+	private function sanitize_connection_conditional_rule( array &$rule ) {
+
+		if ( ! isset( $rule['field'], $rule['operator'] ) ) {
+			$rule = [];
+
+			return;
+		}
+
+		$sanitized_rule = [
+			'field'    => sanitize_text_field( $rule['field'] ),
+			'operator' => sanitize_text_field( $rule['operator'] ),
+		];
+
+		if (
+			wpforms_is_empty_string( $sanitized_rule['field'] ) ||
+			wpforms_is_empty_string( $sanitized_rule['operator'] )
+		) {
+			$rule = [];
+
+			return;
+		}
+
+		if ( isset( $rule['value'] ) ) {
+			$sanitized_rule['value'] = sanitize_text_field( $rule['value'] );
+		}
+
+		$rule = $sanitized_rule;
 	}
 }

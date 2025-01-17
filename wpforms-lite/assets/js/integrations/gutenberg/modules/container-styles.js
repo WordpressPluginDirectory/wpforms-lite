@@ -24,14 +24,13 @@ export default ( ( $ ) => {
 	 */
 	const { PanelColorSettings } = wp.blockEditor || wp.editor;
 	const { SelectControl, PanelBody, Flex, FlexBlock, __experimentalUnitControl } = wp.components;
-	const { useState } = wp.element;
 
 	/**
 	 * Localized data aliases.
 	 *
 	 * @since 1.8.8
 	 */
-	const { strings, defaults, isPro, isLicenseActive } = wpforms_gutenberg_form_selector;
+	const { strings, defaults } = wpforms_gutenberg_form_selector;
 
 	/**
 	 * Public functions and properties.
@@ -112,13 +111,14 @@ export default ( ( $ ) => {
 		 * @param {Object} handlers           Block handlers.
 		 * @param {Object} formSelectorCommon Common form selector functions.
 		 *
+		 * @param {Object} uiState UI state.
+		 *
 		 * @return {Object} Field styles JSX code.
 		 */
-		getContainerStyles( props, handlers, formSelectorCommon ) { // eslint-disable-line max-lines-per-function, complexity
-			const [ isNotDisabled, _setIsNotDisabled ] = useState( isPro && isLicenseActive ); // eslint-disable-line react-hooks/rules-of-hooks, no-unused-vars
-			const [ isProEnabled, _setIsProEnabled ] = useState( isPro ); // eslint-disable-line react-hooks/rules-of-hooks, no-unused-vars
-
+		getContainerStyles( props, handlers, formSelectorCommon, uiState ) { // eslint-disable-line max-lines-per-function, complexity
 			let cssClass = formSelectorCommon.getPanelClass( props );
+			const isNotDisabled = uiState.isNotDisabled;
+			const isProEnabled = uiState.isProEnabled;
 
 			if ( ! isNotDisabled ) {
 				cssClass += ' wpforms-gutenberg-panel-disabled';

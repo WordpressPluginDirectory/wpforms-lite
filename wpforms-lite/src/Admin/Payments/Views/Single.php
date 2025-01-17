@@ -907,8 +907,8 @@ class Single implements PaymentsViewsInterface {
 
 			$field_type = $field_data['type'];
 
-			// Add repeater fields as is.
-			if ( $field_type === 'repeater' && wpforms()->is_pro() ) {
+			// Add repeater and layout fields as is.
+			if ( in_array( $field_type, [ 'repeater', 'layout' ], true ) && wpforms()->is_pro() ) {
 				$prepared_fields[ $key ] = $field_data;
 
 				continue;

@@ -50,9 +50,10 @@ export default ( function( document, window, $ ) {
 	const { serverSideRender: ServerSideRender = wp.components.ServerSideRender } = wp;
 	const { createElement, Fragment, createInterpolateElement } = wp.element;
 	const { registerBlockType } = wp.blocks;
-	const { InspectorControls, PanelColorSettings } = wp.blockEditor || wp.editor;
+	const { InspectorControls, PanelColorSettings, useBlockProps } = wp.blockEditor || wp.editor;
 	const { SelectControl, ToggleControl, PanelBody, Placeholder } = wp.components;
 	const { __ } = wp.i18n;
+	const { useState, useEffect } = wp.element;
 
 	/**
 	 * Localized data aliases.
@@ -217,6 +218,15 @@ export default ( function( document, window, $ ) {
 	 * @type {boolean}
 	 */
 	let isCopyPasteGeneratedOnEdit = false;
+
+	/**
+	 * Whether the background is selected.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @type {boolean}
+	 */
+	let backgroundSelected = false;
 
 	/**
 	 * Public functions and properties.
@@ -406,10 +416,38 @@ export default ( function( document, window, $ ) {
 						preview: true,
 					},
 				},
+				// eslint-disable-next-line max-lines-per-function,complexity
 				edit( props ) {
 					const { attributes } = props;
 					const formOptions = app.getFormOptions();
 					const handlers = app.getSettingsFieldsHandlers( props );
+
+					const [ isNotDisabled ] = useState( isPro && isLicenseActive ); // eslint-disable-line react-hooks/rules-of-hooks
+					const [ isProEnabled ] = useState( isPro ); // eslint-disable-line react-hooks/rules-of-hooks, no-unused-vars
+					const [ showBackgroundPreview, setShowBackgroundPreview ] = useState( blockOptions.panels.background._showBackgroundPreview( props ) ); // eslint-disable-line react-hooks/rules-of-hooks
+					const [ lastBgImage, setLastBgImage ] = useState( '' ); // eslint-disable-line react-hooks/rules-of-hooks
+
+					const uiState = {
+						isNotDisabled,
+						isProEnabled,
+						showBackgroundPreview,
+						setShowBackgroundPreview,
+						lastBgImage,
+						setLastBgImage,
+					};
+
+					useEffect( () => { // eslint-disable-line react-hooks/rules-of-hooks
+						if ( attributes.formId ) {
+							setShowBackgroundPreview(
+								props.attributes.backgroundImage !== 'none' &&
+								props.attributes.backgroundUrl &&
+								props.attributes.backgroundUrl !== 'url()'
+							);
+						}
+					}, [ backgroundSelected, props.attributes.backgroundImage, props.attributes.backgroundUrl ] ); // eslint-disable-line react-hooks/exhaustive-deps
+
+					// Get block properties.
+					const blockProps = useBlockProps(); // eslint-disable-line react-hooks/rules-of-hooks, no-unused-vars
 
 					// Store block clientId in attributes.
 					if ( ! attributes.clientId || ! app.isClientIdAttrUnique( props ) ) {
@@ -429,7 +467,7 @@ export default ( function( document, window, $ ) {
 							app.jsxParts.getEmptyFormsPreview( props ),
 						);
 
-						return jsx;
+						return <div { ...blockProps }>{ jsx }</div>;
 					}
 
 					const sizeOptions = app.getSizeOptions();
@@ -441,7 +479,7 @@ export default ( function( document, window, $ ) {
 							app.jsxParts.getBlockPlaceholder( props.attributes, handlers, formOptions ),
 						);
 
-						return jsx;
+						return <div { ...blockProps }>{ jsx }</div>;
 					}
 
 					// Form style settings & block content.
@@ -450,7 +488,7 @@ export default ( function( document, window, $ ) {
 						app.maybeSubscribeToBlockEvents( props, handlers, blockOptions );
 
 						jsx.push(
-							app.jsxParts.getStyleSettings( props, handlers, sizeOptions, blockOptions ),
+							app.jsxParts.getStyleSettings( props, handlers, sizeOptions, blockOptions, uiState ),
 							app.jsxParts.getBlockFormContent( props )
 						);
 
@@ -462,7 +500,7 @@ export default ( function( document, window, $ ) {
 
 						el.$window.trigger( 'wpformsFormSelectorEdit', [ props ] );
 
-						return jsx;
+						return <div { ...blockProps }>{ jsx }</div>;
 					}
 
 					// Block preview picture.
@@ -471,7 +509,7 @@ export default ( function( document, window, $ ) {
 							app.jsxParts.getBlockPreview(),
 						);
 
-						return jsx;
+						return <div { ...blockProps }>{ jsx }</div>;
 					}
 
 					// Block placeholder (form selector).
@@ -479,7 +517,7 @@ export default ( function( document, window, $ ) {
 						app.jsxParts.getBlockPlaceholder( props.attributes, handlers, formOptions ),
 					);
 
-					return jsx;
+					return <div { ...blockProps }>{ jsx }</div>;
 				},
 				save: () => null,
 			} );
@@ -644,7 +682,7 @@ export default ( function( document, window, $ ) {
 				}
 
 				// Set theme.
-				subscriberBlockOptions.panels.background.onSetTheme( subscriberProps );
+				app.onSetTheme( subscriberProps );
 			};
 		},
 
@@ -860,17 +898,19 @@ export default ( function( document, window, $ ) {
 			 * @param {Object} sizeOptions  Size selector options.
 			 * @param {Object} blockOptions Block options loaded from external modules.
 			 *
+			 * @param {Object} uiState 	UI state.
+			 *
 			 * @return {Object} Inspector controls JSX code.
 			 */
-			getStyleSettings( props, handlers, sizeOptions, blockOptions ) {
+			getStyleSettings( props, handlers, sizeOptions, blockOptions, uiState ) {
 				return (
 					<InspectorControls key="wpforms-gutenberg-form-selector-style-settings">
 						{ blockOptions.getThemesPanel( props, app, blockOptions.stockPhotos ) }
 						{ blockOptions.getFieldStyles( props, handlers, sizeOptions, app ) }
 						{ app.jsxParts.getLabelStyles( props, handlers, sizeOptions ) }
 						{ blockOptions.getButtonStyles( props, handlers, sizeOptions, app ) }
-						{ blockOptions.getContainerStyles( props, handlers, app ) }
-						{ blockOptions.getBackgroundStyles( props, handlers, app, blockOptions.stockPhotos ) }
+						{ blockOptions.getContainerStyles( props, handlers, app, uiState ) }
+						{ blockOptions.getBackgroundStyles( props, handlers, app, blockOptions.stockPhotos, uiState ) }
 						{ app.jsxParts.getPageIndicatorStyles( props, handlers ) }
 					</InspectorControls>
 				);
@@ -1160,6 +1200,23 @@ export default ( function( document, window, $ ) {
 			}
 
 			return block;
+		},
+
+		/**
+		 * Get form container in Block Editor.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {number} formId Form ID.
+		 *
+		 * @return {Element|null} Form container.
+		 */
+		getFormBlock( formId ) {
+			// First, try to find the iframe for blocks version 3.
+			const editorCanvas = document.querySelector( 'iframe[name="editor-canvas"]' );
+
+			// If the iframe is found, try to find the form.
+			return editorCanvas?.contentWindow.document.querySelector( `#wpforms-${ formId }` ) || $( `#wpforms-${ formId }` );
 		},
 
 		/**
@@ -1517,10 +1574,12 @@ export default ( function( document, window, $ ) {
 					const pasteAttributes = app.parseValidateJson( value );
 
 					if ( ! pasteAttributes ) {
-						wp.data.dispatch( 'core/notices' ).createErrorNotice(
-							strings.copy_paste_error,
-							{ id: 'wpforms-json-parse-error' }
-						);
+						if ( value ) {
+							wp.data.dispatch( 'core/notices' ).createErrorNotice(
+								strings.copy_paste_error,
+								{ id: 'wpforms-json-parse-error' }
+							);
+						}
 
 						this.updateCopyPasteContent();
 
@@ -1907,8 +1966,14 @@ export default ( function( document, window, $ ) {
 		 * @param {number} formId Form ID.
 		 */
 		initRichTextField( formId ) {
+			const form = app.getFormBlock( formId );
+
+			if ( ! form ) {
+				return;
+			}
+
 			// Set default tab to `Visual`.
-			$( `#wpforms-${ formId } .wp-editor-wrap` ).removeClass( 'html-active' ).addClass( 'tmce-active' );
+			$( form ).find( '.wp-editor-wrap' ).removeClass( 'html-active' ).addClass( 'tmce-active' );
 		},
 
 		/**
@@ -1919,14 +1984,26 @@ export default ( function( document, window, $ ) {
 		 * @param {number} formId Form ID.
 		 */
 		initRepeaterField( formId ) {
-			const $rowButtons = $( `#wpforms-${ formId } .wpforms-field-repeater > .wpforms-field-repeater-display-rows .wpforms-field-repeater-display-rows-buttons` );
+			const form = app.getFormBlock( formId );
+
+			if ( ! form ) {
+				return;
+			}
+
+			const $rowButtons = $( form ).find( '.wpforms-field-repeater > .wpforms-field-repeater-display-rows .wpforms-field-repeater-display-rows-buttons' );
 
 			// Get the label height and set the button position.
 			$rowButtons.each( function() {
 				const $cont = $( this );
-				const $label = $cont.siblings( '.wpforms-layout-column' )
-					.find( '.wpforms-field' ).first()
+				const $labels = $cont.siblings( '.wpforms-layout-column' )
+					.find( '.wpforms-field' )
 					.find( '.wpforms-field-label' );
+
+				if ( ! $labels.length ) {
+					return;
+				}
+
+				const $label = $labels.first();
 				const labelStyle = window.getComputedStyle( $label.get( 0 ) );
 				const margin = labelStyle?.getPropertyValue( '--wpforms-field-size-input-spacing' ) || 0;
 				const height = $label.outerHeight() || 0;
@@ -1942,6 +2019,17 @@ export default ( function( document, window, $ ) {
 				$repeater.find( '.wpforms-field-repeater-display-rows-buttons' ).addClass( 'wpforms-init' );
 				$repeater.find( '.wpforms-field-repeater-display-rows:last .wpforms-field-description' ).addClass( 'wpforms-init' );
 			} );
+		},
+
+		/**
+		 * Handle theme change.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param {Object} props Block properties.
+		 */
+		onSetTheme( props ) {
+			backgroundSelected = props.attributes.backgroundImage !== 'url()';
 		},
 	};
 

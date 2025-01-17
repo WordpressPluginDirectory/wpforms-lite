@@ -38,12 +38,37 @@ class OrderSummary extends SmartTag {
 		return wpforms_render(
 			'fields/total/summary-preview',
 			[
-				'items'       => $items,
+				'items'       => $this->filter_items( $items ),
 				'foot'        => $foot,
 				'total_width' => $total_width,
 				'context'     => 'smart_tag',
 			],
 			true
+		);
+	}
+
+	/**
+	 * Filter items.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $items Items data.
+	 *
+	 * @return array
+	 */
+	private function filter_items( array $items ): array {
+
+		// Bail early if not in notification context.
+		if ( $this->context !== 'notification' ) {
+			return $items;
+		}
+
+		return array_filter(
+			$items,
+			function ( $item ) {
+				// Return items that are not hidden.
+				return empty( $item['is_hidden'] );
+			}
 		);
 	}
 
@@ -62,20 +87,36 @@ class OrderSummary extends SmartTag {
 
 		return array_map(
 			function ( $field ) use ( $form_data ) {
-				$form_data_fields = $form_data['fields'] ?? [];
-
-				if ( isset( $form_data_fields[ $field['id'] ] ) ) {
-					$label_hide = isset( $form_data_fields[ $field['id'] ]['label_hide'] );
-
-					if ( $label_hide ) {
-						$field['label_hide'] = true;
-					}
-				}
-
-				return $field;
+				return $this->prepare_field( $field, $form_data );
 			},
 			$fields
 		);
+	}
+
+	/**
+	 * Prepare field data for summary preview.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $field     Field data.
+	 * @param array $form_data Form data and settings.
+	 *
+	 * @return array
+	 */
+	private function prepare_field( array $field, array $form_data ): array {
+
+		$form_data_fields = $form_data['fields'] ?? [];
+		$field_data       = $form_data_fields[ $field['id'] ] ?? [];
+
+		if ( isset( $field_data['label_hide'] ) ) {
+			$field['label_hide'] = true;
+		}
+
+		if ( isset( $field_data['format'] ) && $field_data['format'] === 'hidden' ) {
+			$field['is_hidden'] = true;
+		}
+
+		return $field;
 	}
 
 	/**
@@ -154,13 +195,18 @@ class OrderSummary extends SmartTag {
 			return;
 		}
 
-		$label  = ! empty( $field['value_choice'] ) ? $field['name'] . ' - ' . $field['value_choice'] : $field['name'];
+		$value_raw = $field['value_raw'] ?? '';
+		/* translators: %s - item number. */
+		$value_choice = ! empty( $field['value_choice'] ) ? $field['value_choice'] : sprintf( esc_html__( 'Item %s', 'wpforms-lite' ), $value_raw );
+
+		$label  = ! empty( $value_raw ) ? $field['name'] . ' - ' . $value_choice : $field['name'];
 		$amount = $field['amount_raw'] * $quantity;
 
 		$items[] = [
-			'label'    => ! empty( $field['label_hide'] ) ? '' : $label,
-			'quantity' => $quantity,
-			'amount'   => wpforms_format_amount( $amount, true ),
+			'label'     => ! empty( $field['label_hide'] ) ? '' : $label,
+			'quantity'  => $quantity,
+			'amount'    => wpforms_format_amount( $amount, true ),
+			'is_hidden' => ! empty( $field['is_hidden'] ),
 		];
 
 		$total += $amount;
@@ -190,10 +236,10 @@ class OrderSummary extends SmartTag {
 		// Multiple values.
 		$value_choices = explode( "\n", $field['value'] );
 
-		foreach ( $value_choices as $value_choice ) {
+		foreach ( $value_choices as $key => $value_choice ) {
 
 			$choice_data = explode( ' - ', $value_choice );
-			$labels      = array_slice( $choice_data, 0, -1 );
+			$labels      = $this->get_multiple_item_labels( $choice_data, $field, $key );
 
 			$items[] = [
 				'label'    => ! empty( $field['label_hide'] ) ? implode( ' - ', $labels ) : $field['name'] . ' - ' . implode( ' - ', $labels ),
@@ -203,6 +249,30 @@ class OrderSummary extends SmartTag {
 		}
 
 		$total += $field['amount_raw'];
+	}
+
+	/**
+	 * Get multiple item labels.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $choice_data Choice data.
+	 * @param array $field       Field data.
+	 * @param int   $key         Choice key.
+	 *
+	 * @return array
+	 */
+	private function get_multiple_item_labels( array $choice_data, array $field, int $key ): array {
+
+		$labels = array_slice( $choice_data, 0, -1 );
+
+		if ( ! empty( $labels ) ) {
+			return $labels;
+		}
+
+		$raw_values = explode( ',', $field['value_raw'] );
+		/* translators: %s - item number. */
+		return [ sprintf( esc_html__( 'Item %s', 'wpforms-lite' ), $raw_values[ $key ] ?? '' ) ];
 	}
 
 	/**

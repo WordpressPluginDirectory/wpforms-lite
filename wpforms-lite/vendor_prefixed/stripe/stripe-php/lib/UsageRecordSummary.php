@@ -4,6 +4,8 @@
 namespace WPForms\Vendor\Stripe;
 
 /**
+ * A usage record summary represents an aggregated view of how much usage was accrued for a subscription item within a subscription billing period.
+ *
  * @property string $id Unique identifier for the object.
  * @property string $object String representing the object's type. Objects of the same type share the same value.
  * @property null|string $invoice The invoice in which this usage period has been billed for.

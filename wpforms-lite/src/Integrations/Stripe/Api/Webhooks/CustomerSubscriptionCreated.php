@@ -24,7 +24,7 @@ class CustomerSubscriptionCreated extends Base {
 
 		$this->delay();
 
-		$payment = wpforms()->obj( 'payment' )->get_by( 'subscription_id', $this->data->id );
+		$payment = wpforms()->obj( 'payment' )->get_by( 'subscription_id', $this->data->object->id );
 
 		if ( ! $payment ) {
 			return false;

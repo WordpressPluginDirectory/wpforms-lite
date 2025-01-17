@@ -371,6 +371,7 @@ abstract class FormSelector implements IntegrationInterface {
 				 *
 				 * @param array $attributes Attributes.
 				 */
+				'api_version'     => $this->get_block_api_version(),
 				'attributes'      => apply_filters( 'wpforms_gutenberg_form_selector_attributes', $attributes ), // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 				'style'           => 'wpforms-gutenberg-form-selector',
 				'editor_style'    => 'wpforms-integrations',
@@ -404,13 +405,21 @@ abstract class FormSelector implements IntegrationInterface {
 		}
 
 		$css_file = $this->disable_css_setting === 2 ? 'base' : 'full';
+		$handle   = 'wpforms-gutenberg-form-selector';
 
 		wp_register_style(
-			'wpforms-gutenberg-form-selector',
+			$handle,
 			WPFORMS_PLUGIN_URL . "assets/css/frontend/{$this->render_engine}/wpforms-{$css_file}{$min}.css",
 			[ 'wp-edit-blocks', 'wpforms-integrations' ],
 			WPFORMS_VERSION
 		);
+
+		// Add root CSS variables for the Modern Markup mode for full styles.
+		if ( empty( $this->css_vars_obj ) || $this->render_engine !== 'modern' || $css_file !== 'full' ) {
+			return;
+		}
+
+		wp_add_inline_style( $handle, $this->css_vars_obj->get_root_vars_css() );
 	}
 
 	/**
@@ -1059,8 +1068,6 @@ abstract class FormSelector implements IntegrationInterface {
 			return;
 		}
 
-		$this->css_vars_obj->output_root();
-
 		if ( $this->render_engine === 'classic' || $this->disable_css_setting !== 1 ) {
 			return;
 		}
@@ -1140,5 +1147,21 @@ abstract class FormSelector implements IntegrationInterface {
 		}
 
 		return (bool) $media_enabled;
+	}
+
+	/**
+	 * Get block API version based on WP core version.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @return int Block API version.
+	 */
+	private function get_block_api_version(): int {
+
+		if ( $this->is_legacy_block() ) {
+			return 1;
+		}
+
+		return version_compare( $GLOBALS['wp_version'], '6.3', '<' ) ? 2 : 3;
 	}
 }

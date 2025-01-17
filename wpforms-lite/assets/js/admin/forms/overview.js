@@ -125,7 +125,21 @@ WPFormsForms.Overview = WPFormsForms.Overview || ( function( document, window, $
 				.on( 'resize', _.debounce( app.adjustBulkEditTagsForm, 200 ) );
 
 			$( document )
-				.on( 'change', '.wpforms-manage-tags-items input', app.manageTagsItemChange );
+				.on( 'change', '.wpforms-manage-tags-items input', app.manageTagsItemChange )
+				.on( 'htmx:afterSwap', app.initTableNav );
+		},
+
+		/**
+		 * Re-init table after swapping the content.
+		 *
+		 * @since 1.9.3
+		 */
+		htmxAfterSettle() {
+			app.initElements();
+			app.initTableColumns();
+			app.initTagsFilter();
+			app.adjustBulkEditTagsForm();
+			app.initEditTagsBulkActionItem();
 		},
 
 		/**

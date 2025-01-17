@@ -46,6 +46,15 @@ class Frontend {
 	protected $amp_obj;
 
 	/**
+	 * CSS vars class instance.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @var CSSVars
+	 */
+	protected $css_vars_obj;
+
+	/**
 	 * Store form data to be referenced later.
 	 *
 	 * @since 1.8.1
@@ -102,8 +111,9 @@ class Frontend {
 	 */
 	public function init() {
 
-		$this->forms   = [];
-		$this->amp_obj = wpforms()->obj( 'amp' );
+		$this->forms        = [];
+		$this->amp_obj      = wpforms()->obj( 'amp' );
+		$this->css_vars_obj = wpforms()->obj( 'css_vars' );
 
 		$this->init_render_engine( wpforms_get_render_engine() );
 		$this->hooks();
@@ -1284,8 +1294,9 @@ class Frontend {
 	 */
 	public function foot( $form_data, $deprecated, $title, $description, $errors ) {
 
-		$form_id  = absint( $form_data['id'] );
-		$settings = $form_data['settings'];
+		$form_id     = absint( $form_data['id'] );
+		$settings    = $form_data['settings'];
+		$submit_text = ! empty( $settings['submit_text'] ) ? $settings['submit_text'] : __( 'Submit', 'wpforms-lite' );
 
 		/**
 		 * Filter the form submit button text.
@@ -1295,7 +1306,7 @@ class Frontend {
 		 * @param string $submit_text Submit button text.
 		 * @param array  $form_data   Form data.
 		 */
-		$submit = apply_filters( 'wpforms_field_submit', $settings['submit_text'], $form_data ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+		$submit = apply_filters( 'wpforms_field_submit', $submit_text, $form_data ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		$attrs      = [
 			'aria-live' => 'assertive',
@@ -1575,13 +1586,21 @@ class Frontend {
 		}
 
 		$style_name = $disable_css === 1 ? 'full' : 'base';
+		$handle     = "wpforms-{$this->render_engine}-{$style_name}";
 
 		wp_enqueue_style(
-			"wpforms-{$this->render_engine}-{$style_name}",
+			$handle,
 			WPFORMS_PLUGIN_URL . "assets/css/frontend/{$this->render_engine}/wpforms-{$style_name}{$min}.css",
 			[],
 			WPFORMS_VERSION
 		);
+
+		// Add CSS variables for the Modern Markup mode for full styles.
+		if ( empty( $this->css_vars_obj ) || $this->render_engine !== 'modern' || $style_name !== 'full' ) {
+			return;
+		}
+
+		wp_add_inline_style( $handle, $this->css_vars_obj->get_root_vars_css() );
 	}
 
 	/**
@@ -1639,7 +1658,7 @@ class Frontend {
 			wp_enqueue_script(
 				'wpforms-mailcheck',
 				WPFORMS_PLUGIN_URL . 'assets/lib/mailcheck.min.js',
-				false,
+				[],
 				'1.1.2',
 				$in_footer
 			);
@@ -1971,13 +1990,11 @@ class Frontend {
 			return $strings;
 		}
 
-		$css_vars_obj = wpforms()->obj( 'css_vars' );
-
-		if ( empty( $css_vars_obj ) ) {
+		if ( empty( $this->css_vars_obj ) ) {
 			return $strings;
 		}
 
-		$strings['css_vars'] = array_keys( $css_vars_obj->get_vars( ':root' ) );
+		$strings['css_vars'] = array_keys( $this->css_vars_obj->get_vars( ':root' ) );
 
 		return $strings;
 	}

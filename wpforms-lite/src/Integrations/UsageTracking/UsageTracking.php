@@ -188,7 +188,7 @@ class UsageTracking implements IntegrationInterface {
 			'wpforms_lite_installed_date'    => $this->get_installed( $activated_dates, 'lite' ),
 			'wpforms_pro_installed_date'     => $this->get_installed( $activated_dates, 'pro' ),
 			'wpforms_builder_opened_date'    => (int) get_option( 'wpforms_builder_opened_date', 0 ),
-			'wpforms_settings'               => $this->get_settings(),
+			'wpforms_settings'               => $this->get_settings( $forms ),
 			'wpforms_integration_active'     => $this->get_forms_integrations( $forms ),
 			'wpforms_payments_active'        => $this->get_payments_active( $forms ),
 			'wpforms_product_quantities'     => [
@@ -274,10 +274,13 @@ class UsageTracking implements IntegrationInterface {
 	 * Get all settings, except those with sensitive data.
 	 *
 	 * @since 1.6.1
+	 * @since 1.9.3 Added $forms parameter.
+	 *
+	 * @param array $forms List of forms.
 	 *
 	 * @return array
 	 */
-	private function get_settings(): array {
+	private function get_settings( array $forms ): array {
 
 		// Remove keys with exact names that we don't need.
 		$settings = array_diff_key(
@@ -340,8 +343,44 @@ class UsageTracking implements IntegrationInterface {
 			];
 		}
 
+		// Add Dropbox Delete Local Files setting usage count.
+		$data['dropbox_delete_local_files_setting_count'] = $this->get_dropbox_delete_local_files_setting_count( $forms );
+
 		// Add favorite templates to the settings array.
 		return array_merge( $data, $this->get_favorite_templates() );
+	}
+
+	/**
+	 * Get the count of forms with Delete Local Files active option for Dropbox.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $forms List of forms.
+	 *
+	 * @return int
+	 */
+	private function get_dropbox_delete_local_files_setting_count( array $forms ): int {
+
+		$delete_local_files_count = 0;
+
+		foreach ( $forms as $form ) {
+			// Check if the Dropbox integration is configured in the form.
+			if ( empty( $form->post_content['providers']['dropbox'] ) ) {
+				continue;
+			}
+
+			// Delete Local Files option is applied for all connections if applied,
+			// so it's enough to check the first connection only.
+			$connection = current( $form->post_content['providers']['dropbox'] );
+
+			if ( ! $connection || ! isset( $connection['delete_local_files'] ) ) {
+				continue;
+			}
+
+			++$delete_local_files_count;
+		}
+
+		return $delete_local_files_count;
 	}
 
 	/**

@@ -26,32 +26,32 @@ class CustomerSubscriptionUpdated extends Base {
 		$this->delay();
 
 		if (
-			( isset( $this->data->metadata->canceled_by ) && $this->data->metadata->canceled_by === 'wpforms_dashboard' ) ||
-			! ValueValidator::is_valid( $this->data->status, 'status' )
+			( isset( $this->data->object->metadata->canceled_by ) && $this->data->object->metadata->canceled_by === 'wpforms_dashboard' ) ||
+			! ValueValidator::is_valid( $this->data->object->status, 'status' )
 		) {
 			return false;
 		}
 
-		$payment = wpforms()->obj( 'payment' )->get_by( 'subscription_id', $this->data->id );
+		$payment = wpforms()->obj( 'payment' )->get_by( 'subscription_id', $this->data->object->id );
 
 		if ( ! $payment ) {
 			return false;
 		}
 
 		if (
-			$payment->subscription_status === $this->data->status ||
+			$payment->subscription_status === $this->data->object->status ||
 			( ! empty( $this->data->previous_attributes->status ) && $this->data->previous_attributes->status !== $payment->subscription_status )
 		) {
 			return true;
 		}
 
-		if ( ! wpforms()->obj( 'payment' )->update( $payment->id, [ 'subscription_status' => $this->data->status ] ) ) {
+		if ( ! wpforms()->obj( 'payment' )->update( $payment->id, [ 'subscription_status' => $this->data->object->status ] ) ) {
 			throw new RuntimeException( 'Payment not updated' );
 		}
 
 		wpforms()->obj( 'payment_meta' )->add_log(
 			$payment->id,
-			sprintf( 'Stripe subscription was set to %1$s.', $this->data->status )
+			sprintf( 'Stripe subscription was set to %1$s.', $this->data->object->status )
 		);
 
 		return true;

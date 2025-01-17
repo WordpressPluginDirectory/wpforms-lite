@@ -740,7 +740,7 @@ class Notifications extends Mailer {
 		// Ideally, it could be done through the `wpforms_html_field_value` filter,
 		// but needed data is missed there, e.g. entry data ($this->fields).
 		if ( $field_type === 'payment-total' && ! empty( $field['summary'] ) ) {
-			$field_val = $this->process_tag( '{order_summary}' );
+			$field_val = $this->get_payment_total_value( $field_val );
 		}
 
 		// Append the field item to the message.
@@ -749,6 +749,20 @@ class Notifications extends Mailer {
 			[ $field_type, $field_name, $field_val ],
 			$this->field_template
 		);
+	}
+
+	/**
+	 * Get payment total value.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param string $value Field value.
+	 *
+	 * @return string
+	 */
+	private function get_payment_total_value( string $value ): string {
+
+		return $this->process_tag( '{order_summary}' ) . '<span class="wpforms-payment-total">' . $value . '</span>';
 	}
 
 	/**
@@ -1175,5 +1189,17 @@ class Notifications extends Mailer {
 		}
 
 		return str_replace( [ "\r\n", "\r", "\n" ], '<br/>', $value );
+	}
+
+	/**
+	 * Get current template name.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @return string
+	 */
+	public function get_current_template(): string {
+
+		return $this->current_template;
 	}
 }

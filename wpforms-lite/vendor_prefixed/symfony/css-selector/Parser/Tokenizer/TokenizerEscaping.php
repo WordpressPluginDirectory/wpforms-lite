@@ -22,13 +22,7 @@ namespace WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer;
  */
 class TokenizerEscaping
 {
-    /**
-     * @var TokenizerPatterns
-     */
     private $patterns;
-    /**
-     * @param TokenizerPatterns $patterns
-     */
     public function __construct(TokenizerPatterns $patterns)
     {
         $this->patterns = $patterns;
@@ -71,6 +65,7 @@ class TokenizerEscaping
             if (0x10000 > $c) {
                 return \chr(0xe0 | $c >> 12) . \chr(0x80 | $c >> 6 & 0x3f) . \chr(0x80 | $c & 0x3f);
             }
+            return '';
         }, $value);
     }
 }

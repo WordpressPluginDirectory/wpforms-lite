@@ -305,9 +305,22 @@ class Field extends \WPForms_Field {
 
 		$is_summary_enabled = $this->is_summary_enabled( $field );
 
-		if ( $is_summary_enabled ) {
-
+		// Prepare data for the order summary preview if summary is enabled or we are on the editor page.
+		if ( $is_summary_enabled || wpforms_is_editor_page() ) {
 			list( $items, $foot, $total_width ) = $this->prepare_payment_fields_data( $form_data );
+		}
+
+		if ( $is_summary_enabled ) {
+			/**
+			 * Allow to filter form data before displaying the order summary table.
+			 *
+			 * @since 1.9.3
+			 *
+			 * @param array $form_data Form data.
+			 *
+			 * @return array
+			 */
+			$form_data = apply_filters( 'wpforms_forms_fields_payment_total_field_display_form_data', $form_data );
 
 			// Summary preview.
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -322,6 +335,14 @@ class Field extends \WPForms_Field {
 			);
 		}
 
+		$amount = wpforms_format_amount( 0, true );
+
+		// If we are on the editor page, we need to get the total amount from the last item in the foot.
+		if ( ! empty( $foot ) && wpforms_is_editor_page() ) {
+			$foot_item = end( $foot );
+			$amount    = $foot_item['amount'] ?? 0;
+		}
+
 		// Always print total to cover a case when field is embedded into Layout column with 25% width.
 		$hidden_style = $is_summary_enabled ? 'display:none' : '';
 
@@ -329,7 +350,7 @@ class Field extends \WPForms_Field {
 		printf(
 			'<div class="wpforms-payment-total" style="%1$s">%2$s</div>',
 			esc_attr( $hidden_style ),
-			esc_html( wpforms_format_amount( 0, true ) )
+			esc_html( $amount )
 		);
 
 		// Hidden input for processing.
@@ -609,13 +630,20 @@ class Field extends \WPForms_Field {
 
 		$quantity     = $this->get_payment_field_min_quantity( $field );
 		$field_amount = ! empty( $field['price'] ) ? wpforms_sanitize_amount( $field['price'] ) * $quantity : 0;
+		$classes      = [ 'wpforms-order-summary-field' ];
+
+		$format = $field['format'] ?? '';
+
+		if ( $format === 'hidden' ) {
+			$classes[] = 'wpforms-hidden';
+		}
 
 		$fields[] = [
 			'label'     => ! empty( $field['label_hide'] ) ? '' : $field['label'],
 			'quantity'  => $this->get_payment_field_min_quantity( $field ),
 			'amount'    => wpforms_format_amount( $field_amount, true ),
 			'is_hidden' => ! $quantity,
-			'class'     => 'wpforms-order-summary-field',
+			'class'     => $classes,
 			'data'      => [
 				'field' => $field['id'],
 			],
@@ -646,9 +674,11 @@ class Field extends \WPForms_Field {
 
 			$choice_amount = ! empty( $choice['value'] ) ? wpforms_sanitize_amount( $choice['value'] ) * $quantity : 0;
 			$is_default    = ! empty( $choice['default'] ) || ( isset( $default_choice_key ) && (int) $key === $default_choice_key );
+			/* translators: %s - item number. */
+			$choice_label = ! empty( $choice['label'] ) ? $choice['label'] : sprintf( esc_html__( 'Item %s', 'wpforms-lite' ), $key );
 
 			$fields[] = [
-				'label'     => ! empty( $field['label_hide'] ) ? $choice['label'] : $field['label'] . ' - ' . $choice['label'],
+				'label'     => ! empty( $field['label_hide'] ) ? $choice_label : $field['label'] . ' - ' . $choice_label,
 				'quantity'  => $quantity,
 				'amount'    => wpforms_format_amount( $choice_amount, true ),
 				'is_hidden' => ! $is_default || ! $quantity,
@@ -663,6 +693,28 @@ class Field extends \WPForms_Field {
 				$total += $choice_amount;
 			}
 		}
+	}
+
+	/**
+	 * The `array_key_first` polyfill.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $arr Input array.
+	 *
+	 * @return mixed
+	 */
+	private function array_key_first( $arr ) {
+
+		if ( function_exists( 'array_key_first' ) ) {
+			return array_key_first( $arr );
+		}
+
+		foreach ( (array) $arr as $key => $unused ) {
+			return $key;
+		}
+
+		return null;
 	}
 
 	/**
@@ -688,7 +740,7 @@ class Field extends \WPForms_Field {
 			return (int) $key;
 		}
 
-		return array_key_first( $field['choices'] );
+		return $this->array_key_first( $field['choices'] );
 	}
 
 	/**

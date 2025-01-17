@@ -90,6 +90,9 @@
 			// Init fancy selects via choices.js.
 			WPFormsAdmin.initChoicesJS();
 
+			// Reinit ChoicesJS after htmx swap.
+			$( document ).on( 'htmx:afterSwap', WPFormsAdmin.initChoicesJS );
+
 			// Init checkbox multi selects columns.
 			WPFormsAdmin.initCheckboxMultiselectColumns();
 
@@ -219,9 +222,6 @@
 				if ( $this.data( 'choices-position' ) ) {
 					args.position = $this.data( 'choices-position' );
 				}
-
-				// Remove "Press to select" text.
-				args.itemSelectText = '';
 
 				// Render HTML in Choices.js.
 				args.allowHTML = true;

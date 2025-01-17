@@ -102,6 +102,15 @@ var WPFormsElementorModern = window.WPFormsElementorModern || ( function( docume
 					app.updateCopyPasteContent( changedModel );
 				}
 			} );
+
+			// Update copy/paste content when form_id is changed and copyPasteJsonValue is not set.
+			settingsModel.on( 'change:form_id', ( changedModel ) => {
+				if ( ! changedModel.attributes.copyPasteJsonValue ) {
+					setTimeout( function() {
+						app.updateCopyPasteContent( changedModel );
+					}, 0 );
+				}
+			} );
 		},
 
 		/**
@@ -288,10 +297,12 @@ var WPFormsElementorModern = window.WPFormsElementorModern || ( function( docume
 			const container = view.container;
 
 			if ( ! pasteAttributes ) {
-				elementorCommon.dialogsManager.createWidget( 'alert', {
-					message: wpformsElementorVars.strings.copy_paste_error,
-					headerMessage: wpformsElementorVars.strings.heads_up,
-				} ).show();
+				if ( copyPasteJsonValue ) {
+					elementorCommon.dialogsManager.createWidget( 'alert', {
+						message: wpformsElementorVars.strings.copy_paste_error,
+						headerMessage: wpformsElementorVars.strings.heads_up,
+					} ).show();
+				}
 
 				this.updateCopyPasteContent( model );
 

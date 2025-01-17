@@ -31,37 +31,33 @@ class ChargeSucceeded extends Base {
 		if ( ! $this->db_payment ) {
 
 			// Handle a case when charge.succeeded was sent before invoice.payment_succeeded to update a payment method details.
-			if ( ! empty( $this->data->invoice ) ) {
-				$db_renewal = ( new Queries() )->get_renewal_by_invoice_id( $this->data->invoice );
+			if ( ! empty( $this->data->object->invoice ) ) {
+				$db_renewal = ( new Queries() )->get_renewal_by_invoice_id( $this->data->object->invoice );
 
-				if ( is_null( $db_renewal ) || empty( $this->data->payment_method_details ) ) {
+				if ( is_null( $db_renewal ) || empty( $this->data->object->payment_method_details ) ) {
 					return false;
 				}
 
-				$this->update_payment_method_details( $db_renewal->id, $this->data->payment_method_details );
+				$this->update_payment_method_details( $db_renewal->id, $this->data->object->payment_method_details );
 			}
 
 			return false;
 		}
 
 		// Update payment method details to keep them up to date.
-		if ( ! empty( $this->data->payment_method_details ) ) {
-			$this->update_payment_method_details( $this->db_payment->id, $this->data->payment_method_details );
+		if ( ! empty( $this->data->object->payment_method_details ) ) {
+			$this->update_payment_method_details( $this->db_payment->id, $this->data->object->payment_method_details );
 		}
 
 		if ( $this->db_payment->status !== 'processed' ) {
 			return false;
 		}
 
-		$currency  = strtoupper( $this->data->currency );
+		$currency  = strtoupper( $this->data->object->currency );
 		$db_amount = wpforms_format_amount( $this->db_payment->total_amount );
-		$amount    = wpforms_format_amount( $this->data->amount_captured / Helpers::get_decimals_amount( $currency ) );
+		$amount    = wpforms_format_amount( $this->data->object->amount_captured / Helpers::get_decimals_amount( $currency ) );
 
-		if ( $amount !== $db_amount || ! $this->data->paid ) {
-			return false;
-		}
-
-		if ( ! $this->is_previous_statuses_matched() ) {
+		if ( $amount !== $db_amount || ! $this->data->object->paid ) {
 			return false;
 		}
 

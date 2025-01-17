@@ -31,16 +31,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="inside">
 		<?php
 		foreach ( $entry_fields as $key => $field ) {
-			if ( $field['type'] === 'repeater' && wpforms()->is_pro() ) {
-				echo wpforms_render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					'admin/payments/single/repeater',
-					[
-						'field'        => $field,
-						'form_data'    => $form_data,
-						'entry_fields' => $entry_fields,
-					],
-					true
-				);
+
+			$field_type = $field['type'];
+
+			if ( in_array( $field_type, [ 'repeater', 'layout' ], true ) && wpforms()->is_pro() ) {
+				if ( $field_type === 'repeater' ) {
+					echo wpforms_render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						'admin/payments/single/repeater',
+						[
+							'field'        => $field,
+							'form_data'    => $form_data,
+							'entry_fields' => $entry_fields,
+						],
+						true
+					);
+				}
+
+				if ( $field_type === 'layout' ) {
+					echo wpforms_render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						'admin/payments/single/layout',
+						[
+							'field'        => $field,
+							'form_data'    => $form_data,
+							'entry_fields' => $entry_fields,
+						],
+						true
+					);
+				}
 			} else {
 				echo wpforms_render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					'admin/payments/single/field',

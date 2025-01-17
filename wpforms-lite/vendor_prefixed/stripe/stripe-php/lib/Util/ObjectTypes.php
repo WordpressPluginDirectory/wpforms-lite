@@ -156,13 +156,11 @@ class ObjectTypes
      * @var array Mapping from v2 object types to resource classes
      */
     const v2Mapping = [
-        // V1 Class needed for fetching the right related object
-        // TODO: https://go/j/DEVSDK-2204 Make a more standardized fix in codegen for all languages
-        \WPForms\Vendor\Stripe\Billing\Meter::OBJECT_NAME => \WPForms\Vendor\Stripe\Billing\Meter::class,
         // v2 object classes: The beginning of the section generated from our OpenAPI spec
         \WPForms\Vendor\Stripe\V2\Billing\MeterEvent::OBJECT_NAME => \WPForms\Vendor\Stripe\V2\Billing\MeterEvent::class,
         \WPForms\Vendor\Stripe\V2\Billing\MeterEventAdjustment::OBJECT_NAME => \WPForms\Vendor\Stripe\V2\Billing\MeterEventAdjustment::class,
         \WPForms\Vendor\Stripe\V2\Billing\MeterEventSession::OBJECT_NAME => \WPForms\Vendor\Stripe\V2\Billing\MeterEventSession::class,
         \WPForms\Vendor\Stripe\V2\Event::OBJECT_NAME => \WPForms\Vendor\Stripe\V2\Event::class,
+        \WPForms\Vendor\Stripe\V2\EventDestination::OBJECT_NAME => \WPForms\Vendor\Stripe\V2\EventDestination::class,
     ];
 }

@@ -574,7 +574,7 @@ class WPForms_Builder {
 			'dom-purify',
 			WPFORMS_PLUGIN_URL . 'assets/lib/purify.min.js',
 			[],
-			'3.1.7',
+			'3.2.3',
 			false
 		);
 
@@ -817,6 +817,15 @@ class WPForms_Builder {
 			'rule_delete'                             => esc_html__( 'Delete rule', 'wpforms-lite' ),
 			'smart_tags'                              => $smart_tags,
 			'smart_tags_disabled_for_fields'          => [ 'entry_id' ],
+
+			/**
+			 * Filters the list of Smart Tags that are disabled for confirmations.
+			 *
+			 * @since 1.9.3
+			 *
+			 * @param array $disabled List of disabled Smart Tags.
+			 */
+			'smart_tags_disabled_for_confirmations'   => apply_filters( 'wpforms_builder_smart_tags_disabled_for_confirmations', [] ),
 			'smart_tags_show'                         => esc_html__( 'Show Smart Tags', 'wpforms-lite' ),
 			'smart_tags_hide'                         => esc_html__( 'Hide Smart Tags', 'wpforms-lite' ),
 			'select_field'                            => esc_html__( '--- Select Field ---', 'wpforms-lite' ),
@@ -848,6 +857,7 @@ class WPForms_Builder {
 			'something_went_wrong'                    => esc_html__( 'Something went wrong', 'wpforms-lite' ),
 			'field_cannot_be_reordered'               => esc_html__( 'This field cannot be moved.', 'wpforms-lite' ),
 			'empty_label'                             => esc_html__( 'Empty Label', 'wpforms-lite' ),
+			'submit_text'                             => esc_html__( 'Submit', 'wpforms-lite' ),
 			'name_field_formats'                      => [
 				'full'   => esc_html__( 'Full', 'wpforms-lite' ),
 				'first'  => esc_html__( 'First', 'wpforms-lite' ),
@@ -863,6 +873,7 @@ class WPForms_Builder {
 			'form_meta'                               => $this->form_data['meta'] ?? [],
 			'scrollbars_css_url'                      => WPFORMS_PLUGIN_URL . 'assets/css/builder/builder-scrollbars.css',
 			'is_ai_disabled'                          => AIHelpers::is_disabled(),
+			'connection_label'                        => esc_html__( 'Connection', 'wpforms-lite' ),
 		];
 
 		$strings = $this->add_localized_currencies( $strings );

@@ -30,6 +30,15 @@ class SplashScreen {
 	private $is_new_install;
 
 	/**
+	 * Whether the splash link is added.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @var bool
+	 */
+	private $splash_link_added = false;
+
+	/**
 	 * Initialize class.
 	 *
 	 * @since 1.8.7
@@ -145,6 +154,12 @@ class SplashScreen {
 			return;
 		}
 
+		// Do not add splash modal HTML, JS, and CSS if the link is not added.
+		// This happens only on the Dashboard when user hid welcome block.
+		if ( ! $this->splash_link_added && $this->is_dashboard() ) {
+			return;
+		}
+
 		$this->render_modal();
 	}
 
@@ -244,6 +259,8 @@ class SplashScreen {
 		if ( $this->is_dashboard() && current_filter() === 'update_footer' ) {
 			return $content;
 		}
+
+		$this->splash_link_added = true;
 
 		$content .= sprintf(
 			' <span>-</span> <a href="#" class="wpforms-splash-modal-open">%s</a>',

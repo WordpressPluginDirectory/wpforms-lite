@@ -3315,7 +3315,6 @@ abstract class WPForms_Field {
 			'loadingText'       => esc_html__( 'Loading...', 'wpforms-lite' ),
 			'noResultsText'     => esc_html__( 'No results found', 'wpforms-lite' ),
 			'noChoicesText'     => esc_html__( 'No choices to choose from', 'wpforms-lite' ),
-			'itemSelectText'    => '',
 			'uniqueItemText'    => esc_html__( 'Only unique values can be added', 'wpforms-lite' ),
 			'customAddItemText' => esc_html__( 'Only values matching specific conditions can be added', 'wpforms-lite' ),
 		];

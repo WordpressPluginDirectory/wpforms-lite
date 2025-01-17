@@ -183,8 +183,11 @@ abstract class CacheBase {
 		$default_settings = [
 
 			// Remote source URL.
-			// For instance: 'https://wpforms.com/wp-content/addons.json'.
+			// For instance: 'https://wpformsapi.com/feeds/v1/addons/'.
 			'remote_source' => '',
+
+			// Request timeout in seconds.
+			'timeout'       => 10,
 
 			// Cache file.
 			// Just file name. For instance: 'addons.json'.
@@ -411,7 +414,7 @@ abstract class CacheBase {
 		$request     = wp_remote_get(
 			$request_url,
 			[
-				'timeout'    => 10,
+				'timeout'    => $this->settings['timeout'],
 				'user-agent' => $user_agent,
 			]
 		);

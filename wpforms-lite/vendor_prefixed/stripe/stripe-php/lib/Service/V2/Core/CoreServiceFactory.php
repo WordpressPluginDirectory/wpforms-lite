@@ -6,6 +6,7 @@ namespace WPForms\Vendor\Stripe\Service\V2\Core;
  * Service factory class for API resources in the root namespace.
  * // Doc: The beginning of the section generated from our OpenAPI spec.
  *
+ * @property EventDestinationService $eventDestinations
  * @property EventService $events
  * // Doc: The end of the section generated from our OpenAPI spec
  */
@@ -16,6 +17,7 @@ class CoreServiceFactory extends \WPForms\Vendor\Stripe\Service\AbstractServiceF
      */
     private static $classMap = [
         // Class Map: The beginning of the section generated from our OpenAPI spec
+        'eventDestinations' => EventDestinationService::class,
         'events' => EventService::class,
     ];
     protected function getServiceClass($name)

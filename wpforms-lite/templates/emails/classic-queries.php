@@ -62,7 +62,8 @@ $border_color_dark = wpforms_generate_contrasting_color( $email_text_color_dark,
 		color: <?php echo sanitize_hex_color( $email_links_color_dark ); ?> !important;
 	}
 
-	.content .field-value {
+	.content .field-value,
+	.wpforms-layout-table > td {
 		border-bottom: 1px solid <?php echo sanitize_hex_color( $border_color_dark ); ?> !important;
 	}
 

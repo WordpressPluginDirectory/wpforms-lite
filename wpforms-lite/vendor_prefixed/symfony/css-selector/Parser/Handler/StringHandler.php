@@ -14,9 +14,9 @@ use WPForms\Vendor\Symfony\Component\CssSelector\Exception\InternalErrorExceptio
 use WPForms\Vendor\Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Reader;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Token;
-use WPForms\Vendor\Symfony\Component\CssSelector\Parser\TokenStream;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerEscaping;
 use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerPatterns;
+use WPForms\Vendor\Symfony\Component\CssSelector\Parser\TokenStream;
 /**
  * CSS selector comment handler.
  *
@@ -29,18 +29,8 @@ use WPForms\Vendor\Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerPatte
  */
 class StringHandler implements HandlerInterface
 {
-    /**
-     * @var TokenizerPatterns
-     */
     private $patterns;
-    /**
-     * @var TokenizerEscaping
-     */
     private $escaping;
-    /**
-     * @param TokenizerPatterns $patterns
-     * @param TokenizerEscaping $escaping
-     */
     public function __construct(TokenizerPatterns $patterns, TokenizerEscaping $escaping)
     {
         $this->patterns = $patterns;
@@ -52,13 +42,13 @@ class StringHandler implements HandlerInterface
     public function handle(Reader $reader, TokenStream $stream)
     {
         $quote = $reader->getSubstring(1);
-        if (!\in_array($quote, array("'", '"'))) {
+        if (!\in_array($quote, ["'", '"'])) {
             return \false;
         }
         $reader->moveForward(1);
         $match = $reader->findPattern($this->patterns->getQuotedStringPattern($quote));
         if (!$match) {
-            throw new InternalErrorException(\sprintf('Should have found at least an empty match at %s.', $reader->getPosition()));
+            throw new InternalErrorException(\sprintf('Should have found at least an empty match at %d.', $reader->getPosition()));
         }
         // check unclosed strings
         if (\strlen($match[0]) === $reader->getRemainingLength()) {

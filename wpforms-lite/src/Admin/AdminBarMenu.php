@@ -167,6 +167,7 @@ class AdminBarMenu {
 				'all_payments_menu',
 				'add_new_menu',
 				'settings_menu',
+				'tools_menu',
 				'community_menu',
 				'support_menu',
 			],
@@ -181,6 +182,7 @@ class AdminBarMenu {
 		}
 
 		$this->register_settings_submenu( $wp_admin_bar );
+		$this->register_tools_submenu( $wp_admin_bar );
 	}
 
 	/**
@@ -262,6 +264,146 @@ class AdminBarMenu {
 			 * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar object.
 			 */
 			do_action( "wpforms_admin_bar_menu_register_settings_submenu_{$item_id}_after", $wp_admin_bar );
+		}
+	}
+
+	/**
+	 * Register Tools submenu.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar object.
+	 */
+	private function register_tools_submenu( WP_Admin_Bar $wp_admin_bar ) {
+
+		/**
+		 * Filters the Tools submenu items.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param array        $items        Array of submenu items.
+		 * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar object.
+		 *
+		 * @return array
+		 */
+		$items = (array) apply_filters(
+			'wpforms_admin_bar_menu_register_tools_submenu',
+			[
+				'wpforms-tools-import'           => [
+					'title' => esc_html__( 'Import', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=import',
+				],
+				'wpforms-tools-export'           => [
+					'title' => esc_html__( 'Export', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=export',
+				],
+				'wpforms-tools-system'           => [
+					'title' => esc_html__( 'System Info', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=system',
+				],
+				'wpforms-tools-action-scheduler' => [
+					'title' => esc_html__( 'Scheduled Actions', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=action-scheduler&s=wpforms',
+				],
+				'wpforms-tools-logs'             => [
+					'title' => esc_html__( 'Logs', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=logs',
+				],
+				'wpforms-tools-wpcode'           => [
+					'title' => esc_html__( 'Code Snippets', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=wpcode',
+				],
+			],
+			$wp_admin_bar
+		);
+
+		foreach ( $items as $item_id => $args ) {
+			$wp_admin_bar->add_menu(
+				[
+					'parent' => 'wpforms-tools',
+					'id'     => sanitize_key( $item_id ),
+					'title'  => esc_html( $args['title'] ),
+					'href'   => admin_url( $args['path'] ),
+				]
+			);
+
+			/**
+			 * Fires after the Tools submenu item is registered.
+			 *
+			 * @since 1.9.2
+			 *
+			 * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar object.
+			 */
+			do_action( "wpforms_admin_bar_menu_register_tools_submenu_{$item_id}_after", $wp_admin_bar );
+		}
+
+		$this->register_action_scheduler_submenu( $wp_admin_bar );
+	}
+
+	/**
+	 * Register Action Scheduler submenu.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar object.
+	 */
+	private function register_action_scheduler_submenu( WP_Admin_Bar $wp_admin_bar ) {
+
+		/**
+		 * Filters the Action Scheduler submenu items.
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param array        $items        Array of submenu items.
+		 * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar object.
+		 *
+		 * @return array
+		 */
+		$items = apply_filters(
+			'wpforms_admin_bar_menu_register_action_scheduler_submenu',
+			[
+				'wpforms-tools-action-scheduler-all'      => [
+					'title' => esc_html__( 'View All', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=action-scheduler&s=wpforms&orderby=hook&order=desc',
+				],
+				'wpforms-tools-action-scheduler-complete' => [
+					'title' => esc_html__( 'Completed Actions', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=action-scheduler&s=wpforms&status=complete&orderby=hook&order=desc',
+				],
+				'wpforms-tools-action-scheduler-failed'   => [
+					'title' => esc_html__( 'Failed Actions', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=action-scheduler&s=wpforms&status=failed&orderby=hook&order=desc',
+				],
+				'wpforms-tools-action-scheduler-pending'  => [
+					'title' => esc_html__( 'Pending Actions', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=action-scheduler&s=wpforms&status=pending&orderby=hook&order=desc',
+				],
+				'wpforms-tools-action-scheduler-past-due' => [
+					'title' => esc_html__( 'Past Due Actions', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=action-scheduler&s=wpforms&status=past-due&orderby=hook&order=desc',
+				],
+			],
+			$wp_admin_bar
+		);
+
+		foreach ( $items as $item_id => $args ) {
+			$wp_admin_bar->add_menu(
+				[
+					'parent' => 'wpforms-tools-action-scheduler',
+					'id'     => sanitize_key( $item_id ),
+					'title'  => esc_html( $args['title'] ),
+					'href'   => admin_url( $args['path'] ),
+				]
+			);
+
+			/**
+			 * Fires after the Action Scheduler submenu item is registered.
+			 *
+			 * @since 1.9.3
+			 *
+			 * @param WP_Admin_Bar $wp_admin_bar WordPress Admin Bar object.
+			 */
+			do_action( "wpforms_admin_bar_menu_register_action_scheduler_submenu_{$item_id}_after", $wp_admin_bar );
 		}
 	}
 
@@ -391,6 +533,25 @@ class AdminBarMenu {
 				'id'     => 'wpforms-settings',
 				'title'  => esc_html__( 'Settings', 'wpforms-lite' ),
 				'href'   => admin_url( 'admin.php?page=wpforms-settings' ),
+			]
+		);
+	}
+
+	/**
+	 * Add Tools menu to the admin bar.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar The admin bar object.
+	 */
+	public function tools_menu( WP_Admin_Bar $wp_admin_bar ) {
+
+		$wp_admin_bar->add_menu(
+			[
+				'parent' => 'wpforms-menu',
+				'id'     => 'wpforms-tools',
+				'title'  => esc_html__( 'Tools', 'wpforms-lite' ),
+				'href'   => admin_url( 'admin.php?page=wpforms-tools' ),
 			]
 		);
 	}

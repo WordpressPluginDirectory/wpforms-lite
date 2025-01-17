@@ -3,6 +3,9 @@
  * The error handler to suppress error messages from vendor directories.
  */
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpUndefinedClassInspection */
+
 namespace WPForms;
 
 use QM_Collectors;
@@ -21,7 +24,7 @@ class ErrorHandler {
 	 *
 	 * @var string[]
 	 */
-	private $dirs;
+	protected $dirs;
 
 	/**
 	 * Previous error handler.
@@ -39,7 +42,7 @@ class ErrorHandler {
 	 *
 	 * @var int
 	 */
-	private $levels;
+	protected $levels;
 
 	/**
 	 * Whether the error handler is handling an error.
@@ -51,12 +54,26 @@ class ErrorHandler {
 	private $handling = false;
 
 	/**
+	 * Class constructor.
+	 *
+	 * @since 1.9.3
+	 *
+	 * @param array $dirs   Directories from where errors should be suppressed.
+	 * @param int   $levels Error levels to suppress.
+	 */
+	public function __construct( array $dirs = [], int $levels = 0 ) {
+
+		$this->dirs   = $dirs;
+		$this->levels = $levels;
+	}
+
+	/**
 	 * Init class.
 	 *
 	 * @since 1.8.5
 	 *
+	 * @return void
 	 * @noinspection PhpUndefinedConstantInspection
-	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	public function init() {
 
@@ -114,29 +131,24 @@ class ErrorHandler {
 		 *
 		 * @since 1.8.6
 		 *
-		 * @param bool $dirs The list of dirs to suppress messages from.
+		 * @param array $dirs The list of dirs to suppress messages from.
 		 */
 		$this->dirs = (array) apply_filters( 'wpforms_error_handler_dirs', $this->dirs );
 
 		$this->normalize_dirs();
-
-		if ( ! $this->dirs ) {
-			return;
-		}
 
 		/**
 		 * Allow modifying the levels of messages to suppress.
 		 *
 		 * @since 1.8.6
 		 *
-		 * @param bool $level Error levels of messages to suppress.
+		 * @param int $levels Error levels of messages to suppress.
 		 */
 		$this->levels = (int) apply_filters(
-			'wpforms_error_handler_level',
+			'wpforms_error_handler_levels',
 			E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED
 		);
 
-		$this->set_error_handler();
 		$this->hooks();
 	}
 
@@ -144,11 +156,18 @@ class ErrorHandler {
 	 * Add hooks.
 	 *
 	 * @since 1.9.1
+	 *
+	 * @return void
 	 */
-	private function hooks() {
+	protected function hooks() {
 
-		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
-		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
+		if ( $this->dirs && $this->levels ) {
+			// Set error handler.
+			$this->set_error_handler();
+
+			// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
+			add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
+		}
 
 		// Suppress the _load_textdomain_just_in_time() notices related the WPForms for WP 6.7+.
 		if ( version_compare( $GLOBALS['wp_version'], '6.7', '>=' ) ) {
@@ -156,21 +175,16 @@ class ErrorHandler {
 			add_action( 'doing_it_wrong_run', [ $this,'action_doing_it_wrong_run' ], 20, 3 );
 			add_filter( 'doing_it_wrong_trigger_error', [ $this, 'filter_doing_it_wrong_trigger_error' ], 10, 4 );
 		}
-
-		// Fix WP 6.5+ translation error.
-		if ( version_compare( $GLOBALS['wp_version'], '6.5', '>=' ) ) {
-			add_filter( 'gettext', [ $this, 'filter_gettext' ], 10, 3 );
-		}
 	}
 
 	/**
 	 * Set error handler and save original.
-	 * To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 	 *
 	 * @since 1.9.1
 	 */
 	public function set_error_handler() {
 
+		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
 	}
@@ -205,7 +219,7 @@ class ErrorHandler {
 		}
 
 		// Set this error handler after loading a plugin to chain its error handler.
-		$this->set_error_handler();
+		( new self( $this->dirs, $this->levels ) )->set_error_handler();
 	}
 
 	/**
@@ -326,23 +340,19 @@ class ErrorHandler {
 	/**
 	 * Filter for gettext.
 	 *
-	 * @since 1.9.2.2
+	 * @since      1.9.2.2
+	 * @deprecated 1.9.3
 	 *
 	 * @param string|mixed $translation Translated text.
 	 * @param string|mixed $text        Text to translate.
 	 * @param string|mixed $domain      Text domain. Unique identifier for retrieving translated strings.
 	 *
-	 * @return string
+	 * @return string|mixed
+	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function filter_gettext( $translation, $text, $domain ): string {
+	public function filter_gettext( $translation, $text, $domain ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
-		$translation = (string) $translation;
-		$text        = (string) $text;
-		$domain      = (string) $domain;
-
-		if ( $translation === '' && strpos( $domain, 'wpforms' ) === 0 ) {
-			$translation = $text;
-		}
+		_deprecated_function( __METHOD__, '1.9.3 of the WPForms plugin' );
 
 		return $translation;
 	}
@@ -359,10 +369,14 @@ class ErrorHandler {
 	 */
 	private function fallback_error_handler( array $args ): bool {
 
-		return $this->previous_error_handler === null ?
+		$result = $this->previous_error_handler === null ?
 			// Use standard error handler.
 			false :
 			(bool) call_user_func_array( $this->previous_error_handler, $args );
+
+		$this->handling = false;
+
+		return $result;
 	}
 
 	/**
@@ -395,7 +409,7 @@ class ErrorHandler {
 	 *
 	 * @return bool
 	 */
-	private function is_just_in_time_for_wpforms_domain( string $function_name, string $message ): bool {
+	protected function is_just_in_time_for_wpforms_domain( string $function_name, string $message ): bool {
 
 		return $function_name === '_load_textdomain_just_in_time' && strpos( $message, '<code>wpforms' ) !== false;
 	}

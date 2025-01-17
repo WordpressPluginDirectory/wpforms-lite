@@ -68,6 +68,8 @@ function wpforms_save_form() {
 		}
 	}
 
+	$data = wpforms_sanitize_form_data( $data );
+
 	// Get form tags.
 	$form_tags = isset( $data['settings']['form_tags_json'] ) ? json_decode( wp_unslash( $data['settings']['form_tags_json'] ), true ) : [];
 

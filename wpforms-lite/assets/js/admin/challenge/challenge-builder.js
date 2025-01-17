@@ -70,25 +70,14 @@ WPFormsChallenge.builder = window.WPFormsChallenge.builder || ( function( docume
 		 * @since 1.5.0
 		 */
 		setup: function() {
-
 			if ( wpforms_challenge_admin.option.status === 'inited' ) {
 				WPFormsChallenge.core.clearLocalStorage();
 				app.showWelcomePopup();
 			}
 
+			app.initTooltips();
+
 			$( '#wpforms-embed' ).addClass( 'wpforms-disabled' );
-
-			var tooltipAnchors = [
-				'#wpforms-setup-name',
-				'.wpforms-setup-title .wpforms-setup-title-after',
-				'#add-fields a i',
-				'#wpforms-builder-settings-notifications-title',
-			];
-
-			$.each( tooltipAnchors, function( i, anchor ) {
-
-				WPFormsChallenge.core.initTooltips( i + 1, anchor, null );
-			} );
 
 			$( document ).on( 'wpformsWizardPopupClose', app.enableEmbed );
 		},
@@ -116,7 +105,7 @@ WPFormsChallenge.builder = window.WPFormsChallenge.builder || ( function( docume
 				} )
 
 				// Restore tooltips when switching builder panels/sections.
-				.on( 'wpformsPanelSwitch wpformsPanelSectionSwitch', function() {
+				.on( 'wpformsPanelSwitch wpformsPanelSectionSwitch wpformsBuilderPanelLoaded', function() {
 					WPFormsChallenge.core.updateTooltipUI();
 				} );
 
@@ -136,7 +125,24 @@ WPFormsChallenge.builder = window.WPFormsChallenge.builder || ( function( docume
 					WPFormsChallenge.core.stepCompleted( 2 );
 				}
 			} );
+		},
 
+		/**
+		 * Initialize tooltips.
+		 *
+		 * @since 1.9.3
+		 */
+		initTooltips() {
+			const tooltipAnchors = [
+				'#wpforms-setup-name',
+				'.wpforms-setup-title .wpforms-setup-title-after',
+				'#add-fields a i',
+				'#wpforms-builder-settings-notifications-title',
+			];
+
+			$.each( tooltipAnchors, function( i, anchor ) {
+				WPFormsChallenge.core.initTooltips( i + 1, anchor, null );
+			} );
 		},
 
 		/**

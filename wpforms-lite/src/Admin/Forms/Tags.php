@@ -179,7 +179,6 @@ class Tags {
 			'loadingText'       => esc_html__( 'Loading...', 'wpforms-lite' ),
 			'noResultsText'     => esc_html__( 'No results found', 'wpforms-lite' ),
 			'noChoicesText'     => esc_html__( 'No tags to choose from', 'wpforms-lite' ),
-			'itemSelectText'    => '',
 			'searchEnabled'     => true,
 			'searchChoices'     => true,
 			'searchFloor'       => 1,

@@ -149,6 +149,7 @@ class Field extends \WPForms_Field {
 		// Single item and hidden format should hide the input field.
 		if ( $this->is_hidden( $field ) ) {
 			$properties['container']['class'][] = 'wpforms-field-hidden';
+			$properties['label']['class'][]     = 'wpforms-hidden';
 		}
 
 		if ( $this->is_payment_quantities_enabled( $field ) ) {
