@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.7
-Stable tag: 1.9.3.1
+Stable tag: 1.9.3.2
 Requires PHP: 7.1
 License: GNU General Public License v2.0 or later
 
@@ -146,6 +146,7 @@ We also know that our developer friends may want more control, so we added tons 
 * [Salesforce](https://wpforms.com/features/salesforce-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Slack](https://wpforms.com/features/slack-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Dropbox](https://wpforms.com/features/dropbox-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Twilio](https://wpforms.com/features/twilio-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 
 You can see why WPForms is the best WordPress contact form plugin on the market! Want to unlock these features? [Upgrade to our Pro version](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
 
@@ -377,6 +378,9 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.3.2 =
+- Fixed: GDPR enhancements sub-setting briefly flashed on the WPForms > Settings admin page after refresh.
 
 = 1.9.3.1 =
 - IMPORTANT: Support for PHP 7.0 has been discontinued. If you are running PHP 7.0, you MUST upgrade PHP before installing WPForms 1.9.3. Failure to do that will disable WPForms core functionality.

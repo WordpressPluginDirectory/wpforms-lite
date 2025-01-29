@@ -171,7 +171,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					labelInlineStyles = 'counter-increment: none;',
 					fieldHTML = `
 						<div id="${ honeypotIdAttr }-container" class="wpforms-field wpforms-field-text" data-field-type="text" data-field-id="${ honeypotFieldId }" style="${ inlineStyles }">
-							<label class="wpforms-field-label" for="${ honeypotIdAttr }" aria-hidden="true" style="${ labelInlineStyles }">${ label }</label>
+							<label class="wpforms-field-label" for="${ honeypotIdAttr }" aria-hidden="true" style="${ labelInlineStyles }"></label>
 							<input type="text" id="${ honeypotIdAttr }" class="wpforms-field-medium" name="wpforms[fields][${ honeypotFieldId }]" aria-hidden="true" style="visibility: hidden;" tabindex="-1">
 						</div>`;
 
@@ -185,7 +185,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					'aria-hidden': 'true',
 				} );
 
-				$fieldContainer.find( 'label' ).attr( 'aria-hidden', 'true' );
+				$fieldContainer.find( 'label' ).text( label ).attr( 'aria-hidden', 'true' );
 			} );
 		},
 

@@ -612,6 +612,10 @@ function wpforms_get_html_purifier(): HTMLPurifier {
 	$cache_dir = trailingslashit( File::get_upload_dir() ) . 'htmlpurifier-cache';
 
 	$config->set( 'Cache.SerializerPath', $cache_dir );
+	$config->set( 'Attr', 'AllowedRel', 'noopener,noreferrer,external,follow,nofollow,ugc,sponsored,tag' );
+	$config->set( 'Attr', 'AllowedFrameTargets', [ '_blank', '_self', '_parent', '_top' ] );
+	$config->set( 'HTML', 'TargetNoopener', false );
+	$config->set( 'HTML', 'TargetNoreferrer', false );
 
 	$purifier = new HTMLPurifier( $config );
 

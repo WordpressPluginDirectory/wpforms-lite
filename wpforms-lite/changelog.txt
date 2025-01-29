@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.9.3.2 =
+- Fixed: GDPR enhancements sub-setting briefly flashed on the WPForms > Settings admin page after refresh.
+
 = 1.9.3.1 =
 - IMPORTANT: Support for PHP 7.0 has been discontinued. If you are running PHP 7.0, you MUST upgrade PHP before installing WPForms 1.9.3. Failure to do that will disable WPForms core functionality.
 - Added: Ability to open the Form Builder with a specific section via URL parameter.
