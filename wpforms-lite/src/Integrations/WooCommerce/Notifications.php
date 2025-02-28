@@ -157,7 +157,11 @@ class Notifications implements IntegrationInterface {
 	 */
 	public function dismiss() {
 
-		if ( ! check_ajax_referer( self::HANDLE, 'nonce', false ) ) {
+		// Run a security check.
+		check_ajax_referer( self::HANDLE, 'nonce' );
+
+		// Check for permissions.
+		if ( ! current_user_can( 'install_plugins' ) ) {
 			wp_send_json_error();
 		}
 

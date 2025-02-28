@@ -400,6 +400,41 @@ abstract class WPForms_DB {
 	}
 
 	/**
+	 * Clone of $wpdb->get_col() with caching.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param string|null $query SQL query.
+	 * @param int         $x     Column to return. Indexed from 0.
+	 *
+	 * @return array Database query results.
+	 * @noinspection PhpMissingParamTypeInspection
+	 */
+	public function get_col( $query = null, $x = 0 ) {
+
+		global $wpdb;
+
+		if ( ! $this->is_select( $query ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			return $wpdb->get_col( $query );
+		}
+
+		$key = md5( __METHOD__ . $query . $x );
+		$col = $this->cache_get( $key, $found );
+
+		if ( $found ) {
+			return $col;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$col = $wpdb->get_col( $query, $x );
+
+		$this->cache_set( $key, $col );
+
+		return $col;
+	}
+
+	/**
 	 * Clone of $wpdb->get_row() with caching.
 	 *
 	 * @since        1.9.0

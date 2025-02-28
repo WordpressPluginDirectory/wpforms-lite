@@ -721,32 +721,34 @@ export default ( function( document, window, $ ) {
 								onChange={ ( value ) => handlers.attrChange( 'formId', value ) }
 							/>
 							{ attributes.formId ? (
-								<p className="wpforms-gutenberg-form-selector-actions">
-									<a href={ urls.form_url.replace( '{ID}', attributes.formId ) } rel="noreferrer" target="_blank">
-										{ strings.form_edit }
-									</a>
-									{ isPro && isLicenseActive && (
-										<>
-											&nbsp;&nbsp;|&nbsp;&nbsp;
-											<a
-												href={ urls.entries_url.replace( '{ID}', attributes.formId ) }
-												rel="noreferrer"
-												target="_blank"
-											>{ strings.form_entries }</a>
-										</>
-									) }
-								</p>
+								<>
+									<p className="wpforms-gutenberg-form-selector-actions">
+										<a href={ urls.form_url.replace( '{ID}', attributes.formId ) } rel="noreferrer" target="_blank">
+											{ strings.form_edit }
+										</a>
+										{ isPro && isLicenseActive && (
+											<>
+												&nbsp;&nbsp;|&nbsp;&nbsp;
+												<a
+													href={ urls.entries_url.replace( '{ID}', attributes.formId ) }
+													rel="noreferrer"
+													target="_blank"
+												>{ strings.form_entries }</a>
+											</>
+										) }
+									</p>
+									<ToggleControl
+										label={ strings.show_title }
+										checked={ attributes.displayTitle }
+										onChange={ ( value ) => handlers.attrChange( 'displayTitle', value ) }
+									/>
+									<ToggleControl
+										label={ strings.show_description }
+										checked={ attributes.displayDesc }
+										onChange={ ( value ) => handlers.attrChange( 'displayDesc', value ) }
+									/>
+								</>
 							) : null }
-							<ToggleControl
-								label={ strings.show_title }
-								checked={ attributes.displayTitle }
-								onChange={ ( value ) => handlers.attrChange( 'displayTitle', value ) }
-							/>
-							<ToggleControl
-								label={ strings.show_description }
-								checked={ attributes.displayDesc }
-								onChange={ ( value ) => handlers.attrChange( 'displayDesc', value ) }
-							/>
 							<p className="wpforms-gutenberg-panel-notice">
 								<strong>{ strings.panel_notice_head }</strong>
 								{ strings.panel_notice_text }

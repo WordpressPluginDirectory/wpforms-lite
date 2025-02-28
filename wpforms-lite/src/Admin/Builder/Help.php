@@ -240,6 +240,7 @@ class Help {
 			'providers/mailchimp'                     => 'mailchimp',
 			'providers/mailchimpv3'                   => 'mailchimp',
 			'providers/mailerlite'                    => 'mailerlite',
+			'providers/mailpoet'                      => 'mailpoet',
 			'providers/zapier'                        => 'zapier',
 			'providers/salesforce'                    => 'salesforce',
 			'providers/sendinblue'                    => 'brevo',
@@ -1205,6 +1206,9 @@ class Help {
 			'mailerlite'                => [
 				'/docs/install-use-mailerlite-addon-wpforms/',
 			],
+			'mailpoet'                  => [
+				'/docs/mailpoet-addon/',
+			],
 			'zapier'                    => [
 				'/docs/how-to-install-and-use-zapier-addon-with-wpforms/',
 			],
@@ -1215,7 +1219,7 @@ class Help {
 				'/docs/how-to-install-and-use-the-sendinblue-addon-with-wpforms/',
 			],
 			'slack'                     => [
-				'/docs/slack-addon',
+				'/docs/slack-addon/',
 			],
 			'hubspot'                   => [
 				'/docs/how-to-install-and-use-the-hubspot-addon-in-wpforms/',

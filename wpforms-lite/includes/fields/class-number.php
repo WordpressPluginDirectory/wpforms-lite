@@ -4,12 +4,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use WPForms\Forms\Fields\Traits\NumberField as NumberFieldTrait;
+
 /**
  * Number text field.
  *
  * @since 1.0.0
  */
 class WPForms_Field_Number extends WPForms_Field {
+
+	use NumberFieldTrait;
 
 	/**
 	 * Primary class constructor.
@@ -23,6 +27,50 @@ class WPForms_Field_Number extends WPForms_Field {
 		$this->type  = 'number';
 		$this->icon  = 'fa-hashtag';
 		$this->order = 130;
+
+		$this->hooks();
+		$this->number_hooks();
+	}
+
+	/**
+	 * Hooks.
+	 *
+	 * @since 1.9.4
+	 */
+	private function hooks() {
+
+		// Define additional field properties.
+		add_filter( 'wpforms_field_properties_number', [ $this, 'field_properties' ], 5, 3 );
+	}
+
+	/**
+	 * Define additional field properties.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param array|mixed $properties Field properties.
+	 * @param array       $field      Field settings.
+	 * @param array       $form_data  Form data and settings.
+	 *
+	 * @return array
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function field_properties( $properties, $field, $form_data ): array {
+
+		$properties = (array) $properties;
+
+		if ( is_numeric( $field['min'] ?? null ) ) {
+			$properties['inputs']['primary']['attr']['min'] = (float) $field['min'];
+		}
+
+		if ( is_numeric( $field['max'] ?? null ) ) {
+			$properties['inputs']['primary']['attr']['max'] = (float) $field['max'];
+		}
+
+		$properties['inputs']['primary']['attr']['step'] = 'any';
+
+		return $properties;
 	}
 
 	/**
@@ -76,6 +124,9 @@ class WPForms_Field_Number extends WPForms_Field {
 
 		// Placeholder.
 		$this->field_option( 'placeholder', $field );
+
+		// Min/Max.
+		$this->field_number_option_min_max( $field, [ 'class' => 'wpforms-numbers' ] );
 
 		// Default value.
 		$this->field_option( 'default_value', $field );

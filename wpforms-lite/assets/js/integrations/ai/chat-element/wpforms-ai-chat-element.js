@@ -1,4 +1,4 @@
-/* global wpforms_ai_chat_element, WPFormsAIModal, wpforms_builder, wpf */
+/* global wpforms_ai_chat_element, WPFormsAIModal, wpf */
 
 /**
  * @param this.modeStrings.learnMore
@@ -18,27 +18,36 @@
  * @since 1.9.2
  */
 ( function() {
-	const min = wpforms_ai_chat_element.min;
+	// Additional modules provided by wpforms_ai_chat_element.
+	const modules = wpforms_ai_chat_element.modules || [];
 
-	// Dynamic modules import.
-	Promise.all( [
-		import( `./modules/api${ min }.js` ),
-		import( `./modules/helpers-text${ min }.js` ),
-		import( `./modules/helpers-choices${ min }.js` ),
-		wpforms_builder.pro ? import( `../../../pro/js/integrations/ai/form-generator/modules/chat-helpers-forms${ min }.js` ) : null,
-	] )
-		.then( ( [ apiModule, helpersText, helpersChoices, helpersForms ] ) => {
+	// Import all modules dynamically.
+	Promise.all( modules.map( ( module ) => import( module.path ) ) )
+		.then( ( importedModules ) => {
+			// Create the helpers object dynamically.
+			const helpers = {};
+			let api;
+
+			importedModules.forEach( ( module, index ) => {
+				const moduleName = modules[ index ].name;
+				if ( moduleName === 'api' ) {
+					api = module.default();
+
+					return;
+				}
+				helpers[ moduleName ] = module.default;
+			} );
+
 			window.WPFormsAi = {
-				api: apiModule.default(),
-				helpers: {
-					text: helpersText.default,
-					choices: helpersChoices.default,
-					forms: helpersForms?.default,
-				},
+				api,
+				helpers,
 			};
 
 			// Register the custom HTML element.
 			customElements.define( 'wpforms-ai-chat', WPFormsAIChatHTMLElement ); // eslint-disable-line no-use-before-define
+		} )
+		.catch( ( error ) => {
+			wpf.debug( 'Error importing modules:', error );
 		} );
 }() );
 
@@ -69,6 +78,8 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 		// Init chat properties.
 		this.chatMode = this.getAttribute( 'mode' ) ?? 'text';
 		this.fieldId = this.getAttribute( 'field-id' ) ?? '';
+		this.prefill = this.getAttribute( 'prefill' ) ?? '';
+		this.autoSubmit = this.getAttribute( 'auto-submit' ) === 'true';
 		this.modeStrings = wpforms_ai_chat_element[ this.chatMode ] ?? {};
 		this.loadingState = false;
 
@@ -113,6 +124,13 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 		// Init mode.
 		if ( typeof this.modeHelpers.init === 'function' ) {
 			this.modeHelpers.init();
+		}
+
+		// Auto-submit if enabled and prefill is provided
+		if ( this.autoSubmit && this.prefill ) {
+			this.input.value = this.prefill;
+
+			setTimeout( () => this.sendMessage( true ), 250 );
 		}
 	}
 
@@ -165,26 +183,10 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	 * @return {string} The Welcome screen markup.
 	 */
 	getWelcomeScreen() {
-		const samplePrompts = this.modeStrings.samplePrompts;
-		const li = [];
 		let content;
 
 		if ( this.modeHelpers.isWelcomeScreen() ) {
-			// Render sample prompts.
-			for ( const i in samplePrompts ) {
-				li.push( `
-					<li>
-						<i class="${ samplePrompts[ i ].icon }"></i>
-						<a href="#">${ samplePrompts[ i ].title }</a>
-					</li>
-				` );
-			}
-
-			content = `
-				<ul class="wpforms-ai-chat-welcome-screen-sample-prompts">
-					${ li.join( '' ) }
-				</ul>
-			`;
+			content = this.getWelcomeScreenContent();
 		} else {
 			this.messagePreAdded = true;
 			content = this.modeHelpers.getWarningMessage();
@@ -203,6 +205,48 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 				</div>
 			</div>
 		`;
+	}
+
+	/**
+	 * Get the welcome screen content.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @return {string} The welcome screen content.
+	 */
+	getWelcomeScreenContent() {
+		const samplePrompts = this.modeStrings?.samplePrompts,
+			li = [];
+
+		if ( ! samplePrompts && ! this.modeStrings?.initialChat ) {
+			return '';
+		}
+
+		if ( samplePrompts ) {
+			// Render sample prompts.
+			for ( const i in samplePrompts ) {
+				li.push( `
+					<li>
+						<i class="${ samplePrompts[ i ].icon }"></i>
+						<a href="#">${ samplePrompts[ i ].title }</a>
+					</li>
+				` );
+			}
+
+			return `
+				<ul class="wpforms-ai-chat-welcome-screen-sample-prompts">
+					${ li.join( '' ) }
+				</ul>
+			`;
+		}
+
+		if ( this.prefill.length > 0 ) {
+			return '';
+		}
+
+		this.messagePreAdded = true;
+
+		return this.modeHelpers?.getInitialChat( this.modeStrings.initialChat );
 	}
 
 	/**
@@ -315,16 +359,22 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	 * Send a question message to the chat.
 	 *
 	 * @since 1.9.1
+	 *
+	 * @param {boolean} allowHTML Whether to allow HTML in the message.
 	 */
-	sendMessage() {
-		const message = this.input.value;
+	sendMessage( allowHTML = false ) {
+		let message = this.input.value;
 
 		if ( ! message ) {
 			return;
 		}
 
+		if ( ! allowHTML ) {
+			message = this.htmlSpecialChars( message );
+		}
+
 		// Fire event before sending the message.
-		this.triggerEvent( 'wpformsAIChatBeforeSendMessage', { fieldId: this.fieldId } );
+		this.triggerEvent( 'wpformsAIChatBeforeSendMessage', { fieldId: this.fieldId, mode: this.chatMode } );
 
 		this.addFirstMessagePre();
 		this.welcomeScreenSamplePrompts?.remove();
@@ -337,6 +387,10 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 			this.addEmptyResultsError();
 
 			return;
+		}
+
+		if ( typeof this.modeHelpers.prepareMessage === 'function' ) {
+			message = this.modeHelpers.prepareMessage( message );
 		}
 
 		this.getAiApi()
@@ -454,6 +508,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	async clickRefreshButton() {
 		const refreshConfirm = () => {
 			// Restore the welcome screen.
+			this.prefill = '';
 			this.messageList.innerHTML = this.getWelcomeScreen();
 			this.welcomeScreenSamplePrompts = this.querySelector( '.wpforms-ai-chat-welcome-screen-sample-prompts' );
 			this.bindWelcomeScreenEvents();
@@ -606,7 +661,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 
 		if ( isQuestion ) {
 			// Add a question.
-			element.innerText = message;
+			element.innerHTML = message;
 			element.classList.add( 'wpforms-chat-item-question' );
 
 			// Add a waiting spinner.
@@ -790,6 +845,8 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 
 		// Add the answer to the chat.
 		this.addMessage( answerHTML, false, sanitizedResponse );
+
+		this.triggerEvent( 'wpformsAIChatAfterAddAnswer', { fieldId: this.fieldId } );
 	}
 
 	/**
@@ -962,7 +1019,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 
 			content += chunk;
 			// Remove broken HTML tag from the end of the string.
-			element.innerHTML = content.replace( /<[^>]*$/g, '' );
+			element.innerHTML = content.replace( /<[^>]{0,300}$/g, '' );
 			index += chunkSize;
 
 			if ( index < text.length && chat.loadingState ) {

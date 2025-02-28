@@ -28,7 +28,7 @@ namespace WPForms {
 		 *
 		 * @var string[]
 		 */
-		const HEARTBEAT_ALLOWED_SCREEN_IDS = [
+		private const HEARTBEAT_ALLOWED_SCREEN_IDS = [
 			'wpforms_page_wpforms-entries',
 		];
 
@@ -329,7 +329,7 @@ namespace WPForms {
 		}
 
 		/**
-		 * Re-create plugin custom tables if don't exist.
+		 * Re-create plugin custom tables if they don't exist.
 		 *
 		 * @since 1.9.0
 		 *
@@ -366,7 +366,7 @@ namespace WPForms {
 		 * - run: optional -- method to run on class instantiation -- default init.
 		 * - condition: optional -- condition to check before registering the class.
 		 */
-		public function register( $class_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+		public function register( $class_data ): void { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 			if ( empty( $class_data['name'] ) || ! is_string( $class_data['name'] ) ) {
 				return;
@@ -379,7 +379,19 @@ namespace WPForms {
 			$full_name = $this->is_pro() ? '\WPForms\Pro\\' . $class_data['name'] : '\WPForms\Lite\\' . $class_data['name'];
 			$full_name = class_exists( $full_name ) ? $full_name : '\WPForms\\' . $class_data['name'];
 
-			if ( ! class_exists( $full_name ) ) {
+			// Register an addon class.
+			if ( ! empty( $class_data['addon_class'] ) && ! empty( $class_data['addon_slug'] ) ) {
+				$is_initialized = wpforms_is_addon_initialized( $class_data['addon_slug'] ) && $this->is_pro();
+				$full_name      = $is_initialized ? $class_data['addon_class'] : $full_name;
+				$full_name      = strpos( $full_name, '\\' ) !== 0 ? '\\' . $full_name : $full_name;
+
+				// The core plugin classes have the priority 10.
+				// Addon classes should be initialized after the core.
+				$class_data['priority'] = 100;
+			}
+
+			// Bail if the class doesn't exist AND it is not an addon class.
+			if ( ! class_exists( $full_name ) && empty( $class_data['addon_class'] ) ) {
 				return;
 			}
 
@@ -389,7 +401,10 @@ namespace WPForms {
 			$run      = $class_data['run'] ?? 'init';
 			$priority = isset( $class_data['priority'] ) && is_int( $class_data['priority'] ) ? $class_data['priority'] : 10;
 
-			$callback = function () use ( $full_name, $id, $run ) {
+			$callback = function () use ( $full_name, $id, $run, $hook ) {
+				if ( ! class_exists( $full_name ) ) {
+					return;
+				}
 
 				// Instantiate class.
 				$instance = new $full_name();

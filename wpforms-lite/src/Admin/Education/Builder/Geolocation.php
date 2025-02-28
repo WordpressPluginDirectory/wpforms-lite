@@ -14,11 +14,14 @@ use WPForms\Admin\Education\Helpers;
 class Geolocation extends AddonsItemBase {
 
 	/**
-	 * Indicate if current Education feature is allowed to load.
+	 * Indicate if the current Education feature is allowed to load.
 	 *
 	 * @since 1.6.6
 	 *
 	 * @return bool
+	 *
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
+	 * @noinspection PhpMissingReturnTypeInspection
 	 */
 	public function allow_load() {
 
@@ -29,6 +32,8 @@ class Geolocation extends AddonsItemBase {
 	 * Hooks.
 	 *
 	 * @since 1.6.6
+	 *
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
 	public function hooks() {
 
@@ -42,6 +47,9 @@ class Geolocation extends AddonsItemBase {
 	 *
 	 * @param array  $field    Field data.
 	 * @param object $instance Builder instance.
+	 *
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
+	 * @noinspection PhpMissingParamTypeInspection
 	 */
 	public function geolocation_options( $field, $instance ) {
 
@@ -66,7 +74,7 @@ class Geolocation extends AddonsItemBase {
 		$row_args['content'] = $instance->field_element(
 			'toggle',
 			$field,
-			$this->get_address_autocomplete_field_attributes( $field, $addon ),
+			$this->get_address_autocomplete_field_attributes( $addon ),
 			false
 		);
 
@@ -82,44 +90,15 @@ class Geolocation extends AddonsItemBase {
 	 *
 	 * @return array
 	 */
-	private function get_address_autocomplete_row_attributes( $addon ) {
+	private function get_address_autocomplete_row_attributes( array $addon ): array {
 
+		$data    = $this->prepare_field_action_data( $addon );
 		$default = [
 			'slug' => 'enable_address_autocomplete',
 		];
 
-		if ( $addon['plugin_allow'] && $addon['action'] === 'install' ) {
-			return wp_parse_args(
-				[
-					'data'  => [
-						'action'  => 'install',
-						'name'    => $addon['modal_name'],
-						'url'     => $addon['url'],
-						'nonce'   => wp_create_nonce( 'wpforms-admin' ),
-						'license' => 'pro',
-					],
-					'class' => 'education-modal',
-				],
-				$default
-			);
-		}
-
-		if ( $addon['plugin_allow'] && $addon['action'] === 'activate' ) {
-			return wp_parse_args(
-				[
-					'data'  => [
-						'action' => 'activate',
-						'name'   => sprintf( /* translators: %s - addon name. */
-							esc_html__( '%s addon', 'wpforms-lite' ),
-							$addon['name']
-						),
-						'path'   => $addon['path'],
-						'nonce'  => wp_create_nonce( 'wpforms-admin' ),
-					],
-					'class' => 'education-modal',
-				],
-				$default
-			);
+		if ( ! empty( $data ) ) {
+			return wp_parse_args( $data, $default );
 		}
 
 		return wp_parse_args(
@@ -142,12 +121,11 @@ class Geolocation extends AddonsItemBase {
 	 *
 	 * @since 1.6.6
 	 *
-	 * @param array $field Field data.
 	 * @param array $addon Current addon information.
 	 *
 	 * @return array
 	 */
-	private function get_address_autocomplete_field_attributes( $field, $addon ) {
+	private function get_address_autocomplete_field_attributes( array $addon ): array {
 
 		$default = [
 			'slug'  => 'enable_address_autocomplete',

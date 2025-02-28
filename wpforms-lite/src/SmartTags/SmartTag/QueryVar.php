@@ -35,16 +35,42 @@ class QueryVar extends SmartTag {
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		if ( empty( $_POST['page_url'] ) ) {
+		$page_url = $this->get_page_url( $entry_id );
+
+		if ( empty( $page_url ) ) {
 			return '';
 		}
 
-		$query = wp_parse_url( esc_url_raw( wp_unslash( $_POST['page_url'] ) ), PHP_URL_QUERY );
+		$query = wp_parse_url( esc_url_raw( wp_unslash( $page_url ) ), PHP_URL_QUERY );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( ! $query ) {
+			return '';
+		}
 
 		parse_str( $query, $results );
 
 		return ! empty( $results[ $attributes['key'] ] ) ? esc_html( sanitize_text_field( wp_unslash( $results[ $attributes['key'] ] ) ) ) : '';
+	}
+
+	/**
+	 * Get page URL.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param string $entry_id Entry ID.
+	 *
+	 * @return string
+	 */
+	private function get_page_url( $entry_id ): string {
+
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
+		if ( ! empty( $_POST['page_url'] ) ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+			return (string) $_POST['page_url']; // It sanitized in the get_value method.
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		return $this->get_meta( $entry_id, 'page_url' );
 	}
 }

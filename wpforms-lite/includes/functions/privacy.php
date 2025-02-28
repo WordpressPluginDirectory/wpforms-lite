@@ -17,7 +17,7 @@
  *
  * @return string
  */
-function wpforms_get_ip() {
+function wpforms_get_ip(): string {
 
 	$ip = '127.0.0.1';
 
@@ -59,7 +59,7 @@ function wpforms_get_ip() {
 	 *
 	 * @param string $ip IP address.
 	 */
-	return filter_var( apply_filters( 'wpforms_get_ip', $ip ), FILTER_VALIDATE_IP );
+	return (string) filter_var( apply_filters( 'wpforms_get_ip', $ip ), FILTER_VALIDATE_IP );
 }
 
 /**

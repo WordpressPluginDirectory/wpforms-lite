@@ -65,7 +65,10 @@ var WPFormsAIModal = window.WPFormsAIModal || ( function( document, window, $ ) 
 				.on( 'wpformsAIChatAfterRefresh', app.refreshModalHeight )
 				.on( 'wpformsAIChatCancelRefresh', app.cancelChoicesRefresh )
 				.on( 'wpformsAIChatBeforeSendMessage', function( e ) {
-					app.resizeChoicesModalHeight( e.detail.fieldId );
+					app.resizeModalHeight( e.detail.fieldId );
+				} )
+				.on( 'wpformsAIChatAfterAddAnswer', function( e ) {
+					app.resizeModalHeight( e.detail.fieldId );
 				} )
 				.on( 'wpformsAIModalAfterChoicesInsert', function( e ) {
 					app.hideChoicesModal( e.detail.fieldId );
@@ -73,7 +76,7 @@ var WPFormsAIModal = window.WPFormsAIModal || ( function( document, window, $ ) 
 
 			$( window ).on( 'resize', function() {
 				$( '.jconfirm-wpforms-ai-modal wpforms-ai-chat' ).each( function() {
-					app.resizeChoicesModalHeight( $( this ).attr( 'field-id' ) );
+					app.resizeModalHeight( $( this ).attr( 'field-id' ) );
 				} );
 			} );
 		},
@@ -98,7 +101,7 @@ var WPFormsAIModal = window.WPFormsAIModal || ( function( document, window, $ ) 
 		initChoicesModal() {
 			const $button = $( this );
 
-			if ( $button.hasClass( 'wpforms-ai-modal-disabled' ) ) {
+			if ( $button.hasClass( 'wpforms-prevent-default' ) ) {
 				$button.trigger( 'blur' );
 				return;
 			}
@@ -156,14 +159,18 @@ var WPFormsAIModal = window.WPFormsAIModal || ( function( document, window, $ ) 
 		/**
 		 * Resize choices modal window height.
 		 *
-		 * @since 1.9.1
+		 * @since 1.9.4
 		 *
-		 * @param {string} fieldId Choice field ID.
+		 * @param {string} fieldId Field ID.
 		 */
-		resizeChoicesModalHeight( fieldId ) {
+		resizeModalHeight( fieldId ) {
 			const modalHeight = app.getMaxModalHeight();
+			const $modal = $( '.jconfirm-wpforms-ai-modal' ).filter( function() {
+				// find class starts with jconfirm-wpforms-ai-modal- and ends with -{fieldId}.
+				return $( this ).attr( 'class' ).match( new RegExp( 'jconfirm-wpforms-ai-modal-.*-' + fieldId, 'i' ) );
+			} );
 
-			$( `.jconfirm-wpforms-ai-modal-choices-${ fieldId } .jconfirm-content-pane` )
+			$modal.find( '.jconfirm-content-pane' )
 				.css( {
 					height: modalHeight,
 					'max-height': modalHeight,

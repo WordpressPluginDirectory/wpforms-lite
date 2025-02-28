@@ -51,6 +51,10 @@ class WPForms_Field_Radio extends WPForms_Field {
 			],
 		];
 
+		$this->default_settings = [
+			'choices' => $this->defaults,
+		];
+
 		$this->hooks();
 	}
 

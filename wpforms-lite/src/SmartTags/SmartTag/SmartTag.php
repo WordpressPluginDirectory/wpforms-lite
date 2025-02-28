@@ -110,7 +110,7 @@ abstract class SmartTag {
 			return $user;
 		}
 
-		return is_user_logged_in() ? wp_get_current_user() : '';
+		return ! wpforms_doing_scheduled_action() && is_user_logged_in() ? wp_get_current_user() : '';
 	}
 
 	/**
@@ -124,29 +124,41 @@ abstract class SmartTag {
 	 */
 	private function get_entry_user( $entry_id ) {
 
-		if ( empty( $entry_id ) ) {
+		$entry_user_id = $this->get_entry_user_id( $entry_id );
+
+		if ( empty( $entry_user_id ) ) {
 			return '';
+		}
+
+		$user = get_user_by( 'id', $entry_user_id );
+
+		return $user instanceof WP_User ? $user : '';
+	}
+
+	/**
+	 * Retrieve user ID from entry meta or AS task.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param int|string $entry_id Entry ID.
+	 *
+	 * @return int
+	 */
+	private function get_entry_user_id( $entry_id ): int {
+
+		if ( empty( $entry_id ) ) {
+			return (int) $this->get_meta( 0, 'user_id' );
 		}
 
 		$entry = wpforms()->obj( 'entry' );
 
 		if ( empty( $entry ) ) {
-			return '';
+			return 0;
 		}
 
-		$user          = null;
-		$entry_data    = $entry->get( $entry_id );
-		$entry_user_id = $entry_data->user_id ?? 0;
+		$entry_data = $entry->get( $entry_id );
 
-		if ( ! empty( $entry_user_id ) ) {
-			$user = get_user_by( 'id', $entry_user_id );
-		}
-
-		if ( ! $user instanceof WP_User ) {
-			return '';
-		}
-
-		return $user;
+		return $entry_data && isset( $entry_data->user_id ) ? (int) $entry_data->user_id : 0;
 	}
 
 	/**
@@ -177,10 +189,6 @@ abstract class SmartTag {
 	 */
 	protected function get_author_meta( $entry_id, string $meta_key ): string {
 
-		if ( empty( $entry_id ) ) {
-			return '';
-		}
-
 		$page_id = $this->get_meta( $entry_id, 'page_id' );
 
 		if ( empty( $page_id ) ) {
@@ -206,27 +214,39 @@ abstract class SmartTag {
 	 *
 	 * @return string Meta value.
 	 */
-	public function get_meta( $entry_id, string $meta_key ) {
+	public function get_meta( $entry_id, string $meta_key ): string {
 
-		if ( empty( $entry_id ) ) {
-			return '';
+		$meta_data = '';
+
+		if ( ! empty( $entry_id ) ) {
+			$entry_meta = wpforms()->obj( 'entry_meta' );
+
+			if ( $entry_meta ) {
+				$meta = $entry_meta->get_meta(
+					[
+						'entry_id' => $entry_id,
+						'type'     => $meta_key,
+						'number'   => 1,
+					]
+				);
+
+				$meta_data = isset( $meta[0]->data ) ? (string) $meta[0]->data : '';
+			}
 		}
 
-		$entry_meta = wpforms()->obj( 'entry_meta' );
-
-		if ( empty( $entry_meta ) ) {
-			return '';
-		}
-
-		$meta = $entry_meta->get_meta(
-			[
-				'entry_id' => $entry_id,
-				'type'     => $meta_key,
-				'number'   => 1,
-			]
-		);
-
-		return $meta[0]->data ?? '';
+		/**
+		 * Allow modifying the entry meta-value.
+		 *
+		 * @since 1.9.4
+		 *
+		 * @param string     $meta_data Meta value.
+		 * @param string     $meta_key  Meta key.
+		 * @param string|int $entry_id  Entry ID.
+		 * @param SmartTag   $smart_tag Smart tag object.
+		 *
+		 * @return string
+		 */
+		return (string) apply_filters( 'wpforms_smart_tags_smart_tag_get_meta_value', $meta_data, $meta_key, $entry_id, $this ); //phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 	}
 
 	/**

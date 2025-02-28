@@ -31,6 +31,9 @@ class UserIp extends SmartTag {
 			return esc_html( wpforms_get_ip() );
 		}
 
-		return wpforms()->obj( 'entry' )->get( $entry_id )->ip_address;
+		$entry_obj = wpforms()->obj( 'entry' );
+		$entry     = $entry_obj ? $entry_obj->get( $entry_id ) : null;
+
+		return $entry->ip_address ?? '';
 	}
 }

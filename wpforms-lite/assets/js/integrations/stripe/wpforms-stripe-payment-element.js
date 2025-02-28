@@ -104,6 +104,7 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 		 * Initialize form default object.
 		 *
 		 * @since 1.8.9
+		 * @since 1.9.4 "customVars" property was added.
 		 *
 		 * @param {string} formId Form ID.
 		 */
@@ -119,6 +120,7 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 				lockedPageToSwitch: 0,
 				paymentMethodId: '',
 				total: '',
+				customVars: null,
 			};
 		},
 
@@ -332,30 +334,32 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 				$fieldRow = $form.find( '.wpforms-field-stripe-credit-card .wpforms-field-row' );
 
 			const labelHide = ! $fieldRow.hasClass( 'wpforms-sublabel-hide' );
+			const colorPrimary = app.getElementPrimaryColor( $hiddenInput );
+			const customVars = app.getCustomAppearanceVariables( $form );
 
 			const inputStyle = {
 				borderColor: app.getCssPropertyValue( $hiddenInput, '--field-border' ) || app.getCssPropertyValue( $hiddenInput, 'border-color' ),
 				borderRadius: app.getCssPropertyValue( $hiddenInput, 'border-radius' ),
 				fontSize: app.getCssPropertyValue( $hiddenInput, 'font-size' ),
-				colorPrimary: app.getCssPropertyValue( $hiddenInput, '--primary-color' ) || app.getCssPropertyValue( $hiddenInput, 'color' ),
 				colorText: app.getCssPropertyValue( $hiddenInput, '--secondary-color' ) || app.getCssPropertyValue( $hiddenInput, 'color' ),
 				colorTextPlaceholder: app.getCssPropertyValue( $hiddenInput, '--secondary-color-50' ) || WPFormsUtils.cssColorsUtils.getColorWithOpacity( app.getCssPropertyValue( $hiddenInput, 'color' ), '0.5' ),
 				colorBackground: app.getCssPropertyValue( $hiddenInput, '--background-color' ) || app.getCssPropertyValue( $hiddenInput, 'background-color' ),
 				fontFamily: app.getCssPropertyValue( $hiddenInput, 'font-family' ),
-				focusColor: app.getCssPropertyValue( $hiddenInput, '--accent-color' ) || app.getCssPropertyValue( $hiddenInput, 'color' ),
 				errorColor: '#990000',
 			};
 
-			if ( window.WPForms && WPForms.FrontendModern ) {
-				inputStyle.colorPrimary = WPForms.FrontendModern.getSolidColor( inputStyle.colorPrimary );
-			}
+			inputStyle.colorBackground = WPFormsUtils.cssColorsUtils.rgbaToHex( inputStyle.colorBackground );
+			inputStyle.borderColor = WPFormsUtils.cssColorsUtils.isValidColor( inputStyle.borderColor ) ? inputStyle.borderColor : inputStyle.colorText;
+
+			// We shouldn't provide opacity if we show sub-labels
+			// since Stripe using this property for floating labels.
+			const labelOpacity = ! labelHide ? { opacity: 0 } : {};
 
 			return {
-				theme: 'none',
+				theme: 'stripe',
 				labels: $fieldRow.data( 'sublabel-position' ),
-				sublabelHide: labelHide,
 				variables: {
-					colorPrimary: inputStyle.colorPrimary,
+					colorPrimary,
 					colorBackground: inputStyle.colorBackground,
 					colorText: inputStyle.colorText,
 					colorDanger: inputStyle.errorColor,
@@ -367,13 +371,16 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 					borderRadius: inputStyle.borderRadius,
 					colorTextPlaceholder: inputStyle.colorTextPlaceholder,
 					colorIcon: inputStyle.colorText,
-					focusColor: inputStyle.focusColor,
-					borderColorWithOpacity: WPFormsUtils.cssColorsUtils.getColorWithOpacity( inputStyle.colorPrimary, '0.1' ),
+					logoColor: 'light',
 				},
 				rules: {
 					'.Input--invalid': {
 						color: inputStyle.colorText,
 						borderColor: '#cc0000',
+					},
+					'.Input:disabled': {
+						backgroundColor: inputStyle.colorBackground,
+						borderColor: 'unset',
 					},
 					'.Input': {
 						border: 'none',
@@ -388,21 +395,29 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 					},
 					'.Input:focus, .Input:hover': {
 						border: 'none',
-						boxShadow: '0 0 0 2px ' + inputStyle.focusColor,
+						boxShadow: '0 0 0 2px ' + customVars.focusColor,
 						outline: 'none',
 					},
 					'.Label': {
 						fontFamily: inputStyle.fontFamily,
 						lineHeight: labelHide ? '1.3' : '0',
-						opacity: Number( labelHide ),
-						color: inputStyle.colorPrimary,
+						color: colorPrimary,
 					},
+					'.Label, .Label--floating': labelOpacity,
 					'.CheckboxInput, .CodeInput, .PickerItem': {
 						border: '1px solid ' + inputStyle.borderColor,
 					},
-					'.Tab, .Block': {
+					[ app.getPickerItemSelectors().join( ', ' ) ]: {
+						color: colorPrimary,
+						boxShadow: 'none',
+						borderColor: inputStyle.borderColor,
+						backgroundColor: inputStyle.colorBackground,
+					},
+					'.Block': {
 						border: '1px solid ' + inputStyle.borderColor,
 						borderRadius: inputStyle.borderRadius,
+					},
+					'.Tab': {
 						color: inputStyle.colorText,
 					},
 					'.TabLabel, .TabIcon': {
@@ -428,6 +443,10 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 					},
 					'.TabIcon--selected': {
 						fill: inputStyle.colorText,
+					},
+					'.AccordionItem': {
+						border: 0,
+						boxShadow: 'none',
 					},
 				},
 			};
@@ -1078,6 +1097,9 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 					boxShadow: '0 0 0 1px ' + cssVars[ 'label-error-color' ],
 					outline: 'none',
 				},
+				'.Input:disabled': {
+					...appearance.rules[ '.Input:disabled' ],
+				},
 				'.Input::placeholder': {
 					color: WPForms.FrontendModern.getColorWithOpacity( cssVars[ 'field-text-color' ], '0.5' ),
 					fontSize: cssVars[ 'field-size-font-size' ],
@@ -1099,16 +1121,14 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 					boxShadow: '0 0 0 1px ' + cssVars[ 'button-background-color' ],
 					outline: 'none',
 				},
-				'.CodeInput:disabled': {
-					borderColor: WPForms.FrontendModern.getColorWithOpacity( cssVars[ 'field-border-color' ], '0.5' ),
-					color: WPForms.FrontendModern.getColorWithOpacity( cssVars[ 'field-text-color' ], '0.5' ),
-				},
 				'.Label': {
 					fontSize: cssVars[ 'label-size-sublabel-font-size' ],
 					margin: `0 0 ${ cssVars[ 'field-size-sublabel-spacing' ] } 0`,
 					color: cssVars[ 'label-sublabel-color' ],
-					opacity: Number( Boolean( appearance?.sublabelHide ) ),
-					lineHeight: appearance?.sublabelHide ? 'inherit' : '0',
+					lineHeight: appearance.rules[ '.Label' ].lineHeight,
+				},
+				'.Label, .Label--floating': {
+					...appearance.rules[ '.Label, .Label--floating' ],
 				},
 				'.Error': {
 					fontSize: cssVars[ 'label-size-sublabel-font-size' ],
@@ -1165,17 +1185,84 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 					boxShadow: 'none',
 				},
 				'.AccordionItem': {
+					...appearance.rules[ '.AccordionItem' ],
 					backgroundColor: maybeMenuBgColor,
 					paddingLeft: 0,
 					paddingRight: 0,
 					color: cssVars[ 'field-text-color' ],
 				},
-				'.PickerItem,': {
+				[ app.getPickerItemSelectors().join( ', ' ) ]: {
+					border: 0,
+					boxShadow: 'none',
 					backgroundColor: maybeMenuBgColor,
 				},
 			};
 
 			formElements.update( { appearance } );
+		},
+
+		/**
+		 * Retrieves the custom appearance variables for the given form.
+		 *
+		 * @since 1.9.4
+		 *
+		 * @param {jQuery} $form The jQuery object representing the form element.
+		 *
+		 * @return {Object} An object containing custom appearance variables for the provided form.
+		 */
+		getCustomAppearanceVariables( $form ) {
+			const formId = $form.data( 'formid' );
+
+			if ( app.forms[ formId ]?.customVars ) {
+				return app.forms[ formId ].customVars;
+			}
+
+			const $hiddenInput = $form.find( '.wpforms-stripe-credit-card-hidden-input' );
+			const primaryColor = app.getElementPrimaryColor( $hiddenInput );
+
+			app.forms[ formId ].customVars = {
+				focusColor: app.getCssPropertyValue( $hiddenInput, '--accent-color' ) || app.getCssPropertyValue( $hiddenInput, 'color' ),
+				borderColorWithOpacity: WPFormsUtils.cssColorsUtils.getColorWithOpacity( primaryColor, '0.1' ),
+			};
+
+			return app.forms[ formId ].customVars;
+		},
+
+		/**
+		 * Get the primary color of the payment element.
+		 *
+		 * @since 1.9.4
+		 *
+		 * @param {jQuery} $cardInput The input element for the payment card.
+		 *
+		 * @return {string} The primary color value.
+		 */
+		getElementPrimaryColor( $cardInput ) {
+			const primaryColor = app.getCssPropertyValue( $cardInput, '--primary-color' ) || app.getCssPropertyValue( $cardInput, 'color' );
+
+			if ( ! window?.WPForms?.FrontendModern ) {
+				return primaryColor;
+			}
+
+			return WPForms.FrontendModern.getSolidColor( primaryColor );
+		},
+
+		/**
+		 * Retrieves the CSS selectors for various states of picker items.
+		 *
+		 * @since 1.9.4
+		 *
+		 * @return {Object} An object containing CSS selectors for different states of picker items, including default, hover, selected, and highlighted states.
+		 */
+		getPickerItemSelectors() {
+			return [
+				'.PickerItem',
+				'.PickerItem:hover',
+				'.PickerItem--selected',
+				'.PickerItem--selected:hover',
+				'.PickerItem--highlight',
+				'.PickerItem--highlight:hover',
+			];
 		},
 	};
 

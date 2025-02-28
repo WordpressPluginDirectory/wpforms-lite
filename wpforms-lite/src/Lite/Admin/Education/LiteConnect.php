@@ -138,7 +138,7 @@ class LiteConnect implements Education\EducationInterface {
 		wp_enqueue_script(
 			'wpforms-lite-admin-education-lite-connect',
 			WPFORMS_PLUGIN_URL . "assets/lite/js/admin/education/lite-connect{$min}.js",
-			[ 'jquery' ],
+			[ 'jquery', 'wp-util' ],
 			WPFORMS_VERSION,
 			true
 		);

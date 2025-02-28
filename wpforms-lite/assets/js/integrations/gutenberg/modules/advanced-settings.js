@@ -103,8 +103,8 @@ export default ( function( $ ) {
 		 * @return {Object} Inspector advanced controls JSX code.
 		 */
 		getFields( props ) {
-			// Proceed only for WPForms block.
-			if ( props?.name !== 'wpforms/form-selector' ) {
+			// Proceed only for WPForms block and when form ID is set.
+			if ( props?.name !== 'wpforms/form-selector' || ! props?.attributes?.formId ) {
 				return null;
 			}
 

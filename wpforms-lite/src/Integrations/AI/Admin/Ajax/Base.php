@@ -99,6 +99,10 @@ abstract class Base {
 				$value = filter_input( INPUT_POST, $key, FILTER_VALIDATE_BOOLEAN ) ?? false;
 				break;
 
+			case 'json':
+				$value = json_decode( filter_input( INPUT_POST, $key ), true );
+				break;
+
 			default:
 				// We should use this alternative to FILTER_SANITIZE_FULL_SPECIAL_CHARS filter,
 				// because htmlspecialchars() function does double encoding of special characters,

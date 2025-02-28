@@ -2,7 +2,8 @@
 
 namespace WPForms\Lite\Admin\Education\Builder;
 
-use \WPForms\Admin\Education;
+use WPForms\Admin\Education;
+use WPForms\Helpers\Form;
 
 /**
  * Builder/Fields Education for Lite.
@@ -21,6 +22,7 @@ class Fields extends Education\Builder\Fields {
 		add_filter( 'wpforms_builder_fields_buttons', [ $this, 'add_fields' ], 500 );
 		add_filter( 'wpforms_builder_field_button_attributes', [ $this, 'fields_attributes' ], 100, 2 );
 		add_action( 'wpforms_field_options_after_advanced-options', [ $this, 'field_conditional_logic' ] );
+		add_action( 'wpforms_builder_panel_fields_panel_content_title_after', [ $this, 'form_preview_notice' ] );
 	}
 
 	/**
@@ -32,7 +34,7 @@ class Fields extends Education\Builder\Fields {
 	 *
 	 * @return array
 	 */
-	public function add_fields( $fields ) {
+	public function add_fields( $fields ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		foreach ( $fields as $group => $group_data ) {
 			$edu_fields = $this->fields->get_by_group( $group );
@@ -48,7 +50,7 @@ class Fields extends Education\Builder\Fields {
 				$addon = ! empty( $edu_field['addon'] ) ? $this->addons->get_addon( $edu_field['addon'] ) : [];
 
 				if ( ! empty( $addon ) ) {
-					$edu_field['license'] = isset( $addon['license_level'] ) ? $addon['license_level'] : '';
+					$edu_field['license'] = $addon['license_level'] ?? '';
 				}
 
 				$fields[ $group ]['fields'][] = $edu_field;
@@ -59,7 +61,7 @@ class Fields extends Education\Builder\Fields {
 	}
 
 	/**
-	 * Display conditional logic settings section for fields inside the form builder.
+	 * Display a conditional logic settings section for fields inside the form builder.
 	 *
 	 * @since 1.6.6
 	 *
@@ -94,7 +96,7 @@ class Fields extends Education\Builder\Fields {
 	 *
 	 * @return array Attributes array.
 	 */
-	public function fields_attributes( $atts, $field ) {
+	public function fields_attributes( $atts, $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		$atts['data']['utm-content'] = ! empty( $field['name_en'] ) ? $field['name_en'] : '';
 
@@ -121,5 +123,32 @@ class Fields extends Education\Builder\Fields {
 		}
 
 		return $atts;
+	}
+
+	/**
+	 * The form preview Pro fields notice.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param array $form_data Form data.
+	 */
+	public function form_preview_notice( array $form_data ): void {
+
+		$dismissed  = get_user_meta( get_current_user_id(), 'wpforms_dismissed', true );
+		$pro_fields = Form::get_form_pro_fields( $form_data );
+
+		// Check the form has Pro fields OR if not dismissed.
+		if ( ! empty( $dismissed['edu-pro-fields-form-preview-notice'] ) || empty( $pro_fields ) ) {
+			return;
+		}
+
+		$this->print_form_preview_notice(
+			[
+				'class'           => 'wpforms-alert-warning',
+				'title'           => esc_html__( 'Your Form Contains Pro Fields', 'wpforms-lite' ),
+				'content'         => esc_html__( 'They will still be visible in the form preview, but will not be present in the published form.', 'wpforms-lite' ),
+				'dismiss_section' => 'pro-fields-form-preview-notice',
+			]
+		);
 	}
 }

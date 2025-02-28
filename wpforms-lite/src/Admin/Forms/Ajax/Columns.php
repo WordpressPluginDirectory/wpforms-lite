@@ -32,7 +32,7 @@ class Columns {
 	 *
 	 * @since 1.8.6
 	 */
-	public function init() {
+	public function init(): void {
 
 		if ( ! $this->allow_load() ) {
 			return;
@@ -46,7 +46,7 @@ class Columns {
 	 *
 	 * @since 1.8.6
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		add_action( 'wp_ajax_wpforms_admin_forms_overview_save_columns_order', [ $this, 'save_order' ] );
 	}
@@ -56,7 +56,13 @@ class Columns {
 	 *
 	 * @since 1.8.6
 	 */
-	public function save_order() {
+	public function save_order(): void {
+
+		check_ajax_referer( 'wpforms-admin', 'nonce' );
+
+		if ( ! wpforms_current_user_can( 'view_forms' ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to perform this action.', 'wpforms-lite' ) );
+		}
 
 		$data = $this->get_prepared_data();
 

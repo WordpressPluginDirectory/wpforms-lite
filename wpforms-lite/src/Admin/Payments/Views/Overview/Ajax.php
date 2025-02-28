@@ -54,10 +54,15 @@ class Ajax {
 	 *
 	 * @since 1.8.2
 	 */
-	public function get_chart_dataset_data() {
+	public function get_chart_dataset_data() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
-		// Verify the nonce.
+		// Run a security check.
 		check_ajax_referer( 'wpforms_payments_overview_nonce' );
+
+		// Check for permissions.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action.', 'wpforms-lite' ) );
+		}
 
 		$report   = ! empty( $_POST['report'] ) ? sanitize_text_field( wp_unslash( $_POST['report'] ) ) : null;
 		$dates    = ! empty( $_POST['dates'] ) ? sanitize_text_field( wp_unslash( $_POST['dates'] ) ) : null;
@@ -116,8 +121,13 @@ class Ajax {
 	 */
 	public function save_chart_preference_settings() {
 
-		// Verify the nonce.
+		// Run a security check.
 		check_ajax_referer( 'wpforms_payments_overview_nonce' );
+
+		// Check for permissions.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action.', 'wpforms-lite' ) );
+		}
 
 		$graph_style = isset( $_POST['graphStyle'] ) ? absint( $_POST['graphStyle'] ) : 2; // Line.
 

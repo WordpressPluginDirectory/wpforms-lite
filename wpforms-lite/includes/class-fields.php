@@ -47,6 +47,7 @@ class WPForms_Fields {
 	 * Load default field types.
 	 *
 	 * @since 1.0.0
+	 * @since 1.9.4 Removed Pro fields from the list. They loaded in the main Loader class.
 	 */
 	public function load() {
 
@@ -56,30 +57,15 @@ class WPForms_Fields {
 			'select',
 			'radio',
 			'checkbox',
-			'divider',
-			'entry-preview',
 			'email',
-			'url',
-			'hidden',
-			'html',
-			'content',
 			'name',
-			'password',
-			'address',
-			'phone',
-			'date-time',
 			'number',
-			'page-break',
-			'rating',
-			'file-upload',
-			'payment-credit-card',
 			'number-slider',
-			'richtext',
 			'internal-information',
 		];
 
 		// Include GDPR Checkbox field if GDPR enhancements are enabled.
-		if ( wpforms_setting( 'gdpr', false ) ) {
+		if ( wpforms_setting( 'gdpr' ) ) {
 			$fields[] = 'gdpr-checkbox';
 		}
 
@@ -101,13 +87,6 @@ class WPForms_Fields {
 
 			if ( file_exists( $file ) ) {
 				require_once $file;
-				continue;
-			}
-
-			$pro_file = WPFORMS_PLUGIN_DIR . 'pro/includes/fields/class-' . $field . '.php';
-
-			if ( wpforms()->is_pro() && file_exists( $pro_file ) ) {
-				require_once $pro_file;
 			}
 		}
 

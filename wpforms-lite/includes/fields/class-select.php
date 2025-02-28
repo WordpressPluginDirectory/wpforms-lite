@@ -67,6 +67,10 @@ class WPForms_Field_Select extends WPForms_Field {
 			],
 		];
 
+		$this->default_settings = [
+			'choices' => $this->defaults,
+		];
+
 		// Define additional field properties.
 		add_filter( 'wpforms_field_properties_' . $this->type, [ $this, 'field_properties' ], 5, 3 );
 

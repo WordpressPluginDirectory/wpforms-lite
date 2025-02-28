@@ -2,6 +2,9 @@
 
 namespace WPForms\Tasks;
 
+use InvalidArgumentException;
+use UnexpectedValueException;
+
 /**
  * Class Task.
  *
@@ -111,20 +114,20 @@ class Task {
 	 *
 	 * @param string $action Action of the task.
 	 *
-	 * @throws \InvalidArgumentException When action is not a string.
-	 * @throws \UnexpectedValueException When action is empty.
+	 * @throws InvalidArgumentException When action is not a string.
+	 * @throws UnexpectedValueException When action is empty.
 	 */
 	public function __construct( $action ) {
 
 		if ( ! is_string( $action ) ) {
-			throw new \InvalidArgumentException( 'Task action should be a string.' );
+			throw new InvalidArgumentException( 'Task action should be a string.' );
 		}
 
 		$this->action = sanitize_key( $action );
 		$this->meta   = new Meta();
 
 		if ( empty( $this->action ) ) {
-			throw new \UnexpectedValueException( 'Task action cannot be empty.' );
+			throw new UnexpectedValueException( 'Task action cannot be empty.' );
 		}
 	}
 
@@ -133,7 +136,7 @@ class Task {
 	 *
 	 * @since 1.5.9
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function async() {
 
@@ -150,7 +153,7 @@ class Task {
 	 * @param int $timestamp When the first instance of the job will run.
 	 * @param int $interval  How long to wait between runs.
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function recurring( $timestamp, $interval ) {
 
@@ -168,7 +171,7 @@ class Task {
 	 *
 	 * @param int $timestamp When the first instance of the job will run.
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function once( $timestamp ) {
 
@@ -183,7 +186,7 @@ class Task {
 	 *
 	 * @since 1.5.9
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function params() {
 
@@ -252,6 +255,7 @@ class Task {
 	 * @since 1.5.9
 	 *
 	 * @return null|string Action ID.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	protected function register_async() {
 
@@ -261,7 +265,21 @@ class Task {
 
 		return as_enqueue_async_action(
 			$this->action,
-			[ 'tasks_meta_id' => $this->meta_id ],
+			/**
+			 * Filter arguments passed to the async task.
+			 *
+			 * @since 1.9.4
+			 *
+			 * @param array $args Arguments passed to the async task.
+			 *
+			 * @return array
+			 */
+			(array) apply_filters(
+				'wpforms_tasks_task_register_async_args',
+				[
+					'tasks_meta_id' => $this->meta_id,
+				]
+			),
 			Tasks::GROUP
 		);
 	}
@@ -272,6 +290,7 @@ class Task {
 	 * @since 1.5.9
 	 *
 	 * @return null|string Action ID.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	protected function register_recurring() {
 
@@ -294,6 +313,7 @@ class Task {
 	 * @since 1.5.9
 	 *
 	 * @return null|string Action ID.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	protected function register_once() {
 
@@ -318,6 +338,7 @@ class Task {
 	 *                          false if AS library is missing,
 	 *                          true if scheduled task has no params,
 	 *                          string of the scheduled action ID if a scheduled action was found and unscheduled.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	public function cancel() {
 

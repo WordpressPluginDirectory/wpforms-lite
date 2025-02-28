@@ -206,6 +206,45 @@ var WPFormsUtils = window.WPFormsUtils || ( function( document, window, $ ) {
 				// Combine and return the RGBA color.
 				return `rgba(${ rgbArray[ 0 ] },${ rgbArray[ 1 ] },${ rgbArray[ 2 ] },${ newAlpha })`.replace( /\s+/g, '' );
 			},
+
+			/**
+			 * Convert an RGBA color string to HEX format.
+			 *
+			 * @since 1.9.4
+			 *
+			 * @param {string} color Color in "rgba(r, g, b, a)" or "rgb(r, g, b)" format.
+			 *
+			 * @return {false|string} HEX color.
+			 */
+			rgbaToHex( color ) {
+				if ( ! /^rgb/.test( color ) ) {
+					return color;
+				}
+
+				const rgbArray = app.cssColorsUtils.getColorAsRGBArray( color );
+
+				if ( ! rgbArray ) {
+					return false;
+				}
+
+				const red = Number( rgbArray[ 0 ] );
+				const green = Number( rgbArray[ 1 ] );
+				const blue = Number( rgbArray[ 2 ] );
+				const alpha = rgbArray[ 3 ] ? Math.round( Number( rgbArray[ 3 ] ) * 255 ) : 255;
+
+				// Ensure numbers are converted to valid two-character hexadecimal strings.
+				const colorToHex = ( value ) => value.toString( 16 ).padStart( 2, '0' );
+
+				// Convert to hex and return as a single string.
+				const hex = `#${ [
+					colorToHex( red ),
+					colorToHex( green ),
+					colorToHex( blue ),
+					alpha < 255 ? colorToHex( alpha ) : '',
+				].join( '' ) }`;
+
+				return hex.toLowerCase();
+			},
 		},
 	};
 

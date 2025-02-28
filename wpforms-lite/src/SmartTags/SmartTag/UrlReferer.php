@@ -22,13 +22,23 @@ class UrlReferer extends SmartTag {
 	 */
 	public function get_value( $form_data, $fields = [], $entry_id = '' ): string {
 
-		$referer = $this->get_meta( $entry_id, 'referer' );
+		$referer = $this->get_meta( $entry_id, 'url_referer' );
 
 		if ( ! empty( $referer ) ) {
 			return esc_url( urldecode( $referer ) );
 		}
 
-		$referer = urldecode( (string) wp_get_referer() );
+		$process = wpforms()->obj( 'process' );
+
+		if ( $process && ! empty( $process->form_data['entry_meta']['url_referer'] ) ) {
+			return esc_url( urldecode( $process->form_data['entry_meta']['url_referer'] ) );
+		}
+
+		if ( wp_doing_ajax() ) {
+			return '';
+		}
+
+		$referer = urldecode( (string) wp_get_raw_referer() );
 
 		return esc_url( $referer );
 	}

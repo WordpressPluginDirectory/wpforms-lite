@@ -202,8 +202,21 @@ WPFormsEducation.liteConnect = window.WPFormsEducation.liteConnect || ( function
 		 * @since 1.9.1
 		 */
 		removeLiteConnectModalOnAIButtons() {
-			$( '.enable-lite-connect-modal.wpforms-ai-modal-disabled' ).each( function() {
-				$( this ).removeClass( 'enable-lite-connect-modal wpforms-ai-modal-disabled' );
+			$( '.enable-lite-connect-modal.wpforms-prevent-default' ).each( function() {
+				const $button = $( this );
+
+				// Update button class.
+				$button.removeClass( 'enable-lite-connect-modal wpforms-prevent-default' );
+
+				// Open AI Form Generator.
+				if ( $button.hasClass( 'wpforms-template-generate' ) ) {
+					$button.trigger( 'click' );
+				}
+
+				// Close the top bar in the form builder.
+				if ( $( '#wpforms-builder-lite-connect-top-bar' ).length ) {
+					app.toggleBuilderTopBar( false );
+				}
 			} );
 		},
 

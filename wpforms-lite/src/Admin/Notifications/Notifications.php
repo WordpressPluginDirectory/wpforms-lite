@@ -16,7 +16,7 @@ class Notifications {
 	 *
 	 * @var string
 	 */
-	const SOURCE_URL = 'https://plugin.wpforms.com/wp-content/notifications.json';
+	const SOURCE_URL = 'https://wpformsapi.com/feeds/v1/notifications';
 
 	/**
 	 * Array of license types, that are considered being Elite level.

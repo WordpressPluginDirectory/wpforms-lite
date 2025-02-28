@@ -53,7 +53,7 @@ abstract class Pointer {
 	private $top_level_menu = '#toplevel_page_wpforms-overview';
 
 	/**
-	 * Determines whether the pointer should be visible outside of the "WPForms" primary menu.
+	 * Determines whether the pointer should be visible outside the "WPForms" primary menu.
 	 * Note that setting this property to true will display the pointer on other dashboard pages as well.
 	 *
 	 * @since 1.8.8
@@ -67,14 +67,14 @@ abstract class Pointer {
 	 *
 	 * @since 1.8.8
 	 */
-	const OPTION_NAME = 'wpforms_pointers';
+	private const OPTION_NAME = 'wpforms_pointers';
 
 	/**
 	 * Initialize the pointer.
 	 *
 	 * @since 1.8.8
 	 */
-	public function init() {
+	public function init(): void {
 
 		// If loading is not allowed, or if the pointer is already dismissed, return.
 		if ( ! $this->allow_display() || ! $this->allow_load() ) {
@@ -99,7 +99,7 @@ abstract class Pointer {
 
 		// If the pointer ID is empty, return.
 		// Check if announcements are allowed to be displayed.
-		if ( empty( $this->pointer_id ) || wpforms_setting( 'hide-announcements', false ) ) {
+		if ( empty( $this->pointer_id ) || wpforms_setting( 'hide-announcements' ) ) {
 			return false;
 		}
 
@@ -111,7 +111,7 @@ abstract class Pointer {
 			return false;
 		}
 
-		// Check if the pointer ID exists in the dismiss list.
+		// Check if the pointer ID exists in the dismissed list.
 		if ( isset( $pointers['dismiss'] ) && in_array( $this->pointer_id, (array) $pointers['dismiss'], true ) ) {
 			return false;
 		}
@@ -124,7 +124,7 @@ abstract class Pointer {
 	 *
 	 * @since 1.8.8
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		// Enqueue assets.
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
@@ -158,7 +158,7 @@ abstract class Pointer {
 	 *
 	 * @since 1.8.8
 	 */
-	public function print_script() {
+	public function print_script(): void {
 
 		// Encode the $args array into JSON format.
 		$encoded_args = $this->get_prepared_args();
@@ -174,7 +174,7 @@ abstract class Pointer {
 		// Get the admin-ajax URL.
 		$ajaxurl = esc_url_raw( admin_url( 'admin-ajax.php' ) );
 
-		// Create a nonce for the pointer.
+		// Create nonce for the pointer.
 		$nonce = sanitize_text_field( $this->get_nonce_token() );
 
 		// Menu flyout selector.
@@ -236,19 +236,24 @@ HTML;
 	/**
 	 * Callback function for engaging with a pointer.
 	 *
-	 * This function is triggered via AJAX when a user interacts with a pointer,
-	 * indicating engagement.
+	 * This function is triggered via AJAX when a user interacts with a pointer, indicating engagement.
 	 *
 	 * @since 1.8.8
 	 */
-	public function engagement_callback() {
+	public function engagement_callback(): void {
 
-		list( $pointer_id, $pointers ) = $this->handle_pointer_interaction();
+		check_ajax_referer( $this->pointer_id, '_ajax_nonce' );
+
+		if ( ! wpforms_current_user_can() ) {
+			wp_send_json_error();
+		}
+
+		[ $pointer_id, $pointers ] = $this->handle_pointer_interaction();
 
 		// Add the current pointer to the engagement list.
 		$pointers['engagement'][] = $pointer_id;
 
-		// Update the pointers state.
+		// Update the pointer state.
 		update_option( self::OPTION_NAME, $pointers );
 
 		// Indicate that the pointer was engaged.
@@ -260,14 +265,20 @@ HTML;
 	 *
 	 * @since 1.8.8
 	 */
-	public function dismiss_callback() {
+	public function dismiss_callback(): void {
 
-		list( $pointer_id, $pointers ) = $this->handle_pointer_interaction();
+		check_ajax_referer( $this->pointer_id, '_ajax_nonce' );
 
-		// Add the current pointer to the dismiss list.
+		if ( ! wpforms_current_user_can() ) {
+			wp_send_json_error();
+		}
+
+		[ $pointer_id, $pointers ] = $this->handle_pointer_interaction();
+
+		// Add the current pointer to the dismissed list.
 		$pointers['dismiss'][] = $pointer_id;
 
-		// Update the pointers state.
+		// Update the pointer state.
 		update_option( self::OPTION_NAME, $pointers );
 
 		// Indicate that the pointer was dismissed.
@@ -275,7 +286,7 @@ HTML;
 	}
 
 	/**
-	 * Get a nonce for the pointer.
+	 * Get nonce for the pointer.
 	 *
 	 * @since 1.8.8
 	 *
@@ -323,7 +334,7 @@ HTML;
 	 *
 	 * @since 1.8.8
 	 */
-	private function set_initial_args() {
+	private function set_initial_args(): void {
 
 		// Set default arguments.
 		$this->args = [
@@ -348,12 +359,12 @@ HTML;
 	 */
 	private function get_selector(): string {
 
-		// If the sublevel menu is defined and it's an admin page, return the combined selector.
+		// If the sublevel menu is defined, and it's an admin page, return the combined selector.
 		if ( ! empty( $this->selector ) && wpforms_is_admin_page() ) {
 			return "{$this->top_level_menu} {$this->selector}";
 		}
 
-		// Default return the top-level menu.
+		// Default returns the top-level menu.
 		return $this->top_level_menu;
 	}
 
@@ -366,7 +377,7 @@ HTML;
 	 */
 	private function get_prepared_args(): string {
 
-		// Retrieve title and message from arguments array, fallback to empty strings if not set.
+		// Retrieve title and message from an argument array, fallback to empty strings if not set.
 		$title   = $this->args['title'] ?? '';
 		$message = $this->args['message'] ?? '';
 
@@ -381,10 +392,10 @@ HTML;
 
 		$this->args['content'] = $content;
 
-		// Unset title and message to clean up arguments array.
+		// Unset title and message to clean up an argument array.
 		unset( $this->args['title'], $this->args['message'] );
 
-		// If RTL and position edge is 'left', switch it to 'right'.
+		// If RTL and position edge are 'left', switch it to 'right'.
 		if ( ! empty( $this->args['position']['edge'] ) && $this->args['position']['edge'] === 'left' && is_rtl() ) {
 			$this->args['position']['edge'] = 'right';
 		}

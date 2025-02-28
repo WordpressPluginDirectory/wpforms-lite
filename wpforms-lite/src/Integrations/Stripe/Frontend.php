@@ -56,6 +56,10 @@ class Frontend {
 		add_action( 'elementor/frontend/after_enqueue_styles', [ $this, 'elementor_enqueues' ] );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_block_assets' ] );
 		add_filter( 'register_block_type_args', [ $this, 'register_block_type_args' ], 20, 2 );
+
+		if ( wpforms_is_divi_editor() ) {
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles' ], 12 );
+		}
 	}
 
 	/**
@@ -227,8 +231,9 @@ class Frontend {
 	 * Enqueue styles.
 	 *
 	 * @since 1.8.4.1
+	 * @since 1.9.4 Become public for the action callback.
 	 */
-	private function enqueue_styles() {
+	public function enqueue_styles(): void {
 
 		if ( (int) wpforms_setting( 'disable-css', '1' ) === 3 ) {
 			return;

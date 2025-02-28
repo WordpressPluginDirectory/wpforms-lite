@@ -364,6 +364,7 @@ WPForms.Admin.Builder.DragFields = WPForms.Admin.Builder.DragFields || ( functio
 						const columnSize = $target.attr( 'class' ).match( /wpforms-layout-column-(\d+)/ )[ 1 ];
 
 						targetClass += ` wpforms-field-drag-to-column-${ columnSize }`;
+						targetClass += ` wpforms-field-drag-to-${ $target.parents( '.wpforms-field' ).data( 'field-type' ) }`;
 					}
 
 					fieldId = $field.data( 'field-id' );
@@ -417,6 +418,8 @@ WPForms.Admin.Builder.DragFields = WPForms.Admin.Builder.DragFields || ( functio
 
 					$field
 						.removeClass( 'wpforms-field-drag-not-allowed' )
+						.removeClass( 'wpforms-field-drag-to-repeater' )
+						.removeClass( 'wpforms-field-drag-to-layout' )
 						.removeClass( function( index, className ) {
 							// Remove all classes starting with `wpforms-field-drag-to-column`.
 							return ( className.match( /wpforms-field-drag-to-column(-\d+|)/g ) || [] ).join( ' ' );

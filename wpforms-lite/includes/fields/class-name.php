@@ -475,9 +475,9 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $field Field information.
+	 * @param array $field      Field information.
 	 * @param array $deprecated Deprecated parameter, not used anymore.
-	 * @param array $form_data Form data and settings.
+	 * @param array $form_data  Form data and settings.
 	 */
 	public function field_display( $field, $deprecated, $form_data ) {
 

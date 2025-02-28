@@ -247,7 +247,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @return array|bool|null|WP_Post
 	 */
-	protected function get_single( $id = '', array $args = [] ) {
+	protected function get_single( $id = '', array $args = [] ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// phpcs:disable WPForms.PHP.ValidateHooks.InvalidHookName
 
@@ -271,12 +271,27 @@ class WPForms_Form_Handler {
 			return false;
 		}
 
-		// @todo add $id array support
-		// If ID is provided, we get a single form
+		// If no ID provided, we can't get a single form.
+		if ( empty( $id ) ) {
+			return false;
+		}
+
+		// If ID is provided, we get a single form.
 		$form = get_post( absint( $id ) );
 
+		// Check if the form exists.
+		if ( empty( $form ) || ! $form instanceof WP_Post ) {
+			return false;
+		}
+
+		// Check if the form is of the allowed post type.
+		if ( ! in_array( $form->post_type, self::POST_TYPES, true ) ) {
+			return false;
+		}
+
+		// Decode the form content.
 		if ( ! empty( $args['content_only'] ) ) {
-			$form = ! empty( $form ) && in_array( $form->post_type, self::POST_TYPES, true ) ? wpforms_decode( $form->post_content ) : false;
+			$form = wpforms_decode( $form->post_content );
 		}
 
 		return $form;
@@ -732,7 +747,15 @@ class WPForms_Form_Handler {
 			$args
 		);
 
+		if ( ! empty( $args['skip_revision'] ) ) {
+			remove_action( 'post_updated', 'wp_save_post_revision' );
+		}
+
 		$_form_id = wp_update_post( $form );
+
+		if ( ! empty( $args['skip_revision'] ) ) {
+			add_action( 'post_updated', 'wp_save_post_revision' );
+		}
 
 		if ( is_wp_error( $_form_id ) ) {
 			return false;
@@ -1251,12 +1274,30 @@ class WPForms_Form_Handler {
 
 		$data['meta'][ $meta_key ] = $meta_value;
 
-		$form    = [
+		$form = [
 			'ID'           => $form_id,
 			'post_content' => wpforms_encode( $data ),
 		];
-		$form    = apply_filters( 'wpforms_update_form_meta_args', $form, $data );
+
+		/**
+		 * Allow changing form before updating form meta.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param WP_Post $form Form post object.
+		 * @param array   $data Form data.
+		 */
+		$form = apply_filters( 'wpforms_update_form_meta_args', $form, $data ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+
+		if ( ! empty( $args['skip_revision'] ) ) {
+			remove_action( 'post_updated', 'wp_save_post_revision' );
+		}
+
 		$form_id = wp_update_post( $form );
+
+		if ( ! empty( $args['skip_revision'] ) ) {
+			add_action( 'post_updated', 'wp_save_post_revision' );
+		}
 
 		do_action( 'wpforms_update_form_meta', $form_id, $form, $meta_key, $meta_value );
 

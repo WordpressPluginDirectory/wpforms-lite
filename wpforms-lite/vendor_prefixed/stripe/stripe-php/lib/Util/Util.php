@@ -56,7 +56,7 @@ abstract class Util
                     if (\array_key_exists('type', $resp) && \array_key_exists($resp['type'], $eventTypes)) {
                         $class = $eventTypes[$resp['type']];
                     } else {
-                        $class = \WPForms\Vendor\Stripe\StripeObject::class;
+                        $class = \WPForms\Vendor\Stripe\V2\Event::class;
                     }
                 }
             } elseif (\array_key_exists('data', $resp) && \array_key_exists('next_page_url', $resp)) {

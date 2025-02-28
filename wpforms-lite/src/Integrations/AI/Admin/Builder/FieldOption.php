@@ -42,6 +42,7 @@ class FieldOption {
 	 * @param object       $wpforms_field WPForms_Field object.
 	 *
 	 * @return string
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function add_option( $output, array $field, array $args, $wpforms_field ): string {
 
@@ -53,10 +54,11 @@ class FieldOption {
 			'wpforms-btn-purple',
 			'wpforms-ai-modal-button',
 			'wpforms-ai-' . $type . '-button',
+			empty( $field['dynamic_choices'] ) ? '' : 'wpforms-hidden',
 		];
 		$attrs   = [];
 
-		list( $classes, $data, $attrs ) = $this->maybe_disable_button( $classes, $data, $attrs );
+		[ $classes, $data, $attrs ] = $this->maybe_disable_button( $classes, $data, $attrs );
 
 		$button = $wpforms_field->field_element(
 			'button',
@@ -83,7 +85,7 @@ class FieldOption {
 	}
 
 	/**
-	 * Maybe disable button and show modal.
+	 * Maybe disable the button and show modal.
 	 *
 	 * @since 1.9.1
 	 *
@@ -100,7 +102,7 @@ class FieldOption {
 		// Pro, license is not active.
 		if ( $is_pro && ! $this->is_license_active() ) {
 			$classes[]           = 'education-modal';
-			$classes[]           = 'wpforms-ai-modal-disabled';
+			$classes[]           = 'wpforms-prevent-default';
 			$data['action']      = 'license';
 			$data['field-name']  = 'AI Choices';
 			$data['utm-content'] = 'AI Choices';
@@ -111,12 +113,12 @@ class FieldOption {
 		// Lite, LC is not enabled.
 		if ( ! $is_pro && ! LiteConnect::is_enabled() && LiteConnect::is_allowed() ) {
 			$classes[] = 'enable-lite-connect-modal';
-			$classes[] = 'wpforms-ai-modal-disabled';
+			$classes[] = 'wpforms-prevent-default';
 		}
 
 		// Lite, LC is not configured or not allowed.
 		if ( ! $is_pro && ! LiteConnect::is_allowed() ) {
-			$classes[] = 'wpforms-ai-modal-disabled';
+			$classes[] = 'wpforms-prevent-default';
 			$classes[] = 'wpforms-inactive';
 			$classes[] = 'wpforms-help-tooltip';
 

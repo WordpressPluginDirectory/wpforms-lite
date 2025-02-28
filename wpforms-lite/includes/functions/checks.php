@@ -10,6 +10,7 @@
 /** @noinspection PhpUndefinedClassInspection */
 // phpcs:enable Generic.Commenting.DocComment.MissingShort
 
+use WPForms\Tasks\Tasks;
 use WPForms\Vendor\TrueBV\Punycode;
 
 /**
@@ -450,6 +451,18 @@ function wpforms_doing_wp_cli(): bool {
 }
 
 /**
+ * Determines whether the Action Scheduler task is executing.
+ *
+ * @since 1.9.4
+ *
+ * @return bool
+ */
+function wpforms_doing_scheduled_action(): bool {
+
+	return class_exists( Tasks::class ) && Tasks::is_executing();
+}
+
+/**
  * Determines whether search functionality is enabled for Choices.js elements in the admin area.
  *
  * @since 1.8.3
@@ -521,8 +534,21 @@ function wpforms_is_editor_page(): bool {
 
 	$is_gutenberg = $rest_request && $context === 'edit';
 	$is_elementor = $post_action === 'elementor_ajax' || $get_action === 'elementor';
-	$is_divi      = ! empty( $_GET['et_fb'] ) || $post_action === 'wpforms_divi_preview';
+	$is_divi      = wpforms_is_divi_editor();
 	// phpcs:enable WordPress.Security.NonceVerification
 
 	return $is_gutenberg || $is_elementor || $is_divi;
+}
+
+/**
+ * Determines whether the current context is the Divi editor.
+ *
+ * @since 1.9.4
+ *
+ * @return bool
+ */
+function wpforms_is_divi_editor(): bool {
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
+	return ! empty( $_GET['et_fb'] ) || ( isset( $_POST['action'] ) && sanitize_key( $_POST['action'] ) === 'wpforms_divi_preview' );
 }

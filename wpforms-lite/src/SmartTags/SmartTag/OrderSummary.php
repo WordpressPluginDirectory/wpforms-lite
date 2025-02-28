@@ -203,7 +203,7 @@ class OrderSummary extends SmartTag {
 		$amount = $field['amount_raw'] * $quantity;
 
 		$items[] = [
-			'label'     => ! empty( $field['label_hide'] ) ? '' : $label,
+			'label'     => ! empty( $field['label_hide'] ) ? $value_choice : $label,
 			'quantity'  => $quantity,
 			'amount'    => wpforms_format_amount( $amount, true ),
 			'is_hidden' => ! empty( $field['is_hidden'] ),

@@ -146,7 +146,7 @@ abstract class PageIntegrations implements PageIntegrationsInterface {
 	}
 
 	/**
-	 * Display connected account.
+	 * Display a connected account.
 	 *
 	 * @since 1.7.5
 	 *

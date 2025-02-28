@@ -32,7 +32,7 @@ trait StringsTrait {
 				$name
 			)
 		) . '</p>';
-		$strings['activate_confirm'] = esc_html__( 'Yes, activate', 'wpforms-lite' );
+		$strings['activate_confirm'] = esc_html__( 'Yes, Activate', 'wpforms-lite' );
 		$strings['addon_activated']  = esc_html__( 'Addon activated', 'wpforms-lite' );
 		$strings['plugin_activated'] = esc_html__( 'Plugin activated', 'wpforms-lite' );
 		$strings['activating']       = esc_html__( 'Activating', 'wpforms-lite' );
@@ -42,7 +42,7 @@ trait StringsTrait {
 				$name
 			)
 		) . '</p>';
-		$strings['install_confirm']  = esc_html__( 'Yes, install and activate', 'wpforms-lite' );
+		$strings['install_confirm']  = esc_html__( 'Yes, Install and Activate', 'wpforms-lite' );
 		$strings['installing']       = esc_html__( 'Installing', 'wpforms-lite' );
 		$strings['save_prompt']      = esc_html__( 'Almost done! Would you like to save and refresh the form builder?', 'wpforms-lite' );
 		$strings['save_confirm']     = esc_html__( 'Yes, save and refresh', 'wpforms-lite' );

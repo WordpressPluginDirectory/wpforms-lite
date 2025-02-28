@@ -30,7 +30,7 @@ class PanelLoader {
 	 *
 	 * @since 1.8.6
 	 */
-	public function init() {
+	public function init(): void {
 
 		if ( ! $this->allow_load() ) {
 			return;
@@ -44,7 +44,7 @@ class PanelLoader {
 	 *
 	 * @since 1.8.6
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		add_action( 'wp_ajax_wpforms_builder_load_panel', [ $this, 'load_panel_content' ] );
 	}
@@ -54,19 +54,49 @@ class PanelLoader {
 	 *
 	 * @since 1.8.6
 	 */
-	public function load_panel_content() {
+	public function load_panel_content(): void {
+
+		check_ajax_referer( 'wpforms-builder', 'nonce' );
+
+		$form_id = absint( filter_input( INPUT_POST, 'form_id', FILTER_SANITIZE_NUMBER_INT ) );
+
+		if ( ! wpforms_current_user_can( 'edit_forms', $form_id ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to perform this action.', 'wpforms-lite' ) );
+		}
 
 		$data        = $this->get_prepared_data( 'load_panel' );
-		$panel_class = '\WPForms_Builder_Panel_' . ucfirst( $data['panel'] ?? '' );
+		$panel       = $data['panel'] ?? '';
+		$panel_class = '\WPForms_Builder_Panel_' . ucfirst( $panel );
+		$panel_obj   = $this->get_panel_obj( $panel_class, $panel );
+
+		ob_start();
+		$panel_obj->panel_output( [], $panel );
+
+		$panel_content = ob_get_clean();
+
+		wp_send_json_success( $panel_content );
+	}
+
+	/**
+	 * Get panel object.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param string $panel_class Panel class name.
+	 * @param string $panel       Panel name.
+	 *
+	 * @return object
+	 */
+	private function get_panel_obj( string $panel_class, string $panel ) {
 
 		if ( ! class_exists( $panel_class ) ) {
 			// Load panel base class.
 			require_once WPFORMS_PLUGIN_DIR . 'includes/admin/builder/panels/class-base.php';
 
-			$file     = WPFORMS_PLUGIN_DIR . "includes/admin/builder/panels/class-{$data['panel']}.php";
-			$file_pro = WPFORMS_PLUGIN_DIR . "pro/includes/admin/builder/panels/class-{$data['panel']}.php";
+			$file     = WPFORMS_PLUGIN_DIR . "includes/admin/builder/panels/class-{$panel}.php";
+			$file_pro = WPFORMS_PLUGIN_DIR . "pro/includes/admin/builder/panels/class-{$panel}.php";
 
-			if ( wpforms()->is_pro() && file_exists( $file_pro ) ) {
+			if ( file_exists( $file_pro ) && wpforms()->is_pro() ) {
 				require_once $file_pro;
 			} elseif ( file_exists( $file ) ) {
 				require_once $file;
@@ -79,11 +109,7 @@ class PanelLoader {
 			wp_send_json_error( esc_html__( 'Invalid panel.', 'wpforms-lite' ) );
 		}
 
-		ob_start();
-		$panel_obj->panel_output( [], $data['panel'] );
-		$panel_content = ob_get_clean();
-
-		wp_send_json_success( $panel_content );
+		return $panel_obj;
 	}
 
 	/**

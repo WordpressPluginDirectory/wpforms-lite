@@ -8,9 +8,12 @@
 namespace WPForms\Integrations\AI;
 
 use WPForms\Integrations\IntegrationInterface;
+use WPForms\Integrations\AI\Admin\Ajax\Choices as ChoicesAjax;
+use WPForms\Integrations\AI\Admin\Ajax\Forms as FormsAjax;
 use WPForms\Integrations\AI\Admin\Builder\Enqueues;
 use WPForms\Integrations\AI\Admin\Builder\FieldOption;
-use WPForms\Integrations\AI\Admin\Ajax\Choices;
+use WPForms\Integrations\AI\Admin\Builder\Forms as FormsEnqueues;
+use WPForms\Integrations\AI\Admin\Pages\Templates as TemplatesPage;
 
 /**
  * Integration of the AI features.
@@ -46,6 +49,11 @@ class AI implements IntegrationInterface {
 		if ( wpforms_is_admin_page( 'builder' ) ) {
 			( new Enqueues() )->init();
 			( new FieldOption() )->init();
+			( new FormsEnqueues() )->init();
+		}
+
+		if ( wpforms_is_admin_page( 'templates' ) ) {
+			( new TemplatesPage() )->init();
 		}
 
 		if ( wpforms_is_admin_ajax() ) {
@@ -61,6 +69,7 @@ class AI implements IntegrationInterface {
 	protected function load_ajax_classes() {
 
 		( new FieldOption() )->init();
-		( new Choices() )->init();
+		( new ChoicesAjax() )->init();
+		( new FormsAjax() )->init();
 	}
 }

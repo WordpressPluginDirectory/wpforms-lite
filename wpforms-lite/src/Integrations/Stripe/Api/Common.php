@@ -215,6 +215,7 @@ abstract class Common {
 			return;
 		}
 
+		// Retrieve a customer by email.
 		try {
 			$customers = Customer::all(
 				[ 'email' => $email ],
@@ -224,10 +225,20 @@ abstract class Common {
 			$customers = null;
 		}
 
+		// Determine whether the customer name/address needs to be updated.
 		if ( isset( $customers->data[0]->id ) ) {
 			$this->customer = $customers->data[0];
 
-			if ( ! empty( $name ) && $name !== $this->customer->name ) {
+			$needUpdateName    = ! empty( $name ) && $name !== $this->customer->name;
+			$needUpdateAddress = false;
+
+			if ( ! $needUpdateName ) {
+				$existingAddress   = isset( $this->customer->address ) && method_exists( $this->customer->address, 'toArray' ) ? $this->customer->address->toArray() : [];
+				$needUpdateAddress = ! empty( array_diff_assoc( $address, $existingAddress ) );
+			}
+
+			// Update customer name/address.
+			if ( $needUpdateName || $needUpdateAddress ) {
 				try {
 					$this->customer = Customer::update(
 						$this->customer->id,
@@ -236,7 +247,7 @@ abstract class Common {
 					);
 				} catch ( \Exception $e ) {
 					wpforms_log(
-						'Stripe: Unable to update user name.',
+						'Stripe: Unable to update customer information.',
 						$e->getMessage(),
 						[
 							'type' => [ 'payment', 'error' ],
@@ -248,6 +259,7 @@ abstract class Common {
 			return;
 		}
 
+		// Create a customer with email.
 		try {
 			$args['email'] = $email;
 

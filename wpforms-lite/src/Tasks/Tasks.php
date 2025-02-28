@@ -1,8 +1,14 @@
 <?php
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpUndefinedClassInspection */
+
 namespace WPForms\Tasks;
 
+use ActionScheduler;
 use ActionScheduler_Action;
+use ActionScheduler_DataController;
+use ActionScheduler_DBStore;
 use WPForms\Helpers\Transient;
 use WPForms\Tasks\Actions\EntryEmailsMetaCleanupTask;
 use WPForms\Tasks\Actions\EntryEmailsTask;
@@ -39,6 +45,15 @@ class Tasks {
 	 * @var array
 	 */
 	private $active_actions;
+
+	/**
+	 * Determine if WPForms task is executing.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @var bool
+	 */
+	private static $task_executing = false;
 
 	/**
 	 * Perform certain things on class init.
@@ -87,6 +102,88 @@ class Tasks {
 
 		add_action( EntryEmailsTask::ACTION, [ EntryEmailsTask::class, 'process' ] );
 		add_action( 'action_scheduler_after_execute', [ $this, 'clear_action_meta' ], PHP_INT_MAX, 2 );
+
+		add_action( 'action_scheduler_begin_execute', [ $this, 'start_executing' ], 1 );
+		add_action( 'action_scheduler_after_execute', [ $this, 'stop_executing' ], 1, 2 );
+	}
+
+	/**
+	 * Public interface to check if WPForms task is executing.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @return bool
+	 */
+	public static function is_executing(): bool {
+
+		return self::$task_executing;
+	}
+
+	/**
+	 * Set a flag to indicate that WPForms task is executing.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param int $action_id The action ID to process.
+	 */
+	public function start_executing( $action_id ) {
+
+		$action_id = (int) $action_id;
+
+		if ( ! class_exists( 'ActionScheduler' ) ) {
+			return;
+		}
+
+		$store = ActionScheduler::store();
+
+		if ( ! $store ) {
+			return;
+		}
+
+		$action = $store->fetch_action( $action_id );
+
+		if ( ! $action || $action->get_group() !== self::GROUP ) {
+			return;
+		}
+
+		self::$task_executing = true;
+
+		/**
+		 * Fires before WPForms task is executing.
+		 *
+		 * @since 1.9.4
+		 *
+		 * @param int                    $action_id The action ID to process.
+		 * @param ActionScheduler_Action $action    Action Scheduler action object.
+		 */
+		do_action( 'wpforms_tasks_start_executing', $action_id, $action );
+	}
+
+	/**
+	 * Set a flag to indicate that WPForms task is executing.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param int                    $action_id The action ID to process.
+	 * @param ActionScheduler_Action $action    Action Scheduler action object.
+	 */
+	public function stop_executing( $action_id, $action ) {
+
+		if ( ! $action || ! method_exists( $action, 'get_group' ) || $action->get_group() !== self::GROUP ) {
+			return;
+		}
+
+		self::$task_executing = false;
+
+		/**
+		 * Fires after WPForms task is executed.
+		 *
+		 * @since 1.9.4
+		 *
+		 * @param int                    $action_id The action ID to process.
+		 * @param ActionScheduler_Action $action    Action Scheduler action object.
+		 */
+		do_action( 'wpforms_tasks_stop_executing', $action_id, $action );
 	}
 
 	/**
@@ -126,11 +223,40 @@ class Tasks {
 	 * Hide Action Scheduler admin area when not in debug mode.
 	 *
 	 * @since 1.5.9
+	 * @since 1.9.4 Does not hide the menu when some popular plugins are active.
 	 */
-	public function admin_hide_as_menu() {
+	public function admin_hide_as_menu(): void {
 
-		// Filter to redefine that WPForms hides Tools > Action Scheduler menu item.
-		if ( apply_filters( 'wpforms_tasks_admin_hide_as_menu', ! wpforms_debug() ) ) {
+		$plugin_exceptions = [
+			'action-scheduler/action-scheduler.php',
+			'woocommerce/woocommerce.php',
+			'wp-rocket/wp-rocket.php',
+		];
+
+		/**
+		 * Filters the list of plugins for which
+		 * the Action Scheduler Tools -> Scheduled Actions menu item
+		 * should remain visible.
+		 *
+		 * @since 1.9.4
+		 *
+		 * @param array $plugin_exceptions List of plugin exceptions.
+		 */
+		$plugin_exceptions = apply_filters( 'wpforms_tasks_action_scheduler_tools_plugin_exceptions', $plugin_exceptions );
+		$show_as_menu      =
+			( defined( 'WPFORMS_SHOW_ACTION_SCHEDULER_MENU' ) && constant( 'WPFORMS_SHOW_ACTION_SCHEDULER_MENU' ) ) ||
+			wpforms_debug() ||
+			! empty( array_filter( $plugin_exceptions, 'is_plugin_active' ) );
+		$hide_as_menu      = ! $show_as_menu;
+
+		/**
+		 * Filter to redefine that WPForms hides Tools > Action Scheduler menu item.
+		 *
+		 * @since 1.5.9
+		 *
+		 * @param bool $hide_as_menu Hide Tools > Action Scheduler menu item.
+		 */
+		if ( apply_filters( 'wpforms_tasks_admin_hide_as_menu', $hide_as_menu ) ) {
 			remove_submenu_page( 'tools.php', 'action-scheduler' );
 		}
 	}
@@ -159,7 +285,7 @@ class Tasks {
 	 *
 	 * @param string $action Action that will be used as a hook.
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function create( $action ) {
 
@@ -182,7 +308,7 @@ class Tasks {
 		}
 
 		if ( class_exists( 'ActionScheduler_DBStore' ) ) {
-			\ActionScheduler_DBStore::instance()->cancel_actions_by_group( $group );
+			ActionScheduler_DBStore::instance()->cancel_actions_by_group( $group );
 			$this->active_actions = $this->get_active_actions();
 		}
 	}
@@ -201,7 +327,7 @@ class Tasks {
 			return false;
 		}
 
-		return \ActionScheduler_DataController::is_migration_complete();
+		return ActionScheduler_DataController::is_migration_complete();
 	}
 
 	/**
@@ -212,6 +338,7 @@ class Tasks {
 	 * @param string $hook Hook to check for.
 	 *
 	 * @return bool|null
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	public function is_scheduled( $hook ) {
 

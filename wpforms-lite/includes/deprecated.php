@@ -14,12 +14,14 @@ namespace WPForms {
 
 		/**
 		 * List of removed classes in the next format:
-		 * Fully-Qualified Class Name => version.
+		 * Fully Qualified Class Name => version.
 		 *
 		 * @since 1.8.0
 		 */
 		const CLASSES = [
-			'WPForms\Pro\Admin\Entries\DefaultScreen' => '1.8.2'
+			'WPForms\Pro\Admin\Entries\DefaultScreen' => '1.8.2',
+			'WPForms\Pro\Integrations\AI\AI'          => '1.9.4',
+			'WPForms\Pro\Integrations\AI\Helpers'     => '1.9.4',
 		];
 
 		/**
@@ -135,7 +137,7 @@ namespace WPForms\Forms {
 
 namespace {
 	/**
-	 * To be compatible with both WP 4.9 (that can run on PHP 5.2+) and WP 5.3+ (PHP 5.6+)
+	 * To be compatible with both WP 4.9 (that can run on PHP 5.2+) and WP 5.3+ (PHP 5.6+),
 	 * we need to rewrite some core WP classes and tweak our own skins to not use PHP 5.6 splat operator (...$args)
 	 * that were introduced in WP 5.3 in \WP_Upgrader_Skin::feedback().
 	 * This alias is a safeguard to those developers who decided to use our internal class WPForms_Install_Silent_Skin,
@@ -232,6 +234,29 @@ namespace {
 	 */
 	class_alias( '\WPForms\Migrations\Migrations', '\WPForms\Migrations' );
 
+	/**
+	 * Legacy `\WPForms_Frontend` class was refactored and moved to the new `\WPForms\Frontend\Frontend` class.
+	 * This alias is a safeguard to those developers who use our internal class \WPForms_Frontend, which we deleted.
+	 *
+	 * @since 1.8.1
+	 */
+	class_alias( '\WPForms\Frontend\Frontend', '\WPForms_Frontend' );
+
+	/**
+	 * This alias is a safeguard to those developers who use our internal class \WPForms_Overview, which we deleted.
+	 *
+	 * @since 1.8.6
+	 */
+	class_alias( '\WPForms\Admin\Forms\Page', '\WPForms_Overview' );
+
+	/**
+	 * This alias is a safeguard to those developers who use our internal class \WPForms_Overview_Table, which we deleted.
+	 *
+	 * @since 1.8.6
+	 */
+	class_alias( '\WPForms\Admin\Forms\ListTable', '\WPForms_Overview_Table' );
+
+	// Pro specific aliases.
 	if ( wpforms()->is_pro() ) {
 		/**
 		 * Legacy `\WPForms\Pro\Migrations` class was refactored and moved to the new `\WPForms\Pro\Migrations\Migrations` class.
@@ -270,33 +295,64 @@ namespace {
 		 * @since 1.8.9
 		 */
 		class_alias( '\WPForms\Pro\Forms\Fields\Layout\Field', '\WPForms_Field_Layout' );
+
+		/**
+		 * These aliases are a safeguard to those developers who use our internal legacy field classes, which we deleted.
+		 *
+		 * @since 1.9.4
+		 */
+		class_alias( '\WPForms\Pro\Forms\Fields\Address\Field', '\WPForms_Field_Address' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Content\Field', '\WPForms_Field_Content' );
+		class_alias( '\WPForms\Pro\Forms\Fields\DateTime\Field', '\WPForms_Field_Date_Time' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Divider\Field', '\WPForms_Field_Divider' );
+		class_alias( '\WPForms\Pro\Forms\Fields\EntryPreview\Field', '\WPForms_Entry_Preview' );
+		class_alias( '\WPForms\Pro\Forms\Fields\FileUpload\Field', '\WPForms_Field_File_Upload' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Hidden\Field', '\WPForms_Field_Hidden' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Html\Field', '\WPForms_Field_HTML' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Pagebreak\Field', '\WPForms_Field_Page_Break' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Password\Field', '\WPForms_Field_Password' );
+		class_alias( '\WPForms\Pro\Forms\Fields\CreditCard\Field', '\WPForms_Field_CreditCard' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Phone\Field', '\WPForms_Field_Phone' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Rating\Field', '\WPForms_Rating_Text' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Richtext\Field', '\WPForms_Field_Richtext' );
+		class_alias( '\WPForms\Pro\Forms\Fields\Url\Field', '\WPForms_Field_URL' );
+
+		/**
+		 * This alias is a safeguard to those developers who use our internal
+		 * class \WPForms\Pro\Integrations\AI\API\Forms, which we deleted.
+		 *
+		 * @since 1.9.4
+		 */
+		class_alias( '\WPForms\Integrations\AI\API\Forms', '\WPForms\Pro\Integrations\AI\API\Forms' );
+
+		/**
+		 * This alias is a safeguard to those developers who use our internal
+		 * class \WPForms\Pro\Integrations\AI\Admin\Ajax\Forms, which we deleted.
+		 *
+		 * @since 1.9.4
+		 */
+		class_alias( '\WPForms\Integrations\AI\Admin\Ajax\Forms', '\WPForms\Pro\Integrations\AI\Admin\Ajax\Forms' );
+
+		/**
+		 * This alias is a safeguard to those developers who use our internal
+		 * class \WPForms\Pro\Integrations\AI\Admin\Builder\Enqueues, which we deleted.
+		 *
+		 * @since 1.9.4
+		 */
+		class_alias( '\WPForms\Integrations\AI\Admin\Builder\Forms', '\WPForms\Pro\Integrations\AI\Admin\Builder\Enqueues' );
+
+		/**
+		 * This alias is a safeguard to those developers who use our internal
+		 * class \WPForms\Pro\Integrations\AI\Admin\Pages\Templates, which we deleted.
+		 *
+		 * @since 1.9.4
+		 */
+		class_alias( '\WPForms\Integrations\AI\Admin\Pages\Templates', '\WPForms\Pro\Integrations\AI\Admin\Pages\Templates' );
 	}
 
 	/**
-	 * Legacy `\WPForms_Frontend` class was refactored and moved to the new `\WPForms\Frontend\Frontend` class.
-	 * This alias is a safeguard to those developers who use our internal class \WPForms_Frontend, which we deleted.
-	 *
-	 * @since 1.8.1
-	 */
-	class_alias( '\WPForms\Frontend\Frontend', '\WPForms_Frontend' );
-
-	/**
-	 * This alias is a safeguard to those developers who use our internal class \WPForms_Overview, which we deleted.
-	 *
-	 * @since 1.8.6
-	 */
-	class_alias( '\WPForms\Admin\Forms\Page', '\WPForms_Overview' );
-
-	/**
-	 * This alias is a safeguard to those developers who use our internal class \WPForms_Overview_Table, which we deleted.
-	 *
-	 * @since 1.8.6
-	 */
-	class_alias( '\WPForms\Admin\Forms\ListTable', '\WPForms_Overview_Table' );
-
-	/**
 	 * This adds backwards compatibility after scoping the stripe lib and using our own prefix `\WPForms\Vendor\Stripe`.
-	 * This alias is a safeguard for the users who update core plugin to 1.8.5 but have older version of stripe pro addon.
+	 * This alias is a safeguard for the users who update core plugin to 1.8.5 but have an older version of stripe pro addon.
 	 * Fire this right before autoloading of legacy classes so that there is no conflict with other stripe libs when aliasing.
 	 *
 	 * @since 1.8.5
@@ -396,7 +452,7 @@ namespace {
 namespace WPForms\Pro\Admin\Entries {
 
 	/**
-	 * Default Entries screen showed a chart and the form entries stats.
+	 * The default Entries screen showed a chart and the form entries stats.
 	 * Replaced with "WPForms\Pro\Admin\Entries\Overview".
 	 *
 	 * @since 1.5.5

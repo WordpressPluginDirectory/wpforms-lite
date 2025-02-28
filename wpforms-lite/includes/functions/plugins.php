@@ -69,3 +69,35 @@ function wpforms_activate_plugin( string $plugin ) {
 
 	return new WP_Error( 'wpforms_addon_incompatible', $requirements->get_notice( $plugin ) );
 }
+
+/**
+ * Compares two "PHP-standardized" version number strings.
+ *
+ * Removes any "-RCn", "-beta" from version numbers first.
+ *
+ * @since 1.9.4
+ *
+ * @param string $version1 Version number.
+ * @param string $version2 Version number.
+ * @param string $operator Comparison operator.
+ *
+ * @return bool
+ */
+function wpforms_version_compare( $version1, $version2, $operator ): bool {
+
+	// If the version is not a string, return false.
+	if ( ! is_string( $version1 ) || ! is_string( $version2 ) ) {
+		return false;
+	}
+
+	// Strip dash and anything after it.
+	$clean_version_number = function ( $version ) {
+		return preg_replace( '/-.+/', '', $version );
+	};
+
+	return version_compare(
+		$clean_version_number( $version1 ),
+		$clean_version_number( $version2 ),
+		$operator
+	);
+}

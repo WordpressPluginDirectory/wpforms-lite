@@ -118,7 +118,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 		<!-- Single connection block sub-template: FIELDS -->
 		<script type="text/html" id="tmpl-wpforms-providers-builder-content-connection-fields">
 			<div class="wpforms-builder-provider-connection-block wpforms-builder-provider-connection-fields">
-
+				<h4><?php esc_html_e( 'Custom Fields', 'wpforms-lite' ); ?></h4>
 				<table class="wpforms-builder-provider-connection-fields-table">
 					<thead>
 						<tr>
@@ -295,7 +295,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 	}
 
 	/**
-	 * Enqueue JavaScript and CSS files if needed.
+	 * Enqueue the JavaScript and CSS files if needed.
 	 * When extending - include the `parent::enqueue_assets();` not to break things!
 	 *
 	 * @since 1.4.7
@@ -537,7 +537,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 
 			<?php echo esc_html( $this->core->name ); ?>
 
-			<span class="wpforms-builder-provider-title-spinner <?php echo $is_connected ? '' : 'hidden'; ?>">
+			<span class="wpforms-builder-provider-title-spinner <?php echo $is_connected ? '' : 'wpforms-hidden'; ?>">
 				<i class="wpforms-loading-spinner wpforms-loading-md wpforms-loading-inline"></i>
 			</span>
 

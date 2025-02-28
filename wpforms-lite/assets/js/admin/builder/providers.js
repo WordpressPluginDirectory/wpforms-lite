@@ -163,7 +163,7 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 
 				// Hidden class is used only for initial get connections request when connections are not set yet.
 				if ( custom.data.task !== 'connections_get' ) {
-					$holder.find( '.wpforms-builder-provider-title-spinner' ).removeClass( 'hidden' );
+					$holder.find( '.wpforms-builder-provider-title-spinner' ).removeClass( 'wpforms-hidden' );
 				}
 
 				custom.data = app.ajax._mergeData( provider, custom.data || {} );
@@ -549,9 +549,10 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 			for ( const orderNumber in fields ) {
 				const field = fields[ orderNumber ];
 				const id = field.id;
+				const type = field.type;
 				const label = wpf.sanitizeHTML( field.label?.toString().trim() || wpforms_builder.field + ' #' + id );
 
-				options.push( { value: id, text: label } );
+				options.push( { value: id, text: label, type } );
 
 				if ( 'name' !== field.type || ! field.format ) {
 					optionsWithSubfields.push( { value: id, text: label } );
@@ -566,6 +567,9 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 				} );
 			}
 
+			// Add ability to filter options for providers before rendering them.
+			app.panelHolder.trigger( 'WPForms.Admin.Builder.Providers.FilterOptions', [ options ] );
+			app.panelHolder.trigger( 'WPForms.Admin.Builder.Providers.FilterOptionsWithSubfields', [ optionsWithSubfields ] );
 			$( '.wpforms-builder-provider-connection-fields-table .wpforms-builder-provider-connection-field-value' ).each( function() {
 				const $select = $( this );
 				const value = $select.val();
@@ -574,10 +578,11 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 				// and don't have the support-subfields attribute.
 				const isSupportSubfields = $select.data( 'support-subfields' ) || Boolean( $select.find( 'option[value$=".first"]' ).length );
 				const newOptions = isSupportSubfields ? optionsWithSubfields : options;
+				const placeholder = $select.data( 'placeholder' ) && $select.data( 'placeholder' ).length ? $select.data( 'placeholder' ) : wpforms_builder_providers.custom_fields_placeholder;
 
 				$newSelect.append( $( '<option>', {
 					value: '',
-					text: wpforms_builder_providers.custom_fields_placeholder,
+					text: placeholder,
 				} ) );
 
 				newOptions.forEach( function( option ) {

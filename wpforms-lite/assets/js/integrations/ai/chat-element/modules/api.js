@@ -128,6 +128,15 @@ export default function() { // eslint-disable-line no-unused-vars, max-lines-per
 			return app.ajax( data );
 		},
 
+		setUp() {
+			app.actions = {
+				...app.actions,
+				...wpforms_ai_chat_element.actions,
+			};
+
+			return this;
+		},
+
 		/**
 		 * Set the AI chat mode.
 		 *
@@ -156,6 +165,6 @@ export default function() { // eslint-disable-line no-unused-vars, max-lines-per
 	return function( mode ) {
 		const obj = { ...app };
 
-		return obj.setMode( mode );
+		return obj.setUp().setMode( mode );
 	};
 }

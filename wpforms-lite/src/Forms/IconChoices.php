@@ -222,7 +222,13 @@ class IconChoices {
 	 */
 	public function install() {
 
+		// Run a security check.
 		check_ajax_referer( 'wpforms-builder', 'nonce' );
+
+		// Check for permissions.
+		if ( ! wpforms_current_user_can( 'edit_forms' ) ) {
+			wp_send_json_error();
+		}
 
 		$this->run_install( $this->cache_base_path );
 		$this->is_installed = true;

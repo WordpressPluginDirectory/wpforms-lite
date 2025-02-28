@@ -371,9 +371,8 @@ const WPFormsPaymentsOverview = window.WPFormsPaymentsOverview || ( function( do
 							displayColors: false,
 							rtl: isRTL,
 							callbacks: {
-								label: ( tooltipItem ) => {
+								label: ( { raw: { y: value } } ) => {
 									let label = `${ this.datasetLabel } `;
-									const value = tooltipItem.formattedValue;
 
 									// Update the scales if the dataset returned includes price amounts.
 									if ( this.isAmount ) {

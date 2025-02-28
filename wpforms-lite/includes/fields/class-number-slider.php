@@ -4,12 +4,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use WPForms\Forms\Fields\Traits\NumberField as NumberFieldTrait;
+
 /**
  * Number Slider field.
  *
  * @since 1.5.7
  */
 class WPForms_Field_Number_Slider extends WPForms_Field {
+
+	use NumberFieldTrait;
 
 	/**
 	 * Default minimum value of the field.
@@ -115,6 +119,9 @@ class WPForms_Field_Number_Slider extends WPForms_Field {
 		 * Basic field options.
 		 */
 
+		// Set default values for Min, Max, Step, Default Value Options.
+		$field = $this->set_default_field_args( $field );
+
 		// Options open markup.
 		$args = [
 			'markup' => 'open',
@@ -139,133 +146,37 @@ class WPForms_Field_Number_Slider extends WPForms_Field {
 			]
 		);
 
-		// Value: min/max.
-		$lbl = $this->field_element(
-			'label',
-			$field,
-			[
-				'slug'    => 'value',
-				'value'   => esc_html__( 'Value', 'wpforms-lite' ),
-				'tooltip' => esc_html__( 'Define the minimum and the maximum values for the slider.', 'wpforms-lite' ),
-			],
-			false
-		);
-
-		$min = $this->field_element(
-			'text',
-			$field,
-			[
-				'type'  => 'number',
-				'slug'  => 'min',
-				'class' => 'wpforms-number-slider-min',
-				'value' => ! empty( $field['min'] ) ? (float) $field['min'] : self::SLIDER_MIN,
-			],
-			false
-		);
-
-		$max = $this->field_element(
-			'text',
-			$field,
-			[
-				'type'  => 'number',
-				'slug'  => 'max',
-				'class' => 'wpforms-number-slider-max',
-				'value' => ! empty( $field['max'] ) ? (float) $field['max'] : self::SLIDER_MAX,
-			],
-			false
-		);
-
-		$this->field_element(
-			'row',
-			$field,
-			[
-				'slug'    => 'min_max',
-				'content' => $lbl . wpforms_render(
-					'fields/number-slider/builder-option-min-max',
-					[
-						'label'     => $lbl,
-						'input_min' => $min,
-						'input_max' => $max,
-						'field_id'  => $field['id'],
-					],
-					true
-				),
-			]
-		);
+		// Min/Max.
+		$min_max_args = [
+			'class'   => 'wpforms-number-slider',
+			'label'   => esc_html__( 'Value Range', 'wpforms-lite' ),
+			'tooltip' => esc_html__( 'Define the minimum and the maximum values for the slider.', 'wpforms-lite' ),
+		];
+		$min_max      = $this->field_number_option_min_max( $field, $min_max_args, false );
 
 		// Default value.
-		$lbl = $this->field_element(
-			'label',
-			$field,
-			[
-				'slug'    => 'default_value',
-				'value'   => esc_html__( 'Default Value', 'wpforms-lite' ),
-				'tooltip' => esc_html__( 'Enter a default value for this field.', 'wpforms-lite' ),
-			],
-			false
-		);
+		$default_value_args = [
+			'class' => 'wpforms-number-slider-default-value',
+		];
+		$default_value      = $this->field_number_option_default_value( $field, $default_value_args, false );
 
-		$fld = $this->field_element(
-			'text',
-			$field,
-			[
-				'type'  => 'number',
-				'slug'  => 'default_value',
-				'class' => 'wpforms-number-slider-default-value',
-				'value' => ! empty( $field['default_value'] ) ? (float) $field['default_value'] : 0,
-				'attrs' => [
-					'min'  => isset( $field['min'] ) && is_numeric( $field['min'] ) ? (float) $field['min'] : self::SLIDER_MIN,
-					'max'  => isset( $field['max'] ) && is_numeric( $field['max'] ) ? (float) $field['max'] : self::SLIDER_MAX,
-					'step' => isset( $field['step'] ) && is_numeric( $field['step'] ) ? (float) $field['step'] : self::SLIDER_STEP,
-				],
-			],
-			false
-		);
+		// Increment.
+		$step_args = [
+			'class'   => 'wpforms-number-slider-step',
+			'tooltip' => esc_html__( 'Determines the increment between selectable values on the slider.', 'wpforms-lite' ),
+		];
+		$step      = $this->field_number_option_step( $field, $step_args, false );
 
+		// Print of options markup: Minimum, Maximum, Increment, Default Value.
 		$this->field_element(
 			'row',
 			$field,
 			[
-				'slug'    => 'default_value',
-				'content' => $lbl . $fld,
-			]
-		);
-
-		// Steps.
-		$lbl = $this->field_element(
-			'label',
-			$field,
-			[
-				'slug'    => 'step',
-				'value'   => esc_html__( 'Increment', 'wpforms-lite' ),
-				'tooltip' => esc_html__( 'Determines the increment between selectable values on the slider.', 'wpforms-lite' ),
+				'slug'    => 'number_min_max_step_dependent',
+				'content' => $min_max . $default_value . $step,
+				'class'   => 'wpforms-field-number-slider-option',
 			],
-			false
-		);
-
-		$fld = $this->field_element(
-			'text',
-			$field,
-			[
-				'type'  => 'number',
-				'slug'  => 'step',
-				'class' => 'wpforms-number-slider-step',
-				'value' => ! empty( $field['step'] ) ? abs( $field['step'] ) : self::SLIDER_STEP,
-				'attrs' => [
-					'min' => 0,
-					'max' => isset( $field['max'] ) && is_numeric( $field['max'] ) ? abs( (float) $field['max'] ) : self::SLIDER_MAX,
-				],
-			],
-			false
-		);
-
-		$this->field_element(
-			'row',
-			$field,
-			[
-				'slug'    => 'step',
-				'content' => $lbl . $fld,
-			]
+			true
 		);
 
 		// Options close markup.
@@ -516,6 +427,25 @@ class WPForms_Field_Number_Slider extends WPForms_Field {
 		$value     = strpos( $signed_value, '-' ) === 0 ? '-' . $abs_value : $abs_value;
 
 		return $value;
+	}
+
+	/**
+	 * Sets default field settings.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param array $field Field settings.
+	 *
+	 * @return array Modified array.
+	 */
+	private function set_default_field_args( $field ) {
+
+		$field['min']           = empty( $field['min'] ) ? self::SLIDER_MIN : $field['min'];
+		$field['max']           = empty( $field['max'] ) ? self::SLIDER_MAX : $field['max'];
+		$field['step']          = empty( $field['step'] ) ? self::SLIDER_STEP : $field['step'];
+		$field['default_value'] = empty( $field['default_value'] ) ? self::SLIDER_MIN : $field['default_value'];
+
+		return $field;
 	}
 }
 

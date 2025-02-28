@@ -16,7 +16,7 @@ class Frontend {
 	 *
 	 * @since 1.8.9
 	 */
-	const FIELD_FORMAT = 'wpforms-%d-field_%s';
+	private const FIELD_FORMAT = 'wpforms-%d-field_%s';
 
 	/**
 	 * Render engine setting value.
@@ -64,7 +64,7 @@ class Frontend {
 	public $forms;
 
 	/**
-	 * Store information for multi-page forms.
+	 * Store information for multipage forms.
 	 *
 	 * False for forms that do not contain pages, otherwise an array that contains the number of total pages
 	 * and page counter used when displaying pagebreak fields.
@@ -103,6 +103,15 @@ class Frontend {
 	 * @var string
 	 */
 	private $action;
+
+	/**
+	 * Rendered field IDs array.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @var array
+	 */
+	private $rendered_fields;
 
 	/**
 	 * Initialize class.
@@ -171,7 +180,7 @@ class Frontend {
 	 */
 	public function init_style_settings() {
 
-		// Skip if modern markup settings is already set.
+		// Skip if modern markup settings are already set.
 		$modern_markup_is_set = wpforms_setting( 'modern-markup-is-set' );
 
 		if ( $modern_markup_is_set ) {
@@ -250,7 +259,7 @@ class Frontend {
 			return;
 		}
 
-		// All checks have passed, so calculate multi-page details for the form.
+		// All checks have passed, so calculate multipage details for the form.
 		$this->pages = $this->get_pages( $form_data );
 
 		/**
@@ -294,6 +303,9 @@ class Frontend {
 		$form_atts = apply_filters( 'wpforms_frontend_form_atts', $form_atts, $form_data );
 
 		$this->form_container_open( $form_data, $form );
+
+		// Reset rendered fields array.
+		$this->rendered_fields = [];
 
 		/**
 		 * Fires before form output.
@@ -578,7 +590,7 @@ class Frontend {
 			return;
 		}
 
-		list( $fields, $entry_id ) = $this->prepare_confirmation_args( $fields, $entry_id );
+		[ $fields, $entry_id ] = $this->prepare_confirmation_args( $fields, $entry_id );
 
 		$process              = wpforms()->obj( 'process' );
 		$confirmation         = $process->get_current_confirmation();
@@ -943,7 +955,7 @@ class Frontend {
 	 */
 	public function get_field_properties( $field, $form_data, $attributes = [] ): array {
 
-		list( $field, $attributes, $error ) = $this->prepare_get_field_properties( $field, $form_data, $attributes );
+		[ $field, $attributes, $error ] = $this->prepare_get_field_properties( $field, $form_data, $attributes );
 
 		$form_id  = absint( $form_data['id'] );
 		$field_id = wpforms_validate_field_id( $field['id'] );
@@ -1294,6 +1306,11 @@ class Frontend {
 	 */
 	public function foot( $form_data, $deprecated, $title, $description, $errors ) {
 
+		// Do not render footer if there are no fields on front.
+		if ( empty( $this->rendered_fields ) ) {
+			return;
+		}
+
 		$form_id     = absint( $form_data['id'] );
 		$settings    = $form_data['settings'];
 		$submit_text = ! empty( $settings['submit_text'] ) ? $settings['submit_text'] : __( 'Submit', 'wpforms-lite' );
@@ -1327,7 +1344,11 @@ class Frontend {
 		// A lot of our frontend logic is dependent on this class, so we need to make sure it's present.
 		$classes = array_merge( $classes, [ 'wpforms-submit' ] );
 
-		list( $attrs, $data_attrs, $classes ) = $this->check_submit_settings( $settings, $form_id, $submit, $attrs, $data_attrs, $classes );
+		[
+			$attrs,
+			$data_attrs,
+			$classes
+		] = $this->check_submit_settings( $settings, $form_id, $submit, $attrs, $data_attrs, $classes );
 
 		// AMP submit error template.
 		$this->amp_obj->output_error_template();
@@ -1352,8 +1373,9 @@ class Frontend {
 			<?php
 		}
 
-		echo '<input type="hidden" name="page_title" value="' . esc_attr( wpforms_process_smart_tags( '{page_title}', [], [], '' ) ) . '">';
-		echo '<input type="hidden" name="page_url" value="' . esc_url( wpforms_process_smart_tags( '{page_url}', [], [], '' ) ) . '">';
+		echo '<input type="hidden" name="page_title" value="' . esc_attr( wpforms_process_smart_tags( '{page_title}', [] ) ) . '">';
+		echo '<input type="hidden" name="page_url" value="' . esc_url( wpforms_process_smart_tags( '{page_url}', [] ) ) . '">';
+		echo '<input type="hidden" name="url_referer" value="' . esc_url( wpforms_process_smart_tags( '{url_referer}', [] ) ) . '">';
 
 		if ( is_singular() ) {
 			// The field is used for some smart tags determination.
@@ -2209,6 +2231,8 @@ class Frontend {
 		if ( empty( $field ) ) {
 			return;
 		}
+
+		$this->rendered_fields[] = $field['id'];
 
 		// Get field attributes. Deprecated; Customizations should use
 		// field properties instead.

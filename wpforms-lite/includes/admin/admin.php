@@ -93,7 +93,9 @@ function wpforms_admin_scripts() {
 
 	$min = wpforms_get_min_suffix();
 
-	wp_enqueue_media();
+	if ( wpforms_is_admin_page( 'settings', 'email' ) ) {
+		wp_enqueue_media();
+	}
 
 	// jQuery.Confirm Reloaded.
 	wp_enqueue_script(
@@ -152,7 +154,7 @@ function wpforms_admin_scripts() {
 	wp_enqueue_script(
 		'wpforms-admin',
 		WPFORMS_PLUGIN_URL . "assets/js/admin/admin{$min}.js",
-		[ 'jquery' ],
+		[ 'jquery', 'underscore', 'wp-util' ],
 		WPFORMS_VERSION,
 		false
 	);

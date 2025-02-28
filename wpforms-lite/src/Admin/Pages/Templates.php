@@ -71,8 +71,23 @@ class Templates {
 		wp_enqueue_script(
 			'wpforms-admin-form-templates',
 			WPFORMS_PLUGIN_URL . "assets/js/admin/pages/form-templates{$min}.js",
-			[],
+			[ 'underscore', 'wp-util' ],
 			WPFORMS_VERSION,
+			true
+		);
+
+		wp_enqueue_style(
+			'tooltipster',
+			WPFORMS_PLUGIN_URL . 'assets/lib/jquery.tooltipster/jquery.tooltipster.min.css',
+			[],
+			'4.2.6'
+		);
+
+		wp_enqueue_script(
+			'tooltipster',
+			WPFORMS_PLUGIN_URL . 'assets/lib/jquery.tooltipster/jquery.tooltipster.min.js',
+			[ 'jquery', 'wpforms-admin-form-templates' ],
+			'4.2.6',
 			true
 		);
 
@@ -80,7 +95,8 @@ class Templates {
 			'wpforms-admin-form-templates',
 			'wpforms_admin_form_templates',
 			[
-				'nonce' => wp_create_nonce( 'wpforms-builder' ),
+				'nonce'         => wp_create_nonce( 'wpforms-builder' ),
+				'openAIFormUrl' => admin_url( 'admin.php?page=wpforms-builder&view=setup&ai-form' ),
 			]
 		);
 	}

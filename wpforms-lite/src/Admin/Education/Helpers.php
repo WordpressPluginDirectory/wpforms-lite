@@ -141,4 +141,32 @@ class Helpers {
 
 		return sprintf( '<i class="fa %1$s" aria-hidden="true"></i>', esc_attr( $name ) );
 	}
+
+	/**
+	 * Get available education addons.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @return array
+	 */
+	public static function get_edu_addons(): array {
+
+		static $addons = null;
+
+		if ( $addons !== null ) {
+			return $addons;
+		}
+
+		$addons_obj = wpforms()->obj( 'addons' );
+
+		if ( ! $addons_obj ) {
+			$addons = [];
+
+			return $addons;
+		}
+
+		$addons = $addons_obj->get_available();
+
+		return $addons;
+	}
 }

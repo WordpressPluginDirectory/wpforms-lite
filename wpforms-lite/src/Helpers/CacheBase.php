@@ -18,21 +18,21 @@ abstract class CacheBase {
 	 *
 	 * @since 1.8.7
 	 */
-	const ENCRYPT = false;
+	protected const ENCRYPT = false;
 
 	/**
 	 * Request lock time, min.
 	 *
 	 * @since 1.8.7
 	 */
-	const REQUEST_LOCK_TIME = 15;
+	private const REQUEST_LOCK_TIME = 15;
 
 	/**
 	 * A class id or array of cache class ids to sync updates with.
 	 *
 	 * @since 1.8.9
 	 */
-	const SYNC_WITH = [];
+	protected const SYNC_WITH = [];
 
 	/**
 	 * The current class is syncing updates now.
@@ -284,7 +284,7 @@ abstract class CacheBase {
 	}
 
 	/**
-	 * Get cache from cache file.
+	 * Get cache from a cache file.
 	 *
 	 * @since 1.8.2
 	 *
@@ -400,14 +400,9 @@ abstract class CacheBase {
 	 *
 	 * @return array
 	 */
-	private function perform_remote_request(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function perform_remote_request(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.CyclomaticComplexity.TooHigh
 
-		$wpforms_key = wpforms()->is_pro() ? wpforms_get_license_key() : 'lite';
-
-		$query_args = array_merge(
-			[ 'tgm-updater-key' => $wpforms_key ],
-			$this->settings['query_args'] ?? []
-		);
+		$query_args = $this->settings['query_args'] ?? [];
 
 		$request_url = add_query_arg( $query_args, $this->settings['remote_source'] );
 		$user_agent  = wpforms_get_default_user_agent();
@@ -498,7 +493,7 @@ abstract class CacheBase {
 	 * @param array  $data  Log data.
 	 * @param string $type  Log type.
 	 */
-	private function add_log( string $title, array $data, string $type = 'log' ) {
+	protected function add_log( string $title, array $data, string $type = 'log' ) {
 
 		wpforms_log(
 			$title,

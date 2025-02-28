@@ -4,6 +4,7 @@ namespace WPForms\Admin\Education\Builder;
 
 use WPForms\Admin\Education\AddonsItemBase;
 use WPForms\Admin\Education\Helpers;
+use WPForms\Integrations\AI\Helpers as AIHelpers;
 
 /**
  * Builder/Calculations Education feature for Lite and Pro.
@@ -19,7 +20,7 @@ class Calculations extends AddonsItemBase {
 	 *
 	 * @var array
 	 */
-	const ALLOWED_FIELD_TYPES = [ 'text', 'textarea', 'number', 'hidden', 'payment-single' ];
+	public const ALLOWED_FIELD_TYPES = [ 'text', 'textarea', 'number', 'hidden', 'payment-single' ];
 
 	/**
 	 * Field types that should display educational notice in the basic field options tab.
@@ -28,14 +29,17 @@ class Calculations extends AddonsItemBase {
 	 *
 	 * @var array
 	 */
-	const BASIC_OPTIONS_NOTICE_FIELD_TYPES = [ 'number', 'payment-single' ];
+	public const BASIC_OPTIONS_NOTICE_FIELD_TYPES = [ 'number', 'payment-single' ];
 
 	/**
-	 * Indicate if current Education feature is allowed to load.
+	 * Indicate if the current Education feature is allowed to load.
 	 *
 	 * @since 1.8.4.1
 	 *
 	 * @return bool
+	 *
+	 * @noinspection PhpMissingReturnTypeInspection
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
 	public function allow_load() {
 
@@ -46,6 +50,8 @@ class Calculations extends AddonsItemBase {
 	 * Hooks.
 	 *
 	 * @since 1.8.4.1
+	 *
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
 	public function hooks() {
 
@@ -62,7 +68,9 @@ class Calculations extends AddonsItemBase {
 	 * @param object $instance Builder instance.
 	 *
 	 * @noinspection HtmlUnknownTarget
-	 * @noinspection PhpUnusedParameterInspection
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection HtmlUnknownAnchorTarget
 	 */
 	public function basic_options( $field, $instance ) {
 
@@ -86,6 +94,64 @@ class Calculations extends AddonsItemBase {
 		if ( ! $addon ) {
 			return;
 		}
+
+		if (
+			AIHelpers::is_disabled() ||
+			(
+				wpforms_version_compare(
+					$addon['version'] ?? '1.5.0',
+					'1.5.0',
+					'<='
+				)
+			)
+		) {
+			$this->print_standard_education( $dismiss_section );
+
+			return;
+		}
+
+		$badge         = esc_html__( 'NEW FEATURE', 'wpforms-lite' );
+		$notice_header = esc_html__( 'AI Calculations Are Here!', 'wpforms-lite' );
+
+		$notice = sprintf(
+			wp_kses( /* translators: %1$s - link to the WPForms.com doc article. */
+				__( 'Easily create advanced calculations with WPForms AI. Head over to the <a href="#advanced-tab">Advanced Tab</a> to get started or read <a href="%1$s" target="_blank" rel="noopener noreferrer">our documentation</a> to learn more.', 'wpforms-lite' ),
+				[
+					'a' => [
+						'href'   => [],
+						'rel'    => [],
+						'target' => [],
+					],
+				]
+			),
+			esc_url( wpforms_utm_link( 'https://wpforms.com/docs/calculations-addon/', 'Calculations Education', 'Calculations Documentation' ) )
+		);
+
+		printf(
+			'<div class="wpforms-alert-ai wpforms-alert wpforms-educational-alert wpforms-calculations wpforms-dismiss-container">
+				<span class="wpforms-badge wpforms-badge-sm wpforms-badge-block wpforms-badge-purple wpforms-badge-rounded">
+					%5$s
+				</span>
+				<button type="button" class="wpforms-dismiss-button" title="%1$s" data-section="%2$s"></button>
+				<h3>%4$s</h3>
+				<p>%3$s</p>
+			</div>',
+			esc_html__( 'Dismiss this notice.', 'wpforms-lite' ),
+			esc_attr( $dismiss_section ),
+			$notice, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$notice_header, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$badge // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		);
+	}
+
+	/**
+	 * Print standard education notice.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param string $dismiss_section Dismiss section.
+	 */
+	private function print_standard_education( $dismiss_section ) {
 
 		$notice = sprintf(
 			wp_kses( /* translators: %1$s - link to the WPForms.com doc article. */
@@ -119,6 +185,9 @@ class Calculations extends AddonsItemBase {
 	 *
 	 * @param array  $field    Field data.
 	 * @param object $instance Builder instance.
+	 *
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
+	 * @noinspection PhpMissingParamTypeInspection
 	 */
 	public function advanced_options( $field, $instance ) {
 
@@ -136,7 +205,7 @@ class Calculations extends AddonsItemBase {
 		$row_args['content'] = $instance->field_element(
 			'toggle',
 			$field,
-			$this->get_field_attributes( $field, $addon ),
+			$this->get_field_attributes( $addon ),
 			false
 		);
 
@@ -152,44 +221,15 @@ class Calculations extends AddonsItemBase {
 	 *
 	 * @return array
 	 */
-	private function get_row_attributes( $addon ) {
+	private function get_row_attributes( array $addon ): array {
 
+		$data    = $this->prepare_field_action_data( $addon );
 		$default = [
 			'slug' => 'calculation_is_enabled',
 		];
 
-		if ( $addon['plugin_allow'] && $addon['action'] === 'install' ) {
-			return wp_parse_args(
-				[
-					'data'  => [
-						'action'  => 'install',
-						'name'    => $addon['modal_name'],
-						'url'     => $addon['url'],
-						'nonce'   => wp_create_nonce( 'wpforms-admin' ),
-						'license' => $addon['license_level'],
-					],
-					'class' => 'education-modal',
-				],
-				$default
-			);
-		}
-
-		if ( $addon['plugin_allow'] && $addon['action'] === 'activate' ) {
-			return wp_parse_args(
-				[
-					'data'  => [
-						'action' => 'activate',
-						'name'   => sprintf( /* translators: %s - addon name. */
-							esc_html__( '%s addon', 'wpforms-lite' ),
-							$addon['name']
-						),
-						'path'   => $addon['path'],
-						'nonce'  => wp_create_nonce( 'wpforms-admin' ),
-					],
-					'class' => 'education-modal',
-				],
-				$default
-			);
+		if ( ! empty( $data ) ) {
+			return wp_parse_args( $data, $default );
 		}
 
 		return wp_parse_args(
@@ -207,17 +247,15 @@ class Calculations extends AddonsItemBase {
 	}
 
 	/**
-	 * Get attributes for address autocomplete field.
+	 * Get attributes for Enable Calculation field.
 	 *
 	 * @since 1.8.4.1
 	 *
-	 * @param array $field Field data.
 	 * @param array $addon Addon data.
 	 *
 	 * @return array
-	 * @noinspection PhpUnusedParameterInspection
 	 */
-	private function get_field_attributes( $field, $addon ) {
+	private function get_field_attributes( array $addon ): array {
 
 		$default = [
 			'slug'  => 'calculation_is_enabled',
@@ -245,16 +283,15 @@ class Calculations extends AddonsItemBase {
 	}
 
 	/**
-	 * Determine if we require to display educational items according to the addon status.
+	 * Determine if we require displaying educational items according to the addon status.
 	 *
 	 * @since 1.8.4.1
 	 *
 	 * @param array $addon Addon data.
 	 *
 	 * @return bool
-	 * @noinspection PhpUnusedParameterInspection
 	 */
-	private function is_edu_required_by_status( $addon ) {
+	private function is_edu_required_by_status( array $addon ): bool {
 
 		return ! (
 			empty( $addon ) ||

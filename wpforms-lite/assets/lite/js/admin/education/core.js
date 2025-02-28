@@ -119,7 +119,7 @@ WPFormsEducation.liteCore = window.WPFormsEducation.liteCore || ( function( docu
 			}
 
 			const message = wpforms_education.upgrade[ type ].message.replace( /%name%/g, feature );
-			const isVideoModal = ! _.isEmpty( video );
+			const isVideoModal = Boolean( video );
 			const titleMessage = isPlural ? wpforms_education.upgrade[ type ].title_plural : wpforms_education.upgrade[ type ].title;
 
 			let modalWidth = WPFormsEducation.core.getUpgradeModalWidth( isVideoModal );

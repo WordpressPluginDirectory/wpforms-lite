@@ -10,12 +10,12 @@ namespace WPForms\Providers\Provider\Settings;
 interface PageIntegrationsInterface {
 
 	/**
-	 * Display the data for integrations tab.
-	 * This is a default one, that can be easily overwritten inside the child class of a specific provider.
+	 * Display the data for the Integrations tab.
+	 * This is a default one that can be easily overwritten inside the child class of a specific provider.
 	 *
 	 * @since 1.4.7
 	 *
-	 * @param array $active Array of activated providers addons.
+	 * @param array $active   Array of activated providers addons.
 	 * @param array $settings Providers options.
 	 */
 	public function display( $active, $settings );

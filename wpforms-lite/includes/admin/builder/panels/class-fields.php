@@ -137,18 +137,30 @@ class WPForms_Builder_Panel_Fields extends WPForms_Builder_Panel {
 				<div class="wpforms-title-desc">
 					<div class="wpforms-title-desc-inner">
 						<h2 class="wpforms-form-name">
-							<?php echo esc_html( isset( $this->form_data['settings']['form_title'] ) ? $this->form_data['settings']['form_title'] : $this->form->post_title ); ?>
+							<?php echo esc_html( $this->form_data['settings']['form_title'] ?? $this->form->post_title ); ?>
 						</h2>
 						<span class="wpforms-form-desc">
 							<?php
 							echo wp_kses(
-								isset( $this->form_data['settings']['form_desc'] ) ? $this->form_data['settings']['form_desc'] : $this->form->post_excerpt,
+								$this->form_data['settings']['form_desc'] ?? $this->form->post_excerpt,
 								wpforms_builder_preview_get_allowed_tags()
 							);
 							?>
 						</span>
 					</div>
 				</div>
+
+				<?php
+
+				/**
+				 * Fires after the fields panel (form preview) title.
+				 *
+				 * @since 1.9.4
+				 *
+				 * @param array $form_data Form data.
+				 */
+				do_action( 'wpforms_builder_panel_fields_panel_content_title_after', $this->form_data );
+				?>
 
 				<div class="wpforms-no-fields-holder wpforms-hidden">
 					<?php $this->no_fields_options(); ?>
@@ -348,7 +360,7 @@ class WPForms_Builder_Panel_Fields extends WPForms_Builder_Panel {
 
 		$class  = ! empty( $field['size'] ) ? 'size-' . esc_attr( $field['size'] ) : '';
 		$class .= ! empty( $field['label_hide'] ) ? ' label_hide' : '';
-		$class .= isset( $field['label'] ) && empty( $field['label'] ) && $field['type'] !== 'html' ? ' label_empty' : '';
+		$class .= isset( $field['label'] ) && empty( $field['label'] ) && ! in_array( $field['type'], [ 'html', 'content' ], true ) ? ' label_empty' : '';
 		$class .= ! empty( $field['sublabel_hide'] ) ? ' sublabel_hide' : '';
 		$class .= ! empty( $field['required'] ) ? ' required' : '';
 		$class .= isset( $field['meta']['delete'] ) && $field['meta']['delete'] === false ? ' no-delete' : '';

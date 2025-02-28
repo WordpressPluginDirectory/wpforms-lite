@@ -30,7 +30,7 @@ trait CreditCard {
 		add_filter( 'wpforms_field_properties_stripe-credit-card', [ $this, 'field_properties' ], 5, 3 );
 		add_filter( 'wpforms_builder_fields_options', [ $this, 'pre_fields_options' ] );
 
-		// Set field to required by default.
+		// Set field to the required by default.
 		add_filter( 'wpforms_field_new_required', [ $this, 'default_required' ], 10, 2 );
 
 		add_action( 'wpforms_builder_enqueues', [ $this, 'builder_enqueues' ] );
@@ -52,9 +52,9 @@ trait CreditCard {
 	 *
 	 * @return bool
 	 */
-	public function field_display_duplicate_button( $display, $field ) {
+	public function field_display_duplicate_button( $display, $field ): bool {
 
-		return Helpers::get_field_slug( 'field_slug' ) === $field['type'] ? false : $display;
+		return Helpers::get_field_slug() === $field['type'] ? false : $display;
 	}
 
 	/**
@@ -64,7 +64,7 @@ trait CreditCard {
 	 *
 	 * @param array $form Current form post data.
 	 */
-	public function pre_fields_options( $form ) {
+	public function pre_fields_options( $form ): void {
 
 		if ( ! isset( $form->post_content ) ) {
 			$this->form_data = [];
@@ -127,7 +127,7 @@ trait CreditCard {
 	 *
 	 * @return bool
 	 */
-	public function is_dynamic_population_allowed( $properties, $field ) {
+	public function is_dynamic_population_allowed( $properties, $field ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		return false;
 	}
@@ -142,7 +142,7 @@ trait CreditCard {
 	 *
 	 * @return bool
 	 */
-	public function is_fallback_population_allowed( $properties, $field ) {
+	public function is_fallback_population_allowed( $properties, $field ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		return false;
 	}
@@ -157,7 +157,7 @@ trait CreditCard {
 	 *
 	 * @return bool
 	 */
-	public function default_required( $required, $field ) {
+	public function default_required( $required, $field ): bool {
 
 		return $field['type'] === $this->type ? true : $required;
 	}
@@ -168,8 +168,11 @@ trait CreditCard {
 	 * @since 1.8.2
 	 *
 	 * @param string $view Current view.
+	 *
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function builder_enqueues( $view ) {
+	public function builder_enqueues( $view ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 
 		$min = wpforms_get_min_suffix();
 
@@ -206,8 +209,10 @@ trait CreditCard {
 	 * @param array $form    Form data.
 	 *
 	 * @return array
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function builder_js_strings( $strings, $form ) {
+	public function builder_js_strings( $strings, $form ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		$strings['stripe_ajax_required'] = wp_kses(
 			__( '<p>AJAX form submissions are required when using the Stripe Credit Card field.</p><p>To proceed, please go to <strong>Settings » General » Advanced</strong> and check <strong>Enable AJAX form submission</strong>.</p>', 'wpforms-lite' ),
@@ -247,7 +252,7 @@ trait CreditCard {
 	 *
 	 * @return array
 	 */
-	public function field_button_attributes( $attributes, $field, $form_data ) {
+	public function field_button_attributes( $attributes, $field, $form_data ): array {
 
 		if ( Helpers::get_field_slug() !== $field['type'] ) {
 			return $attributes;
@@ -278,7 +283,7 @@ trait CreditCard {
 	 * @param array $field_submit Submitted field value (raw data).
 	 * @param array $form_data    Form data and settings.
 	 */
-	public function validate( $field_id, $field_submit, $form_data ) {
+	public function validate( $field_id, $field_submit, $form_data ): void {
 	}
 
 	/**
@@ -290,7 +295,7 @@ trait CreditCard {
 	 * @param array $field_submit Submitted field value.
 	 * @param array $form_data    Form data and settings.
 	 */
-	public function format( $field_id, $field_submit, $form_data ) {
+	public function format( $field_id, $field_submit, $form_data ): void {
 
 		// Define data.
 		$name = ! empty( $form_data['fields'][ $field_id ]['label'] ) ? $form_data['fields'][ $field_id ]['label'] : '';
@@ -315,14 +320,16 @@ trait CreditCard {
 	 * @param array  $form_data    Form data.
 	 *
 	 * @return bool
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function entry_preview_availability( $is_supported, $value, $field, $form_data ) {
+	public function entry_preview_availability( $is_supported, $value, $field, $form_data ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		return ! empty( $value ) && $value !== '-';
 	}
 
 	/**
-	 * Maybe display errors before field.
+	 * Maybe display errors before the field.
 	 *
 	 * @since 1.8.2
 	 *
@@ -330,7 +337,7 @@ trait CreditCard {
 	 *
 	 * @return bool
 	 */
-	private function field_display_errors( $form_data ) {
+	private function field_display_errors( $form_data ): bool {
 
 		// Display warning for non SSL pages.
 		if ( ! is_ssl() ) {
@@ -369,7 +376,7 @@ trait CreditCard {
 	 *
 	 * @return bool
 	 */
-	public function skip_sublabel_for_attribute( $skip, $key, $field ) {
+	public function skip_sublabel_for_attribute( $skip, $key, $field ): bool {
 
 		if ( $field['type'] !== $this->type ) {
 			return $skip;

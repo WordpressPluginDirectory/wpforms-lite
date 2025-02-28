@@ -4,6 +4,7 @@ namespace WPForms\Emails;
 
 use WPForms_WP_Emails;
 use WPForms\Tasks\Actions\EntryEmailsTask;
+use WPForms\Emails\Templates\General; // phpcs:ignore WPForms.PHP.UseStatement.UnusedUseStatement
 
 /**
  * Class Notifications.
@@ -65,7 +66,7 @@ class Notifications extends Mailer {
 	 *
 	 * @var string
 	 */
-	protected $field_template;
+	protected $field_template = '';
 
 	/**
 	 * Default email template name.
@@ -74,7 +75,7 @@ class Notifications extends Mailer {
 	 *
 	 * @var string
 	 */
-	const DEFAULT_TEMPLATE = 'classic';
+	public const DEFAULT_TEMPLATE = 'classic';
 
 	/**
 	 * Plain/Text email template name.
@@ -83,7 +84,7 @@ class Notifications extends Mailer {
 	 *
 	 * @var string
 	 */
-	const PLAIN_TEMPLATE = 'none';
+	public const PLAIN_TEMPLATE = 'none';
 
 	/**
 	 * Legacy email template name.
@@ -92,7 +93,7 @@ class Notifications extends Mailer {
 	 *
 	 * @var string
 	 */
-	const LEGACY_TEMPLATE = 'default';
+	public const LEGACY_TEMPLATE = 'default';
 
 	/**
 	 * Get the instance of a class.
@@ -142,7 +143,7 @@ class Notifications extends Mailer {
 			return new WPForms_WP_Emails();
 		}
 
-		// Plain text and other html templates will use the current class.
+		// Plain text and other HTML templates will use the current class.
 		return $this;
 	}
 
@@ -178,9 +179,9 @@ class Notifications extends Mailer {
 		}
 
 		// Set the arguments.
-		list( $to, $subject, $message ) = func_get_args();
+		[ $to, $subject, $message ] = func_get_args();
 
-		// Don't send if email address is invalid.
+		// Don't send it if the email address is invalid.
 		if ( ! is_email( $to ) ) {
 			return false;
 		}
@@ -308,16 +309,30 @@ class Notifications extends Mailer {
 			return;
 		}
 
-		// Set the email template, i.e. WPForms\Emails\Templates\Classic.
+		// Set the email template, i.e., WPForms\Emails\Templates\Classic.
 		$this->template( new $template['path']( '', false, $this->current_template ) );
 
+		/**
+		 * Email template.
+		 *
+		 * @var General $email_template
+		 */
+		$email_template = $this->__get( 'template' );
+
+		if (
+			! method_exists( $email_template, 'get_field_template' ) ||
+			! method_exists( $email_template, 'set_field' )
+		) {
+			return;
+		}
+
 		// Set the field template.
-		$this->field_template = $this->template->get_field_template();
+		$this->field_template = $email_template->get_field_template();
 
 		// Set the email template fields.
-		$this->template->set_field( $this->process_message( $message ) );
+		$email_template->set_field( $this->process_message( $message ) );
 
-		$content = $this->template->get();
+		$content = $email_template->get();
 
 		// Return if the template is empty.
 		if ( ! $content ) {
@@ -361,7 +376,7 @@ class Notifications extends Mailer {
 			$message = $this->wrap_content_with_table_row( $message );
 		} else {
 			// If {all_fields} is present, extract content before and after into separate variables.
-			list( $before, $after ) = array_map( 'trim', explode( '{all_fields}', $message, 2 ) );
+			[ $before, $after ] = array_map( 'trim', explode( '{all_fields}', $message, 2 ) );
 
 			// Wrap before and after content with <tr> tags if they are not empty to maintain styling.
 			// Note that whatever comes after the {all_fields} should be wrapped in a table row to avoid content misplacement.
@@ -687,7 +702,7 @@ class Notifications extends Mailer {
 			}
 
 			// Handle specific field types.
-			list( $field_name, $field_val ) = $this->process_special_field_values( $field );
+			[ $field_name, $field_val ] = $this->process_special_field_values( $field );
 		} else {
 			// Handle fields that are not empty in $this->fields.
 			if ( ! $show_empty_fields && ( ! isset( $this->fields[ $field_id ]['value'] ) || (string) $this->fields[ $field_id ]['value'] === '' ) ) {
@@ -738,7 +753,7 @@ class Notifications extends Mailer {
 
 		// Replace the payment total value if an order summary is enabled.
 		// Ideally, it could be done through the `wpforms_html_field_value` filter,
-		// but needed data is missed there, e.g. entry data ($this->fields).
+		// but needed data is missed there, e.g., entry data ($this->fields).
 		if ( $field_type === 'payment-total' && ! empty( $field['summary'] ) ) {
 			$field_val = $this->get_payment_total_value( $field_val );
 		}
@@ -1086,7 +1101,7 @@ class Notifications extends Mailer {
 			);
 		}
 
-		return isset( $templates[ $template ] ) ? $templates[ $template ] : $templates;
+		return $templates[ $template ] ?? $templates;
 	}
 
 	/**
@@ -1156,7 +1171,7 @@ class Notifications extends Mailer {
 			unset( $tmpl );
 		}
 
-		return isset( $templates[ $template ] ) ? $templates[ $template ] : $templates;
+		return $templates[ $template ] ?? $templates;
 	}
 
 	/**
@@ -1192,7 +1207,7 @@ class Notifications extends Mailer {
 	}
 
 	/**
-	 * Get current template name.
+	 * Get the current template name.
 	 *
 	 * @since 1.9.3
 	 *
@@ -1201,5 +1216,17 @@ class Notifications extends Mailer {
 	public function get_current_template(): string {
 
 		return $this->current_template;
+	}
+
+	/**
+	 * Get the current field template markup.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @return string
+	 */
+	public function get_current_field_template(): string {
+
+		return $this->field_template;
 	}
 }
