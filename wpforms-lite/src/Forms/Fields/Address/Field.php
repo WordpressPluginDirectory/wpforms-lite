@@ -643,9 +643,9 @@ class Field extends WPForms_Field {
 
 					// Country select.
 					printf( '<select readonly><option class="placeholder" selected>%s</option></select>', esc_html( $country_option ) );
+					printf( '<label class="wpforms-sub-label">%s</label>', esc_html( $country_label ) );
 				}
 
-			printf( '<label class="wpforms-sub-label">%s</label>', esc_html( $country_label ) );
 			echo '</div>';
 
 			// End row 4 - Zip & Country.

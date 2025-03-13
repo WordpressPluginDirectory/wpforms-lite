@@ -205,49 +205,6 @@ export default function( generator, $ ) { // eslint-disable-line max-lines-per-f
 			}
 
 			generator.state.isPreviewUpdate = false;
-
-			preview.displayAddonsNotice();
-		},
-
-		/**
-		 * Display the missing addons notice.
-		 *
-		 * @since 1.9.4
-		 */
-		displayAddonsNotice() {
-			if ( strings.dismissed.previewNotice ) {
-				return;
-			}
-
-			if ( ! [ 'basic', 'plus' ].includes( strings.licenseType ) ) {
-				return;
-			}
-
-			const addons = preview.getAddonsUsedInResponse();
-
-			if ( ! addons.length ) {
-				return;
-			}
-
-			const title = strings.previewNotice.title + ' ' + addons;
-			const button = strings.previewNotice.btnUpgrade;
-			const eduAttr = `data-action="upgrade" data-name="${ strings.previewNotice.addons }" data-utm-content="AI Form Generator"`;
-			const text = strings.previewNotice.msgUpgrade
-				.replace( 'href="#"', `href="#" class="education-modal" ${ eduAttr }` );
-
-			preview.el.$content
-				.append( `
-					<div class="wpforms-alert wpforms-alert-success wpforms-ai-form-generator-preview-addons-notice wpforms-dismiss-container">
-						<div class="wpforms-alert-message">
-							<h4>${ title }</h4>
-							<p>${ text }</p>
-						</div>
-						<div class="wpforms-alert-buttons">
-							<a href="#" target="_blank" rel="noopener noreferrer" class="wpforms-btn wpforms-btn-sm wpforms-btn-light-grey education-modal" ${ eduAttr }>${ button }</a>
-							<button type="button" class="wpforms-dismiss-button" title="${ strings.previewNotice.dismiss }" data-section="ai-forms-preview-addons-notice" />
-						</div>
-					</div>
-				` );
 		},
 
 		/**

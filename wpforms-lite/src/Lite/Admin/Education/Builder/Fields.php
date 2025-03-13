@@ -142,11 +142,25 @@ class Fields extends Education\Builder\Fields {
 			return;
 		}
 
+		$content = sprintf(
+			wp_kses( /* translators: %s - WPForms.com announcement page URL. */
+				__( 'They will not be present in the published form. <a href="%s" target="_blank" rel="noopener noreferrer">Upgrade now</a> to unlock these features.', 'wpforms-lite' ),
+				[
+					'a' => [
+						'href'   => [],
+						'target' => [],
+						'rel'    => [],
+					],
+				]
+			),
+			wpforms_admin_upgrade_link( 'Builder - Settings', 'AI Form - Pro Fields in Lite notice' )
+		);
+
 		$this->print_form_preview_notice(
 			[
 				'class'           => 'wpforms-alert-warning',
 				'title'           => esc_html__( 'Your Form Contains Pro Fields', 'wpforms-lite' ),
-				'content'         => esc_html__( 'They will still be visible in the form preview, but will not be present in the published form.', 'wpforms-lite' ),
+				'content'         => $content,
 				'dismiss_section' => 'pro-fields-form-preview-notice',
 			]
 		);

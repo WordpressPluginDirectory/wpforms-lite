@@ -67,7 +67,7 @@ abstract class Fields extends AddonsItemBase {
 			</div>',
 			esc_attr( $texts['class'] ),
 			esc_html( $texts['title'] ),
-			esc_html( $texts['content'] ),
+			$texts['content'], // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			esc_html( $texts['dismiss_section'] ),
 			esc_attr__( 'Dismiss this notice', 'wpforms-lite' )
 		);

@@ -124,7 +124,7 @@ class Calculations extends AddonsItemBase {
 					],
 				]
 			),
-			esc_url( wpforms_utm_link( 'https://wpforms.com/docs/calculations-addon/', 'Calculations Education', 'Calculations Documentation' ) )
+			esc_url( wpforms_utm_link( 'https://wpforms.com/docs/generating-calculation-formulas-with-wpforms-ai/', 'Calculations Education', 'Calculations Documentation' ) )
 		);
 
 		printf(

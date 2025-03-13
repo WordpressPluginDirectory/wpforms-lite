@@ -202,18 +202,22 @@ trait ProField {
 			return '';
 		}
 
-		[ $name, $title, $content, $button_label ] = $this->get_field_options_notice_texts();
+		[ $name, $title, $content, $button_label, $button_utm ] = $this->get_field_options_notice_texts();
 
-		$action      = $this->addon_edu_data['action'] ?? 'upgrade';
-		$button_attr = '';
+		$action       = $this->addon_edu_data['action'] ?? 'upgrade';
+		$button_class = 'education-action-button';
+		$button_attr  = '';
 
 		if ( $action !== 'upgrade' ) {
-			$button_attr = sprintf(
-				'data-nonce="%1$s" data-path="%2$s" data-url="%3$s" data-message="%4$s"',
+			$button_class = 'education-modal';
+			$button_attr  = sprintf(
+				'data-nonce="%1$s" data-path="%2$s" data-url="%3$s" data-message="%4$s" data-field-type="%5$s" data-name="%6$s"',
 				esc_attr( wp_create_nonce( 'wpforms-admin' ) ),
 				$this->addon_edu_data['path'] ?? '',
 				$this->addon_edu_data['url'] ?? '',
-				$action === 'incompatible' ? $this->addon_edu_data['message'] : ''
+				$action === 'incompatible' ? $this->addon_edu_data['message'] : '',
+				esc_attr( $this->type ),
+				esc_attr( $name )
 			);
 		}
 
@@ -221,17 +225,18 @@ trait ProField {
 			'<div class="wpforms-field-option-field-title-notice">
 				<div class="wpforms-alert-info wpforms-alert wpforms-educational-alert">
 					<h4>%1$s</h4>
-					<p>%3$s</p>
-					<button class="wpforms-btn wpforms-btn-sm wpforms-btn-blue education-modal" data-action="%6$s" %7$s data-field-type="%4$s" data-name="%2$s" data-utm-content="%1$s">%5$s</button>
+					<p>%2$s</p>
+					<button class="wpforms-btn wpforms-btn-sm wpforms-btn-blue %3$s" data-action="%4$s" %6$s data-license="%7$s" data-utm-content="%8$s">%5$s</button>
 				</div>
 			</div>',
 			$title,
-			esc_attr( $name ),
 			esc_html( $content ),
-			esc_attr( $this->type ),
-			esc_html( $button_label ),
+			esc_attr( $button_class ),
 			esc_attr( $action ),
-			$button_attr
+			esc_html( $button_label ),
+			$button_attr,
+			esc_attr( $this->addon_edu_data['license_level'] ?? 'pro' ),
+			esc_attr( $button_utm )
 		);
 	}
 
@@ -280,11 +285,17 @@ trait ProField {
 			'incompatible' => esc_html__( 'Update Addon', 'wpforms-lite' ),
 		];
 
+		$button_utm = sprintf(
+			'AI Form - %1$s notice',
+			esc_html( $name )
+		);
+
 		return [
 			$name,
 			$titles[ $action ] ?? $titles['upgrade'],
 			$contents[ $action ] ?? $contents['upgrade'],
 			$button_labels[ $action ] ?? $button_labels['upgrade'],
+			$button_utm,
 		];
 	}
 

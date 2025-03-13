@@ -97,7 +97,32 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 		openModalButtonClick() {
 			$( document )
 				.on( 'click', '.education-modal:not(.wpforms-add-fields-button)', app.openModalButtonHandler )
-				.on( 'mousedown', '.education-modal.wpforms-add-fields-button', app.openModalButtonHandler );
+				.on( 'mousedown', '.education-modal.wpforms-add-fields-button', app.openModalButtonHandler )
+				.on( 'click', '.education-action-button', app.actionButtonHandler );
+		},
+
+		/**
+		 * Action button click handler.
+		 *
+		 * @since 1.9.4.2
+		 *
+		 * @param {Event} event Event.
+		 */
+		actionButtonHandler( event ) {
+			event.preventDefault();
+
+			const $this = $( this );
+			const action = $this.data( 'action' );
+
+			// Currently, only the upgrade action is supported.
+			if ( action !== 'upgrade' ) {
+				return;
+			}
+
+			const utmContent = $this.data( 'utm-content' );
+			const type = $this.data( 'license' );
+
+			window.open( WPFormsEducation.core.getUpgradeURL( utmContent, type ), '_blank' );
 		},
 
 		/**

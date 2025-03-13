@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit9ae6da658aef5293f536044a52a76923
+class ComposerStaticInitc9aadd537d4d73b1265708953399ae9f
 {
     public static $files = array (
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
@@ -55,6 +55,7 @@ class ComposerStaticInit9ae6da658aef5293f536044a52a76923
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'WPForms\\Vendor\\HTML5' => __DIR__ . '/../..' . '/vendor_prefixed/ezyang/htmlpurifier/library/HTMLPurifier/Lexer/PH5P.php',
         'WPForms\\Vendor\\HTML5TreeConstructer' => __DIR__ . '/../..' . '/vendor_prefixed/ezyang/htmlpurifier/library/HTMLPurifier/Lexer/PH5P.php',
         'WPForms\\Vendor\\HTMLPurifier' => __DIR__ . '/../..' . '/vendor_prefixed/ezyang/htmlpurifier/library/HTMLPurifier.php',
@@ -753,9 +754,9 @@ class ComposerStaticInit9ae6da658aef5293f536044a52a76923
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit9ae6da658aef5293f536044a52a76923::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit9ae6da658aef5293f536044a52a76923::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit9ae6da658aef5293f536044a52a76923::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc9aadd537d4d73b1265708953399ae9f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc9aadd537d4d73b1265708953399ae9f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc9aadd537d4d73b1265708953399ae9f::$classMap;
 
         }, null, ClassLoader::class);
     }

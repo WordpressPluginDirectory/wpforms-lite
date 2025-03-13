@@ -238,12 +238,14 @@ class Forms {
 	 */
 	public function add_localize_chat_data( $strings ): array {
 
+		$for_lite = wpforms()->is_pro() ? '' : ' for Lite';
+
 		$strings['forms'] = [
 			'title'               => esc_html__( 'Generate a Form', 'wpforms-lite' ),
 			'description'         => esc_html__( 'Describe the form you would like to create or use one of the example prompts below to get started.', 'wpforms-lite' ),
 			'descrEndDot'         => '',
 			'learnMore'           => esc_html__( 'Learn more about WPForms AI', 'wpforms-lite' ),
-			'learnMoreUrl'        => wpforms_utm_link( 'https://wpforms.com/features/wpforms-ai/', 'Builder - Settings', 'Learn more - AI Choices modal' ),
+			'learnMoreUrl'        => wpforms_utm_link( 'https://wpforms.com/features/wpforms-ai/', 'Builder - Settings', 'Learn more - AI Forms' . $for_lite ),
 			'inactiveAnswerTitle' => esc_html__( 'Go back to this version of the form', 'wpforms-lite' ),
 			'useForm'             => esc_html__( 'Use This Form', 'wpforms-lite' ),
 			'placeholder'         => esc_html__( 'What would you like to create?', 'wpforms-lite' ),

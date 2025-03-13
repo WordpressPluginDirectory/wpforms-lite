@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.9.4.2 =
+- Fixed: Fatal error when trying to delete the plugin.
+- Fixed: Character encoding issues in Email notifications when viewed on some Apple devices.
+
 = 1.9.4.1 =
 - Added: Minimum and maximum value validation for the Numbers field.
 - Added: Implemented password protection and user access restrictions for uploaded files.
@@ -25,6 +29,7 @@
 - Fixed: Dynamic Choice fields button behavior.
 - Fixed: Display of zero-price Payment Checkbox items.
 - Fixed: Stripe Credit Card field styling in Divi builder.
+- Fixed: Fatal error with a custom country address scheme.
 
 = 1.9.3.2 =
 - Fixed: GDPR enhancements sub-setting briefly flashed on the WPForms > Settings admin page after refresh.
