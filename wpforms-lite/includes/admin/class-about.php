@@ -1361,6 +1361,7 @@ class WPForms_About {
 								'Kit',
 								'Slack',
 								'Twilio',
+								'Pipedrive',
 							]
 						),
 						'',
@@ -1393,6 +1394,7 @@ class WPForms_About {
 								'Kit',
 								'Slack',
 								'Twilio',
+								'Pipedrive',
 							]
 						),
 						'',
@@ -1425,6 +1427,7 @@ class WPForms_About {
 								'Kit',
 								'Slack',
 								'Twilio',
+								'Pipedrive',
 							]
 						),
 						'',
@@ -1442,21 +1445,21 @@ class WPForms_About {
 					'status' => 'partial',
 					'text'   => [
 						'<strong>' . esc_html__( 'Limited Payment Forms', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Accept payments using Stripe only', 'wpforms-lite' ),
+						esc_html__( 'Accept payments using Stripe and Square only', 'wpforms-lite' ),
 					],
 				],
 				'basic'    => [
 					'status' => 'partial',
 					'text'   => [
 						'<strong>' . esc_html__( 'Limited Payment Forms', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Accept payments using Stripe only', 'wpforms-lite' ),
+						esc_html__( 'Accept payments using Stripe and Square only', 'wpforms-lite' ),
 					],
 				],
 				'plus'     => [
 					'status' => 'partial',
 					'text'   => [
 						'<strong>' . esc_html__( 'Limited Payment Forms', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Accept payments using Stripe only', 'wpforms-lite' ),
+						esc_html__( 'Accept payments using Stripe and Square only', 'wpforms-lite' ),
 					],
 				],
 				'pro'      => [

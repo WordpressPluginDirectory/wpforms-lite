@@ -320,7 +320,7 @@ class Classic {
 		if ( $description === true && ! empty( $settings['form_desc'] ) ) {
 			echo '<div class="wpforms-description">';
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo wpforms_process_smart_tags( $settings['form_desc'], $form_data );
+			echo wpforms_process_smart_tags( $settings['form_desc'], $form_data, [], '', 'form-description' );
 			echo '</div>';
 		}
 

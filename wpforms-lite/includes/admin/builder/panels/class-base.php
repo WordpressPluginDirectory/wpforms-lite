@@ -127,6 +127,10 @@ abstract class WPForms_Builder_Panel {
 			add_action( 'admin_enqueue_scripts', [ $this, 'enqueues_loader' ] );
 		}
 
+
+		// Load payments panel enqueues.
+		add_action( 'wpforms_builder_enqueues', [ $this, 'enqueues_payments' ] );
+
 		// Load panel specific enqueues.
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueues' ], 15 );
 
@@ -183,6 +187,36 @@ abstract class WPForms_Builder_Panel {
 			[ 'wpforms-builder' ],
 			WPFORMS_VERSION,
 			true
+		);
+	}
+
+	/**
+	 * Enqueue assets for the payments panel.
+	 *
+	 * @since 1.9.5
+	 */
+	public function enqueues_payments() {
+
+		$min = wpforms_get_min_suffix();
+
+		wp_enqueue_script(
+			'wpforms-builder-payments-utils',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/payments-utils{$min}.js",
+			[ 'wpforms-builder' ],
+			WPFORMS_VERSION,
+			true
+		);
+
+		$strings = [
+			'payments_plan_placeholder'   => esc_html__( 'Plan Name', 'wpforms-lite' ),
+			'payments_disabled_recurring' => esc_html__( 'You can only use one payment type at a time. If you\'d like to enable Recurring Payments, please disable One-Time Payments.', 'wpforms-lite' ),
+			'payments_disabled_one_time'  => esc_html__( 'You can only use one payment type at a time. If you\'d like to enable One-Time Payments, please disable Recurring Payments.', 'wpforms-lite' ),
+		];
+
+		wp_localize_script(
+			'wpforms-builder-payments-utils',
+			'wpforms_builder_payments_utils',
+			$strings
 		);
 	}
 

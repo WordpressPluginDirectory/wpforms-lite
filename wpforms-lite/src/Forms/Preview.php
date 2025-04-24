@@ -391,19 +391,4 @@ class Preview {
 			! empty( $form_data['settings']['form_title'] ) ? sanitize_text_field( $form_data['settings']['form_title'] ) : esc_html__( 'Form', 'wpforms-lite' )
 		);
 	}
-
-	/**
-	 * Force page template types.
-	 *
-	 * @since 1.5.1
-	 * @deprecated 1.7.2
-	 *
-	 * @return string
-	 */
-	public function template_include() {
-
-		_deprecated_function( __METHOD__, '1.7.2 of the WPForms plugin' );
-
-		return locate_template( [ 'page.php', 'single.php', 'index.php' ] );
-	}
 }

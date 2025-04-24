@@ -943,16 +943,39 @@ select:focus {
   color: #444444;
 }
 
+.wpforms-admin-page .wpforms-btn-blue-borders,
 .wpforms-admin-page .wpforms-btn-light-grey-blue-borders {
   background-color: #f8f8f8;
   border-color: currentColor;
   color: #036aab;
-  font-weight: 400;
 }
 
+.wpforms-admin-page .wpforms-btn-blue-borders:hover,
 .wpforms-admin-page .wpforms-btn-light-grey-blue-borders:hover {
   background-color: #eeeeee;
   color: #215d8f;
+}
+
+.wpforms-admin-page .wpforms-btn-blue-borders:focus,
+.wpforms-admin-page .wpforms-btn-light-grey-blue-borders:focus {
+  box-shadow: 0 0 0 1px #215d8f;
+  outline: 0;
+}
+
+.wpforms-admin-page .wpforms-btn-red-borders {
+  background-color: #fcf0f1;
+  border-color: currentColor;
+  color: #d63638;
+}
+
+.wpforms-admin-page .wpforms-btn-red-borders:focus {
+  box-shadow: 0 0 0 1px #b32d2e;
+  outline: 0;
+}
+
+.wpforms-admin-page .wpforms-btn-red-borders:hover {
+  color: #b32d2e;
+  background-color: #f9e1e1;
 }
 
 .wpforms-admin-page .wpforms-btn-purple {

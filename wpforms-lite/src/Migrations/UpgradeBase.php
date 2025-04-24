@@ -11,6 +11,7 @@ namespace WPForms\Migrations;
 
 // phpcs:disable WPForms.PHP.UseStatement.UnusedUseStatement
 use WPForms\Migrations\Migrations;
+use WPForms\Migrations\Tasks\UpgradeBaseTask;
 use WPForms\Pro\Migrations\Migrations as MigrationsPro;
 // phpcs:enable WPForms.PHP.UseStatement.UnusedUseStatement
 
@@ -70,27 +71,78 @@ abstract class UpgradeBase {
 	 */
 	protected function run_async( string $classname ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
-		$status = get_option( $classname::STATUS );
+		$instance = new $classname();
 
-		if ( $status === $classname::COMPLETED ) {
-			delete_option( $classname::STATUS );
-
+		if ( $this->is_completed( $instance ) ) {
 			return true;
 		}
 
-		if ( ! $status ) {
-			update_option( $classname::STATUS, $classname::START );
-		}
+		$this->maybe_start( $instance );
 
 		// Class Tasks does not exist at this point, so we have to add an action on init.
 		add_action(
 			'init',
-			static function () use ( $classname ) {
-				( new $classname() )->init();
+			static function () use ( $instance ) {
+
+				$instance->init();
 			},
 			PHP_INT_MAX
 		);
 
 		return null;
+	}
+
+	/**
+	 * Determine if the async AS task is completed.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param object $instance Instance of an async AS task.
+	 *
+	 * @use UpgradeBaseTask::is_completed()
+	 *
+	 * @return bool
+	 */
+	private function is_completed( $instance ): bool {
+
+		if ( method_exists( $instance, 'is_completed' ) ) {
+			return $instance->is_completed();
+		}
+
+		// Legacy tasks.
+		$status = get_option( $instance::STATUS );
+
+		if ( $status === $instance::COMPLETED ) {
+			delete_option( $instance::STATUS );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Start the async AS task if it wasn't started yet.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param object $instance Instance of an async AS task.
+	 *
+	 * @use UpgradeBaseTask::maybe_start()
+	 */
+	private function maybe_start( $instance ): void {
+
+		if ( method_exists( $instance, 'maybe_start' ) ) {
+			$instance->maybe_start();
+
+			return;
+		}
+
+		// Legacy tasks.
+		$status = get_option( $instance::STATUS );
+
+		if ( ! $status ) {
+			update_option( $instance::STATUS, $instance::START );
+		}
 	}
 }

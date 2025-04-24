@@ -280,19 +280,9 @@ trait ContentInput {
 	 *
 	 * @param string $view Current view.
 	 *
-	 * @noinspection PhpUnusedParameterInspection, PhpUnnecessaryCurlyVarSyntaxInspection
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function builder_enqueues( $view ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
-
-		$min = wpforms_get_min_suffix();
-
-		wp_enqueue_script(
-			'wpforms-content-field',
-			WPFORMS_PLUGIN_URL . "assets/pro/js/admin/builder/fields/content{$min}.js",
-			[ 'wpforms-builder', 'editor', 'quicktags' ],
-			WPFORMS_VERSION,
-			true
-		);
 
 		// Enqueue editor styles explicitly. Hack for broken styles when the Content field is deleted and Settings > Confirmation editor get broken.
 		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
@@ -466,7 +456,7 @@ trait ContentInput {
 			'editor_height'    => $this->get_editor_height(),
 			'editor_class'     => ! empty( $field['required'] ) ? 'wpforms-field-required' : '',
 			'tinymce'          => [
-				'init_instance_callback' => 'wpformsContentFieldTinyMCECallback',
+				'init_instance_callback' => $this->is_disabled_field ? '' : 'wpformsContentFieldTinyMCECallback',
 				'plugins'                => implode( ',', $this->content_editor_plugins() ),
 				'toolbar1'               => implode( ',', $this->content_editor_toolbar() ),
 				'invalid_elements'       => $this->get_invalid_elements(),

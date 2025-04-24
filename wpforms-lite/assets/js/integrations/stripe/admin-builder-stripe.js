@@ -53,6 +53,8 @@ var WPFormsStripe = window.WPFormsStripe || ( function( document, window, $ ) {
 				.on( 'wpformsSaved', app.requiredFieldsCheck )
 				.on( 'wpformsFieldUpdate', app.settingsDisplay )
 				.on( 'wpformsFieldUpdate', app.settingsConditions );
+
+			$( '#wpforms-panel-field-stripe-recurring-email' ).on( 'change', app.resetEmailAlertErrorClass );
 		},
 
 		/**
@@ -80,7 +82,7 @@ var WPFormsStripe = window.WPFormsStripe || ( function( document, window, $ ) {
 			} else {
 				$alert.show();
 				$content.find( '#wpforms-stripe-new-interface-alert, .wpforms-stripe-notice-info, .wpforms-panel-field, .wpforms-conditional-block-panel, h2' ).hide();
-				$content.find( '#wpforms-panel-field-stripe-enable' ).prop( 'checked', false );
+				$content.find( '#wpforms-panel-field-stripe-enable' ).prop( 'checked', false ).trigger( 'change' );
 			}
 		},
 
@@ -142,15 +144,25 @@ var WPFormsStripe = window.WPFormsStripe || ( function( document, window, $ ) {
 				return;
 			}
 
-			if ( $( '#wpforms-panel-field-stripe-recurring-email' ).val() ) {
+			const $emailField = $( '#wpforms-panel-field-stripe-recurring-email' );
+
+			if ( $emailField.val() ) {
 				return;
 			}
 
+			$emailField.addClass( 'wpforms-required-field-error' );
+
+			let alertMessage = wpforms_builder.stripe_recurring_email;
+
+			if ( ! $( '.wpforms-panel-content-section-stripe' ).is( ':visible' ) ) {
+				alertMessage += ' ' + wpforms_builder.stripe_recurring_settings;
+			}
+
 			$.alert( {
-				title: wpforms_builder.heads_up,
-				content: wpforms_builder.stripe_recurring_email,
+				title: wpforms_builder.stripe_recurring_heading,
+				content: alertMessage,
 				icon: 'fa fa-exclamation-circle',
-				type: 'orange',
+				type: 'red',
 				buttons: {
 					confirm: {
 						text: wpforms_builder.ok,
@@ -158,7 +170,36 @@ var WPFormsStripe = window.WPFormsStripe || ( function( document, window, $ ) {
 						keys: [ 'enter' ],
 					},
 				},
+				onOpen() {
+					$( '.wpforms-stripe-settings-redirect' ).on( 'click', app.settingsRedirect );
+				},
 			} );
+		},
+
+		/**
+		 * Redirect to the settings tab.
+		 *
+		 * @since 1.9.5
+		 */
+		settingsRedirect() {
+			// Open the Stripe settings tab.
+			$( '.wpforms-panel-payments-button' ).trigger( 'click' );
+			$( '.wpforms-panel-sidebar-section-stripe' ).trigger( 'click' );
+
+			// Scroll to the Stripe settings.
+			window.location.href = window.location.pathname + window.location.search + '#wpforms-panel-field-stripe-enable_recurring-wrap';
+
+			// Close the alert.
+			$( this ).closest( '.jconfirm-box' ).find( '.btn-confirm' ).trigger( 'click' );
+		},
+
+		/**
+		 * Maybe reset required email field error class.
+		 *
+		 * @since 1.9.5
+		 */
+		resetEmailAlertErrorClass() {
+			$( this ).toggleClass( 'wpforms-required-field-error', ! $( this ).val() );
 		},
 
 		/**

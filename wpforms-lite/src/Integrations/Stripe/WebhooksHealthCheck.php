@@ -233,7 +233,7 @@ class WebhooksHealthCheck {
 					],
 				]
 			),
-			esc_url( wpforms_utm_link( 'https://wpforms.com/docs/setting-up-stripe-webhooks/', 'Admin', 'Webhooks not active' ) )
+			esc_url( wpforms_utm_link( 'https://wpforms.com/docs/setting-up-stripe-webhooks/', 'Admin', 'Stripe Webhooks not active' ) )
 		);
 
 		Notice::error(

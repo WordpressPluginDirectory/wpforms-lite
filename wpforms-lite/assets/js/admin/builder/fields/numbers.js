@@ -11,7 +11,6 @@ WPForms.Admin = WPForms.Admin || {};
 WPForms.Admin.Builder = WPForms.Admin.Builder || {};
 
 WPForms.Admin.Builder.FieldNumbers = WPForms.Admin.Builder.FieldNumbers || ( function( document, window, $ ) { // eslint-disable-line
-
 	/**
 	 * Public functions and properties.
 	 *
@@ -29,6 +28,15 @@ WPForms.Admin.Builder.FieldNumbers = WPForms.Admin.Builder.FieldNumbers || ( fun
 		 * @type {jQuery}
 		 */
 		$builder: null,
+
+		/**
+		 * Track if a tag was clicked recently.
+		 *
+		 * @since 1.9.5
+		 *
+		 * @type {boolean}
+		 */
+		tagClicked: false,
 
 		/**
 		 * Initialize the application.
@@ -57,21 +65,41 @@ WPForms.Admin.Builder.FieldNumbers = WPForms.Admin.Builder.FieldNumbers || ( fun
 		numbersEvents() {
 			app.$builder.on(
 				'change',
-				'.wpforms-field-option-group .wpforms-numbers-min',
+				'.wpforms-field-option-number .wpforms-numbers-min',
 				app.onChangeNumbersMin
 			);
 
 			app.$builder.on(
 				'change',
-				'.wpforms-field-option-group .wpforms-numbers-max',
+				'.wpforms-field-option-number .wpforms-numbers-max',
 				app.onChangeNumbersMax
 			);
 
 			app.$builder.on(
-				'change',
-				'.wpforms-field-option-group .wpforms-field-option-row-default_value input',
-				app.onChangeNumbersDefaultValue
+				'input',
+				'.wpforms-field-option-number .wpforms-field-option-row-default_value .wpforms-smart-tags-widget-original',
+				_.debounce( app.onChangeNumbersDefaultValue, 500 )
 			);
+
+			app.$builder.on(
+				'click',
+				'.wpforms-smart-tags-widget .tag',
+				app.smartTagClickTracking
+			);
+		},
+
+		/**
+		 * Track clicks on the smart tag bricks.
+		 *
+		 * @since 1.9.5
+		 */
+		smartTagClickTracking() {
+			app.tagClicked = true;
+
+			// Reset the flag after a short delay.
+			setTimeout( () => {
+				app.tagClicked = false;
+			}, 200 );
 		},
 
 		/**
@@ -143,7 +171,7 @@ WPForms.Admin.Builder.FieldNumbers = WPForms.Admin.Builder.FieldNumbers || ( fun
 		 * @param {jQuery} $targetField jQuery object for the field to update.
 		 */
 		adjustValue( $sourceField, $targetField ) {
-			$targetField.val( app.parseFieldValue( $sourceField ) ).trigger( 'input' );
+			$targetField.val( app.parseFieldValue( $sourceField ) ).trigger( 'input' ).trigger( 'wpformsSmartTagsInputSync' );
 		},
 
 		/**
@@ -157,7 +185,7 @@ WPForms.Admin.Builder.FieldNumbers = WPForms.Admin.Builder.FieldNumbers || ( fun
 			const $minField = $( event.target ),
 				$container = $minField.closest( '.wpforms-field-option-group' ),
 				$maxField = $container.find( '.wpforms-numbers-max' ),
-				$defaultValueField = $container.find( '.wpforms-field-option-row-default_value input' );
+				$defaultValueField = $container.find( '.wpforms-field-option-row-default_value input.wpforms-smart-tags-widget-original' );
 
 			if ( app.isInvalidMinMaxRange( $minField, $maxField ) ) {
 				app.adjustValue( $maxField, $minField );
@@ -183,7 +211,7 @@ WPForms.Admin.Builder.FieldNumbers = WPForms.Admin.Builder.FieldNumbers || ( fun
 			const $maxField = $( event.target ),
 				$container = $maxField.closest( '.wpforms-field-option-group' ),
 				$minField = $container.find( '.wpforms-numbers-min' ),
-				$defaultValueField = $container.find( '.wpforms-field-option-row-default_value input' );
+				$defaultValueField = $container.find( '.wpforms-field-option-row-default_value input.wpforms-smart-tags-widget-original' );
 
 			if ( app.isInvalidMinMaxRange( $minField, $maxField ) ) {
 				app.adjustValue( $minField, $maxField );
@@ -259,10 +287,17 @@ WPForms.Admin.Builder.FieldNumbers = WPForms.Admin.Builder.FieldNumbers || ( fun
 		 * @param {Event} event The change event object.
 		 */
 		onChangeNumbersDefaultValue( event ) {
-			const $defaultValueField = $( event.target ),
-				$container = $defaultValueField.closest( '.wpforms-field-option-group' ),
-				$minField = $container.find( '.wpforms-numbers-min' ),
-				$maxField = $container.find( '.wpforms-numbers-max' );
+			if (
+				app.tagClicked || // Tag was recently clicked to prevent unnecessary updates.
+				event.handleObj?.type === 'focusout' // Event was triggered when editable tag was changed.
+			) {
+				return;
+			}
+
+			const $defaultValueField = $( event.target );
+			const $container = $defaultValueField.closest( '.wpforms-field-option-group' );
+			const $minField = $container.find( '.wpforms-numbers-min' );
+			const $maxField = $container.find( '.wpforms-numbers-max' );
 
 			app.normalizeFloatValue( $defaultValueField );
 

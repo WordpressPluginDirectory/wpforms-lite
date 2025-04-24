@@ -360,7 +360,7 @@ class Api {
 			return;
 		}
 
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			add_query_arg(
 				[
 					'api-version'   => 'v3',

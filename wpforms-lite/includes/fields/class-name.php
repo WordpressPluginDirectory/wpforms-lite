@@ -63,7 +63,7 @@ class WPForms_Field_Name extends WPForms_Field {
 		// Simple format.
 		if ( 'simple' === $format ) {
 			$properties['inputs']['primary']['attr']['placeholder'] = ! empty( $field['simple_placeholder'] ) ? $field['simple_placeholder'] : '';
-			$properties['inputs']['primary']['attr']['value']       = ! empty( $field['simple_default'] ) ? wpforms_process_smart_tags( $field['simple_default'], $form_data ) : '';
+			$properties['inputs']['primary']['attr']['value']       = ! empty( $field['simple_default'] ) ? wpforms_process_smart_tags( $field['simple_default'], $form_data, [], '', 'field-properties' ) : '';
 
 			return $properties;
 		}
@@ -85,7 +85,7 @@ class WPForms_Field_Name extends WPForms_Field {
 				'first'  => [
 					'attr'     => [
 						'name'        => "wpforms[fields][{$field_id}][first]",
-						'value'       => ! empty( $field['first_default'] ) ? wpforms_process_smart_tags( $field['first_default'], $form_data ) : '',
+						'value'       => ! empty( $field['first_default'] ) ? wpforms_process_smart_tags( $field['first_default'], $form_data, [], '', 'field-properties' ) : '',
 						'placeholder' => ! empty( $field['first_placeholder'] ) ? $field['first_placeholder'] : '',
 					],
 					'block'    => [
@@ -106,7 +106,7 @@ class WPForms_Field_Name extends WPForms_Field {
 				'middle' => [
 					'attr'     => [
 						'name'        => "wpforms[fields][{$field_id}][middle]",
-						'value'       => ! empty( $field['middle_default'] ) ? wpforms_process_smart_tags( $field['middle_default'], $form_data ) : '',
+						'value'       => ! empty( $field['middle_default'] ) ? wpforms_process_smart_tags( $field['middle_default'], $form_data, [], '', 'field-properties' ) : '',
 						'placeholder' => ! empty( $field['middle_placeholder'] ) ? $field['middle_placeholder'] : '',
 					],
 					'block'    => [
@@ -127,7 +127,7 @@ class WPForms_Field_Name extends WPForms_Field {
 				'last'   => [
 					'attr'     => [
 						'name'        => "wpforms[fields][{$field_id}][last]",
-						'value'       => ! empty( $field['last_default'] ) ? wpforms_process_smart_tags( $field['last_default'], $form_data ) : '',
+						'value'       => ! empty( $field['last_default'] ) ? wpforms_process_smart_tags( $field['last_default'], $form_data, [], '', 'field-properties' ) : '',
 						'placeholder' => ! empty( $field['last_placeholder'] ) ? $field['last_placeholder'] : '',
 					],
 					'block'    => [

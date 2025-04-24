@@ -464,12 +464,6 @@ class WPForms_Field_Select extends WPForms_Field {
 			}
 		}
 
-		// Fake placeholder for Modern style.
-		if ( $is_modern && empty( $field_placeholder ) ) {
-			$first_choices     = reset( $choices );
-			$field_placeholder = $first_choices['label']['text'];
-		}
-
 		// Preselect default if no other choices were marked as default.
 		printf(
 			'<select %s>',
@@ -477,7 +471,7 @@ class WPForms_Field_Select extends WPForms_Field {
 		);
 
 		// Optional placeholder.
-		if ( ! empty( $field_placeholder ) ) {
+		if ( ! empty( $field_placeholder ) || $is_modern ) {
 			printf(
 				'<option value="" class="placeholder" disabled %s>%s</option>',
 				selected( false, $has_default || $is_multiple, false ),

@@ -264,6 +264,10 @@ class Migration {
 
 		check_ajax_referer( Auth::NONCE, 'nonce' );
 
+		if ( ! wpforms_current_user_can() ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to perform this action.', 'wpforms-lite' ) );
+		}
+
 		$accounts = wpforms_get_providers_options();
 
 		// No accounts to migrate.

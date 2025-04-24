@@ -22,22 +22,7 @@ namespace WPForms\Vendor\Symfony\Component\CssSelector\Node;
  */
 interface NodeInterface
 {
-    /**
-     * Returns node's name.
-     *
-     * @return string
-     */
-    public function getNodeName();
-    /**
-     * Returns node's specificity.
-     *
-     * @return Specificity
-     */
-    public function getSpecificity();
-    /**
-     * Returns node's string representation.
-     *
-     * @return string
-     */
-    public function __toString();
+    public function getNodeName() : string;
+    public function getSpecificity() : Specificity;
+    public function __toString() : string;
 }

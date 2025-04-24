@@ -1,6 +1,12 @@
 <?php
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpUndefinedClassInspection */
+
 namespace WPForms\Admin\Tools\Importers;
+
+use WPCF7_ContactForm;
+use WPCF7_FormTag;
 
 /**
  * Contact Form 7 Importer class.
@@ -34,14 +40,19 @@ class ContactForm7 extends Base {
 			return $forms_final;
 		}
 
-		$forms = \WPCF7_ContactForm::find( [ 'posts_per_page' => - 1 ] );
+		// phpcs:ignore WordPress.WP.Capabilities.Unknown
+		if ( ! current_user_can( 'wpcf7_read_contact_forms' ) ) {
+			return $forms_final;
+		}
+
+		$forms = WPCF7_ContactForm::find( [ 'posts_per_page' => -1 ] );
 
 		if ( empty( $forms ) ) {
 			return $forms_final;
 		}
 
 		foreach ( $forms as $form ) {
-			if ( ! empty( $form ) && ( $form instanceof \WPCF7_ContactForm ) ) {
+			if ( ! empty( $form ) && ( $form instanceof WPCF7_ContactForm ) ) {
 				$forms_final[ $form->id() ] = $form->title();
 			}
 		}
@@ -56,18 +67,18 @@ class ContactForm7 extends Base {
 	 *
 	 * @param int $id Form ID.
 	 *
-	 * @return \WPCF7_ContactForm|bool
+	 * @return WPCF7_ContactForm|bool
 	 */
 	public function get_form( $id ) {
 
-		$form = \WPCF7_ContactForm::find(
+		$form = WPCF7_ContactForm::find(
 			[
 				'posts_per_page' => 1,
 				'p'              => $id,
 			]
 		);
 
-		if ( ! empty( $form[0] ) && ( $form[0] instanceof \WPCF7_ContactForm ) ) {
+		if ( ! empty( $form[0] ) && ( $form[0] instanceof WPCF7_ContactForm ) ) {
 			return $form[0];
 		}
 
@@ -79,7 +90,7 @@ class ContactForm7 extends Base {
 	 *
 	 * @since 1.6.6
 	 */
-	public function import_form() {
+	public function import_form() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.NestingLevel.MaxExceeded
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-admin', 'nonce' );
@@ -150,7 +161,7 @@ class ContactForm7 extends Base {
 			],
 		];
 
-		// If form does not contain fields, bail.
+		// If the form does not contain fields, bail.
 		if ( empty( $cf7_fields ) ) {
 			wp_send_json_success(
 				[
@@ -163,34 +174,33 @@ class ContactForm7 extends Base {
 
 		// Convert fields.
 		foreach ( $cf7_fields as $cf7_field ) {
-			if ( ! $cf7_field instanceof \WPCF7_FormTag ) {
+			if ( ! $cf7_field instanceof WPCF7_FormTag ) {
 				continue;
 			}
 
 			// Try to determine field label to use.
 			$label = $this->get_field_label( $cf7_properties['form'], $cf7_field->type, $cf7_field->name );
 
-			// Next, check if field is unsupported. If supported make note and
-			// then continue to the next field.
+			// Next, check if the field is unsupported.
+			// If supported, make note and then continue to the next field.
 			if ( in_array( $cf7_field->basetype, $fields_unsupported, true ) ) {
 				$unsupported[] = $label;
 
 				continue;
 			}
 
-			// Now check if this install is Lite. If it is Lite and it's a
-			// field type not included, make a note then continue to the next
-			// field.
-			if ( ! wpforms()->is_pro() && in_array( $cf7_field->basetype, $fields_pro_plain, true ) ) {
+			// Now check if this installation is Lite.
+			// If it is Lite, and it's a field type not included, make a note then continue to the next field.
+			if ( in_array( $cf7_field->basetype, $fields_pro_plain, true ) && ! wpforms()->is_pro() ) {
 				$upgrade_plain[] = $label;
 			}
-			if ( ! wpforms()->is_pro() && in_array( $cf7_field->basetype, $fields_pro_omit, true ) ) {
+			if ( in_array( $cf7_field->basetype, $fields_pro_omit, true ) && ! wpforms()->is_pro() ) {
 				$upgrade_omit[] = $label;
 
 				continue;
 			}
 
-			// Determine next field ID to assign.
+			// Determine the next field ID to assign.
 			if ( empty( $form['fields'] ) ) {
 				$field_id = 1;
 			} else {
@@ -525,7 +535,7 @@ class ContactForm7 extends Base {
 		foreach ( $matches[1] as $match ) {
 			$match = trim( str_replace( "\n", '', $match ) );
 
-			preg_match( '/\[(?:' . preg_quote( $type ) . ') ' . $name . '(?:[ ](.*?))?(?:[\r\n\t ](\/))?\]/', $match, $input_match );
+			preg_match( '/\[(?:' . preg_quote( $type, '/' ) . ') ' . $name . '(?:[ ](.*?))?(?:[\r\n\t ](\/))?\]/', $match, $input_match );
 
 			if ( ! empty( $input_match[0] ) ) {
 				return strip_shortcodes( sanitize_text_field( str_replace( $input_match[0], '', $match ) ) );
@@ -546,91 +556,81 @@ class ContactForm7 extends Base {
 	 *
 	 * @since 1.6.6
 	 *
-	 * @param string $string Text to look for Smart Tags in.
+	 * @param string $text   Text to look for Smart Tags in.
 	 * @param array  $fields List of fields to process Smart Tags in.
 	 *
 	 * @return string
 	 */
-	public function get_smarttags( $string, $fields ) {
+	public function get_smarttags( $text, $fields ) {
 
-		preg_match_all( '/\[(.+?)\]/', $string, $tags );
+		preg_match_all( '/\[(.+?)\]/', $text, $tags );
 
 		if ( empty( $tags[1] ) ) {
-			return $string;
+			return $text;
 		}
 
 		// Process form-tags and mail-tags.
 		foreach ( $tags[1] as $tag ) {
 			foreach ( $fields as $field ) {
 				if ( ! empty( $field['cf7_name'] ) && $field['cf7_name'] === $tag ) {
-					$string = str_replace( '[' . $tag . ']', '{field_id="' . $field['id'] . '"}', $string );
+					$text = str_replace( '[' . $tag . ']', '{field_id="' . $field['id'] . '"}', $text );
 				}
 			}
 		}
 
-		// Process CF7 tags that we can map with WPForms alternatives.
-		$string = str_replace(
-			[
-				'[_remote_ip]',
-				'[_date]',
-				'[_serial_number]',
-				'[_post_id]',
-				'[_post_title]',
-				'[_post_url]',
-				'[_url]',
-				'[_post_author]',
-				'[_post_author_email]',
-				'[_site_admin_email]',
-				'[_user_login]',
-				'[_user_email]',
-				'[_user_first_name]',
-				'[_user_last_name]',
-				'[_user_nickname]',
-				'[_user_display_name]',
-			],
-			[
-				'{user_ip}',
-				'{date format="m/d/Y"}',
-				'{entry_id}',
-				'{page_id}',
-				'{page_title}',
-				'{page_url}',
-				'{page_url}',
-				'{author_display}',
-				'{author_email}',
-				'{admin_email}',
-				'{user_display}',
-				'{user_email}',
-				'{user_first_name}',
-				'{user_last_name}',
-				'{user_display}',
-				'{user_full_name}',
-			],
-			$string
-		);
-
-		// Replace those CF7 that are used in Notifications by default and that we can't leave empty.
-		$string = str_replace(
+		/*
+		 * Process CF7 tags that we can map with WPForms alternatives.
+		 * Replace those CF7 that are used in Notifications by default and that we can't leave empty.
+		 * We are not replacing certain special CF7 tags: [_user_url], [_post_name], [_time], [_user_agent].
+		 * Without them some logic may be broken, and for user it will be harder to stop missing strings.
+		 * With them - they can see strange text and will be able to understand, based on the tag name,
+		 * which value is expected there.
+		 */
+		return str_replace(
 			[
 				'[_site_title]',
 				'[_site_description]',
 				'[_site_url]',
+				'[_user_display_name]',
+				'[_user_nickname]',
+				'[_user_last_name]',
+				'[_user_first_name]',
+				'[_user_email]',
+				'[_user_login]',
+				'[_site_admin_email]',
+				'[_post_author_email]',
+				'[_post_author]',
+				'[_url]',
+				'[_post_url]',
+				'[_post_title]',
+				'[_post_id]',
+				'[_serial_number]',
+				'[_date]',
+				'[_remote_ip]',
 			],
 			[
 				get_bloginfo( 'name' ),
 				get_bloginfo( 'description' ),
 				get_bloginfo( 'url' ),
+				'{user_full_name}',
+				'{user_display}',
+				'{user_last_name}',
+				'{user_first_name}',
+				'{user_email}',
+				'{user_display}',
+				'{admin_email}',
+				'{author_email}',
+				'{author_display}',
+				'{page_url}',
+				'{page_url}',
+				'{page_title}',
+				'{page_id}',
+				'{entry_id}',
+				'{date format="m/d/Y"}',
+				'{user_ip}',
 			],
-			$string
+			$text
 		);
-
-		/*
-		 * We are not replacing certain special CF7 tags: [_user_url], [_post_name], [_time], [_user_agent].
-		 * Without them some logic may be broken and for user it will be harder to stop missing strings.
-		 * With them - they can see strange text and will be able to understand, based on the tag name, which value is expected there.
-		 */
-
-		return $string;
 	}
 
 	/**
@@ -643,7 +643,7 @@ class ContactForm7 extends Base {
 	 *
 	 * @return string
 	 */
-	public function get_replyto( $headers, $fields ) {
+	public function get_replyto( $headers, $fields ) { // phpcs:ignore Generic.Metrics.NestingLevel.MaxExceeded
 
 		if ( strpos( $headers, 'Reply-To:' ) !== false ) {
 			preg_match( '/Reply-To: \[(.+?)\]/', $headers, $tag );

@@ -60,6 +60,7 @@ class WPForms_Template_Blank extends WPForms_Template {
 				'ajax_submit'                 => '1',
 				'confirmation_message_scroll' => '1',
 				'submit_text_processing'      => esc_html__( 'Sending...', 'wpforms-lite' ),
+				'store_spam_entries'          => '1',
 				'anti_spam'                   => [
 					'time_limit' => [
 						'enable'   => '1',

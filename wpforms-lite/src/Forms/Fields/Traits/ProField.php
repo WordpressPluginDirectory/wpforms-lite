@@ -81,12 +81,16 @@ trait ProField {
 		// Add hooks.
 		add_filter( 'admin_init', [ $this, 'admin_init_pro_field' ] );
 		add_filter( 'wpforms_builder_field_option_class', [ $this, 'filter_field_option_class' ], 10, 2 );
-		add_filter( "wpforms_admin_builder_ajax_save_form_field_{$this->type}", [ $this, 'filter_save_form_field_data' ], 10, 3 );
+		add_filter( "wpforms_admin_builder_ajax_save_form_field_$this->type", [ $this, 'filter_save_form_field_data' ], 10, 3 );
 		add_filter( 'wpforms_field_data', [ $this, 'filter_frontend_field_data' ], PHP_INT_MAX, 2 );
 		add_filter( 'wpforms_helpers_form_pro_fields', [ $this, 'filter_form_pro_fields' ], PHP_INT_MAX, 2 );
 		add_filter( 'wpforms_helpers_form_addons_edu_data', [ $this, 'filter_form_addons_edu_data' ], PHP_INT_MAX, 2 );
 		add_filter( 'wpforms_field_preview_display_duplicate_button', [ $this, 'filter_field_preview_display_duplicate_button' ], 10, 2 );
 		add_filter( 'wpforms_field_preview_class', [ $this, 'filter_field_preview_class' ], 10, 2 );
+		add_filter( 'wpforms_entry_save_data', [ $this, 'filter_entry_save_data' ], 10, 3 );
+		add_filter( 'wpforms_pro_admin_entries_table_facades_columns_get_field_columns_forbidden_fields', [ $this, 'filter_field_columns_forbidden_fields' ], 10, 2 );
+		add_filter( 'wpforms_pro_admin_entries_export_configuration', [ $this, 'filter_entries_export_configuration' ], 10, 1 );
+		add_filter( "wpforms_pro_admin_entries_edit_is_field_displayable_$this->type", [ $this, 'filter_is_field_displayable' ], 10, 3 );
 	}
 
 	/**
@@ -108,6 +112,7 @@ trait ProField {
 	 * @param array        $field     Field data.
 	 *
 	 * @return string
+	 * @noinspection PhpMissingParamTypeInspection
 	 */
 	public function filter_field_option_class( $css_class, $field ): string {
 
@@ -249,12 +254,12 @@ trait ProField {
 
 		$action     = $this->addon_edu_data['action'] ?? 'upgrade';
 		$addon_name = $this->addon_edu_data['title'] ?? '';
-		$name       = $action !== 'upgrade' ? $addon_name : $this->name;
+		$name       = $this->name;
 
 		$titles = [
 			'upgrade'      => sprintf( /* translators: %1$s - Field name. */
 				esc_html__( '%1$s is a Pro Feature', 'wpforms-lite' ),
-				$this->name
+				$name
 			),
 			'incompatible' => esc_html__( 'Incompatible Addon', 'wpforms-lite' ),
 		];
@@ -262,7 +267,7 @@ trait ProField {
 		$contents = [
 			'upgrade'      => sprintf( /* translators: %1$s - Field name. */
 				esc_html__( 'Upgrade to gain access to the %1$s field and dozens of other powerful features to help you build smarter forms and grow your business.', 'wpforms-lite' ),
-				$this->name
+				$name
 			),
 			'install'      => sprintf( /* translators: %1$s - Addon name. */
 				esc_html__( 'You have access to the %1$s, but it\'s not currently installed.', 'wpforms-lite' ),
@@ -285,9 +290,19 @@ trait ProField {
 			'incompatible' => esc_html__( 'Update Addon', 'wpforms-lite' ),
 		];
 
+		// If it's not an upgrade action, use the addon data.
+		if ( $action !== 'upgrade' ) {
+			$name     = $addon_name;
+			$utm_name = $this->addon_edu_data['utm_content'];
+		} else {
+			$edu_fields = wpforms()->obj( 'education_fields' );
+			$edu_field  = $edu_fields ? $edu_fields->get_field( $this->type ) : null;
+			$utm_name   = $edu_field['name_en'] ?? $this->type; // Fallback to the field type.
+		}
+
 		$button_utm = sprintf(
 			'AI Form - %1$s notice',
-			esc_html( $name )
+			esc_html( $utm_name )
 		);
 
 		return [
@@ -319,6 +334,9 @@ trait ProField {
 	 * @param array  $field   Field data.
 	 * @param array  $args    Additional arguments.
 	 * @param bool   $do_echo Echo or return.
+	 *
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
+	 * @noinspection PhpMultipleClassDeclarationsInspection
 	 */
 	public function field_preview_option( $option, $field, $args = [], $do_echo = true ) {
 
@@ -415,6 +433,7 @@ trait ProField {
 	 * @param array      $field   Field settings.
 	 *
 	 * @return bool
+	 * @noinspection PhpMissingParamTypeInspection
 	 */
 	public function filter_field_preview_display_duplicate_button( $display, $field ): bool {
 
@@ -434,6 +453,7 @@ trait ProField {
 	 * @param array        $field     Field settings.
 	 *
 	 * @return string
+	 * @noinspection PhpMissingParamTypeInspection
 	 */
 	public function filter_field_preview_class( $css_class, $field ): string {
 
@@ -444,5 +464,156 @@ trait ProField {
 		}
 
 		return trim( $css_class . ' wpforms-field-is-pro' );
+	}
+
+	/**
+	 * Filter entry save data.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param array|mixed $fields    Entry fields data.
+	 * @param array       $entry     Entry data.
+	 * @param array       $form_data Form data.
+	 *
+	 * @return array
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function filter_entry_save_data( $fields, array $entry, array $form_data ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		$fields = (array) $fields;
+
+		// If it's not a disabled Pro field, return the fields as is.
+		if ( empty( $this->is_disabled_field ) ) {
+			return $fields;
+		}
+
+		// Remove disabled Pro fields from the entry fields.
+		foreach ( $fields as $field_id => $field ) {
+			if ( isset( $field['type'] ) && $field['type'] === $this->type ) {
+				unset( $fields[ $field_id ] );
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Filter forbidden columns on the Form Entries page.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param array|mixed $forbidden_fields Entry fields data.
+	 * @param int|string  $form_id          Form ID.
+	 *
+	 * @return array
+	 * @noinspection PhpUnusedParameterInspection
+	 * @noinspection PhpUnusedLocalVariableInspection
+	 */
+	public function filter_field_columns_forbidden_fields( $forbidden_fields, $form_id ): array {
+
+		$forbidden_fields = (array) $forbidden_fields;
+
+		if ( empty( $this->is_disabled_field ) ) {
+			return $forbidden_fields;
+		}
+
+		$form_data = $this->get_form_data( (int) $form_id );
+
+		if ( ! $form_data ) {
+			return $forbidden_fields;
+		}
+
+		$fields = $form_data['fields'] ?? [];
+
+		foreach ( $fields as $field_id => $field ) {
+			if ( isset( $field['type'] ) && $field['type'] === $this->type ) {
+				$forbidden_fields[] = $field['type'];
+			}
+		}
+
+		return $forbidden_fields;
+	}
+
+	/**
+	 * Get form data by form ID and cache it.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param int $form_id Form ID.
+	 *
+	 * @return array
+	 */
+	private function get_form_data( int $form_id ): array {
+
+		$form_obj = wpforms()->obj( 'form' );
+
+		if ( ! $form_obj ) {
+			return [];
+		}
+
+		// Cache the form data into static variable.
+		static $cached_form_data = [];
+
+		if ( isset( $cached_form_data[ $form_id ] ) ) {
+			return $cached_form_data[ $form_id ];
+		}
+
+		$cached_form_data[ $form_id ] = (array) $form_obj->get( $form_id, [ 'content_only' => true ] );
+
+		return $cached_form_data[ $form_id ];
+	}
+
+	/**
+	 * Filter entries export configuration.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param array $config Export configuration.
+	 *
+	 * @return array
+	 * @noinspection PhpMissingParamTypeInspection
+	 */
+	public function filter_entries_export_configuration( $config ): array {
+
+		$config = (array) $config;
+
+		// If it's not a disabled Pro field, return the config as is.
+		if ( empty( $this->is_disabled_field ) ) {
+			return $config;
+		}
+
+		if ( empty( $this->type ) ) {
+			return $config;
+		}
+
+		$config['disallowed_fields'] = ! empty( $config['disallowed_fields'] ) ? (array) $config['disallowed_fields'] : [];
+
+		// Add the disabled Pro field type to `disallowed_fields` if not already there.
+		if ( ! in_array( $this->type, $config['disallowed_fields'], true ) ) {
+			$config['disallowed_fields'][] = $this->type;
+		}
+
+		return $config;
+	}
+
+	/**
+	 * Filter if field is displayable in the Entry Edit page.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param bool|mixed $displayable Whether the field is displayable.
+	 * @param array      $field       Field data.
+	 * @param array      $form_data   Form data.
+	 *
+	 * @return bool
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function filter_is_field_displayable( $displayable, array $field, array $form_data ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		if ( ! $this->is_disabled_field ) {
+			return (bool) $displayable;
+		}
+
+		return false;
 	}
 }

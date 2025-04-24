@@ -52,6 +52,7 @@ class Loader {
 			'WooCommerce\Notifications',
 			'AI\AI',
 			'ConstantContact\V3\ConstantContact',
+			'Square\Square',
 		];
 
 		/**

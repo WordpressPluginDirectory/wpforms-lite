@@ -1,4 +1,4 @@
-/* global wpforms_ai_chat_element */
+/* global wpforms_ai_chat_element, wpFormsAIDock */
 
 // noinspection ES6ConvertVarToLetConst
 /**
@@ -109,6 +109,11 @@ var WPFormsAIModal = window.WPFormsAIModal || ( function( document, window, $ ) 
 			const fieldId = $button.data( 'field-id' ),
 				$modal = $( `.jconfirm-wpforms-ai-modal-choices-${ fieldId }` );
 
+			// Close any other modals.
+			$( `.jconfirm-wpforms-ai-modal:not(.jconfirm-wpforms-ai-modal-choices-${ fieldId })` )
+				.addClass( 'wpforms-hidden' )
+				.fadeOut();
+
 			if ( $modal.length ) {
 				$modal.removeClass( 'wpforms-hidden' ).fadeIn();
 				return;
@@ -129,6 +134,9 @@ var WPFormsAIModal = window.WPFormsAIModal || ( function( document, window, $ ) 
 				// Unbind the click event from the close icon and use our own instead.
 				this.$closeIcon.off( 'click' );
 				this.$closeIcon.on( 'click', hideChoices );
+			};
+			args.onOpenBefore = function() {
+				wpFormsAIDock.init( fieldId );
 			};
 
 			app.initModal( args );

@@ -1,9 +1,14 @@
 <?php
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpUndefinedClassInspection */
+
 namespace WPForms\Admin\Tools\Importers;
 
+use PirateForms_Util;
+use WP_Ajax_Upgrader_Skin;
+use WP_Query;
 use WPForms\Helpers\PluginSilentUpgrader;
-use WPForms\Helpers\PluginSilentUpgraderSkin;
 
 /**
  * Pirate Forms Importer class.
@@ -19,7 +24,7 @@ class PirateForms extends Base {
 	 *
 	 * @var string
 	 */
-	const URL_SMTP_ZIP = 'https://downloads.wordpress.org/plugin/wp-mail-smtp.zip';
+	private const URL_SMTP_ZIP = 'https://downloads.wordpress.org/plugin/wp-mail-smtp.zip';
 
 	/**
 	 * WP Mail SMTP plugin basename.
@@ -28,7 +33,7 @@ class PirateForms extends Base {
 	 *
 	 * @var string
 	 */
-	const SLUG_SMTP_PLUGIN = 'wp-mail-smtp/wp_mail_smtp.php';
+	private const SLUG_SMTP_PLUGIN = 'wp-mail-smtp/wp_mail_smtp.php';
 
 	/**
 	 * Default PirateForms smart tags.
@@ -55,13 +60,17 @@ class PirateForms extends Base {
 
 	/**
 	 * Get ALL THE FORMS.
-	 * We need only ID's and names here.
+	 * We need only IDs and names here.
 	 *
 	 * @since 1.6.6
 	 *
 	 * @return array
 	 */
 	public function get_forms() {
+
+		if ( ! current_user_can( 'edit_published_posts' ) ) {
+			return [];
+		}
 
 		// Union those arrays, as array_merge() does keys reindexing.
 		$forms = $this->get_default_forms() + $this->get_pro_forms();
@@ -81,9 +90,9 @@ class PirateForms extends Base {
 	 */
 	protected function get_default_forms() {
 
-		$form = \PirateForms_Util::get_form_options();
+		$form = PirateForms_Util::get_form_options();
 
-		// Just make sure that it's there and not broken.
+		// Make sure that it's there and not broken.
 		if ( empty( $form ) ) {
 			return [];
 		}
@@ -101,7 +110,8 @@ class PirateForms extends Base {
 	protected function get_pro_forms() {
 
 		$forms = [];
-		$query = new \WP_Query(
+
+		$query = new WP_Query(
 			[
 				'post_type'              => 'pf_form',
 				'post_status'            => 'publish',
@@ -132,7 +142,7 @@ class PirateForms extends Base {
 	 */
 	public function get_form( $id ) {
 
-		return \PirateForms_Util::get_form_options( (int) $id );
+		return PirateForms_Util::get_form_options( (int) $id );
 	}
 
 	/**
@@ -140,7 +150,7 @@ class PirateForms extends Base {
 	 *
 	 * @since 1.6.6
 	 */
-	public function import_form() {
+	public function import_form() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.NestingLevel.MaxExceeded
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-admin', 'nonce' );
@@ -153,7 +163,7 @@ class PirateForms extends Base {
 		$analyze           = isset( $_POST['analyze'] );
 		$pf_form_id        = isset( $_POST['form_id'] ) ? (int) $_POST['form_id'] : 0;
 		$pf_form           = $this->get_form( $pf_form_id );
-		$pf_fields_custom  = \PirateForms_Util::get_post_meta( $pf_form_id, 'custom' );
+		$pf_fields_custom  = PirateForms_Util::get_post_meta( $pf_form_id, 'custom' );
 		$pf_fields_default = [
 			'name',
 			'email',
@@ -181,6 +191,8 @@ class PirateForms extends Base {
 		} else {
 			$pf_form_name = get_post_field( 'post_title', $pf_form_id );
 		}
+
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.PHP.ValidateHooks.InvalidHookName
 		$pf_form_name = wpforms_decode_string( apply_filters( 'the_title', $pf_form_name, $pf_form_id ) );
 
 		// Prepare all DEFAULT fields.
@@ -198,18 +210,18 @@ class PirateForms extends Base {
 			$required = $pf_form[ 'pirateformsopt_' . $field . '_field' ] === 'req' ? '1' : '';
 			$label    = ! empty( $pf_form[ 'pirateformsopt_label_' . $field ] ) ? $pf_form[ 'pirateformsopt_label_' . $field ] : ucwords( $field );
 
-			// If it is Lite and it's a field type not included, make a note then continue to the next field.
-			if ( ! wpforms()->is_pro() && in_array( $field, $fields_pro_plain, true ) ) {
+			// If it is Lite, and it's a field type not included, make a note then continue to the next field.
+			if ( in_array( $field, $fields_pro_plain, true ) && ! wpforms()->is_pro() ) {
 				$upgrade_plain[] = $label;
 			}
 
-			if ( ! wpforms()->is_pro() && in_array( $field, $fields_pro_omit, true ) ) {
+			if ( in_array( $field, $fields_pro_omit, true ) && ! wpforms()->is_pro() ) {
 				$upgrade_omit[] = $label;
 
 				continue;
 			}
 
-			// Determine next field ID to assign.
+			// Determine the next field ID to assign.
 			if ( empty( $fields ) ) {
 				$field_id = 1;
 			} else {
@@ -271,7 +283,7 @@ class PirateForms extends Base {
 					];
 
 					// If PF attachments were saved into FS, we need to save them in WP Media.
-					// That will allow admins to easily delete if needed.
+					// That will allow admins to easily delete it if needed.
 					if (
 						! empty( $pf_form['pirateformsopt_save_attachment'] ) &&
 						$pf_form['pirateformsopt_save_attachment'] === 'yes'
@@ -283,7 +295,7 @@ class PirateForms extends Base {
 		}
 
 		// Prepare all CUSTOM fields.
-		foreach ( $pf_fields_custom as $id => $field ) {
+		foreach ( $pf_fields_custom as $field ) {
 			// Ignore fields that are not displayed.
 			if ( empty( $field['display'] ) ) {
 				continue;
@@ -292,17 +304,17 @@ class PirateForms extends Base {
 			$required = $field['display'] === 'req' ? '1' : ''; // Possible values in PF: 'yes', 'req'.
 			$label    = sanitize_text_field( $field['label'] );
 
-			// If it is Lite and it's a field type not included, make a note then continue to the next field.
-			if ( ! wpforms()->is_pro() && in_array( $field['type'], $fields_pro_plain, true ) ) {
+			// If it is Lite, and it's a field type not included, make a note then continue to the next field.
+			if ( in_array( $field['type'], $fields_pro_plain, true ) && ! wpforms()->is_pro() ) {
 				$upgrade_plain[] = $label;
 			}
-			if ( ! wpforms()->is_pro() && in_array( $field['type'], $fields_pro_omit, true ) ) {
+			if ( in_array( $field['type'], $fields_pro_omit, true ) && ! wpforms()->is_pro() ) {
 				$upgrade_omit[] = $label;
 
 				continue;
 			}
 
-			// Determine next field ID to assign.
+			// Determine the next field ID to assign.
 			if ( empty( $fields ) ) {
 				$field_id = 1;
 			} else {
@@ -370,7 +382,7 @@ class PirateForms extends Base {
 							'image' => '',
 						];
 
-						$i ++;
+						++$i;
 					}
 
 					$fields[ $field_id ] = [
@@ -402,7 +414,7 @@ class PirateForms extends Base {
 					];
 
 					// If PF attachments were saved into FS, we need to save them in WP Media.
-					// That will allow admins to easily delete if needed.
+					// That will allow admins to easily delete it if needed.
 					if (
 						! empty( $pf_form['pirateformsopt_save_attachment'] ) &&
 						$pf_form['pirateformsopt_save_attachment'] === 'yes'
@@ -524,12 +536,12 @@ class PirateForms extends Base {
 	 *
 	 * @since 1.6.6
 	 *
-	 * @param string $string String to process the smart tag in.
+	 * @param string $text   String to process the smart tag in.
 	 * @param array  $fields List of fields for the form.
 	 *
 	 * @return string
 	 */
-	public function get_smarttags( $string, $fields ) {
+	public function get_smarttags( $text, $fields ) { // phpcs:ignore Generic.Metrics.NestingLevel.MaxExceeded
 
 		foreach ( self::$tags as $tag ) {
 			$wpf_tag = '';
@@ -544,10 +556,10 @@ class PirateForms extends Base {
 				}
 			}
 
-			$string = str_replace( $tag, $wpf_tag, $string );
+			$text = str_replace( $tag, $wpf_tag, $text );
 		}
 
-		return $string;
+		return $text;
 	}
 
 	/**
@@ -558,7 +570,7 @@ class PirateForms extends Base {
 	 * @param int   $pf_form_id PirateForms form ID.
 	 * @param array $form       WPForms form array.
 	 */
-	protected function import_smtp( $pf_form_id, $form ) {
+	protected function import_smtp( $pf_form_id, $form ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// At this point we import only default form SMTP settings.
 		if ( $pf_form_id !== 0 ) {
@@ -572,7 +584,7 @@ class PirateForms extends Base {
 			return;
 		}
 
-		// If user has WP Mail SMTP already activated - do nothing as it's most likely already configured.
+		// If a user has WP Mail SMTP already activated - do nothing as it's most likely already configured.
 		if ( is_plugin_active( self::SLUG_SMTP_PLUGIN ) ) {
 			return;
 		}
@@ -613,13 +625,13 @@ class PirateForms extends Base {
 	 *
 	 * @return bool
 	 */
-	protected function install_activate_smtp() {
+	protected function install_activate_smtp() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+
 		/*
 		 * Check installation.
 		 * If installed but not activated - bail.
 		 * We don't want to break current site email deliverability.
 		 */
-
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
@@ -641,7 +653,7 @@ class PirateForms extends Base {
 			admin_url( 'admin.php' )
 		);
 
-		$creds = request_filesystem_credentials( esc_url_raw( $url ), '', false, false, null );
+		$creds = request_filesystem_credentials( esc_url_raw( $url ), '', false, false );
 
 		// Check for file system permissions.
 		if ( $creds === false ) {
@@ -656,7 +668,7 @@ class PirateForms extends Base {
 		remove_action( 'upgrader_process_complete', [ 'Language_Pack_Upgrader', 'async_upgrade' ], 20 );
 
 		// Create the plugin upgrader with our custom skin.
-		$installer = new PluginSilentUpgrader( new PluginSilentUpgraderSkin() );
+		$installer = new PluginSilentUpgrader( new WP_Ajax_Upgrader_Skin() );
 
 		// Error check.
 		if ( ! method_exists( $installer, 'install' ) ) {

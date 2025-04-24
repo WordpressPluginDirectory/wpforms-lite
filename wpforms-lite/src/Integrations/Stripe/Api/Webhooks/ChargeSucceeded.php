@@ -55,7 +55,7 @@ class ChargeSucceeded extends Base {
 
 		$currency  = strtoupper( $this->data->object->currency );
 		$db_amount = wpforms_format_amount( $this->db_payment->total_amount );
-		$amount    = wpforms_format_amount( $this->data->object->amount_captured / Helpers::get_decimals_amount( $currency ) );
+		$amount    = wpforms_format_amount( $this->data->object->amount_captured / wpforms_get_currency_multiplier( $currency ) );
 
 		if ( $amount !== $db_amount || ! $this->data->object->paid ) {
 			return false;

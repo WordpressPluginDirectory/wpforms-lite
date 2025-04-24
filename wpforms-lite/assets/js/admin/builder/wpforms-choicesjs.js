@@ -81,7 +81,13 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 
 			choicesJS.passedElement.element.addEventListener( 'change', function() {
 				const select = $( this ),
-					fieldId = select.data( 'field-id' ),
+					isMultiple = select.prop( 'multiple' );
+
+				if ( ! isMultiple ) {
+					return;
+				}
+
+				const fieldId = select.data( 'field-id' ),
 					fieldName = select.data( 'field-name' ),
 					value = choicesJS.getValue();
 

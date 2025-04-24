@@ -42,9 +42,19 @@ class Enqueues {
 	 *
 	 * @return array
 	 */
-	public function javascript_strings( $strings, $form = [] ) {
+	public function javascript_strings( $strings, $form = [] ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
-		$strings['stripe_recurring_email'] = esc_html__( 'When recurring subscription payments are enabled, the Customer Email is required. Please go to the Stripe payment settings and select a Customer Email.', 'wpforms-lite' );
+		$strings['stripe_recurring_heading']  = esc_html__( 'Missing Required Fields', 'wpforms-lite' );
+		$strings['stripe_recurring_email']    = esc_html__( 'When recurring subscription payments are enabled, the Customer Email is required.', 'wpforms-lite' );
+		$strings['stripe_recurring_settings'] = wp_kses(
+			__( 'Please go to the <a href="#" class="wpforms-stripe-settings-redirect">Stripe payment settings</a> and select a Customer Email.', 'wpforms-lite' ),
+			[
+				'a' => [
+					'href'  => [],
+					'class' => [],
+				],
+			]
+		);
 
 		return $strings;
 	}
@@ -56,7 +66,7 @@ class Enqueues {
 	 *
 	 * @param string|null $view Current view.
 	 */
-	public function enqueues( $view = null ) {
+	public function enqueues( $view = null ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 
 		$min = wpforms_get_min_suffix();
 
@@ -80,17 +90,16 @@ class Enqueues {
 		 * Allow to filter builder stripe script data.
 		 *
 		 * @since 1.8.2
+		 * @since 1.9.5 Added the `field_slug` key.
 		 *
 		 * @param array $data Script data.
 		 */
-		$script_data = apply_filters(
+		$script_data = (array) apply_filters(
 			'wpforms_integrations_stripe_admin_builder_enqueues_data',
 			[
-				'field_slugs'        => [ 'stripe-credit-card' ],
-				'is_pro'             => Helpers::is_pro(),
-				'plan_placeholder'   => esc_html__( 'Plan Name', 'wpforms-lite' ),
-				'disabled_recurring' => esc_html__( 'You can only use one payment type at a time. If you\'d like to enable Recurring Payments, please disable One-Time Payments.', 'wpforms-lite' ),
-				'disabled_one_time'  => esc_html__( 'You can only use one payment type at a time. If you\'d like to enable One-Time Payments, please disable Recurring Payments.', 'wpforms-lite' ),
+				'field_slug'  => Helpers::get_field_slug(),
+				'field_slugs' => [ 'stripe-credit-card' ],
+				'is_pro'      => Helpers::is_pro(),
 			]
 		);
 

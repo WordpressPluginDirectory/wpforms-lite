@@ -26,42 +26,30 @@ class CombinationExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    public function getCombinationTranslators()
+    public function getCombinationTranslators() : array
     {
         return [' ' => [$this, 'translateDescendant'], '>' => [$this, 'translateChild'], '+' => [$this, 'translateDirectAdjacent'], '~' => [$this, 'translateIndirectAdjacent']];
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateDescendant(XPathExpr $xpath, XPathExpr $combinedXpath)
+    public function translateDescendant(XPathExpr $xpath, XPathExpr $combinedXpath) : XPathExpr
     {
         return $xpath->join('/descendant-or-self::*/', $combinedXpath);
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateChild(XPathExpr $xpath, XPathExpr $combinedXpath)
+    public function translateChild(XPathExpr $xpath, XPathExpr $combinedXpath) : XPathExpr
     {
         return $xpath->join('/', $combinedXpath);
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateDirectAdjacent(XPathExpr $xpath, XPathExpr $combinedXpath)
+    public function translateDirectAdjacent(XPathExpr $xpath, XPathExpr $combinedXpath) : XPathExpr
     {
         return $xpath->join('/following-sibling::', $combinedXpath)->addNameTest()->addCondition('position() = 1');
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateIndirectAdjacent(XPathExpr $xpath, XPathExpr $combinedXpath)
+    public function translateIndirectAdjacent(XPathExpr $xpath, XPathExpr $combinedXpath) : XPathExpr
     {
         return $xpath->join('/following-sibling::', $combinedXpath);
     }
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName() : string
     {
         return 'combination';
     }

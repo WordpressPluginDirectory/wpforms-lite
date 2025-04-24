@@ -182,12 +182,13 @@ class Mailer {
 	 * @since 1.5.4
 	 * @since 1.6.0 Deprecated param: $linebreaks. This is handled by wpforms_decode_string().
 	 *
-	 * @param string $input String that may contain tags.
+	 * @param string $input   String that may contain tags.
+	 * @param string $context Context of the string.
 	 *
 	 * @return string
 	 * @uses  wpforms_decode_string()
 	 */
-	public function sanitize( $input = '' ) {
+	public function sanitize( $input = '', $context = '' ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		return wpforms_decode_string( $input );
 	}
@@ -216,7 +217,7 @@ class Mailer {
 	 */
 	public function get_from_address() {
 
-		$this->from_address = $this->from_address ? $this->sanitize( $this->from_address ) : get_option( 'admin_email' );
+		$this->from_address = $this->from_address ? $this->sanitize( $this->from_address, 'notification-from' ) : get_option( 'admin_email' );
 
 		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
 		return apply_filters( 'wpforms_emails_mailer_get_from_address', $this->from_address, $this );
@@ -235,7 +236,7 @@ class Mailer {
 			$this->reply_to = $this->from_address;
 		}
 
-		$this->reply_to = $this->sanitize( $this->reply_to );
+		$this->reply_to = $this->sanitize( $this->reply_to, 'notification-reply-to' );
 
 		if ( empty( $this->reply_to ) || ! is_email( $this->reply_to ) ) {
 			$this->reply_to = get_option( 'admin_email' );
@@ -363,8 +364,10 @@ class Mailer {
 			$this->headers .= "Reply-To: {$this->get_reply_to_address()}\r\n";
 		}
 
-		if ( $this->get_cc_address() ) {
-			$this->headers .= "Cc: {$this->get_cc_address()}\r\n";
+		$cc = $this->get_cc_address();
+
+		if ( $cc ) {
+			$this->headers .= "Cc: {$cc}\r\n";
 		}
 
 		$this->headers .= "Content-Type: {$this->get_content_type()}; charset=utf-8\r\n";

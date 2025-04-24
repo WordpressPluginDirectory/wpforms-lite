@@ -524,7 +524,7 @@ function wpforms_process_smart_tags( $content, $form_data, $fields = [], $entry_
 	 *
 	 * @return string
 	 */
-	return apply_filters( 'wpforms_process_smart_tags',  $content, $form_data, $fields, $entry_id, $context );
+	return apply_filters( 'wpforms_process_smart_tags', $content, $form_data, $fields, $entry_id, $context );
 }
 
 /**

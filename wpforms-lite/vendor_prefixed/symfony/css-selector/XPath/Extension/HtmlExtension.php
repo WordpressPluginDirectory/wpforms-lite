@@ -33,52 +33,38 @@ class HtmlExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    public function getPseudoClassTranslators()
+    public function getPseudoClassTranslators() : array
     {
         return ['checked' => [$this, 'translateChecked'], 'link' => [$this, 'translateLink'], 'disabled' => [$this, 'translateDisabled'], 'enabled' => [$this, 'translateEnabled'], 'selected' => [$this, 'translateSelected'], 'invalid' => [$this, 'translateInvalid'], 'hover' => [$this, 'translateHover'], 'visited' => [$this, 'translateVisited']];
     }
     /**
      * {@inheritdoc}
      */
-    public function getFunctionTranslators()
+    public function getFunctionTranslators() : array
     {
         return ['lang' => [$this, 'translateLang']];
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateChecked(XPathExpr $xpath)
+    public function translateChecked(XPathExpr $xpath) : XPathExpr
     {
         return $xpath->addCondition('(@checked ' . "and (name(.) = 'input' or name(.) = 'command')" . "and (@type = 'checkbox' or @type = 'radio'))");
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateLink(XPathExpr $xpath)
+    public function translateLink(XPathExpr $xpath) : XPathExpr
     {
         return $xpath->addCondition("@href and (name(.) = 'a' or name(.) = 'link' or name(.) = 'area')");
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateDisabled(XPathExpr $xpath)
+    public function translateDisabled(XPathExpr $xpath) : XPathExpr
     {
         return $xpath->addCondition('(' . '@disabled and' . '(' . "(name(.) = 'input' and @type != 'hidden')" . " or name(.) = 'button'" . " or name(.) = 'select'" . " or name(.) = 'textarea'" . " or name(.) = 'command'" . " or name(.) = 'fieldset'" . " or name(.) = 'optgroup'" . " or name(.) = 'option'" . ')' . ') or (' . "(name(.) = 'input' and @type != 'hidden')" . " or name(.) = 'button'" . " or name(.) = 'select'" . " or name(.) = 'textarea'" . ')' . ' and ancestor::fieldset[@disabled]');
         // todo: in the second half, add "and is not a descendant of that fieldset element's first legend element child, if any."
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateEnabled(XPathExpr $xpath)
+    public function translateEnabled(XPathExpr $xpath) : XPathExpr
     {
         return $xpath->addCondition('(' . '@href and (' . "name(.) = 'a'" . " or name(.) = 'link'" . " or name(.) = 'area'" . ')' . ') or (' . '(' . "name(.) = 'command'" . " or name(.) = 'fieldset'" . " or name(.) = 'optgroup'" . ')' . ' and not(@disabled)' . ') or (' . '(' . "(name(.) = 'input' and @type != 'hidden')" . " or name(.) = 'button'" . " or name(.) = 'select'" . " or name(.) = 'textarea'" . " or name(.) = 'keygen'" . ')' . ' and not (@disabled or ancestor::fieldset[@disabled])' . ') or (' . "name(.) = 'option' and not(" . '@disabled or ancestor::optgroup[@disabled]' . ')' . ')');
     }
     /**
-     * @return XPathExpr
-     *
      * @throws ExpressionErrorException
      */
-    public function translateLang(XPathExpr $xpath, FunctionNode $function)
+    public function translateLang(XPathExpr $xpath, FunctionNode $function) : XPathExpr
     {
         $arguments = $function->getArguments();
         foreach ($arguments as $token) {
@@ -88,38 +74,26 @@ class HtmlExtension extends AbstractExtension
         }
         return $xpath->addCondition(\sprintf('ancestor-or-self::*[@lang][1][starts-with(concat(' . "translate(@%s, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '-')" . ', %s)]', 'lang', Translator::getXpathLiteral(\strtolower($arguments[0]->getValue()) . '-')));
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateSelected(XPathExpr $xpath)
+    public function translateSelected(XPathExpr $xpath) : XPathExpr
     {
         return $xpath->addCondition("(@selected and name(.) = 'option')");
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateInvalid(XPathExpr $xpath)
+    public function translateInvalid(XPathExpr $xpath) : XPathExpr
     {
         return $xpath->addCondition('0');
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateHover(XPathExpr $xpath)
+    public function translateHover(XPathExpr $xpath) : XPathExpr
     {
         return $xpath->addCondition('0');
     }
-    /**
-     * @return XPathExpr
-     */
-    public function translateVisited(XPathExpr $xpath)
+    public function translateVisited(XPathExpr $xpath) : XPathExpr
     {
         return $xpath->addCondition('0');
     }
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName() : string
     {
         return 'html';
     }

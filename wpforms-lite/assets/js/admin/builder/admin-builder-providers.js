@@ -537,22 +537,11 @@
 		 * @return {string} Returns the default name for a new connection.
 		 */
 		getDefaultConnectionName( provider ) {
-			const providerClass = WPFormsProviders.getProviderClass( provider );
-
-			// Check if the provider has a method to set the custom connection name.
-			if ( typeof providerClass?.setDefaultModalValue === 'function' ) {
-				return providerClass.setDefaultModalValue();
-			}
-
 			const providerName = $( `#${ provider }-provider` ).data( 'provider-name' );
 			const numberOfConnections = WPFormsProviders.getCountConnectionsOf( provider );
 			const defaultName = `${ providerName } ${ wpforms_builder.connection_label }`;
 
-			if ( numberOfConnections === 0 ) {
-				return defaultName;
-			}
-
-			return `${ defaultName } #${ numberOfConnections + 1 }`;
+			return numberOfConnections < 1 ? defaultName : '';
 		},
 
 		/**
@@ -572,12 +561,16 @@
 		 * Get a provider JS object.
 		 *
 		 * @since 1.9.3
+		 * @deprecated 1.9.5 Not used anymore.
 		 *
 		 * @param {string} provider Provider name.
 		 *
 		 * @return {Object|null} Return provider object or null.
 		 */
 		getProviderClass( provider ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsProviders.getProviderClass()" has been deprecated!' );
+
 			const upperProviderPart = ( providerPart ) => (
 				providerPart.charAt( 0 ).toUpperCase() + providerPart.slice( 1 )
 			);

@@ -91,12 +91,22 @@ class Tags {
 	 *
 	 * @since 1.7.5
 	 */
-	public function delete_tags() {
+	public function delete_tags(): void {
 
 		$form_obj = wpforms()->obj( 'form' );
 		$data     = $this->get_prepared_data( 'delete' );
 		$deleted  = 0;
 		$labels   = [];
+
+		foreach ( $data['tags'] as $tag_id ) {
+			$term     = get_term_by( 'term_id', $tag_id, WPForms_Form_Handler::TAGS_TAXONOMY, ARRAY_A );
+			$labels[] = $term['name'];
+
+			// Delete tag (term).
+			if ( wp_delete_term( $tag_id, WPForms_Form_Handler::TAGS_TAXONOMY ) === true ) {
+				++$deleted;
+			}
+		}
 
 		// Get forms marked by the tags.
 		$args = [
@@ -111,25 +121,10 @@ class Tags {
 			],
 		];
 
-		$forms = $form_obj->get( 0, $args );
-
-		foreach ( $data['tags'] as $tag_id ) {
-			$term     = get_term_by( 'term_id', $tag_id, WPForms_Form_Handler::TAGS_TAXONOMY, ARRAY_A );
-			$labels[] = $term['name'];
-
-			// Delete tag (term).
-			if ( wp_delete_term( $tag_id, WPForms_Form_Handler::TAGS_TAXONOMY ) === true ) {
-				++$deleted;
-			}
-		}
-
-		// The tag was not found among the forms, no need to continue.
-		if ( empty( $forms ) ) {
-			wp_send_json_success( [ 'deleted' => $deleted ] );
-		}
+		$forms = $form_obj ? (array) $form_obj->get( 0, $args ) : [];
 
 		// Remove tags from the settings of the forms.
-		foreach ( (array) $forms as $form_id ) {
+		foreach ( $forms as $form_id ) {
 			$form_data = $form_obj->get( $form_id, [ 'content_only' => true ] );
 
 			if (
@@ -193,7 +188,7 @@ class Tags {
 	 *
 	 * @return array
 	 */
-	private function get_prepared_data( $action ) {
+	private function get_prepared_data( string $action ): array {
 
 		// Run a security check.
 		if ( ! check_ajax_referer( 'wpforms-admin-forms-overview-nonce', 'nonce', false ) ) {
@@ -201,7 +196,7 @@ class Tags {
 		}
 
 		// Check for permissions.
-		if ( ! wpforms_current_user_can( 'edit_forms' ) ) {
+		if ( ! wpforms_current_user_can( 'edit_others_forms' ) ) {
 			wp_send_json_error( esc_html__( 'You are not allowed to perform this action.', 'wpforms-lite' ) );
 		}
 

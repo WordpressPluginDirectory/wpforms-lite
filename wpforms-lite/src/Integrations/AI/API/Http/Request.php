@@ -72,7 +72,7 @@ class Request {
 
 		$url = $this->get_request_url( $endpoint );
 
-		return new Response( wp_remote_request( $url, $options ) );
+		return new Response( wp_safe_remote_request( $url, $options ) );
 	}
 
 	/**

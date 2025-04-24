@@ -32,7 +32,7 @@ class WPForms_Lite {
 	 *
 	 * @since 1.9.0
 	 */
-	const CUSTOM_TABLES = [
+	public const CUSTOM_TABLES = [
 		'wpforms_payments'     => Payment::class,
 		'wpforms_payment_meta' => PaymentsMeta::class,
 		'wpforms_tasks_meta'   => TasksMeta::class,
@@ -103,7 +103,7 @@ class WPForms_Lite {
 		$from_name_after = apply_filters( 'wpforms_builder_notifications_from_name_after', '', $settings->form_data, 1 );
 
 		/**
-		 * Allow filtering of text after the `From Email` field.
+		 * Allow filtering of a text after the `From Email` field.
 		 *
 		 * @since 1.2.3
 		 * @since 1.7.6 Added $form_data and $id arguments.
@@ -207,15 +207,16 @@ class WPForms_Lite {
 					$settings->form_data,
 					esc_html__( 'Send To Email Address', 'wpforms-lite' ),
 					[
-						'default'    => '{admin_email}',
-						'tooltip'    => esc_html__( 'Enter the email address to receive form entry notifications. For multiple notifications, separate email addresses with a comma.', 'wpforms-lite' ),
-						'smarttags'  => [
+						'default'     => '{admin_email}',
+						'tooltip'     => esc_html__( 'Enter the email address to receive form entry notifications. For multiple notifications, separate email addresses with a comma.', 'wpforms-lite' ),
+						'smarttags'   => [
 							'type'   => 'fields',
 							'fields' => 'email',
 						],
-						'parent'     => 'settings',
-						'subsection' => $id,
-						'class'      => 'email-recipient',
+						'parent'      => 'settings',
+						'subsection'  => $id,
+						'class'       => 'email-recipient',
+						'input_class' => 'wpforms-smart-tags-enabled',
 					]
 				);
 				if ( $cc ) :
@@ -242,15 +243,16 @@ class WPForms_Lite {
 					$settings->form_data,
 					esc_html__( 'Email Subject Line', 'wpforms-lite' ),
 					[
-						'default'    => sprintf( /* translators: %s - form name. */
+						'default'     => sprintf( /* translators: %s - form name. */
 							esc_html__( 'New Entry: %s', 'wpforms-lite' ),
 							$settings->form->post_title
 						),
-						'smarttags'  => [
+						'smarttags'   => [
 							'type' => 'all',
 						],
-						'parent'     => 'settings',
-						'subsection' => $id,
+						'parent'      => 'settings',
+						'subsection'  => $id,
+						'input_class' => 'wpforms-smart-tags-enabled',
 					]
 				);
 				wpforms_panel_field(
@@ -272,13 +274,14 @@ class WPForms_Lite {
 					apply_filters(
 						'wpforms_builder_notifications_sender_name_settings',
 						[
-							'default'    => $from_name,
-							'smarttags'  => [
+							'default'     => $from_name,
+							'smarttags'   => [
 								'type'   => 'fields',
 								'fields' => 'name,text',
 							],
-							'parent'     => 'settings',
-							'subsection' => $id,
+							'parent'      => 'settings',
+							'subsection'  => $id,
+							'input_class' => 'wpforms-smart-tags-enabled',
 						],
 						$settings->form_data,
 						$id
@@ -293,7 +296,7 @@ class WPForms_Lite {
 					esc_html__( 'From Email', 'wpforms-lite' ),
 					// phpcs:disable WPForms.PHP.ValidateHooks.InvalidHookName
 					/**
-					 * Allow modifying the "From Email" field settings in the builder on Settings > Notifications panel.
+					 * Allow modifying the "From Email" field settings in the builder on the Settings > Notifications panel.
 					 *
 					 * @since 1.7.6
 					 *
@@ -304,13 +307,14 @@ class WPForms_Lite {
 					apply_filters(
 						'wpforms_builder_notifications_sender_address_settings',
 						[
-							'default'    => $from_email,
-							'smarttags'  => [
+							'default'     => $from_email,
+							'smarttags'   => [
 								'type'   => 'fields',
 								'fields' => 'email',
 							],
-							'parent'     => 'settings',
-							'subsection' => $id,
+							'parent'      => 'settings',
+							'subsection'  => $id,
+							'input_class' => 'wpforms-smart-tags-enabled',
 						],
 						$settings->form_data,
 						$id
@@ -324,7 +328,7 @@ class WPForms_Lite {
 					$settings->form_data,
 					esc_html__( 'Reply-To', 'wpforms-lite' ),
 					[
-						'tooltip'    => esc_html(
+						'tooltip'     => esc_html(
 							sprintf( /* translators: %s - <email@example.com>. */
 								__( 'Enter the email address or email address with recipient\'s name in "First Last %s" format.', 'wpforms-lite' ),
 								// &#8203 is a zero-width space character. Without it, Tooltipster thinks it's an HTML tag
@@ -332,12 +336,13 @@ class WPForms_Lite {
 								'<&#8203;email@example.com&#8203;>'
 							)
 						),
-						'smarttags'  => [
+						'smarttags'   => [
 							'type'   => 'fields',
 							'fields' => 'email,name',
 						],
-						'parent'     => 'settings',
-						'subsection' => $id,
+						'parent'      => 'settings',
+						'subsection'  => $id,
+						'input_class' => 'wpforms-smart-tags-enabled',
 					]
 				);
 				wpforms_panel_field(
@@ -347,21 +352,22 @@ class WPForms_Lite {
 					$settings->form_data,
 					esc_html__( 'Email Message', 'wpforms-lite' ),
 					[
-						'rows'       => 6,
-						'default'    => '{all_fields}',
-						'smarttags'  => [
+						'rows'        => 6,
+						'default'     => '{all_fields}',
+						'smarttags'   => [
 							'type' => 'all',
 						],
-						'parent'     => 'settings',
-						'subsection' => $id,
-						'class'      => 'email-msg',
-						'after'      => '<p class="note">' .
-										sprintf(
+						'parent'      => 'settings',
+						'subsection'  => $id,
+						'class'       => 'email-msg',
+						'input_class' => 'wpforms-smart-tags-enabled',
+						'after'       => '<p class="note">' .
+											sprintf(
 											/* translators: %s - {all_fields} Smart Tag. */
-											esc_html__( 'To display all form fields, use the %s Smart Tag.', 'wpforms-lite' ),
-											'<code>{all_fields}</code>'
-										) .
-										'</p>',
+												esc_html__( 'To display all form fields, use the %s Smart Tag.', 'wpforms-lite' ),
+												'<code>{all_fields}</code>'
+											) .
+											'</p>',
 					]
 				);
 
@@ -758,7 +764,8 @@ class WPForms_Lite {
 				$( document ).on( 'click', '.settings-lite-cta .dismiss', function ( event ) {
 					event.preventDefault();
 					$.post( ajaxurl, {
-						action: 'wpforms_lite_settings_upgrade'
+						action: 'wpforms_lite_settings_upgrade',
+						nonce: '<?php echo esc_html( wp_create_nonce( 'wpforms_settings_cta_dismiss' ) ); ?>'
 					} );
 					$( '.settings-lite-cta' ).remove();
 				} );
@@ -773,6 +780,10 @@ class WPForms_Lite {
 	 * @since 1.4.7
 	 */
 	public function settings_cta_dismiss() {
+
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'wpforms_settings_cta_dismiss' ) ) {
+			wp_send_json_error( esc_html__( 'Security check failed. Please try again.', 'wpforms-lite' ) );
+		}
 
 		if ( ! wpforms_current_user_can() ) {
 			wp_send_json_error();
@@ -845,36 +856,6 @@ class WPForms_Lite {
 			],
 			true
 		);
-	}
-
-	/**
-	 * Add appropriate styling to addons page.
-	 *
-	 * @since 1.0.4
-	 * @deprecated 1.6.7
-	 */
-	public function addon_page_enqueues() {
-
-		_deprecated_function( __METHOD__, '1.6.7 of the WPForms plugin', "wpforms()->obj( 'addons_page' )->enqueues()" );
-
-		wpforms()->obj( 'addons_page' )->enqueues();
-	}
-
-	/**
-	 * Addons page.
-	 *
-	 * @since 1.0.0
-	 * @deprecated 1.6.7
-	 */
-	public function addons_page() {
-
-		_deprecated_function( __METHOD__, '1.6.7 of the WPForms plugin', "wpforms()->obj( 'addons_page' )->output()" );
-
-		if ( ! wpforms_is_admin_page( 'addons' ) ) {
-			return;
-		}
-
-		wpforms()->obj( 'addons_page' )->output();
 	}
 
 	/**

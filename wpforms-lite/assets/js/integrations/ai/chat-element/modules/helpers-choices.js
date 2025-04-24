@@ -208,6 +208,11 @@ export default function( chat ) { // eslint-disable-line max-lines-per-function
 
 			// Replace field choices.
 			this.replaceChoices( choiceItems );
+
+			// Toggle to the field.
+			jQuery( `#wpforms-field-${ chat.fieldId }` ).click().promise().done( function() {
+				jQuery( `#wpforms-field-option-basic-${ chat.fieldId } a.wpforms-field-option-group-toggle` ).click();
+			} );
 		},
 
 		/**

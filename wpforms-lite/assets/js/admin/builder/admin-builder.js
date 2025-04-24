@@ -1,7 +1,11 @@
-/* global wpforms_builder, wpf, jconfirm, wpforms_panel_switch, Choices, WPForms, WPFormsFormEmbedWizard, wpCookies, tinyMCE, WPFormsUtils, List, wpforms_preset_choices */
+/* global jQuery, wpforms_builder, wpf, jconfirm, wpforms_panel_switch, Choices, WPForms, WPFormsFormEmbedWizard, wpCookies, tinyMCE, WPFormsUtils, List, wpforms_preset_choices */
 
 /**
  * @param wpforms_builder.smart_tags_disabled_for_confirmations
+ * @param wpforms_builder.allow_only_email_fields
+ * @param wpforms_builder.allow_only_one_email
+ * @param wpforms_builder.empty_email_address
+ * @param wpforms_builder.smart_tags_dropdown_mce_icon
  */
 
 /* noinspection JSUnusedLocalSymbols */
@@ -265,7 +269,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			// Notification settings.
 			app.notificationToggle();
 			app.notificationsByStatusAlerts();
-			app.notificationsUpdateElementsVisibility();
 
 			// Secret builder hotkeys.
 			app.builderHotkeys();
@@ -735,14 +738,15 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 						return false;
 					}
 
-					const placeholder = wpf.decodeAllowedHTMLEntities( instance.config.choices[ 0 ].label ),
+					const placeholder = $( '#wpforms-field-option-' + fieldId + '-placeholder' ).val(),
+						sanitizedPlaceholder = wpf.decodeAllowedHTMLEntities( placeholder ),
 						isMultiple = $( instance.passedElement.element ).prop( 'multiple' ),
 						selected = ! ( isMultiple || hasDefaults );
 
 					// Add a new choice as a placeholder.
 					instance.setChoices(
 						[
-							{ value: '', label: placeholder, selected, placeholder: true },
+							{ value: '', label: sanitizedPlaceholder, selected, placeholder: true },
 						],
 						'value',
 						'label',
@@ -1163,7 +1167,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			const fieldID = $( event.target ).parents( '.wpforms-field-option-row' ).data( 'fieldId' );
 			const defaultValue = $( '#wpforms-field-option-' + fieldID + '-default_value' ).val();
 
-			app.checkMultiplicitySliderDefaultValue( fieldID, defaultValue, value, min )
+			app.checkMultiplicitySliderDefaultValue( fieldID, defaultValue, value, min, max )
 				.updateNumberSliderAttr( fieldID, value, 'step' )
 				.updateNumberSliderDefaultValueAttr( fieldID, value, 'step' );
 		},
@@ -1177,21 +1181,24 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * @param {number} value   Default value.
 		 * @param {number} step    Step value.
 		 * @param {number} min     Min value.
+		 * @param {number} max     Max value.
 		 *
 		 * @return {Object} App instance.
 		 */
-		checkMultiplicitySliderDefaultValue( fieldId, value, step, min ) {
+		checkMultiplicitySliderDefaultValue( fieldId, value, step, min = 0, max = 0 ) {
 			const $printSelector = $( `#wpforms-field-option-row-${ fieldId }-default_value` );
 			value = parseFloat( value );
 
-			if ( value % step === 0 ) {
+			if ( ( value - min ) % step === 0 ) {
 				app.removeNotice( $printSelector );
 
 				return this;
 			}
 
-			const closestSmallerMultiple = min + ( Math.floor( ( value - min ) / step ) * step );
-			const closestLargerMultiple = min + ( Math.ceil( ( value - min ) / step ) * step );
+			const {
+				closestSmallerMultiple,
+				closestLargerMultiple,
+			} = this.calculateClosestMultiples( value, step, min, max );
 
 			const formatNumber = ( num ) => ( num % 1 === 0 ? num.toString() : num.toFixed( 2 ) );
 
@@ -1217,17 +1224,65 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		},
 
 		/**
+		 * Calculate the closest multiples for a value.
+		 *
+		 * @since 1.9.5
+		 *
+		 * @param {number} value Default value.
+		 * @param {number} step  Step value.
+		 * @param {number} min   Min value.
+		 * @param {number} max   Max value.
+		 *
+		 * @return {Object} Closest smaller and larger multiples.
+		 */
+		// eslint-disable-next-line complexity
+		calculateClosestMultiples( value, step, min, max ) {
+			// Calculate the closest smaller value.
+			let closestSmallerMultiple = min + ( Math.floor( ( value - min ) / step ) * step );
+
+			// Calculate the closest larger value.
+			let closestLargerMultiple = min + ( Math.ceil( ( value - min ) / step ) * step );
+
+			// Handle edge cases where the value is exactly on a step.
+			if ( value === closestSmallerMultiple && value !== min ) {
+				closestLargerMultiple = closestSmallerMultiple + step;
+			}
+
+			if ( value === closestLargerMultiple && value !== max ) {
+				closestSmallerMultiple = closestLargerMultiple - step;
+			}
+
+			// Handle edge cases when value is min or max
+			if ( value === min ) {
+				closestLargerMultiple = min + step;
+			}
+			if ( value === max ) {
+				closestSmallerMultiple = max - step;
+			}
+
+			// Ensure the closest values stay within the min and max bounds.
+			closestSmallerMultiple = Math.max( closestSmallerMultiple, min );
+			closestLargerMultiple = Math.min( closestLargerMultiple, max );
+
+			return { closestSmallerMultiple, closestLargerMultiple };
+		},
+
+		/**
 		 * Print a notice.
 		 *
 		 * @since 1.8.4
 		 *
-		 * @param {string} message        Message to print.
-		 * @param {Object} $printSelector jQuery element selector.
+		 * @param {string}  message        Message to print.
+		 * @param {Object}  $printSelector jQuery element selector.
+		 * @param {boolean} wide           Wide notice flag, optional, default is false.
 		 */
-		printNotice( message, $printSelector ) {
+		printNotice( message, $printSelector, wide = false ) {
 			if ( $printSelector.length ) {
 				this.removeNotice( $printSelector );
-				$printSelector.append( `<div class="wpforms-alert-warning wpforms-alert"><p>${ message }</p></div>` );
+
+				const wideClass = wide ? 'wpforms-alert-warning-wide' : '';
+
+				$printSelector.append( `<div class="wpforms-alert-warning wpforms-alert ${ wideClass }"><p>${ message }</p></div>` );
 			}
 		},
 
@@ -1294,9 +1349,10 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 				const step = parseFloat( event.target.step );
 				const min = parseFloat( event.target.min );
+				const max = parseFloat( event.target.max );
 				const fieldID = $( event.target ).parents( '.wpforms-field-option-row-default_value' ).data( 'fieldId' );
 
-				app.checkMultiplicitySliderDefaultValue( fieldID, newValue, step, min )
+				app.checkMultiplicitySliderDefaultValue( fieldID, newValue, step, min, max )
 					.updateNumberSlider( fieldID, newValue )
 					.updateNumberSliderHint( fieldID, newValue );
 			}
@@ -1332,7 +1388,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				const step = parseFloat( event.target.step );
 				const fieldID = $( event.target ).parents( '.wpforms-field-option-row-default_value' ).data( 'fieldId' );
 
-				app.checkMultiplicitySliderDefaultValue( fieldID, value, step, min )
+				app.checkMultiplicitySliderDefaultValue( fieldID, value, step, min, max )
 					.updateNumberSlider( fieldID, value )
 					.updateNumberSliderHint( fieldID, value );
 			}
@@ -1709,7 +1765,19 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 				const previewUrl = $( this ).attr( 'href' );
 
-				if ( previewTab && ! previewTab.closed && previewTab.location.href.includes( 'wpforms_form_preview' ) ) {
+				// Try to check if the preview tab is still open and from the same origin
+				let isSameOrigin = false;
+				if ( previewTab && ! previewTab.closed ) {
+					try {
+						// This will throw an error if cross-origin
+						isSameOrigin = previewTab.location.href.includes( 'wpforms_form_preview' );
+					} catch ( error ) {
+						// Cross-origin access error, we can't access the location
+						isSameOrigin = false;
+					}
+				}
+
+				if ( isSameOrigin ) {
 					previewTab.focus();
 				} else {
 					previewTab = window.open( previewUrl, '_blank' );
@@ -1718,8 +1786,16 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 			// Reload preview tab after saving the form.
 			$builder.on( 'wpformsSaved', function() {
-				if ( previewTab && ! previewTab.closed && previewTab.location.href.includes( 'wpforms_form_preview' ) ) {
-					previewTab.location.reload();
+				if ( previewTab && ! previewTab.closed ) {
+					try {
+						// This will throw an error if cross-origin
+						if ( previewTab.location.href.includes( 'wpforms_form_preview' ) ) {
+							previewTab.location.reload();
+						}
+					} catch ( error ) {
+						// Silently handle cross-origin errors
+						// We can't access or reload cross-origin tabs
+					}
 				}
 			} );
 		},
@@ -2219,7 +2295,11 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 					value = wpf.sanitizeHTML( $this.val() ),
 					id = $this.parent().data( 'field-id' ),
 					// IIF description is not following other fields structure and needs to be selected separately.
-					$desc = $( `#wpforms-field-${ id } > .description, #wpforms-field-${ id } .wpforms-field-internal-information-row-description` );
+					$desc = $(
+						`#wpforms-field-${ id } > .description,
+						#wpforms-field-${ id } .format-selected-single > .description,
+						#wpforms-field-${ id } .wpforms-field-internal-information-row-description`
+					);
 
 				app.updateDescription( $desc, value );
 
@@ -2265,7 +2345,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				}
 			} );
 
-			$builder.on( 'focusout', '.wpforms-field-option-row-allowlist textarea,.wpforms-field-option-row-denylist textarea', function() {
+			$builder.on( 'focusout', '.wpforms-field-option-row-allowlist textarea,.wpforms-field-option-row-denylist textarea', function() { // eslint-disable-line max-lines-per-function
 				const $currentField = $( this );
 
 				let $current = 'allow';
@@ -2448,7 +2528,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			} );
 
 			// Real-time updates for "Default" field option.
-			$builder.on( 'input', '.wpforms-field-option-row-default_value input', function() {
+			$builder.on( 'input', '.wpforms-field-option-row-default_value input:not([type="search"])', function() {
 				const $this = $( this );
 				const value = wpf.sanitizeHTML( $this.val() );
 				const id = $this.closest( '.wpforms-field-option-row' ).data( 'field-id' );
@@ -3374,13 +3454,17 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * Error alert displayed for invalid From Email Notification field.
 		 *
 		 * @since 1.8.1
+		 * @deprecated 1.9.5
 		 *
-		 * @param {string} $msg Message.
+		 * @param {string} msg Message.
 		 */
-		validationErrorNotificationPopup( $msg ) {
+		validationErrorNotificationPopup( msg ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.validationErrorNotificationPopup()" has been deprecated.' );
+
 			$.alert( {
 				title: wpforms_builder.heads_up,
-				content: $msg,
+				content: msg,
 				icon: 'fa fa-exclamation-circle',
 				type: 'red',
 				buttons: {
@@ -6128,20 +6212,11 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 					return;
 				}
 
-				app.notificationsUpdateElementsVisibility();
 				app.notificationUpdateStatus( $element );
 			} );
 
-			$builder.on( 'wpformsSettingsBlockDeleted', function( e, type ) {
-				if ( type !== 'notification' ) {
-					return;
-				}
-
-				app.notificationsUpdateElementsVisibility();
-			} );
-
-			$builder.on( 'change', '.js-wpforms-enabled-notification input', function() {
-				app.notificationUpdateStatus( $( this ).closest( '.wpforms-notification' ) );
+			$builder.on( 'click', '.wpforms-notification .wpforms-status-button', function() {
+				app.notificationChangeStatus( $( this ) );
 			} );
 
 			// Toggle Open Confirmations in New Tab options on AJAX form submit setting change.
@@ -6226,8 +6301,27 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				// Destroy previously initialized editor.
 				wp.editor.remove( id );
 
+				// Respect the default settings.
+				const tinymceSettings = { ...s.tinymceDefaults };
+
+				// Register the Insert Smart Tag button.
+				if ( ! tinymceSettings.tinymce.toolbar1.includes( 'wpf_insert_smart_tag' ) ) {
+					tinymceSettings.tinymce.toolbar1 += ',wpf_insert_smart_tag';
+				}
+
+				// Add button to the toolbar.
+				tinymceSettings.tinymce.setup = function( editor ) {
+					editor.addButton( 'wpf_insert_smart_tag', {
+						text: '',
+						tooltip: wpforms_builder.smart_tags_dropdown_title,
+						icon: false,
+						image: wpforms_builder.smart_tags_dropdown_mce_icon,
+						classes: 'wpforms-smart-tags-mce-button',
+					} );
+				};
+
 				// Initialize new editor.
-				wp.editor.initialize( id, s.tinymceDefaults );
+				wp.editor.initialize( id, tinymceSettings );
 			} );
 		},
 
@@ -6470,7 +6564,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 							let newSettingsBlock;
 
 							$newSettingsBlock.attr( 'data-block-id', nextID );
-							$newSettingsBlock.find( '.wpforms-builder-settings-block-header span' ).text( settingsBlockName );
+							$newSettingsBlock.find( '.wpforms-builder-settings-block-name-holder span' ).text( settingsBlockName );
 
 							/**
 							 * Fires to reset settings block elements on adding new settings block.
@@ -6524,10 +6618,10 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 									.attr( 'data-radio-group', nextID + '-notification-by-status' );
 							} );
 
-							$newSettingsBlock.find( '.wpforms-builder-settings-block-header input' ).val( settingsBlockName ).attr( 'value', settingsBlockName );
+							$newSettingsBlock.find( '.wpforms-builder-settings-block-name-holder input' ).val( settingsBlockName ).attr( 'value', settingsBlockName );
 
 							if ( blockType === 'notification' ) {
-								$newSettingsBlock.find( '.email-msg textarea' ).val( '{all_fields}' ).attr( 'value', '{all_fields}' );
+								$newSettingsBlock.find( '.email-msg textarea' ).val( '{all_fields}' ).text( '{all_fields}' ).attr( 'value', '{all_fields}' );
 								$newSettingsBlock.find( '.email-recipient input' ).val( '{admin_email}' ).attr( 'value', '{admin_email}' );
 							}
 
@@ -6670,7 +6764,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * @param {jQuery} $el Element.
 		 */
 		settingsBlockNameEditingShow( $el ) {
-			const headerHolder = $el.parents( '.wpforms-builder-settings-block-header' ),
+			const headerHolder = $el.parents( '.wpforms-builder-settings-block-name-holder' ),
 				nameHolder = headerHolder.find( '.wpforms-builder-settings-block-name' );
 
 			nameHolder
@@ -6741,8 +6835,8 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 			// Change the cloned setting block ID and name.
 			$clone.data( 'block-id', settingsBlockId );
-			$clone.find( '.wpforms-builder-settings-block-header span' ).text( settingsBlockName );
-			$clone.find( '.wpforms-builder-settings-block-header input' ).val( settingsBlockName );
+			$clone.find( '.wpforms-builder-settings-block-name-holder span' ).text( settingsBlockName );
+			$clone.find( '.wpforms-builder-settings-block-name-holder input' ).val( settingsBlockName );
 			$clone.removeClass( 'wpforms-builder-settings-block-default' );
 
 			// Change the Next Settings block ID for "Add new" button.
@@ -6916,25 +7010,11 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * and customers can turn off all notifications instead.
 		 *
 		 * @since 1.9.2
+		 * @deprecated 1.9.5 Always visible.
 		 */
 		notificationsUpdateElementsVisibility() {
-			const $notifications = $( '.wpforms-panel-content-section-notifications .wpforms-notification' );
-			const $statuses = $notifications.find( '.wpforms-builder-settings-block-status' );
-			const isVisible = $notifications.length > 1;
-			const $fieldWrappers = $notifications.find( '.js-wpforms-enabled-notification' );
-
-			if ( isVisible ) {
-				$fieldWrappers.removeClass( 'wpforms-hidden' );
-				$statuses.removeClass( 'wpforms-hidden' );
-
-				return;
-			}
-
-			const $inputs = $fieldWrappers.find( 'input' );
-
-			$statuses.addClass( 'wpforms-hidden' );
-			$fieldWrappers.addClass( 'wpforms-hidden' );
-			$inputs.prop( 'checked', true );
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.notificationsUpdateElementsVisibility()" has been deprecated.' );
 		},
 
 		/**
@@ -6947,21 +7027,65 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * @param {jQuery} $notification Notification element.
 		 */
 		notificationUpdateStatus( $notification ) {
-			const isNotificationsEnabled = $( '#wpforms-panel-field-settings-notification_enable' ).is( ':checked' );
-			const isEnabledNotification = $notification.find( '.js-wpforms-enabled-notification input' ).is( ':checked' );
+			const notificationId = $notification.data( 'block-id' ),
+				$notificationEnable = $( `#wpforms-panel-field-notifications-${ notificationId }-enable` );
+
 			const $status = $notification.find( '.wpforms-builder-settings-block-status' );
 
-			if ( isNotificationsEnabled && isEnabledNotification ) {
-				$status.removeClass( 'wpforms-badge-silver' );
-				$status.addClass( 'wpforms-badge-green' );
-				$status.text( $status.data( 'active' ) );
+			app.changeStatusButton( $status, $notificationEnable.val() !== '0' );
 
-				return;
+			if ( ! $notificationEnable.val() ) {
+				$notificationEnable.val( '1' );
+			}
+		},
+
+		/**
+		 * Change the status of a notification.
+		 *
+		 * @since 1.9.5
+		 *
+		 * @param {jQuery} $statusButton The status button element.
+		 */
+		notificationChangeStatus( $statusButton ) {
+			const $notification = $statusButton.closest( '.wpforms-notification' ),
+				notificationId = $notification.data( 'block-id' ),
+				$notificationEnable = $( `#wpforms-panel-field-notifications-${ notificationId }-enable` ),
+				isActive = $statusButton.data( 'active' );
+
+			app.changeStatusButton( $statusButton, ! isActive );
+
+			$notificationEnable.val( ! isActive ? '1' : '0' );
+		},
+
+		/**
+		 * Change the status of a button.
+		 *
+		 * @since 1.9.5
+		 *
+		 * @param {jQuery}  $button  The button element.
+		 * @param {boolean} isActive Whether the button is active.
+		 */
+		changeStatusButton( $button, isActive ) {
+			$button.removeClass( [ 'wpforms-badge-green', 'wpforms-badge-silver' ] );
+
+			const $icon = $button.find( '.fa' ),
+				$label = $button.find( '.wpforms-status-label' );
+
+			$icon.removeClass( [ 'fa-check', 'fa-times' ] );
+
+			if ( isActive ) {
+				$button.addClass( 'wpforms-badge-green' );
+				$icon.addClass( 'fa-check' );
+				$label.text( wpforms_builder.active );
+				$button.attr( 'title', wpforms_builder.deactivate );
+			} else {
+				$button.addClass( 'wpforms-badge-silver' );
+				$icon.addClass( 'fa-times' );
+				$label.text( wpforms_builder.inactive );
+				$button.attr( 'title', wpforms_builder.activate );
 			}
 
-			$status.removeClass( 'wpforms-badge-green' );
-			$status.addClass( 'wpforms-badge-silver' );
-			$status.text( $status.data( 'inactive' ) );
+			$button.data( 'active', isActive );
 		},
 
 		//--------------------------------------------------------------------//
@@ -7428,32 +7552,6 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			// Hide field preview helper box.
 			$builder.on( 'click', '.wpforms-field-helper-hide ', app.hideFieldHelper );
 
-			// Field map table, update key source
-			$builder.on( 'input', '.wpforms-field-map-table .key-source', function() {
-				const value = $( this ).val(),
-					$dest = $( this ).parent().parent().find( '.key-destination' ),
-					name = $dest.data( 'name' );
-
-				if ( value ) {
-					$dest.attr( 'name', name.replace( '{source}', value.replace( /[^0-9a-zA-Z_-]/gi, '' ) ) );
-				}
-			} );
-
-			// Field map table, delete row
-			$builder.on( 'click', '.wpforms-field-map-table .remove', function( e ) {
-				e.preventDefault();
-				app.fieldMapTableDeleteRow( e, $( this ) );
-			} );
-
-			// Field map table, Add row
-			$builder.on( 'click', '.wpforms-field-map-table .add', function( e ) {
-				e.preventDefault();
-				app.fieldMapTableAddRow( e, $( this ) );
-			} );
-
-			// Global select field mapping
-			$( document ).on( 'wpformsFieldUpdate', app.fieldMapSelect );
-
 			// Restrict user money input fields
 			$builder.on( 'input', '.wpforms-money-input', function( event ) { // eslint-disable-line no-unused-vars
 				const $this = $( this ),
@@ -7619,7 +7717,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			} );
 
 			// Validate email smart tags in Notifications fields.
-			$builder.on( 'blur', '.wpforms-notification .wpforms-panel-field-text input', function() {
+			$builder.on( 'blur', '.wpforms-notification .wpforms-panel-field-text input:not([type="search"])', function() {
 				app.validateEmailSmartTags( $( this ) );
 			} );
 			$builder.on( 'blur', '.wpforms-notification .wpforms-panel-field-textarea textarea', function() {
@@ -7627,7 +7725,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			} );
 
 			// Validate From Email in Notification settings.
-			$builder.on( 'focusout', '.wpforms-notification .wpforms-panel-field.js-wpforms-from-email-validation input', app.validateFromEmail );
+			$builder.on( 'focusout', '.wpforms-notification .wpforms-panel-field.js-wpforms-from-email-validation input:not([type="search"])', app.validateFromEmail );
 			$builder.on( 'wpformsPanelSectionSwitch', app.notificationsPanelSectionSwitch );
 
 			// Mobile notice primary button / close icon click.
@@ -7886,10 +7984,14 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 *
 		 * @since 1.0.1
 		 * @since 1.6.9 Simplify method.
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {Event} e Event.
 		 */
 		smartTagToggle( e ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.smartTagToggle()" has been deprecated.' );
+
 			e.preventDefault();
 
 			// Prevent ajax to validate the default email queued on focusout event.
@@ -7914,13 +8016,17 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		},
 
 		/**
-		 * Remove Smart Tag list.
+		 * Remove a Smart Tag list.
 		 *
 		 * @since 1.6.9
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {jQuery} $el Toggle element.
 		 */
 		removeSmartTagsList( $el ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.removeSmartTagsList()" has been deprecated.' );
+
 			const $wrapper = $el.closest( '.wpforms-panel-field,.wpforms-field-option-row' ),
 				$list = $wrapper.find( '.smart-tags-list-display' );
 
@@ -7937,10 +8043,14 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * Insert Smart Tag list.
 		 *
 		 * @since 1.6.9
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {jQuery} $el Toggle element.
 		 */
 		insertSmartTagsList( $el ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.insertSmartTagsList()" has been deprecated.' );
+
 			const $wrapper = $el.closest( '.wpforms-panel-field,.wpforms-field-option-row' );
 			let $label = $el.closest( 'label' ),
 				insideLabel = true;
@@ -7969,6 +8079,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * Get Smart Tag list markup.
 		 *
 		 * @since 1.6.9
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {jQuery}  $el           Toggle element.
 		 * @param {boolean} isFieldOption Is a field option.
@@ -7976,6 +8087,9 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * @return {string} Smart Tags list markup.
 		 */
 		getSmartTagsList( $el, isFieldOption ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.getSmartTagsList()" has been deprecated.' );
+
 			let smartTagList;
 
 			smartTagList = '<ul class="smart-tags-list-display unfoldable-cont">';
@@ -7990,12 +8104,16 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * Get Smart Tag fields elements markup.
 		 *
 		 * @since 1.6.9
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {jQuery} $el Toggle element.
 		 *
 		 * @return {string} Smart Tags list elements markup.
 		 */
 		getSmartTagsListFieldsElements( $el ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.getSmartTagsListFieldsElements()" has been deprecated.' );
+
 			const type = $el.data( 'type' );
 
 			if ( ! [ 'fields', 'all' ].includes( type ) ) {
@@ -8023,12 +8141,16 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * Get fields that possible to create smart tag.
 		 *
 		 * @since 1.6.9
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {jQuery} $el Toggle element.
 		 *
 		 * @return {Array} Fields for smart tags.
 		 */
 		getSmartTagsFields( $el ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.getSmartTagsFields()" has been deprecated.' );
+
 			const allowed = $el.data( 'fields' );
 			const isAllowedRepeater = $el.data( 'allow-repeated-fields' );
 			const allowedFields = allowed ? allowed.split( ',' ) : undefined;
@@ -8040,12 +8162,16 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * Get field markup for the Smart Tags list.
 		 *
 		 * @since 1.6.9
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {Object} field A field.
 		 *
 		 * @return {string} Smart Tags field markup.
 		 */
 		getSmartTagsListFieldsElement( field ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.getSmartTagsListFieldsElement()" has been deprecated.' );
+
 			const label = field.label
 				? wpf.encodeHTMLEntities( wpf.sanitizeHTML( field.label ) )
 				: wpforms_builder.field + ' #' + field.id;
@@ -8070,13 +8196,17 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * Get Smart Tag other elements markup.
 		 *
 		 * @since 1.6.9
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {jQuery}  $el           Toggle element.
 		 * @param {boolean} isFieldOption Is a field option.
 		 *
 		 * @return {string} Smart Tags list elements markup.
 		 */
-		getSmartTagsListOtherElements( $el, isFieldOption ) {
+		getSmartTagsListOtherElements( $el, isFieldOption ) {// eslint-disable-line complexity
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.getSmartTagsListOtherElements()" has been deprecated.' );
+
 			const type = $el.data( 'type' );
 			let smartTagListElements;
 
@@ -8108,10 +8238,14 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 *
 		 * @since 1.0.1
 		 * @since 1.6.9 TinyMCE compatibility.
+		 * @since 1.9.5 Deprecated.
 		 *
 		 * @param {Event} e Event.
 		 */
 		smartTagInsert( e ) { // eslint-disable-line complexity
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.smartTagInsert()" has been deprecated.' );
+
 			e.preventDefault();
 
 			const $this = $( this ),
@@ -8155,143 +8289,17 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		},
 
 		/**
-		 * Field map table - Delete row.
-		 *
-		 * @since 1.2.0
-		 * @since 1.6.1.2 Registered `wpformsFieldMapTableDeletedRow` trigger.
-		 *
-		 * @param {Event}   e  Event.
-		 * @param {Element} el Element.
-		 */
-		fieldMapTableDeleteRow( e, el ) {
-			const $this = $( el ),
-				$row = $this.closest( 'tr' ),
-				$table = $this.closest( 'table' ),
-				$block = $row.closest( '.wpforms-builder-settings-block' ),
-				total = $table.find( 'tr' ).length;
-
-			if ( total > '1' ) {
-				$row.remove();
-
-				$builder.trigger( 'wpformsFieldMapTableDeletedRow', [ $block ] );
-			}
-		},
-
-		/**
-		 * Field map table - Add row.
-		 *
-		 * @since 1.2.0
-		 * @since 1.6.1.2 Registered `wpformsFieldMapTableAddedRow` trigger.
-		 *
-		 * @param {Event}   e  Event.
-		 * @param {Element} el Element.
-		 */
-		fieldMapTableAddRow( e, el ) {
-			const $this = $( el ),
-				$row = $this.closest( 'tr' ),
-				$block = $row.closest( '.wpforms-builder-settings-block' ),
-				choice = $row.clone().insertAfter( $row );
-
-			choice.find( 'input' ).val( '' );
-			choice.find( 'select :selected' ).prop( 'selected', false );
-			choice.find( '.key-destination' ).attr( 'name', '' );
-
-			$builder.trigger( 'wpformsFieldMapTableAddedRow', [ $block, choice ] );
-		},
-
-		/**
-		 * Update field mapped select items on form updates.
-		 *
-		 * @since 1.2.0
-		 * @since 1.6.1.2 Registered `wpformsFieldSelectMapped` trigger.
-		 *
-		 * @param {Event}  e      Event.
-		 * @param {Object} fields Fields.
-		 */
-		fieldMapSelect( e, fields ) { // eslint-disable-line max-lines-per-function
-			const event = WPFormsUtils.triggerEvent( $builder, 'wpformsBeforeFieldMapSelectUpdate' );
-
-			// Allow callbacks on `wpformsBeforeFieldMapSelectUpdate` to cancel adding field
-			// by triggering `event.preventDefault()`.
-			if ( event.isDefaultPrevented() ) {
-				return;
-			}
-
-			$( '.wpforms-field-map-select' ).each( function( index, el ) { // eslint-disable-line complexity, no-unused-vars
-				const $this = $( this );
-				let allowedFields = $this.data( 'field-map-allowed' ),
-					placeholder = $this.data( 'field-map-placeholder' );
-
-				// Check if custom placeholder was provided.
-				if ( typeof placeholder === 'undefined' || ! placeholder ) {
-					placeholder = wpforms_builder.select_field;
-				}
-
-				// If allowed, fields are not defined, bail.
-				if ( typeof allowedFields !== 'undefined' && allowedFields ) {
-					allowedFields = allowedFields.split( ' ' );
-				} else {
-					return;
-				}
-
-				const selected = $this.find( 'option:selected' ).val();
-
-				// Reset select and add a placeholder option.
-				$this.empty().append( $( '<option>', { value: '', text: placeholder } ) );
-
-				// Loop through the current fields, if we have fields for the form.
-				if ( fields && ! $.isEmptyObject( fields ) ) {
-					for ( const fieldID in fields ) {
-						let label = '';
-
-						if ( ! fields[ fieldID ] ) {
-							continue;
-						}
-
-						// Prepare the label.
-						if ( typeof fields[ fieldID ].label !== 'undefined' && fields[ fieldID ].label.toString().trim() !== '' ) {
-							label = wpf.sanitizeHTML( fields[ fieldID ].label.toString().trim() );
-						} else {
-							label = wpforms_builder.field + ' #' + fieldID;
-						}
-
-						// Add to select if it is a field type allowed.
-						if ( $.inArray( fields[ fieldID ].type, allowedFields ) >= 0 || $.inArray( 'all-fields', allowedFields ) >= 0 ) {
-							$this.append( $( '<option>', { value: fields[ fieldID ].id, text: label } ) );
-						}
-					}
-				}
-
-				// Restore previous value if found.
-				if ( selected ) {
-					$this.find( 'option[value="' + selected + '"]' ).prop( 'selected', true );
-				}
-
-				// Add a "Custom Value" option if it is supported.
-				const customValueSupport = $this.data( 'custom-value-support' );
-
-				if ( typeof customValueSupport === 'boolean' && customValueSupport ) {
-					$this.append(
-						$( '<option>', {
-							value: 'custom_value',
-							text: wpforms_builder.add_custom_value_label,
-							class: 'wpforms-field-map-option-custom-value',
-						} )
-					);
-				}
-
-				$builder.trigger( 'wpformsFieldSelectMapped', [ $this ] );
-			} );
-		},
-
-		/**
 		 * Validate email smart tags in Notifications fields.
 		 *
-		 * @param {Object} $el Input field to check the value for.
-		 *
 		 * @since 1.4.9
+		 * @since 1.9.5 Deprecated.
+		 *
+		 * @param {Object} $el Input field to check the value for.
 		 */
 		validateEmailSmartTags( $el ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.validateEmailSmartTags()" has been deprecated.' );
+
 			let val = $el.val();
 
 			if ( ! val ) {
@@ -8308,57 +8316,151 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		},
 
 		/**
+		 * Validate Email field smart tag `{field_id="N"}` and return the error.
+		 *
+		 * @since 1.9.5
+		 *
+		 * @param {string} value Input field value.
+		 *
+		 * @return {string|null} Error message or null in case the regexp pattern doesn't match.
+		 */
+		getEmailFieldSmartTagError( value ) {
+			// Detects `{field_id="N"}` smart tags.
+			const fieldSmartTagRegex = /\{field_id="(\d+)"\}/g;
+
+			if ( ! fieldSmartTagRegex.test( value ) ) {
+				return null;
+			}
+
+			// Reset regex lastIndex to ensure we start from the beginning.
+			fieldSmartTagRegex.lastIndex = 0;
+
+			// Extract the field ID from the smart tag.
+			const match = fieldSmartTagRegex.exec( value );
+			const fieldId = match ? match[ 1 ] : null;
+			const fieldSettings = wpf.getField( fieldId );
+
+			if ( fieldSettings && fieldSettings.type === 'email' ) {
+				return '';
+			}
+
+			return wpforms_builder.allow_only_email_fields;
+		},
+
+		/**
 		 * Validate From Email in Notification block.
 		 *
 		 * @since 1.8.1
 		 */
 		validateFromEmail() {
-			const $field = $( this );
-			const value = $field.val().trim();
-			const $fieldWrapper = $field.parent();
-			const $warning = $fieldWrapper.find( '.wpforms-alert-warning-wide' );
-			const warningClass = 'wpforms-panel-field-warning';
+			// Detect repeated execution.
+			if ( wpf.isRepeatedCall( 'validateFromEmail' ) ) {
+				return;
+			}
 
+			const $field = $( this );
+			const value = $field.val();
+
+			if ( $field.data( 'value' ) === value ) {
+				return;
+			}
+
+			$field.data( 'value', value );
+
+			const $fieldWrapper = $field.parent();
+			const warningClass = 'wpforms-panel-field-warning';
 			const blockedSymbolsRegex = /[\s,;]/g;
 
-			if ( blockedSymbolsRegex.test( value ) ) {
-				$warning.remove();
+			if ( blockedSymbolsRegex.test( value.trim() ) ) {
 				$fieldWrapper.addClass( warningClass );
-				app.validationErrorNotificationPopup( wpforms_builder.allow_only_one_email );
+				app.printNotice( wpforms_builder.allow_only_one_email, $fieldWrapper );
 
 				return;
 			}
 
+			if ( ! app.shouldCallAjaxValidation( value, $fieldWrapper, warningClass ) ) {
+				return;
+			}
+
+			app.ajaxValidation( value, $fieldWrapper, warningClass );
+		},
+
+		/**
+		 * Whether we should call Ajax validation.
+		 *
+		 * @since 1.9.5
+		 *
+		 * @param {*}      value         Field value.
+		 * @param {jQuery} $fieldWrapper Field wrapper.
+		 * @param {string} warningClass  Warning class.
+		 *
+		 * @return {boolean} True if Ajax validation should be performed, otherwise false.
+		 */
+		shouldCallAjaxValidation( value, $fieldWrapper, warningClass ) {
+			let error = '';
+			let callAjaxValidation = true;
+
+			// If the field is empty.
+			error = value === '' ? wpforms_builder.empty_email_address : '';
+
+			// If the field is not empty, check for the `{field_id}` smart tag.
+			if ( error === '' ) {
+				error = app.getEmailFieldSmartTagError( value );
+				callAjaxValidation = error === null;
+			}
+
+			// If there is an error, we don't need to make an AJAX request.
+			if ( error ) {
+				$fieldWrapper.addClass( warningClass );
+				app.printNotice( error, $fieldWrapper, value === '' );
+
+				return false;
+			}
+
+			if ( ! callAjaxValidation ) {
+				$fieldWrapper.removeClass( warningClass );
+				app.removeNotice( $fieldWrapper );
+
+				return false;
+			}
+
+			return true;
+		},
+
+		/**
+		 * Whether we should call Ajax validation.
+		 *
+		 * @since 1.9.5
+		 *
+		 * @param {*}      value         Field value.
+		 * @param {jQuery} $fieldWrapper Field wrapper.
+		 * @param {string} warningClass  Warning class.
+		 */
+		ajaxValidation( value, $fieldWrapper, warningClass ) {
 			const data = {
 				form_id: s.formID, // eslint-disable-line camelcase
-				email: $field.val(),
+				email: value,
 				nonce: wpforms_builder.nonce,
 				action: 'wpforms_builder_notification_from_email_validate',
 			};
 
 			$.post(
 				wpforms_builder.ajax_url, data, function( res ) {
+					app.removeNotice( $fieldWrapper );
+
 					if ( res.success ) {
-						$warning.remove();
 						$fieldWrapper.removeClass( warningClass );
 
 						return;
 					}
 
 					$fieldWrapper.addClass( warningClass );
-
-					if ( $warning.length ) {
-						$warning.replaceWith( res.data );
-
-						return;
-					}
-
 					$fieldWrapper.append( res.data );
-				} )
-				.fail( function( xhr, textStatus, e ) { // eslint-disable-line no-unused-vars
-					// eslint-disable-next-line no-console
-					console.log( xhr.responseText );
-				} );
+				}
+			).fail( function( xhr, textStatus, e ) { // eslint-disable-line no-unused-vars
+				// eslint-disable-next-line no-console
+				console.log( xhr.responseText );
+			} );
 		},
 
 		/**

@@ -2558,7 +2558,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 .wpforms-admin-empty-state-container.wpforms-admin-no-payments {
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
 }
 
@@ -7248,46 +7248,11 @@ tr:hover .wpforms-column-tags-links .wpforms-column-tags-edit,
   justify-content: space-between;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-25,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-25,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-25,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-25 {
-  width: 25%;
-}
-
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-33,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-33,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-33,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-33 {
-  width: 33.3333%;
-}
-
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-50,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-50,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-50,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-50 {
-  width: 50%;
-}
-
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-67,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-67,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-67,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-67 {
-  width: 66.6666%;
-}
-
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-75,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-75,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-75,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-75 {
-  width: 75%;
-}
-
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-100,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-100,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column-100,
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column-100 {
-  width: 100%;
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-column,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-layout-block .wpforms-payment-entry-layout-row .wpforms-payment-entry-column {
+  width: var(--field-layout-column-width, auto);
 }
 
 #wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-payment-entry-repeater-block .wpforms-payment-entry-repeater-row .wpforms-payment-entry-field .wpforms-payment-entry-field-name,
@@ -8698,7 +8663,7 @@ body.rtl .wpforms-tablenav-filters {
   height: 17px;
   width: 17px;
   margin-right: 10px;
-  margin-top: -1.5px;
+  margin-top: -3px;
 }
 
 .wpforms-success-icon {
@@ -9201,7 +9166,7 @@ body.rtl .wpforms-tablenav-filters {
   }
 }
 
-.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard {
+.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url a.wpforms-copy-to-clipboard, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url a.wpforms-copy-to-clipboard {
   border: 1px solid #8c8f94;
   color: #50575e;
   height: 35px;
@@ -9212,28 +9177,28 @@ body.rtl .wpforms-tablenav-filters {
   text-align: center;
 }
 
-.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard span {
+.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard span, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url a.wpforms-copy-to-clipboard span, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard span, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url a.wpforms-copy-to-clipboard span {
   text-align: center;
   font-size: 17px;
   margin: 3px 0 0 -1px;
 }
 
-.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard span.dashicons-yes-alt {
+.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard span.dashicons-yes-alt, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url a.wpforms-copy-to-clipboard span.dashicons-yes-alt, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url a.wpforms-copy-to-clipboard span.dashicons-yes-alt, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url a.wpforms-copy-to-clipboard span.dashicons-yes-alt {
   color: #008a20;
 }
 
-.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url input[type=text]:disabled {
+.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url input[type=text]:disabled, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url input[type=text]:disabled, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url input[type=text]:disabled, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url input[type=text]:disabled {
   cursor: copy;
   background: #ffffff;
   opacity: 0.5;
   border: 1px solid #8c8f94;
 }
 
-.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url p {
+.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url p, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url p, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url p, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url p {
   margin: 10px 0 10px 0;
 }
 
-.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url p:first-of-type {
+.wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url p:first-of-type, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-stripe-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url p:first-of-type, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-stripe-webhook-endpoint-url p:first-of-type, .wpforms-admin-settings .wpforms-setting-row#wpforms-setting-row-square-webhooks-endpoint-set .wpforms-square-webhook-endpoint-url p:first-of-type {
   margin-top: 0;
 }
 
@@ -9703,7 +9668,7 @@ body.rtl .wpforms-tablenav-filters {
 .wpforms-admin-settings .checkbox-multiselect-columns:before {
   content: "\f0ec";
   color: #999;
-  font: normal normal normal 20px/1 FontAwesome;
+  font: normal normal normal 20px/1 FontAwesome, sans-serif;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -9768,7 +9733,7 @@ body.rtl .wpforms-tablenav-filters {
 .wpforms-admin-settings .checkbox-multiselect-columns ul li label:before {
   content: "\f0c8";
   color: #ddd;
-  font: normal normal normal 16px/1 FontAwesome;
+  font: normal normal normal 16px/1 FontAwesome, sans-serif;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -10928,6 +10893,51 @@ body.rtl .wpforms-tablenav-filters {
   margin-top: 8px;
 }
 
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-connection-status-sandbox .wpforms-square-connected .wpforms-notice.notice-error, .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-connection-status-production .wpforms-square-connected .wpforms-notice.notice-error {
+  border-left-color: #d63638;
+  margin: 10px 0;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-location-id-sandbox, .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-location-id-production {
+  padding-bottom: 0;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-location-id-sandbox.location-error .choices__inner, .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-location-id-production.location-error .choices__inner {
+  border-color: #d63638;
+  box-shadow: 0 0 0 1px #d63638;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-location-id-sandbox.location-error .choices__list--dropdown, .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-location-id-production.location-error .choices__list--dropdown {
+  border-color: #d63638;
+  box-shadow: 0 1px 0 1px #d63638;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-location-status-sandbox .wpforms-notice.notice-error, .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-location-status-production .wpforms-notice.notice-error {
+  border-left-color: #d63638;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-webhooks-enabled {
+  padding-bottom: 10px;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-webhooks-connect-status-sandbox, .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-webhooks-connect-status-production {
+  padding-bottom: 0;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-webhooks-connect-status-sandbox .wpforms-notice.notice-error, .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-webhooks-connect-status-production .wpforms-notice.notice-error {
+  margin: 0 0 10px 0;
+  border-left-color: #d63638;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-webhooks-communication-status {
+  padding-bottom: 0;
+}
+
+.wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-square-webhooks-communication-status .wpforms-notice.notice-warning {
+  margin: -20px 0 20px 0;
+  border-left-color: #036aab;
+}
+
 .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-paypal-commerce-connection-status-live p:not(.desc), .wpforms-admin-settings-payments .wpforms-setting-row#wpforms-setting-row-paypal-commerce-connection-status-sandbox p:not(.desc) {
   margin-top: 0;
 }
@@ -10985,6 +10995,14 @@ body.rtl .wpforms-tablenav-filters {
 .wpforms-admin-settings-payments .wpforms-setting-row-toggle[id$="-sandbox-mode"] input[type=checkbox]:checked:focus + label.wpforms-toggle-control-icon,
 .wpforms-admin-settings-payments .wpforms-setting-row-toggle[id$="-test-mode"] input[type=checkbox]:checked:focus + label.wpforms-toggle-control-icon {
   box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px #d63638;
+}
+
+body div.jconfirm .jconfirm-box-container .jconfirm-box .error.wpforms-square-webhooks-connect-error {
+  margin-top: 10px !important;
+}
+
+body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content input[type=text]#wpforms-square-personal-access-token {
+  margin-top: 20px !important;
 }
 
 #wpforms-welcome {
@@ -11481,7 +11499,7 @@ body.rtl .wpforms-tablenav-filters {
 }
 
 .wpforms-wpcode .wpforms-wpcode-header .wpforms-wpcode-header-search:before {
-  font: normal normal normal 14px/1 FontAwesome;
+  font: normal normal normal 14px/1 FontAwesome, sans-serif;
   content: "\f002";
   color: #a7aaad;
   padding: 12px;

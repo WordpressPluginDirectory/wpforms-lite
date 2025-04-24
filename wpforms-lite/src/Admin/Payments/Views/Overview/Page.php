@@ -7,6 +7,7 @@ use WPForms\Db\Payments\ValueValidator;
 use WPForms\Admin\Payments\Payments;
 use WPForms\Admin\Payments\Views\PaymentsViewsInterface;
 use WPForms\Integrations\Stripe\Helpers as StripeHelpers;
+use WPForms\Integrations\Square\Helpers as SquareHelpers;
 
 /**
  * Payments Overview Page class.
@@ -261,11 +262,11 @@ class Page implements PaymentsViewsInterface {
 	 *
 	 * @return string
 	 */
-	public static function get_mode() {
+	public static function get_mode(): string {
 
 		static $mode;
 
-		if ( ! wpforms_is_admin_ajax() && ! wpforms_is_admin_page( 'payments' ) && ! wpforms_is_admin_page( 'entries' ) ) {
+		if ( ! self::is_valid_context_for_mode() ) {
 			return 'live';
 		}
 
@@ -273,24 +274,66 @@ class Page implements PaymentsViewsInterface {
 			return $mode;
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$mode     = isset( $_GET['mode'] ) ? sanitize_key( $_GET['mode'] ) : '';
+		$mode     = self::get_mode_from_request();
 		$user_id  = get_current_user_id();
 		$meta_key = 'wpforms-payments-mode';
 
-		if ( ValueValidator::is_valid( $mode, 'mode' ) ) {
+		if ( self::is_mode_valid_and_nonce_verified( $mode ) ) {
 			update_user_meta( $user_id, $meta_key, $mode );
 
 			return $mode;
 		}
 
-		$mode = get_user_meta( $user_id, $meta_key, true );
+		$mode = (string) get_user_meta( $user_id, $meta_key, true );
 
 		if ( empty( $mode ) || ! Helpers::is_test_payment_exists() ) {
 			$mode = 'live';
 		}
 
 		return $mode;
+	}
+
+	/**
+	 * Check if the context is valid for payment mode.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @return bool
+	 */
+	private static function is_valid_context_for_mode(): bool {
+
+		return wpforms_is_admin_ajax() || wpforms_is_admin_page( 'payments' ) || wpforms_is_admin_page( 'entries' );
+	}
+
+	/**
+	 * Retrieve the payment mode from the request.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @return string
+	 */
+	private static function get_mode_from_request(): string {
+
+		// Nonce is checked in the `is_mode_valid_and_nonce_verified` method.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return isset( $_GET['mode'] ) ? sanitize_key( $_GET['mode'] ) : '';
+	}
+
+	/**
+	 * Determine if the mode is valid and the nonce is verified.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param string $mode Payment mode to validate.
+	 *
+	 * @return bool
+	 */
+	private static function is_mode_valid_and_nonce_verified( string $mode ): bool {
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return ValueValidator::is_valid( $mode, 'mode' ) &&
+			isset( $_GET['_wpnonce'] ) &&
+			wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ), 'wpforms_payments_overview_nonce' );
 	}
 
 	/**
@@ -321,10 +364,10 @@ class Page implements PaymentsViewsInterface {
 
 		// Otherwise, output get started state.
 		$is_upgraded = StripeHelpers::is_allowed_license_type();
-		$message     = __( "First you need to set up a payment gateway. We've partnered with <strong>Stripe</strong> to bring easy payment forms to everyone.&nbsp;", 'wpforms-lite' );
+		$message     = __( "First you need to set up a payment gateway. We've partnered with <strong>Stripe and Square</strong> to bring easy payment forms to everyone.&nbsp;", 'wpforms-lite' );
 		$message    .= $is_upgraded
 			? sprintf( /* translators: %s - WPForms Addons admin page URL. */
-				__( 'Other payment gateways such as <strong>PayPal</strong> and <strong>Square</strong> can be installed from the <a href="%s">Addons screen</a>.', 'wpforms-lite' ),
+				__( 'Other payment gateways such as <strong>PayPal</strong> and <strong>Authorize.Net</strong> can be installed from the <a href="%s">Addons screen</a>.', 'wpforms-lite' ),
 				esc_url(
 					add_query_arg(
 						[
@@ -358,22 +401,22 @@ class Page implements PaymentsViewsInterface {
 	}
 
 	/**
-	 * Determine whether a payment gateway is configured.
+	 * Determine whether Stripe or Square payment gateway is configured.
 	 *
 	 * @since 1.8.2
 	 *
 	 * @return bool
 	 */
-	private function is_gateway_configured() {
+	private function is_gateway_configured(): bool {
 
 		/**
-		 * Allow to modify a status whether a payment gateway is configured.
+		 * Allow to modify a status whether Stripe or Square payment gateway is configured.
 		 *
 		 * @since 1.8.2
 		 *
-		 * @param bool $is_configured True if a payment gateway is configured.
+		 * @param bool $is_configured True if Stripe or Square payment gateway is configured.
 		 */
-		return (bool) apply_filters( 'wpforms_admin_payments_views_overview_page_gateway_is_configured', StripeHelpers::has_stripe_keys() );
+		return (bool) apply_filters( 'wpforms_admin_payments_views_overview_page_gateway_is_configured', StripeHelpers::has_stripe_keys() || SquareHelpers::is_square_configured() );
 	}
 
 	/**

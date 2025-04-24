@@ -172,7 +172,12 @@ class WPForms_Builder_Panel_Settings extends WPForms_Builder_Panel {
 				$this->form_data,
 				esc_html__( 'Form Description', 'wpforms-lite' ),
 				[
-					'tooltip' => esc_html__( 'Enter descriptive text or instructions to help your users understand the requirements of your form.', 'wpforms-lite' ),
+					'tooltip'     => esc_html__( 'Enter descriptive text or instructions to help your users understand the requirements of your form.', 'wpforms-lite' ),
+					'input_class' => 'wpforms-smart-tags-enabled',
+					'data'        => [
+						'type'   => 'all',
+						'fields' => '',
+					],
 				]
 			);
 

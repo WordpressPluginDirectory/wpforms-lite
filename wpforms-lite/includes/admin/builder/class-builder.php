@@ -17,7 +17,7 @@ use WPForms\Integrations\AI\Helpers as AIHelpers;
  * @since 1.0.0
  * @since 1.6.8 Form Builder Refresh.
  *                  - Added `deregister_common_wp_admin_styles()` method.
- *                  - Changed logic of enqueuing styles.
+ *                  - Changed logic of enqueue styles.
  */
 class WPForms_Builder {
 
@@ -429,6 +429,13 @@ class WPForms_Builder {
 		// Force hide an admin side menu.
 		echo '<style>#adminmenumain { display: none !important }</style>';
 
+		/**
+		 * Form Builder admin head action.
+		 *
+		 * @param string $view Current view.
+		 *
+		 * @since 1.4.6
+		 */
 		do_action( 'wpforms_builder_admin_head', $this->view );
 	}
 
@@ -442,6 +449,13 @@ class WPForms_Builder {
 
 		$this->suppress_conflicts();
 
+		/**
+		 * Form Builder enqueues before action.
+		 *
+		 * @param string $view Current view.
+		 *
+		 * @since 1.0.0
+		 */
 		do_action( 'wpforms_builder_enqueues_before', $this->view );
 
 		$min = wpforms_get_min_suffix();
@@ -574,7 +588,7 @@ class WPForms_Builder {
 			'dom-purify',
 			WPFORMS_PLUGIN_URL . 'assets/lib/purify.min.js',
 			[],
-			'3.2.3',
+			'3.2.5',
 			false
 		);
 
@@ -609,7 +623,7 @@ class WPForms_Builder {
 		wp_enqueue_script(
 			'wpforms-admin-builder-dropdown-list',
 			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/dropdown-list{$min}.js",
-			[ 'jquery' ],
+			[ 'jquery', 'listjs' ],
 			WPFORMS_VERSION,
 			true
 		);
@@ -635,6 +649,22 @@ class WPForms_Builder {
 			'wpforms-admin-builder-templates',
 			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/templates{$min}.js",
 			[ 'wp-util' ],
+			WPFORMS_VERSION,
+			true
+		);
+
+		wp_enqueue_script(
+			'wpforms-builder-smart-tags',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/smart-tags{$min}.js",
+			[ 'wpforms-builder' ],
+			WPFORMS_VERSION,
+			true
+		);
+
+		wp_enqueue_script(
+			'wpforms-builder-field-map',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/field-map{$min}.js",
+			[ 'wpforms-builder' ],
 			WPFORMS_VERSION,
 			true
 		);
@@ -682,15 +712,6 @@ class WPForms_Builder {
 	 * @noinspection HtmlUnknownTarget
 	 */
 	private function get_localized_strings(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
-
-		/**
-		 * Smart Tags.
-		 *
-		 * @since 1.6.7
-		 *
-		 * @param array $smart_tags Array of smart tags.
-		 */
-		$smart_tags = (array) apply_filters( 'wpforms_builder_enqueues_smart_tags', wpforms()->obj( 'smart_tags' )->get_smart_tags() );
 
 		$image_extensions = wpforms_chain( get_allowed_mime_types() )
 			->map(
@@ -815,19 +836,7 @@ class WPForms_Builder {
 			'rule_create'                             => esc_html__( 'Create new rule', 'wpforms-lite' ),
 			'rule_create_group'                       => esc_html__( 'Add New Group', 'wpforms-lite' ),
 			'rule_delete'                             => esc_html__( 'Delete rule', 'wpforms-lite' ),
-			'smart_tags'                              => $smart_tags,
-			'smart_tags_disabled_for_fields'          => [ 'entry_id' ],
-
-			/**
-			 * Filters the list of Smart Tags that are disabled for confirmations.
-			 *
-			 * @since 1.9.3
-			 *
-			 * @param array $disabled List of disabled Smart Tags.
-			 */
-			'smart_tags_disabled_for_confirmations'   => apply_filters( 'wpforms_builder_smart_tags_disabled_for_confirmations', [] ),
-			'smart_tags_show'                         => esc_html__( 'Show Smart Tags', 'wpforms-lite' ),
-			'smart_tags_hide'                         => esc_html__( 'Hide Smart Tags', 'wpforms-lite' ),
+			'smart_tags_dropdown_title'               => esc_html__( 'Smart Tags', 'wpforms-lite' ),
 			'select_field'                            => esc_html__( '--- Select Field ---', 'wpforms-lite' ),
 			'select_choice'                           => esc_html__( '--- Select Choice ---', 'wpforms-lite' ),
 			'upload_image_title'                      => esc_html__( 'Upload or Choose Your Image', 'wpforms-lite' ),
@@ -865,6 +874,8 @@ class WPForms_Builder {
 				'last'   => esc_html__( 'Last', 'wpforms-lite' ),
 			],
 			'no_pages_found'                          => esc_html__( 'No results found', 'wpforms-lite' ),
+			'no_results_found'                        => esc_html__( 'Sorry, no results found', 'wpforms-lite' ),
+			'search'                                  => esc_html__( 'Search', 'wpforms-lite' ),
 			'number_slider_error_valid_default_value' => sprintf( /* translators: %1$s - from value %2$s - to value. */
 				esc_html__( 'Please enter a valid value or change the Increment. The nearest valid values are %1$s and %2$s.', 'wpforms-lite' ),
 				'{from}',
@@ -1049,6 +1060,11 @@ class WPForms_Builder {
 
 		echo '<script type="text/javascript">wpforms_preset_choices=' . wp_json_encode( $choices ) . '</script>';
 
+		/**
+		 * Form Builder footer scripts action.
+		 *
+		 * @since 1.3.8
+		 */
 		do_action( 'wpforms_builder_print_footer_scripts' );
 	}
 

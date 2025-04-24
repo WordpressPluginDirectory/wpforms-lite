@@ -1,4 +1,4 @@
-/* global wpforms_admin_settings_stripe, wpforms_admin */
+/* global wpforms_admin_settings_stripe, wpforms_admin, wpf */
 
 /**
  * Stripe integration settings script.
@@ -81,7 +81,9 @@ const WPFormsSettingsStripe = window.WPFormsSettingsStripe || ( function( docume
 			el.$wrapper
 				.on( 'change', '#wpforms-setting-stripe-test-mode', app.triggerModeSwitchAlert );
 			el.copyButton
-				.on( 'click', app.copyWebhooksEndpoint );
+				.on( 'click', function( e ) {
+					wpf.copyValueToClipboard( e, $( this ), el.webhookEndpointUrl );
+				} );
 			el.webhookMethod
 				.on( 'change', app.onMethodChange );
 		},
@@ -124,29 +126,15 @@ const WPFormsSettingsStripe = window.WPFormsSettingsStripe || ( function( docume
 		 *
 		 * @since 1.8.4
 		 *
+		 * @deprecated 1.9.5 Changed to the wpf.copyWebhooksEndpoint().
+		 *
 		 * @param {Object} event Event object.
 		 */
 		copyWebhooksEndpoint( event ) {
-			event.preventDefault();
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsSettingsStripe.copyWebhooksEndpoint()" has been deprecated! Use wpf.copyWebhooksEndpoint() instead.' );
 
-			// Use Clipboard API for modern browsers and HTTPS connections, in other cases use old-fashioned way.
-			if ( navigator.clipboard ) {
-				navigator.clipboard.writeText( el.webhookEndpointUrl.val() ).then(
-					function() {
-						el.copyButton.find( 'span' ).removeClass( 'dashicons-admin-page' ).addClass( 'dashicons-yes-alt' );
-					}
-				);
-
-				return;
-			}
-
-			el.webhookEndpointUrl.attr( 'disabled', false ).focus().select();
-
-			document.execCommand( 'copy' );
-
-			el.copyButton.find( 'span' ).removeClass( 'dashicons-admin-page' ).addClass( 'dashicons-yes-alt' );
-
-			el.webhookEndpointUrl.attr( 'disabled', true );
+			wpf.copyValueToClipboard( event, $( this ), el.webhookEndpointUrl );
 		},
 
 		/**

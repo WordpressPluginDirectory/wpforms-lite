@@ -4,10 +4,10 @@
  * Plugin URI:        https://wpforms.com
  * Description:       Beginner friendly WordPress contact form plugin. Use our Drag & Drop form builder to create your WordPress forms.
  * Requires at least: 5.5
- * Requires PHP:      7.1
+ * Requires PHP:      7.2
  * Author:            WPForms
  * Author URI:        https://wpforms.com
- * Version:           1.9.4.2
+ * Version:           1.9.5
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wpforms-lite
@@ -57,7 +57,7 @@ if ( ! defined( 'WPFORMS_VERSION' ) ) {
 	 *
 	 * @since 1.0.0
 	 */
-	define( 'WPFORMS_VERSION', '1.9.4.2' );
+	define( 'WPFORMS_VERSION', '1.9.5' );
 }
 
 // Plugin Folder Path.
@@ -229,8 +229,8 @@ if ( function_exists( 'wpforms' ) ) {
 	return;
 }
 
-// We require PHP version 7.1+ for the whole plugin to work.
-if ( version_compare( phpversion(), '7.1', '<' ) ) {
+// We require PHP version 7.2+ for the whole plugin to work.
+if ( version_compare( phpversion(), '7.2', '<' ) ) {
 
 	if ( ! function_exists( 'wpforms_php52_notice' ) ) {
 

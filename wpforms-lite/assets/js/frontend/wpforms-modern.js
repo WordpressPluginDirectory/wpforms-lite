@@ -352,7 +352,7 @@ WPForms.FrontendModern = WPForms.FrontendModern || ( function( document, window,
 
 			if ( e.key === 'Enter' || e.type === 'click' ) {
 				e.preventDefault();
-				e.stopPropagation();
+				e.stopImmediatePropagation();
 			}
 		},
 

@@ -1,5 +1,29 @@
 == Changelog ==
 
+= 1.9.5 =
+- IMPORTANT: Support for PHP 7.1 has been discontinued. If you are running PHP 7.1, you MUST upgrade PHP before installing WPForms 1.9.5. Failure to do that will disable WPForms core functionality.
+- Added: Users can connect their Square accounts and receive payments via their payment forms.
+- Added: New design for Smart Tags.
+- Added: The ability to activate and deactivate email notifications through a status button in the form builder.
+- Changed: Enhancing the prevention of duplicate form submissions.
+- Changed: Improved the error messaging when creating new provider connections in the form builder.
+- Changed: Improved the "From Email" setting validation in the Notifications screen.
+- Changed: AI Chat Modal can be docked to the right of the builder.
+- Changed: The order of the admin bar menu items.
+- Changed: Improved compatibility with PHP 8.1.
+- Changed: Improved UX for Dropdown and Dropdown Items fields.
+- Fixed: Hidden by conditional logic items in the Order Summary table were shown in the Editors.
+- Fixed: Stripe settings were active when the credit card field was removed from the form.
+- Fixed: The notice for the minimum and maximum valid values of the Number Slider field is now correct.
+- Fixed: WPForms Challenge RTL issues.
+- Fixed: Incorrect wpforms_htaccess_file transient name generation.
+- Fixed: Console error when users tried to embed a form into an existing page on the last step of the WPForms Challenge.
+- Fixed: The submit button stays disabled after Stripe payment fails in some cases.
+- Fixed: The Dropdown and Dropdown Items fields displayed placeholders instead of default values in the Form Builder.
+- Fixed: Wrong paddings in the Form Builder sidebar on Windows in the RTL mode.
+- Fixed: Improved the From Email notification setting. The Email field is detected now by a smart tag.
+- Fixed: Improved notification template for the {entry_geolocation} smart tag.
+
 = 1.9.4.2 =
 - Fixed: Fatal error when trying to delete the plugin.
 - Fixed: Character encoding issues in Email notifications when viewed on some Apple devices.

@@ -706,7 +706,7 @@ export default ( function( document, window, $ ) {
 			 *
 			 * @return {JSX.Element} Main setting JSX code.
 			 */
-			getMainSettings( attributes, handlers, formOptions ) {
+			getMainSettings( attributes, handlers, formOptions ) { // eslint-disable-line max-lines-per-function
 				if ( ! app.hasForms() ) {
 					return app.jsxParts.printEmptyFormsNotice( attributes.clientId );
 				}
@@ -899,8 +899,7 @@ export default ( function( document, window, $ ) {
 			 * @param {Object} handlers     Block event handlers.
 			 * @param {Object} sizeOptions  Size selector options.
 			 * @param {Object} blockOptions Block options loaded from external modules.
-			 *
-			 * @param {Object} uiState 	UI state.
+			 * @param {Object} uiState      UI state.
 			 *
 			 * @return {Object} Inspector controls JSX code.
 			 */
@@ -1796,7 +1795,7 @@ export default ( function( document, window, $ ) {
 				return;
 			}
 
-			app.initLeadFormSettings( block.parentElement );
+			app.initLeadFormSettings( block );
 		},
 
 		/**
@@ -1808,18 +1807,19 @@ export default ( function( document, window, $ ) {
 		 * @param {Object}  block.dataset Block element.
 		 */
 		initLeadFormSettings( block ) {
-			if ( ! block?.dataset ) {
+			if ( ! app.isFullStylingEnabled() ) {
 				return;
 			}
 
-			if ( ! app.isFullStylingEnabled() ) {
+			if ( ! block?.dataset?.block ) {
 				return;
 			}
 
 			const clientId = block.dataset.block;
 			const $panel = $( `.wpforms-block-settings-${ clientId }` );
+			const isLeadFormsEnabled = app.isLeadFormsEnabled( block );
 
-			if ( app.isLeadFormsEnabled( block ) ) {
+			if ( isLeadFormsEnabled ) {
 				$panel
 					.addClass( 'disabled_panel' )
 					.find( '.wpforms-gutenberg-panel-notice.wpforms-lead-form-notice' )
@@ -1834,6 +1834,7 @@ export default ( function( document, window, $ ) {
 
 			$panel
 				.removeClass( 'disabled_panel' )
+				.removeClass( 'wpforms-lead-forms-enabled' )
 				.find( '.wpforms-gutenberg-panel-notice.wpforms-lead-form-notice' )
 				.css( 'display', 'none' );
 

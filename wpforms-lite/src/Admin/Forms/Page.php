@@ -311,49 +311,6 @@ class Page {
 	}
 
 	/**
-	 * Admin notices.
-	 *
-	 * @since 1.5.7
-	 * @deprecated 1.7.3
-	 */
-	public function notices() {
-
-		_deprecated_function( __METHOD__, '1.7.3 of the WPForms', "wpforms()->obj( 'forms_bulk_actions' )->notices()" );
-
-		wpforms()->obj( 'forms_bulk_actions' )->notices();
-	}
-
-	/**
-	 * Process the bulk table actions.
-	 *
-	 * @since 1.5.7
-	 * @deprecated 1.7.3
-	 */
-	public function process_bulk_actions() {
-
-		_deprecated_function( __METHOD__, '1.7.3 of the WPForms', "wpforms()->obj( 'forms_bulk_actions' )->process()" );
-
-		wpforms()->obj( 'forms_bulk_actions' )->process();
-	}
-
-	/**
-	 * Remove certain arguments from a query string that WordPress should always hide for users.
-	 *
-	 * @since 1.5.7
-	 * @deprecated 1.7.3
-	 *
-	 * @param array $removable_query_args An array of parameters to remove from the URL.
-	 *
-	 * @return array Extended/filtered array of parameters to remove from the URL.
-	 */
-	public function removable_query_args( $removable_query_args ) {
-
-		_deprecated_function( __METHOD__, '1.7.3 of the WPForms', "wpforms()->obj( 'forms_bulk_actions' )->removable_query_args()" );
-
-		return wpforms()->obj( 'forms_bulk_actions' )->removable_query_args( $removable_query_args );
-	}
-
-	/**
 	 * Settings for field column personalization.
 	 *
 	 * @since 1.8.6

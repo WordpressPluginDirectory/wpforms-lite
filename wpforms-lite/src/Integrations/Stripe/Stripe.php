@@ -75,6 +75,7 @@ final class Stripe implements IntegrationInterface {
 
 		if ( wpforms_is_admin_page( 'builder' ) ) {
 			( new Admin\Builder\Settings() )->init();
+			( new Admin\Builder\Notifications() )->init();
 		}
 	}
 }

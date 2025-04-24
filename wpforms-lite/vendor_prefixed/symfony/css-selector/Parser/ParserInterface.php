@@ -26,9 +26,7 @@ interface ParserInterface
     /**
      * Parses given selector source into an array of tokens.
      *
-     * @param string $source
-     *
      * @return SelectorNode[]
      */
-    public function parse($source);
+    public function parse(string $source) : array;
 }

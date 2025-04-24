@@ -73,7 +73,7 @@ class Process {
 	 *
 	 * @var Api\ApiInterface
 	 */
-	private $api;
+	protected $api;
 
 	/**
 	 * Whether the payment has been processed.
@@ -82,7 +82,7 @@ class Process {
 	 *
 	 * @var bool
 	 */
-	private $is_payment_processed = false;
+	protected $is_payment_processed = false;
 
 	/**
 	 * Save matched subscription settings.
@@ -119,7 +119,6 @@ class Process {
 		add_action( 'wpformsstripe_api_common_set_error_from_exception', [ $this, 'process_card_error' ] );
 		add_filter( 'wpforms_forms_submission_prepare_payment_data', [ $this, 'prepare_payment_data' ] );
 		add_filter( 'wpforms_forms_submission_prepare_payment_meta', [ $this, 'prepare_payment_meta' ], 10, 3 );
-		add_filter( 'wpforms_entry_email_process', [ $this, 'process_email' ], 70, 4 );
 		add_action( 'wpforms_process_complete', [ $this, 'process_entry_data' ], 10, 4 );
 		add_filter( 'wpforms_process_bypass_captcha', [ $this, 'bypass_captcha' ] );
 	}
@@ -493,6 +492,8 @@ class Process {
 	 *
 	 * @since 1.8.2
 	 *
+	 * @deprecated 1.9.5
+	 *
 	 * @param bool  $process         Whether to process or not.
 	 * @param array $fields          Form fields.
 	 * @param array $form_data       Form data.
@@ -501,6 +502,8 @@ class Process {
 	 * @return bool
 	 */
 	public function process_email( $process, $fields, $form_data, $notification_id ) {
+
+		_deprecated_function( __METHOD__, '1.9.5 of the WPForms plugin', 'WPFormsStripe\Process::process_email()' );
 
 		if ( ! $process ) {
 			return false;
@@ -645,7 +648,7 @@ class Process {
 	 */
 	public function process_payment_single() {
 
-		$amount_decimals = Helpers::get_decimals_amount();
+		$amount_decimals = wpforms_get_currency_multiplier();
 
 		// Define the basic payment details.
 		$args = [
@@ -1084,7 +1087,7 @@ class Process {
 		return [
 			'form_id'    => $this->form_id,
 			'form_title' => sanitize_text_field( $this->form_data['settings']['form_title'] ),
-			'amount'     => $this->amount * Helpers::get_decimals_amount(),
+			'amount'     => $this->amount * wpforms_get_currency_multiplier(),
 		];
 	}
 
@@ -1159,7 +1162,7 @@ class Process {
 
 		// Round to the nearest whole number because $this->amount can contain a number close to,
 		// but slightly under it, due to how it is stored in the memory.
-		$submitted_amount = round( $this->amount * Helpers::get_decimals_amount() );
+		$submitted_amount = round( $this->amount * wpforms_get_currency_multiplier() );
 
 		// Prevent form submission if a mismatch of the payment amount is detected.
 		if ( ! empty( $intent ) && (int) $submitted_amount !== (int) $intent->amount ) {

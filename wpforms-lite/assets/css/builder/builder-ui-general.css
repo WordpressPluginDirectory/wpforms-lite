@@ -284,7 +284,10 @@
   bottom: 0;
   inset-inline-start: 95px;
   overflow: auto;
-  padding: 30px;
+  padding-block-start: 30px;
+  padding-block-end: 30px;
+  padding-inline-start: 30px;
+  padding-inline-end: 30px;
   position: fixed;
   inset-inline-end: 0;
   top: calc( 76px + var( --wpforms-admin-bar-height ));
@@ -1114,6 +1117,46 @@
 }
 
 .wpforms-builder-dropdown-list ul li .grey {
+  color: #777777;
+}
+
+.wpforms-builder-dropdown-list .wpforms-builder-dropdown-list-search-container {
+  position: relative;
+  padding: 10px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.wpforms-builder-dropdown-list .wpforms-builder-dropdown-list-search-container input {
+  width: 100%;
+}
+
+.wpforms-builder-dropdown-list .wpforms-builder-dropdown-list-search-container input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.wpforms-builder-dropdown-list .wpforms-builder-dropdown-list-search-container .wpforms-builder-dropdown-list-search-close {
+  display: none;
+  position: absolute;
+  inset-inline-end: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #bbbbbb;
+  font-size: 16px;
+}
+
+.wpforms-builder-dropdown-list .wpforms-builder-dropdown-list-search-container .wpforms-builder-dropdown-list-search-close.active {
+  display: block;
+}
+
+.wpforms-builder-dropdown-list .wpforms-builder-dropdown-list-search-container .wpforms-builder-dropdown-list-search-close:hover {
+  color: #86919e;
+}
+
+.wpforms-builder-dropdown-list .wpforms-no-results {
+  display: none;
+  padding: 10px;
   color: #777777;
 }
 

@@ -49,8 +49,8 @@
 			"pageBreakColor": "#066aab"
 		}
 	},
-	"curelean": {
-		"name": "Curelean",
+	"cerulean": {
+		"name": "Cerulean",
 		"settings": {
 			"buttonBackgroundColor": "#0090bf",
 			"buttonTextColor": "#e5f4f9",

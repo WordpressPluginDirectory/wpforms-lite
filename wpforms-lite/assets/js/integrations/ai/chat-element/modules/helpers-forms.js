@@ -21,16 +21,6 @@
  */
 export default function( chat ) { // eslint-disable-line no-unused-vars, max-lines-per-function
 	/**
-	 * The input (textarea) height.
-	 *
-	 * @type {Object}
-	 */
-	const inputHeight = {
-		min: 54,
-		max: 95,
-	};
-
-	/**
 	 * The default `forms` mode helpers object.
 	 *
 	 * @since 1.9.2
@@ -42,9 +32,6 @@ export default function( chat ) { // eslint-disable-line no-unused-vars, max-lin
 		 * @since 1.9.2
 		 */
 		init() {
-			chat.input.addEventListener( 'keydown', chat.modeHelpers.keyDown );
-			chat.input.addEventListener( 'keyup', chat.modeHelpers.resizeInput );
-
 			// Set the initial form generator state.
 			if ( chat.sessionId ) {
 				WPFormsAIFormGenerator.state.chatStart = true;
@@ -56,73 +43,12 @@ export default function( chat ) { // eslint-disable-line no-unused-vars, max-lin
 		},
 
 		/**
-		 * Detect the Enter key press.
-		 * Prevent resizing the input if Enter key pressed without Shift.
-		 *
-		 * @since 1.9.2
-		 *
-		 * @param {KeyboardEvent} e The keyboard event.
-		 */
-		keyDown( e ) {
-			chat.preventResizeInput = e.code === 'Enter' && ! e.shiftKey;
-
-			if ( chat.preventResizeInput ) {
-				e.preventDefault();
-				forms.setInputHeight( inputHeight.min );
-			}
-		},
-
-		/**
-		 * Resize textarea while added new lines.
-		 *
-		 * @since 1.9.2
-		 */
-		resizeInput() {
-			if ( chat.preventResizeInput ) {
-				return;
-			}
-
-			// Reset style to get the correct scroll height.
-			chat.input.style.height = '';
-			chat.input.style.paddingTop = '10px';
-			chat.input.style.paddingBottom = '10px';
-
-			let height;
-			const scrollHeight = chat.input.scrollHeight;
-
-			// Calculate the height based on the scroll height.
-			height = Math.min( scrollHeight, inputHeight.max );
-			height = Math.max( height, inputHeight.min );
-
-			forms.setInputHeight( height );
-		},
-
-		/**
 		 * Reset the message input field.
 		 *
 		 * @since 1.9.2
 		 */
 		resetInput() {
-			forms.resizeInput();
-		},
-
-		/**
-		 * Set textarea height.
-		 *
-		 * @since 1.9.2
-		 *
-		 * @param {number} height The height.
-		 */
-		setInputHeight( height ) {
-			// Adjust padding based on the height.
-			if ( height <= inputHeight.min ) {
-				chat.input.style.paddingTop = '';
-				chat.input.style.paddingBottom = '';
-			}
-
-			// Set the height.
-			chat.input.style.height = height + 'px';
-			chat.style.setProperty( '--wpforms-ai-chat-input-height', height + 'px' );
+			chat.resizeInput();
 		},
 
 		/**
@@ -210,17 +136,6 @@ export default function( chat ) { // eslint-disable-line no-unused-vars, max-lin
 		 */
 		isWelcomeScreen() {
 			return true;
-		},
-
-		/**
-		 * Get the message input field HTML.
-		 *
-		 * @since 1.9.2
-		 *
-		 * @return {string} The message input field markup.
-		 */
-		getMessageInputField() {
-			return `<textarea placeholder="${ chat.modeStrings.placeholder }"></textarea>`;
 		},
 
 		/**

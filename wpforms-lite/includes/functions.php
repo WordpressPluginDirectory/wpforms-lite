@@ -26,5 +26,4 @@ require_once __DIR__ . '/functions/payments.php';
 require_once __DIR__ . '/functions/plugins.php';
 require_once __DIR__ . '/functions/privacy.php';
 require_once __DIR__ . '/functions/providers.php';
-require_once __DIR__ . '/functions/unused.php';
 require_once __DIR__ . '/functions/utilities.php';

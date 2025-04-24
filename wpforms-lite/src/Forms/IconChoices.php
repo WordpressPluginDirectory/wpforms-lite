@@ -4,7 +4,7 @@ namespace WPForms\Forms;
 
 use WPForms\Helpers\PluginSilentUpgrader;
 use WPForms_Builder;
-use WPForms_Install_Skin;
+use WP_Ajax_Upgrader_Skin;
 
 /**
  * Icon Choices functionality.
@@ -252,10 +252,8 @@ class IconChoices {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 		}
 
-		require_once WPFORMS_PLUGIN_DIR . 'includes/admin/class-install-skin.php';
-
 		// Create the Upgrader with our custom skin that reports errors as WP JSON.
-		$installer = new PluginSilentUpgrader( new WPForms_Install_Skin() );
+		$installer = new PluginSilentUpgrader( new WP_Ajax_Upgrader_Skin() );
 
 		// The installer skin reports any errors via wp_send_json_error() with generic error messages.
 		$installer->init();
@@ -544,29 +542,40 @@ class IconChoices {
 	/**
 	 * Get an SVG icon code from a file for inline output in HTML.
 	 *
-	 * Note: the output does not need escaping.
+	 * Note: the output does not need to escape.
 	 *
 	 * @since 1.7.9
 	 *
-	 * @param string $icon  Font Awesome icon name.
-	 * @param string $style Font Awesome style (solid, brands).
-	 * @param int    $size  Icon display size.
+	 * @param string     $icon  Font Awesome icon name.
+	 * @param string     $style Font Awesome style (solid, brands).
+	 * @param string|int $size  Icon display size.
 	 *
 	 * @return string
 	 */
-	private function get_icon( $icon, $style, $size ) {
+	private function get_icon( string $icon, string $style, $size ): string {
 
-		$icon_sizes = $this->get_icon_sizes();
-		$filename   = realpath( "{$this->cache_base_path}/svgs/{$style}/{$icon}.svg" );
+		// Sanitize inputs.
+		$icon  = sanitize_key( $icon );
+		$style = sanitize_key( $style );
+		$size  = sanitize_key( (string) $size );
 
-		if ( ! $filename || ! is_file( $filename ) || ! is_readable( $filename ) ) {
+		$icon_sizes  = $this->get_icon_sizes();
+		$filename    = wp_normalize_path( (string) realpath( "{$this->cache_base_path}/svgs/{$style}/{$icon}.svg" ) );
+		$allowed_dir = wp_normalize_path( (string) realpath( $this->cache_base_path . '/svgs' ) );
+
+		// Verify the file is within the allowed directory.
+		if ( strpos( $filename, $allowed_dir ) !== 0 ) {
+			return '';
+		}
+
+		if ( ! is_file( $filename ) || ! is_readable( $filename ) ) {
 			return '';
 		}
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$svg = file_get_contents( $filename );
+		$svg = (string) file_get_contents( $filename );
 
-		if ( ! $svg ) {
+		if ( strpos( $svg, '<svg' ) === false ) {
 			return '';
 		}
 

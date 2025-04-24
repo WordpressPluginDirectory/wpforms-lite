@@ -2,9 +2,9 @@
 Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
-Tested up to: 6.7
-Stable tag: 1.9.4.2
-Requires PHP: 7.1
+Tested up to: 6.8
+Stable tag: 1.9.5
+Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
 The best WordPress contact form plugin. Drag & Drop form builder to create beautiful contact forms, payment forms, & other custom forms. 7000+ integrations including Stripe and more.
@@ -143,6 +143,7 @@ We also know that our developer friends may want more control, so we added tons 
 * [HubSpot](https://wpforms.com/features/hubspot-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Brevo](https://wpforms.com/features/brevo-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [MailerLite](https://wpforms.com/features/mailerlite-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [MailPoet](https://wpforms.com/features/mailpoet-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [ConvertKit](https://wpforms.com/features/convertkit-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Salesforce](https://wpforms.com/features/salesforce-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Slack](https://wpforms.com/features/slack-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
@@ -290,6 +291,7 @@ Here is a list of our popular marketing integrations:
 * Salesforce CRM
 * Brevo (ex Sendinblue)
 * MailerLite
+* MailPoet
 
 Using our Zapier integration, you can easily connect WPForms with over 7,000+ marketing apps including:
 
@@ -379,6 +381,30 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.5 =
+- IMPORTANT: Support for PHP 7.1 has been discontinued. If you are running PHP 7.1, you MUST upgrade PHP before installing WPForms 1.9.5. Failure to do that will disable WPForms core functionality.
+- Added: Users can connect their Square accounts and receive payments via their payment forms.
+- Added: New design for Smart Tags.
+- Added: The ability to activate and deactivate email notifications through a status button in the form builder.
+- Changed: Enhancing the prevention of duplicate form submissions.
+- Changed: Improved the error messaging when creating new provider connections in the form builder.
+- Changed: Improved the "From Email" setting validation in the Notifications screen.
+- Changed: AI Chat Modal can be docked to the right of the builder.
+- Changed: The order of the admin bar menu items.
+- Changed: Improved compatibility with PHP 8.1.
+- Changed: Improved UX for Dropdown and Dropdown Items fields.
+- Fixed: Hidden by conditional logic items in the Order Summary table were shown in the Editors.
+- Fixed: Stripe settings were active when the credit card field was removed from the form.
+- Fixed: The notice for the minimum and maximum valid values of the Number Slider field is now correct.
+- Fixed: WPForms Challenge RTL issues.
+- Fixed: Incorrect wpforms_htaccess_file transient name generation.
+- Fixed: Console error when users tried to embed a form into an existing page on the last step of the WPForms Challenge.
+- Fixed: The submit button stays disabled after Stripe payment fails in some cases.
+- Fixed: The Dropdown and Dropdown Items fields displayed placeholders instead of default values in the Form Builder.
+- Fixed: Wrong paddings in the Form Builder sidebar on Windows in the RTL mode.
+- Fixed: Improved the From Email notification setting. The Email field is detected now by a smart tag.
+- Fixed: Improved notification template for the {entry_geolocation} smart tag.
 
 = 1.9.4.2 =
 - Fixed: Fatal error when trying to delete the plugin.

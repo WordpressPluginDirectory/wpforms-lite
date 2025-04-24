@@ -88,7 +88,7 @@ class Crypto {
 	public static function decrypt( $encrypted, $key = '' ) {
 
 		// Unpack base64 message.
-		$decoded = base64_decode( $encrypted ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+		$decoded = base64_decode( (string) $encrypted ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 
 		if ( false === $decoded ) {
 			return false;

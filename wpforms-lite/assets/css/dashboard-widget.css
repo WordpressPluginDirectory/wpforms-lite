@@ -172,6 +172,7 @@
   border-bottom: 1px solid #eee;
   height: 291px;
   padding-bottom: 12px;
+  padding-inline-end: 14px;
 }
 
 .wpforms-dash-widget .wpforms-dash-widget-forms-list-block table {

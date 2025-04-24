@@ -47,7 +47,7 @@ class ChargeRefundUpdated extends Base {
 
 		$db_refunded_amount = $this->get_refunded_amount();
 		$currency           = strtoupper( $this->data->object->currency );
-		$decimals_amount    = Helpers::get_decimals_amount( $currency );
+		$decimals_amount    = wpforms_get_currency_multiplier( $currency );
 
 		// We need to format amount since it doesn't contain decimals, e.g. 525 instead of 5.25.
 		$refunded_amount        = $charge->amount_refunded / $decimals_amount;

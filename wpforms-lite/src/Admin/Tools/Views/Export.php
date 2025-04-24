@@ -280,38 +280,31 @@ class Export extends View {
 	 *
 	 * @since 1.6.6
 	 */
-	private function process_template() {
+	private function process_template(): void {
 
-		$form_data = false;
+		// Nonce is checked in the caller: process() method.
+		//phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$form_id  = isset( $_POST['form'] ) ? absint( $_POST['form'] ) : 0;
+		$form_obj = wpforms()->obj( 'form' );
 
-		if ( isset( $_POST['form'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification
-			$form_data = wpforms()->obj( 'form' )->get(
-				absint( $_POST['form'] ), //phpcs:ignore WordPress.Security.NonceVerification
-				[ 'content_only' => true ]
-			);
-		}
-
-		if ( ! $form_data ) {
+		if ( ! $form_obj || ! $form_id ) {
 			return;
 		}
 
-		// Define basic data.
-		$name  = sanitize_text_field( $form_data['settings']['form_title'] );
-		$desc  = sanitize_text_field( $form_data['settings']['form_desc'] );
-		$slug  = sanitize_key( str_replace( [ ' ', '-' ], '_', $form_data['settings']['form_title'] ) );
+		$form_data = $form_obj->get( $form_id, [ 'content_only' => true ] );
+
+		// Define basic data with strict validation.
+		$name = sanitize_text_field( $form_data['settings']['form_title'] ?? '' );
+		$desc = sanitize_text_field( $form_data['settings']['form_desc'] ?? '' );
+		$slug = sanitize_key( str_replace( [ ' ', '-' ], '_', trim( $name ) ) );
+
+		if ( ! $slug ) {
+			// Slug is always empty when the $form_data is not valid.
+			return;
+		}
+
 		$class = 'WPForms_Template_' . $slug;
-
-		// Format template field and settings data.
-		$data                     = $form_data;
-		$data['meta']['template'] = $slug;
-		$data['fields']           = isset( $data['fields'] ) ? wpforms_array_remove_empty_strings( $data['fields'] ) : [];
-		$data['settings']         = wpforms_array_remove_empty_strings( $data['settings'] );
-
-		unset( $data['id'] );
-
-		$data = var_export( $data, true ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
-		$data = str_replace( '  ', "\t", $data );
-		$data = preg_replace( '/([\t\r\n]+?)array/', 'array', $data );
+		$data  = $this->get_template_data( $slug, $form_data );
 
 		// Build the final template string.
 		$this->template = <<<EOT
@@ -347,4 +340,31 @@ endif;
 EOT;
 	}
 
+	/**
+	 * Get template data.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param string      $slug      Template slug.
+	 * @param array|mixed $form_data Form data.
+	 *
+	 * @return string
+	 */
+	private function get_template_data( string $slug, $form_data ): string {
+
+		// Format template field and settings data.
+		$data                     = [];
+		$data['meta']['template'] = $slug;
+		$data['fields']           = isset( $form_data['fields'] ) && is_array( $form_data['fields'] )
+			? wpforms_array_remove_empty_strings( $form_data['fields'] )
+			: [];
+		$data['settings']         = isset( $form_data['settings'] ) && is_array( $form_data['settings'] )
+			? wpforms_array_remove_empty_strings( $form_data['settings'] )
+			: [];
+
+		$template_data = (string) var_export( $data, true ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
+		$template_data = str_replace( '  ', "\t", $template_data );
+
+		return preg_replace( '/([\t\r\n]+?)array/', 'array', $template_data );
+	}
 }

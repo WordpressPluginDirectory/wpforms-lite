@@ -289,29 +289,23 @@ var WPFormsStripeElements = window.WPFormsStripeElements || ( function( document
 		/**
 		 * Callback for Stripe 'handleCardPayment' method.
 		 *
-		 * @param {jQuery} $form Form element.
-		 * @param {object} result Data returned by 'handleCardPayment'.
+		 * @param {jQuery} $form  Form element.
+		 * @param {Object} result Data returned by 'handleCardPayment'.
 		 *
 		 * @since 1.8.2
 		 */
-		handleCardPaymentCallback: function( $form, result ) {
-
+		handleCardPaymentCallback( $form, result ) {
 			if ( result.error ) {
-
-				app.formAjaxUnblock( $form );
+				wpforms.restoreSubmitButton( $form, $form.closest( '.wpforms-container' ) );
 				$form.find( '.wpforms-field-stripe-credit-card-cardnumber' ).addClass( wpforms_stripe.data.element_classes.invalid );
 				app.displayStripeError( $form, result.error.message );
-
-			}  else if ( result.paymentIntent && 'succeeded' === result.paymentIntent.status ) {
-
+			} else if ( result.paymentIntent && 'succeeded' === result.paymentIntent.status ) {
 				$form.find( '.wpforms-stripe-payment-method-id' ).remove();
 				$form.find( '.wpforms-stripe-payment-intent-id' ).remove();
 				$form.append( '<input type="hidden" class="wpforms-stripe-payment-intent-id" name="wpforms[payment_intent_id]" value="' + result.paymentIntent.id + '">' );
 				wpforms.formSubmitAjax( $form );
-
 			} else {
-
-				app.formAjaxUnblock( $form );
+				wpforms.restoreSubmitButton( $form, $form.closest( '.wpforms-container' ) );
 			}
 		},
 
@@ -346,23 +340,15 @@ var WPFormsStripeElements = window.WPFormsStripeElements || ( function( document
 		 * Unblock the AJAX form.
 		 *
 		 * @since 1.8.2
+		 * @deprecated 1.9.5
 		 *
 		 * @param {jQuery} $form Form element.
 		 */
-		formAjaxUnblock: function( $form ) {
+		formAjaxUnblock( $form ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsStripeElements.formAjaxUnblock()" has been deprecated, please use the new "wpforms.restoreSubmitButton()" function instead!' );
 
-			let $container = $form.closest( '.wpforms-container' ),
-				$spinner   = $form.find( '.wpforms-submit-spinner' ),
-				$submit    = $form.find( '.wpforms-submit' ),
-				submitText = $submit.data( 'submit-text' );
-
-			if ( submitText ) {
-				$submit.text( submitText );
-			}
-
-			$submit.prop( 'disabled', false );
-			$container.css( 'opacity', '' );
-			$spinner.hide();
+			wpforms.restoreSubmitButton( $form, $form.closest( '.wpforms-container' ) );
 		},
 
 		/**

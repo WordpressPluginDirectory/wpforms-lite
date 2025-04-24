@@ -1,4 +1,4 @@
-/* global wpforms_builder, wpforms_builder_stripe_card_field */
+/* global wpforms_builder, wpforms_builder_stripe */
 
 /**
  * WPForms Stripe Card Field function.
@@ -39,7 +39,7 @@ var WPFormsStripeCardField = window.WPFormsStripeCardField || ( function( docume
 			$( document ).on( 'wpformsSaved', app.ajaxRequiredCheck );
 			$( document ).on( 'wpformsSaved', app.paymentsEnabledCheck );
 
-			$( document ).on( 'click', '#wpforms-add-fields-' + wpforms_builder_stripe_card_field.field_slug, app.stripeKeysCheck );
+			$( document ).on( 'click', '#wpforms-add-fields-' + wpforms_builder_stripe.field_slug, app.stripeKeysCheck );
 			$( document ).on( 'change', '.wpforms-field-option-stripe-credit-card .wpforms-field-option-row-sublabel_position select', app.sublabelPositionChange );
 			$( document ).on( 'change', '.wpforms-field-option-stripe-credit-card .wpforms-field-option-row-link_email select', app.linkEmailChange );
 
@@ -55,7 +55,7 @@ var WPFormsStripeCardField = window.WPFormsStripeCardField || ( function( docume
 		 */
 		ajaxRequiredCheck: function() {
 
-			if ( ! $( '.wpforms-field.wpforms-field-' + wpforms_builder_stripe_card_field.field_slug ).length ||
+			if ( ! $( '.wpforms-field.wpforms-field-' + wpforms_builder_stripe.field_slug ).length ||
 				$( '#wpforms-panel-field-settings-ajax_submit' ).is( ':checked' ) ) {
 				return;
 			}
@@ -82,7 +82,7 @@ var WPFormsStripeCardField = window.WPFormsStripeCardField || ( function( docume
 		 */
 		paymentsEnabledCheck: function() {
 
-			if ( ! $( `.wpforms-field.wpforms-field-${ wpforms_builder_stripe_card_field.field_slug }:visible` ).length ||
+			if ( ! $( `.wpforms-field.wpforms-field-${ wpforms_builder_stripe.field_slug }:visible` ).length ||
 				$( '#wpforms-panel-field-stripe-enable' ).is( ':checked' ) ||
 				$( '#wpforms-panel-field-stripe-enable_one_time' ).is( ':checked' ) ||
 				$( '#wpforms-panel-field-stripe-enable_recurring' ).is( ':checked' )
@@ -94,7 +94,7 @@ var WPFormsStripeCardField = window.WPFormsStripeCardField || ( function( docume
 				title: wpforms_builder.heads_up,
 				content: wpforms_builder.payments_enabled_required,
 				icon: 'fa fa-exclamation-circle',
-				type: 'orange',
+				type: 'red',
 				buttons: {
 					confirm: {
 						text: wpforms_builder.ok,
@@ -142,9 +142,11 @@ var WPFormsStripeCardField = window.WPFormsStripeCardField || ( function( docume
 		 */
 		disableAddCardButton: function( e, id, type ) {
 
-			if ( wpforms_builder_stripe_card_field.field_slug === type ) {
-				$( '#wpforms-add-fields-' + wpforms_builder_stripe_card_field.field_slug )
+			if ( wpforms_builder_stripe.field_slug === type ) {
+				$( '#wpforms-add-fields-' + wpforms_builder_stripe.field_slug )
 					.prop( 'disabled', true );
+
+				app.paymentsEnabledCheck();
 			}
 		},
 
@@ -159,8 +161,8 @@ var WPFormsStripeCardField = window.WPFormsStripeCardField || ( function( docume
 		 */
 		enableAddCardButton: function( e, id, type ) {
 
-			if ( wpforms_builder_stripe_card_field.field_slug === type ) {
-				$( '#wpforms-add-fields-' + wpforms_builder_stripe_card_field.field_slug )
+			if ( wpforms_builder_stripe.field_slug === type ) {
+				$( '#wpforms-add-fields-' + wpforms_builder_stripe.field_slug )
 					.prop( 'disabled', false );
 			}
 		},

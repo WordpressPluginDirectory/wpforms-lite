@@ -407,13 +407,6 @@ class Field extends WPForms_Field {
 			}
 		}
 
-		// Fake placeholder for Modern style.
-		if ( $is_modern && empty( $field_placeholder ) ) {
-			$first_choices      = reset( $choices );
-			$field_placeholder  = $first_choices['label']['text'];
-			$field_placeholder .= ! empty( $field['show_price_after_labels'] ) && isset( $first_choices['attr']['value'] ) ? ' - ' . wpforms_format_amount( wpforms_sanitize_amount( $first_choices['attr']['value'] ), true ) : '';
-		}
-
 		// Preselect default if no other choices were marked as default.
 		printf(
 			'<select %s>',
@@ -421,7 +414,7 @@ class Field extends WPForms_Field {
 		);
 
 		// Optional placeholder.
-		if ( ! empty( $field_placeholder ) ) {
+		if ( ! empty( $field_placeholder ) || $is_modern ) {
 			printf(
 				'<option value="" class="placeholder" disabled %s>%s</option>',
 				selected( false, $has_default, false ),

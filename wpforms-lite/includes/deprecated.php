@@ -19,9 +19,12 @@ namespace WPForms {
 		 * @since 1.8.0
 		 */
 		const CLASSES = [
-			'WPForms\Pro\Admin\Entries\DefaultScreen' => '1.8.2',
-			'WPForms\Pro\Integrations\AI\AI'          => '1.9.4',
-			'WPForms\Pro\Integrations\AI\Helpers'     => '1.9.4',
+			'WPForms\Pro\Admin\Entries\DefaultScreen'  => '1.8.2',
+			'WPForms\Pro\Integrations\AI\AI'           => '1.9.4',
+			'WPForms\Pro\Integrations\AI\Helpers'      => '1.9.4',
+			'WPForms_Install_Skin'                     => '1.9.5',
+			'WPForms_Install_Silent_Skin'              => '1.5.6.1',
+			'WPForms\Helpers\PluginSilentUpgraderSkin' => '1.9.5',
 		];
 
 		/**
@@ -136,17 +139,6 @@ namespace WPForms\Forms {
 }
 
 namespace {
-	/**
-	 * To be compatible with both WP 4.9 (that can run on PHP 5.2+) and WP 5.3+ (PHP 5.6+),
-	 * we need to rewrite some core WP classes and tweak our own skins to not use PHP 5.6 splat operator (...$args)
-	 * that were introduced in WP 5.3 in \WP_Upgrader_Skin::feedback().
-	 * This alias is a safeguard to those developers who decided to use our internal class WPForms_Install_Silent_Skin,
-	 * which we deleted.
-	 *
-	 * @since 1.5.6.1
-	 */
-	class_alias( 'WPForms\Helpers\PluginSilentUpgraderSkin', 'WPForms_Install_Silent_Skin' );
-
 	/**
 	 * Legacy `WPForms_Addons` class was refactored and moved to the new `WPForms\Pro\Admin\Pages\Addons` class.
 	 * This alias is a safeguard to those developers who use our internal class WPForms_Addons,
@@ -411,42 +403,6 @@ namespace {
 			}
 		}
 	);
-
-	/**
-	 * Get notification state, whether it's opened or closed.
-	 *
-	 * @since      1.4.1
-	 * @deprecated 1.4.8
-	 *
-	 * @param int $notification_id Notification ID.
-	 *
-	 * @param int $form_id         Form ID.
-	 *
-	 * @return string
-	 */
-	function wpforms_builder_notification_get_state( $form_id, $notification_id ) {
-
-		_deprecated_function( __FUNCTION__, '1.4.8 of the WPForms addon', 'wpforms_builder_settings_block_get_state()' );
-
-		return wpforms_builder_settings_block_get_state( $form_id, $notification_id, 'notification' );
-	}
-
-	/**
-	 * Convert bytes to megabytes (or in some cases KB).
-	 *
-	 * @since      1.0.0
-	 * @deprecated 1.6.2
-	 *
-	 * @param int $bytes Bytes to convert to a readable format.
-	 *
-	 * @return string
-	 */
-	function wpforms_size_to_megabytes( $bytes ) {
-
-		_deprecated_function( __FUNCTION__, '1.6.2 of the WPForms plugin', 'size_format()' );
-
-		return size_format( $bytes );
-	}
 }
 
 namespace WPForms\Pro\Admin\Entries {

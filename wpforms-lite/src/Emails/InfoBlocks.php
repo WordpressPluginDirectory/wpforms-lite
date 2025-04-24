@@ -13,7 +13,7 @@ class InfoBlocks {
 	 *
 	 * @since 1.5.4
 	 */
-	const SOURCE_URL = 'https://wpformsapi.com/feeds/v1/email-summaries/';
+	const SOURCE_URL = 'https://wpformsapi.com/feeds/v1/email-summaries/%s';
 
 	/**
 	 * Get info blocks info from the cache file or remote.
@@ -49,7 +49,7 @@ class InfoBlocks {
 		$info = [];
 
 		$res = wp_remote_get(
-			self::SOURCE_URL,
+			$this->get_remote_source(),
 			[
 				'timeout'    => 10,
 				'user-agent' => wpforms_get_default_user_agent(),
@@ -277,5 +277,19 @@ class InfoBlocks {
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		file_put_contents( $file_path, wp_json_encode( $info_blocks ) );
+	}
+
+	/**
+	 * Retrieve the source URL.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @return string
+	 */
+	protected function get_remote_source(): string {
+
+		$license_type = wpforms()->is_pro() ? wpforms_get_license_type() : 'lite';
+
+		return sprintf( self::SOURCE_URL, $license_type );
 	}
 }

@@ -2,7 +2,8 @@
 
 namespace WPForms\Lite\Admin;
 
-use WPForms\Helpers\PluginSilentUpgraderSkin;
+use WP_Ajax_Upgrader_Skin;
+use WP_Error; // phpcs:ignore WPForms.PHP.UseStatement.UnusedUseStatement
 
 /**
  * WPForms Connect Skin.
@@ -12,8 +13,9 @@ use WPForms\Helpers\PluginSilentUpgraderSkin;
  *
  * @since 1.5.5
  * @since 1.5.6.1 Extend PluginSilentUpgraderSkin and clean up the class.
+ * @since 1.9.5 Extend WP_Ajax_Upgrader_Skin class.
  */
-class ConnectSkin extends PluginSilentUpgraderSkin {
+class ConnectSkin extends WP_Ajax_Upgrader_Skin {
 
 	/**
 	 * Instead of outputting HTML for errors, json_encode the errors and send them
@@ -21,17 +23,13 @@ class ConnectSkin extends PluginSilentUpgraderSkin {
 	 *
 	 * @since 1.5.5
 	 *
-	 * @param array $errors Array of errors with the install process.
-	 */
-	public function error( $errors ) {
+	 * @param string|WP_Error $errors  Errors.
+	 * @param mixed           ...$args Optional text replacements.
+     */
+	public function error( $errors, ...$args ) {
 
 		if ( ! empty( $errors ) ) {
-			echo \wp_json_encode(
-				[
-					'error' => \esc_html__( 'There was an error installing WPForms Pro. Please try again.', 'wpforms-lite' ),
-				]
-			);
-			die;
+			wp_send_json_error( esc_html__( 'There was an error installing WPForms Pro. Please try again.', 'wpforms-lite' ) );
 		}
 	}
 }

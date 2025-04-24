@@ -88,24 +88,6 @@ class Search {
 	}
 
 	/**
-	 * Count search results.
-	 *
-	 * @since 1.7.2
-	 * @deprecated 1.7.5
-	 *
-	 * @param array $count Number of forms in different views.
-	 * @param array $args  Get forms arguments.
-	 *
-	 * @return array
-	 */
-	public function update_count( $count, $args ) {
-
-		_deprecated_function( __METHOD__, '1.7.5 of the WPForms plugin', "wpforms()->obj( 'forms_views' )->update_count()" );
-
-		return wpforms()->obj( 'forms_views' )->update_count();
-	}
-
-	/**
 	 * Pass the search term to the arguments array.
 	 *
 	 * @since 1.7.2

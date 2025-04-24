@@ -67,7 +67,7 @@ class WPForms_Admin_Menu {
 		add_submenu_page(
 			'wpforms-overview',
 			esc_html__( 'WPForms Builder', 'wpforms-lite' ),
-			esc_html__( 'Add New', 'wpforms-lite' ),
+			esc_html__( 'Add New Form', 'wpforms-lite' ),
 			$access->get_menu_cap( [ 'create_forms', 'edit_forms' ] ),
 			'wpforms-builder',
 			[ $this, 'admin_page' ]
@@ -250,19 +250,6 @@ class WPForms_Admin_Menu {
 				break;
 			}
 		}
-	}
-
-	/**
-	 * Alias method for backward compatibility.
-	 *
-	 * @since 1.7.4
-	 * @deprecated 1.7.8
-	 */
-	public function style_upgrade_pro_link() {
-
-		_deprecated_function( __METHOD__, '1.7.8 of the WPForms plugin', __CLASS__ . '::adjust_pro_menu_item()' );
-
-		$this->adjust_pro_menu_item();
 	}
 
 	/**

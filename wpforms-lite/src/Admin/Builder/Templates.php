@@ -392,13 +392,9 @@ class Templates {
 	 *
 	 * @since 1.7.7
 	 */
-	public function ajax_save_favorites() {
+	public function ajax_save_favorites(): void {
 
-		if ( ! check_ajax_referer( 'wpforms-form-templates', 'nonce', false ) ) {
-			wp_send_json_error();
-		}
-
-		if ( ! isset( $_POST['slug'], $_POST['favorite'] ) ) {
+		if ( ! $this->is_valid_ajax_request() ) {
 			wp_send_json_error();
 		}
 
@@ -424,6 +420,20 @@ class Templates {
 		wpforms()->obj( 'builder_templates_cache' )->wipe_content_cache();
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * Determine if the AJAX request is valid.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @return bool
+	 */
+	private function is_valid_ajax_request(): bool {
+
+		return check_ajax_referer( 'wpforms-form-templates', 'nonce', false ) &&
+			wpforms_current_user_can( 'create_forms' ) &&
+			isset( $_POST['slug'], $_POST['favorite'] );
 	}
 
 	/**

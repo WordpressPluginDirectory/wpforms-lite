@@ -10,6 +10,8 @@ return array(
     'WPForms\\Tests\\Integration\\' => array($baseDir . '/tests/integration'),
     'WPForms\\Scoper\\' => array($baseDir . '/../.php-scoper'),
     'WPForms\\' => array($baseDir . '/src', $baseDir . '/src'),
+    'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Polyfill\\Iconv\\' => array($vendorDir . '/symfony/polyfill-iconv'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
 );

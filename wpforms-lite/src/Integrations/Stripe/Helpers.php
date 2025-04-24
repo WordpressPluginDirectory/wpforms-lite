@@ -214,10 +214,16 @@ class Helpers {
 	 * Determine whether the addon is activated.
 	 *
 	 * @since 1.8.2
+	 * @since 1.9.5 Added a fallback for legacy versions of the Stripe addon.
 	 *
 	 * @return bool
 	 */
-	public static function is_addon_active() {
+	public static function is_addon_active(): bool {
+
+		// Legacy versions of the Stripe addon do not support the Requirements core feature.
+		if ( defined( 'WPFORMS_STRIPE_VERSION' ) && version_compare( WPFORMS_STRIPE_VERSION, '3.0.1', '<=' ) ) {
+			return function_exists( 'wpforms_stripe' );
+		}
 
 		return wpforms_is_addon_initialized( 'stripe' );
 	}
@@ -362,6 +368,7 @@ class Helpers {
 	 * Get decimals amount.
 	 *
 	 * @since 1.8.4
+	 * @deprecated 1.9.5
 	 *
 	 * @param string $currency Currency.
 	 *
@@ -369,11 +376,9 @@ class Helpers {
 	 */
 	public static function get_decimals_amount( $currency = '' ) {
 
-		if ( ! $currency ) {
-			$currency = wpforms_get_currency();
-		}
+		_deprecated_function( __METHOD__, '1.9.5 of the WPForms plugin', 'wpforms_get_currency_multiplier()' );
 
-		return (int) str_pad( 1, wpforms_get_currency_decimals( strtolower( $currency ) ) + 1, 0, STR_PAD_RIGHT );
+		return wpforms_get_currency_multiplier( $currency );
 	}
 
 	/**

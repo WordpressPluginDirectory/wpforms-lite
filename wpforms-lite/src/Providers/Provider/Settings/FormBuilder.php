@@ -292,6 +292,8 @@ abstract class FormBuilder implements FormBuilderInterface {
 			<?php echo $cl_builder_block; // phpcs:ignore ?>
 		</script>
 		<?php
+
+		$this->builder_error_template();
 	}
 
 	/**
@@ -727,5 +729,63 @@ abstract class FormBuilder implements FormBuilderInterface {
 		}
 
 		$rule = $sanitized_rule;
+	}
+
+	/**
+	 * Builder error template.
+	 * This generates an HTML template for displaying an error message
+	 * when the connection to the provider fails. The message includes
+	 * a link to the connection settings page for troubleshooting.
+	 *
+	 * @since 1.9.5
+	 */
+	protected function builder_error_template(): void {
+
+		?>
+		<script type="text/html" id="tmpl-wpforms-<?php echo esc_attr( $this->core->slug ); ?>-builder-content-connection-default-error">
+			<div
+				class="wpforms-builder-provider-connections-error wpforms-hidden"
+				id="wpforms-<?php echo esc_attr( $this->core->slug ); ?>-builder-provider-error"
+			>
+				<span class="wpforms-builder-provider-connections-error-message">
+					<?php
+					printf(
+						wp_kses( /* translators: %1$s - Documentation URL. */
+							__(
+								'Something went wrong and we can’t connect to the provider. Please check your <a href="%s" target="_blank" rel="noopener noreferrer">connection settings</a>.',
+								'wpforms-lite'
+							),
+							[
+								'a' => [
+									'href'   => [],
+									'target' => [],
+									'rel'    => [],
+								],
+							]
+						),
+						esc_url( $this->get_settings_url() )
+					);
+					?>
+				</span>
+			</div>
+		</script>
+		<?php
+	}
+
+	/**
+	 * Retrieves the settings URL for the specific provider.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @return string The URL to the settings page for the provider.
+	 */
+	private function get_settings_url(): string {
+
+		return admin_url(
+			sprintf(
+				'admin.php?page=wpforms-settings&view=integrations#wpforms-integration-%s',
+				$this->core->slug
+			)
+		);
 	}
 }

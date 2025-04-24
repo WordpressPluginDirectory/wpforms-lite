@@ -128,7 +128,7 @@ function wpforms_create_upload_dir_htaccess_file(): bool {
 	}
 
 	$htaccess_file = File::get_upload_dir() . '.htaccess';
-	$cache_key     = 'wpforms_htaccess_file';
+	$cache_key     = 'upload_htaccess_file';
 
 	if ( File::is_file_updated( $htaccess_file, $cache_key ) ) {
 		return true;
@@ -199,7 +199,7 @@ function wpforms_create_cache_dir_htaccess_file(): bool {
 
 	$htaccess_file = File::get_cache_dir() . '.htaccess';
 
-	if ( File::is_file_updated( $htaccess_file ) ) {
+	if ( File::is_file_updated( $htaccess_file, 'cache_htaccess_file' ) ) {
 		return true;
 	}
 

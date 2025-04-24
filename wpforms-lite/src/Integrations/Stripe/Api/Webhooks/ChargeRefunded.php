@@ -44,7 +44,7 @@ class ChargeRefunded extends Base {
 		}
 
 		$currency              = strtoupper( $this->data->object->currency );
-		$this->decimals_amount = Helpers::get_decimals_amount( $currency );
+		$this->decimals_amount = wpforms_get_currency_multiplier( $currency );
 
 		$charge = ( new PaymentIntents() )->get_charge( $this->data->object->id );
 

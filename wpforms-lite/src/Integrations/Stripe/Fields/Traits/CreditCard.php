@@ -190,14 +190,6 @@ trait CreditCard {
 			WPFORMS_VERSION,
 			true
 		);
-
-		wp_localize_script(
-			'wpforms-builder-stripe-card-field',
-			'wpforms_builder_stripe_card_field',
-			[
-				'field_slug' => Helpers::get_field_slug(),
-			]
-		);
 	}
 
 	/**

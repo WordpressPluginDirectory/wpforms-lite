@@ -254,15 +254,79 @@
   text-decoration: underline;
 }
 
+wpforms-ai-chat:has(textarea) {
+  --wpforms-ai-chat-input-height: 54px;
+  --wpforms-ai-chat-message-list-offset: 79px;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list {
+  height: calc( 100% - var( --wpforms-ai-chat-input-height, 54px ) - var( --wpforms-ai-chat-message-list-offset, 41px ));
+  max-height: calc( 100% - var( --wpforms-ai-chat-input-height, 54px ) - var( --wpforms-ai-chat-message-list-offset, 41px ));
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list.wpforms-scrollbar-compact {
+  scrollbar-gutter: stable;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list.wpforms-scrollbar-compact .wpforms-chat-item-error .wpforms-chat-item-content {
+  width: 400px;
+  max-width: 400px;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-question {
+  width: auto;
+  max-width: 410px;
+  font-weight: 600;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-answer .wpforms-chat-item-content h4,
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-warning .wpforms-chat-item-content h4,
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-error .wpforms-chat-item-content h4 {
+  line-height: 22px;
+  margin: 0;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-answer .wpforms-chat-item-content .wpforms-ai-chat-answer-buttons,
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-warning .wpforms-chat-item-content .wpforms-ai-chat-answer-buttons,
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-error .wpforms-chat-item-content .wpforms-ai-chat-answer-buttons {
+  margin-top: 10px;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-answer:last-child {
+  margin-bottom: 20px;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-list .wpforms-chat-item-content {
+  position: relative;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-inactive .wpforms-chat-item-answer:not(.active) .wpforms-chat-item-content {
+  pointer-events: none;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-input {
+  padding: 35px 40px;
+  height: calc( var( --wpforms-ai-chat-input-height, 54px ) + var( --wpforms-ai-chat-message-list-offset, 50px ));
+  max-height: calc( var( --wpforms-ai-chat-input-height, 54px ) + var( --wpforms-ai-chat-message-list-offset, 50px ));
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-input .wpforms-ai-chat-send,
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-input .wpforms-ai-chat-stop {
+  inset-inline-end: 41px;
+  bottom: 38px;
+}
+
+wpforms-ai-chat:has(textarea) .wpforms-ai-chat-message-input textarea {
+  margin-top: 6px !important;
+}
+
 wpforms-ai-chat[mode="forms"] {
   height: calc( 100% - 50px);
-  --wpforms-ai-chat-input-height: 54px;
+  --wpforms-ai-chat-message-list-offset: 40px;
 }
 
 wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list {
-  padding: 20px 20px 0 20px;
-  height: calc( 100% - var( --wpforms-ai-chat-input-height, 54px ) - 40px);
-  max-height: calc( 100% - var( --wpforms-ai-chat-input-height, 54px ) - 40px);
+  padding: 20px 20px 0 19px !important;
 }
 
 wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-ai-chat-header h3.wpforms-ai-chat-header-title {
@@ -276,8 +340,7 @@ wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-ai-chat-hea
 }
 
 wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list.wpforms-scrollbar-compact {
-  padding-right: 6px;
-  scrollbar-gutter: stable;
+  padding: 20px 6px 0 19px !important;
 }
 
 wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-ai-chat-divider {
@@ -285,60 +348,18 @@ wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-ai-chat-div
   margin: 0 0 40px 0;
 }
 
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-question {
-  width: auto;
-  max-width: 320px;
-  font-weight: 600;
-}
-
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-answer .wpforms-chat-item-content,
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-warning .wpforms-chat-item-content,
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-error .wpforms-chat-item-content {
-  width: 320px;
-  max-width: 320px;
-}
-
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-answer .wpforms-chat-item-content h4,
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-warning .wpforms-chat-item-content h4,
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-error .wpforms-chat-item-content h4 {
-  line-height: 22px;
-  margin: 0;
-}
-
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-answer .wpforms-chat-item-content .wpforms-ai-chat-answer-buttons,
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-warning .wpforms-chat-item-content .wpforms-ai-chat-answer-buttons,
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-error .wpforms-chat-item-content .wpforms-ai-chat-answer-buttons {
-  margin-top: 10px;
-}
-
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-answer:before,
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-warning:before,
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-error:before {
-  background-image: url("../../../images/integrations/ai/icon-sullie.svg");
-}
-
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-answer:last-child {
-  margin-bottom: 20px;
-}
-
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-list .wpforms-chat-item-content {
-  position: relative;
-}
-
-wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-inactive .wpforms-chat-item-answer:not(.active) .wpforms-chat-item-content {
-  pointer-events: none;
-}
-
 wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-input {
   padding: 20px;
-  height: calc( var( --wpforms-ai-chat-input-height, 54px ) + 40px);
-  max-height: calc( var( --wpforms-ai-chat-input-height, 54px ) + 40px);
 }
 
 wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-input .wpforms-ai-chat-send,
 wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-input .wpforms-ai-chat-stop {
   inset-inline-end: 20px;
   bottom: 19px;
+}
+
+wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-message-input textarea {
+  margin-top: unset !important;
 }
 
 wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-welcome-screen-sample-prompts i.wpforms-ai-chat-sample-restaurant {

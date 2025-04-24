@@ -477,31 +477,4 @@ class FormEmbedWizard {
 
 		wp_send_json_success( $result_pages );
 	}
-
-	/**
-	 * Excludes pages from dropdown which user can't edit.
-	 *
-	 * @since 1.6.6
-	 * @deprecated 1.7.9
-	 *
-	 * @param WP_Post[] $pages Array of page objects.
-	 *
-	 * @return WP_Post[]|false Array of filtered pages or false.
-	 */
-	public function remove_inaccessible_pages( $pages ) {
-
-		_deprecated_function( __METHOD__, '1.7.9 of the WPForms plugin' );
-
-		if ( ! $pages ) {
-			return $pages;
-		}
-
-		foreach ( $pages as $key => $page ) {
-			if ( ! current_user_can( 'edit_page', $page->ID ) ) {
-				unset( $pages[ $key ] );
-			}
-		}
-
-		return $pages;
-	}
 }

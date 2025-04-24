@@ -5,10 +5,11 @@
  * @since 1.8.2
  */
 
+use WPForms\Integrations\Square\Helpers as SquareHelpers;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 ?>
 
 <div class="wpforms-payment-single-education-notice postbox wpforms-dismiss-container">
@@ -17,9 +18,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 	<div class="wpforms-payment-single-education-notice-description">
 		<?php
+		if ( SquareHelpers::is_application_fee_supported() ) {
+			esc_html_e( 'Unlock conditional logic, coupons, lower Stripe and Square fees, and more.', 'wpforms-lite' );
+		} else {
+			esc_html_e( 'Unlock conditional logic, coupons, lower Stripe fee, and more.', 'wpforms-lite' );
+		}
+		echo '&nbsp;';
 		printf(
 			wp_kses( /* translators: %s - WPForms.com Upgrade page URL. */
-				__( 'Unlock conditional logic, coupons, lower Stripe fees, and more. <a href="%s" target="_blank" rel="noopener noreferrer">Upgrade to Pro!</a>', 'wpforms-lite' ),
+				__( '<a href="%s" target="_blank" rel="noopener noreferrer">Upgrade to Pro!</a>', 'wpforms-lite' ),
 				[
 					'a' => [
 						'href'   => [],

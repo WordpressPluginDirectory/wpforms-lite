@@ -53,12 +53,21 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
 		$subsection = sanitize_html_class( $subsection );
 	}
 
+	// Check for smart tags.
 	if ( ! empty( $args['smarttags'] ) ) {
 		$type                = ! empty( $args['smarttags']['type'] ) ? esc_attr( $args['smarttags']['type'] ) : 'fields';
 		$fields              = ! empty( $args['smarttags']['fields'] ) ? esc_attr( $args['smarttags']['fields'] ) : '';
 		$is_repeater_allowed = ! empty( $args['smarttags']['allow-repeated-fields'] ) ? esc_attr( $args['smarttags']['allow-repeated-fields'] ) : '';
 		$location            = ! empty( $args['location'] ) ? esc_attr( $args['location'] ) : '';
 
+		$args['data'] = [
+			'location'              => $location,
+			'type'                  => $type,
+			'fields'                => $fields,
+			'allow-repeated-fields' => $is_repeater_allowed,
+		];
+
+		// BC for old addons that use the old smart tags system.
 		$smarttags_toggle = sprintf(
 			'<a href="#" class="toggle-smart-tag-display toggle-unfoldable-cont" data-location="%5$s" data-type="%1$s" data-fields="%2$s" data-allow-repeated-fields="%3$s">
 				<i class="fa fa-tags"></i><span>%4$s</span>
@@ -391,9 +400,12 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
 		if ( ! empty( $args['after_tooltip'] ) ) {
 			$field_label .= $args['after_tooltip'];
 		}
-		if ( $smarttags_toggle && ! ( $option === 'textarea' && ! empty( $args['tinymce'] ) ) ) {
+
+		// BC for old addons that use the old smart tags system.
+		if ( $smarttags_toggle && empty( $args['tinymce'] ) && strpos( $input_class, 'wpforms-smart-tags-enabled' ) === false ) {
 			$field_label .= $smarttags_toggle;
 		}
+
 		$field_label .= '</label>';
 
 		if ( ! empty( $args['after_label'] ) ) {
@@ -404,10 +416,6 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
 	}
 
 	$field_close = '';
-
-	if ( $smarttags_toggle && $option === 'textarea' && ! empty( $args['tinymce'] ) ) {
-		$field_close .= $smarttags_toggle;
-	}
 
 	$field_close .= ! empty( $args['after'] ) ? $args['after'] : '';
 	$field_close .= '</div>';

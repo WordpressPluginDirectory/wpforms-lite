@@ -420,6 +420,9 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 					'.Tab': {
 						color: inputStyle.colorText,
 					},
+					'.InstantBankPayment': {
+						display: 'none',
+					},
 					'.TabLabel, .TabIcon': {
 						color: inputStyle.colorText,
 					},

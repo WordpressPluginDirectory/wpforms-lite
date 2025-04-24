@@ -164,8 +164,8 @@ class AdminBarMenu {
 				'main_menu',
 				'notification_menu',
 				'all_forms_menu',
-				'all_payments_menu',
 				'add_new_menu',
+				'all_payments_menu',
 				'settings_menu',
 				'tools_menu',
 				'community_menu',
@@ -512,7 +512,7 @@ class AdminBarMenu {
 			[
 				'parent' => 'wpforms-menu',
 				'id'     => 'wpforms-add-new',
-				'title'  => esc_html__( 'Add New', 'wpforms-lite' ),
+				'title'  => esc_html__( 'Add New Form', 'wpforms-lite' ),
 				'href'   => admin_url( 'admin.php?page=wpforms-builder' ),
 			]
 		);

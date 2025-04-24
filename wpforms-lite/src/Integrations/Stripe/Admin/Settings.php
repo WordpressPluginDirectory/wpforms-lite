@@ -141,7 +141,7 @@ class Settings {
 		wp_enqueue_script(
 			'wpforms-admin-settings-stripe',
 			WPFORMS_PLUGIN_URL . "assets/js/integrations/stripe/admin-settings-stripe{$min}.js",
-			[ 'jquery' ],
+			[ 'jquery', 'wpforms-admin-utils' ],
 			WPFORMS_VERSION,
 			true
 		);

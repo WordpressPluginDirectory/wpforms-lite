@@ -44,10 +44,10 @@ interface ImporterInterface {
 	 *
 	 * @since 1.6.6
 	 *
-	 * @param string $string Text to look for Smart Tags in.
+	 * @param string $text   Text to look for Smart Tags in.
 	 * @param array  $fields List of fields to process Smart Tags in.
 	 *
 	 * @return string
 	 */
-	public function get_smarttags( $string, $fields );
+	public function get_smarttags( $text, $fields );
 }

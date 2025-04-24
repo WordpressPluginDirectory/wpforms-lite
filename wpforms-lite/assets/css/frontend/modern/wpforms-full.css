@@ -3356,6 +3356,16 @@ div.wpforms-container-full .wpforms-form .wpforms-field-divider + .wpforms-field
   margin-top: 45px;
 }
 
+div.wpforms-container-full .wpforms-form .wpforms-field-address .wpforms-field-row.wpforms-without-state .wpforms-field-row-block.wpforms-first {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+div.wpforms-container-full .wpforms-form .wpforms-field-address .wpforms-field-row.wpforms-without-state .wpforms-field-row-block:not(.wpforms-first) {
+  display: none;
+}
+
 div.wpforms-container-full .wpforms-form .wpforms-field.wpforms-field-select-style-classic select {
   padding-inline-start: 14px;
 }

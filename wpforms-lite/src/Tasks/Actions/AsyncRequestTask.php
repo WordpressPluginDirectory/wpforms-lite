@@ -65,6 +65,6 @@ class AsyncRequestTask extends Task {
 
 		list( $url, $args ) = $params->data;
 
-		wp_remote_get( $url, $args );
+		wp_safe_remote_get( $url, $args );
 	}
 }

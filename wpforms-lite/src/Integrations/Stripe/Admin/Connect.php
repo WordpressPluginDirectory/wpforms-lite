@@ -80,9 +80,9 @@ class Connect {
 	 *
 	 * @since 1.8.2
 	 */
-	public function handle_oauth_handshake() {
+	public function handle_oauth_handshake(): void {
 
-		if ( ! wpforms_current_user_can() || ! isset( $_GET['stripe_connect'] ) || $_GET['stripe_connect'] !== 'complete' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! $this->is_valid_handshake_request() ) {
 			return;
 		}
 
@@ -119,6 +119,28 @@ class Connect {
 
 		wp_safe_redirect( $settings_url );
 		exit;
+	}
+
+	/**
+	 * Validates if the current handshake request is valid.
+	 *
+	 * @since 1.9.5
+	 */
+	private function is_valid_handshake_request(): bool {
+
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ), 'wpforms_stripe_connect' ) ) {
+			return false;
+		}
+
+		if ( ! isset( $_GET['stripe_connect'] ) || $_GET['stripe_connect'] !== 'complete' ) {
+			return false;
+		}
+
+		if ( ! wpforms_current_user_can() ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -185,7 +207,7 @@ class Connect {
 	 * @param string $account_id Account ID.
 	 * @param string $mode       Stripe mode (e.g. 'live' or 'test').
 	 */
-	public function update_account_meta( $account_id = '', $mode = '' ) {
+	public function update_account_meta( $account_id = '', $mode = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		if ( ! $mode ) {
 			$mode = Helpers::get_stripe_mode();
@@ -430,12 +452,13 @@ class Connect {
 	 *
 	 * @return string
 	 */
-	private function get_payments_settings_url() {
+	private function get_payments_settings_url(): string {
 
 		return add_query_arg(
 			[
-				'page' => 'wpforms-settings',
-				'view' => 'payments',
+				'page'     => 'wpforms-settings',
+				'view'     => 'payments',
+				'_wpnonce' => wp_create_nonce( 'wpforms_stripe_connect' ),
 			],
 			admin_url( 'admin.php' )
 		);

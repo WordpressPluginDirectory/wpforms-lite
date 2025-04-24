@@ -140,6 +140,7 @@ class WPForms_Field_Internal_Information extends WPForms_Field {
 				$this->render_preview( 'heading', $field );
 				$this->render_preview( 'description', $field );
 				$this->render_preview( 'expanded-description', $field );
+				$this->render_preview( 'addon', $field );
 
 				if ( $this->is_button_displayable( $field ) ) {
 					echo '<div class="wpforms-field-internal-information-row wpforms-field-internal-information-row-cta-button">';
@@ -461,6 +462,13 @@ class WPForms_Field_Internal_Information extends WPForms_Field {
 				}
 
 				return sprintf( '<div class="cta-button cta-link-external %s"><a href="" target="_blank" rel="noopener noreferrer" class="hidden"><span class="button-label"></span></a></div>', esc_attr( $class ) );
+
+			case 'addon':
+				if ( empty( $field['addon'] ) ) {
+					return '';
+				}
+
+				return sprintf( '<input type="hidden" name="fields[%1$s][addon]" value="%2$s">', esc_attr( $field['id'] ), esc_attr( $field['addon'] ) );
 		}
 
 		return '';
@@ -597,6 +605,13 @@ class WPForms_Field_Internal_Information extends WPForms_Field {
 			return $css;
 		}
 
+		// If the Internal Information field is added by some add-ons, it will be hidden by default.
+		// Add styles to the addon assets to display the field.
+		// When the addon is disabled, the field is hidden.
+		if ( ! empty( $field['addon'] ) ) {
+			$css .= sprintf( ' wpforms-field-internal-information-%s-addon wpforms-hidden', $field['addon'] );
+		}
+
 		if ( $this->is_editable() ) {
 			$css .= ' internal-information-editable ';
 
@@ -613,18 +628,20 @@ class WPForms_Field_Internal_Information extends WPForms_Field {
 	 *
 	 * @since 1.7.6
 	 */
-	public function save_internal_information_checkbox() {
+	public function save_internal_information_checkbox(): void {
+
+		$form_id = isset( $_POST['formId'] ) ? absint( $_POST['formId'] ) : 0;
 
 		// Run several checks: required items, security, permissions.
 		if (
-			! isset( $_POST['formId'], $_POST['name'], $_POST['checked'] ) ||
+			! $form_id ||
+			! isset( $_POST['name'], $_POST['checked'] ) ||
 			! check_ajax_referer( 'wpforms-builder', 'nonce', false ) ||
-			! wpforms_current_user_can( 'edit_forms' )
+			! wpforms_current_user_can( 'edit_forms', $form_id )
 		) {
 			wp_send_json_error();
 		}
 
-		$form_id   = (int) $_POST['formId'];
 		$checked   = (int) $_POST['checked'];
 		$name      = sanitize_text_field( wp_unslash( $_POST['name'] ) );
 		$post_meta = get_post_meta( $form_id, self::CHECKBOX_META_KEY, true );

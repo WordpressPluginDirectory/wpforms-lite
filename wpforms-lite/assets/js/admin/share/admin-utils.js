@@ -1295,6 +1295,63 @@ const wpf = {
 			rect.right <= ( window.innerWidth || document.documentElement.clientWidth )
 		);
 	},
+
+	/**
+	 * Copy the target element to clipboard.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param {Object} event         Event object.
+	 * @param {jQuery} $copyButton   Copy button.
+	 * @param {jQuery} targetElement Target element.
+	 */
+	copyValueToClipboard( event, $copyButton, targetElement ) {
+		event.preventDefault();
+
+		// Use Clipboard API for modern browsers and HTTPS connections, in other cases use old-fashioned way.
+		if ( navigator.clipboard ) {
+			navigator.clipboard.writeText( targetElement.val() ).then(
+				function() {
+					$copyButton.find( 'span' ).removeClass( 'dashicons-admin-page' ).addClass( 'dashicons-yes-alt' );
+				}
+			);
+
+			return;
+		}
+
+		targetElement.attr( 'disabled', false ).focus().select();
+
+		document.execCommand( 'copy' );
+
+		$copyButton.find( 'span' ).removeClass( 'dashicons-admin-page' ).addClass( 'dashicons-yes-alt' );
+
+		targetElement.attr( 'disabled', true );
+	},
+
+	/**
+	 * Utility for tracking the repeated execution.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param {string} context Context key.
+	 * @param {number} timeout Debounce timeout.
+	 *
+	 * @return {boolean} It returns `false` when called the first time, `true` -
+	 * if called repeatedly (with the same `context` argument) until the timeout is over.
+	 */
+	isRepeatedCall( context, timeout = 500 ) {
+		wpf.isRepeatedCallData = wpf.isRepeatedCallData || {};
+
+		if ( wpf.isRepeatedCallData[ context ] ) {
+			return true;
+		}
+
+		wpf.isRepeatedCallData[ context ] = true;
+
+		setTimeout( () => wpf.isRepeatedCallData[ context ] = false, timeout );
+
+		return false;
+	},
 };
 
 wpf.init();

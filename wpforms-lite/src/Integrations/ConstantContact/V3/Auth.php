@@ -74,6 +74,10 @@ class Auth {
 	public function ajax_handle_auth() {
 
 		try {
+			if ( ! wpforms_current_user_can() ) {
+				wp_send_json_error( esc_html__( 'You do not have permission to perform this action.', 'wpforms-lite' ) );
+			}
+
 			$account = $this->create_account();
 
 			$this->validate_account( $account );

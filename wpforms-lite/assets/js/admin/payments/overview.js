@@ -783,6 +783,7 @@ const WPFormsPaymentsOverview = window.WPFormsPaymentsOverview || ( function( do
 			const { currentPageUri: url } = vars;
 
 			url.searchParams.set( 'mode', this.checked ? 'test' : 'live' );
+			url.searchParams.set( '_wpnonce', vars.nonce );
 
 			window.location.href = url.href;
 		},

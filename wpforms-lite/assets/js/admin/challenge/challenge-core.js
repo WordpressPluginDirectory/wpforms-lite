@@ -454,16 +454,15 @@ WPFormsChallenge.core = window.WPFormsChallenge.core || ( function( document, wi
 		 *
 		 * @param {number|string} step   Last saved step.
 		 * @param {string}        anchor Element selector to bind tooltip to.
-		 * @param {object}        args   Tooltipster arguments.
+		 * @param {Object}        args   Tooltipster arguments.
 		 */
-		initTooltips: function( step, anchor, args ) {
-
+		initTooltips( step, anchor, args ) {
 			if ( typeof $.fn.tooltipster === 'undefined' ) {
 				return;
 			}
 
-			var $dot = $( '<span class="wpforms-challenge-dot wpforms-challenge-dot-step' + step + '" data-wpforms-challenge-step="' + step + '">&nbsp;</span>' );
-			var tooltipsterArgs = {
+			const $dot = $( '<span class="wpforms-challenge-dot wpforms-challenge-dot-step' + step + '" data-wpforms-challenge-step="' + step + '">&nbsp;</span>' );
+			const tooltipsterArgs = {
 				content          : $( '#tooltip-content' + step ),
 				trigger          : null,
 				interactive      : true,
@@ -472,15 +471,16 @@ WPFormsChallenge.core = window.WPFormsChallenge.core || ( function( document, wi
 				theme            : [ 'tooltipster-default', 'wpforms-challenge-tooltip' ],
 				side             : [ 'top' ],
 				distance         : 3,
-				functionReady    : function( instance, helper ) {
-
+				functionReady( instance, helper ) {
 					$( helper.tooltip ).addClass( 'wpforms-challenge-tooltip-step' + step );
+
+					const isRTL = $( 'body' ).hasClass( 'rtl' );
 
 					// Custom positioning.
 					if ( step === 4 || step === 3 ) {
-						instance.option( 'side', 'right' );
+						instance.option( 'side', isRTL ? 'left' : 'right' );
 					} else if ( step === 1 ) {
-						instance.option( 'side', 'left' );
+						instance.option( 'side', isRTL ? 'right' : 'left' );
 					}
 
 					// Reposition is needed to render max-width CSS correctly.

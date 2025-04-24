@@ -194,7 +194,6 @@ WPForms.Admin.Builder.Providers.ConstantContactV3 = WPForms.Admin.Builder.Provid
 		 * @since 1.9.3
 		 */
 		processInitial() {
-			app.$elements.$connections.prepend( app.tmpl.commonsHTML() );
 			app.connection.dataLoad();
 		},
 
@@ -528,10 +527,14 @@ WPForms.Admin.Builder.Providers.ConstantContactV3 = WPForms.Admin.Builder.Provid
 			 * Compile and retrieve an HTML for common elements.
 			 *
 			 * @since 1.9.3
+			 * @deprecated 1.9.5
 			 *
 			 * @return {string} Compiled HTML.
 			 */
 			commonsHTML() {
+				// eslint-disable-next-line no-console
+				console.warn( 'WARNING! Function "WPForms.Admin.Builder.Providers.ConstantContactV3.tmpl.commonsHTML()" has been deprecated!' );
+
 				const tmplError = app.Templates.get( 'wpforms-' + app.provider + '-builder-content-connection-error' );
 
 				return tmplError();

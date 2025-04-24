@@ -159,7 +159,7 @@ abstract class WPForms_Field {
 	 *
 	 * @param bool $init Pass false to allow shortcutting the whole initialization, if needed.
 	 */
-	public function __construct( $init = true ) {
+	public function __construct( $init = true ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		if ( ! $init ) {
 			return;
@@ -499,11 +499,8 @@ abstract class WPForms_Field {
 
 		// For fields that have dynamic choices, we need to add extra logic.
 		if ( ! empty( $field['dynamic_choices'] ) ) {
-
 			$properties = $this->get_field_populated_single_property_value_dynamic_choices( $get_value, $properties );
-
 		} elseif ( ! empty( $field['choices'] ) && is_array( $field['choices'] ) ) {
-
 			$properties = $this->get_field_populated_single_property_value_normal_choices( $get_value, $properties, $field );
 
 		} elseif (
@@ -961,7 +958,7 @@ abstract class WPForms_Field {
 	 * Field option elements are pieces that help create a field option.
 	 * They are used to quickly build field options.
 	 *
-	 * @since 1.0.0
+	 * @since        1.0.0
 	 *
 	 * @param string $option  Field option to render.
 	 * @param array  $field   Field data and settings.
@@ -979,6 +976,21 @@ abstract class WPForms_Field {
 		$slug   = ! empty( $args['slug'] ) ? sanitize_title( $args['slug'] ) : '';
 		$attrs  = '';
 		$output = '';
+
+		// Check for Smart Tags.
+		if ( ! empty( $args['smarttags'] ) ) {
+			$type                = ! empty( $args['smarttags']['type'] ) ? esc_attr( $args['smarttags']['type'] ) : 'fields';
+			$fields              = ! empty( $args['smarttags']['fields'] ) ? esc_attr( $args['smarttags']['fields'] ) : '';
+			$is_repeater_allowed = ! empty( $args['smarttags']['allow-repeated-fields'] ) ? esc_attr( $args['smarttags']['allow-repeated-fields'] ) : '';
+			$location            = ! empty( $args['location'] ) ? esc_attr( $args['location'] ) : '';
+
+			$args['data'] = [
+				'location'              => $location,
+				'type'                  => $type,
+				'fields'                => $fields,
+				'allow-repeated-fields' => $is_repeater_allowed,
+			];
+		}
 
 		if ( ! empty( $args['data'] ) ) {
 			foreach ( $args['data'] as $arg_key => $val ) {
@@ -1028,6 +1040,7 @@ abstract class WPForms_Field {
 				if ( ! empty( $args['after_tooltip'] ) ) {
 					$output .= $args['after_tooltip'];
 				}
+
 				$output .= '</label>';
 				break;
 
@@ -1064,6 +1077,7 @@ abstract class WPForms_Field {
 				if ( ! empty( $args['tooltip'] ) ) {
 					$output .= sprintf( '<i class="fa fa-question-circle-o wpforms-help-tooltip" title="%s"></i>', esc_attr( $args['tooltip'] ) );
 				}
+
 				$output .= empty( $args['nodesc'] ) ? '</label>' : '';
 				break;
 
@@ -1965,16 +1979,13 @@ abstract class WPForms_Field {
 			case 'default_value':
 				$value   = ! empty( $field['default_value'] ) || ( isset( $field['default_value'] ) && '0' === (string) $field['default_value'] ) ? esc_attr( $field['default_value'] ) : '';
 				$tooltip = esc_html__( 'Enter text for the default form field value.', 'wpforms-lite' );
-				$toggle  = '<a href="#" class="toggle-smart-tag-display toggle-unfoldable-cont" data-type="other"><i class="fa fa-tags"></i><span>' . esc_html__( 'Show Smart Tags', 'wpforms-lite' ) . '</span></a>';
-
-				$output = $this->field_element(
+				$output  = $this->field_element(
 					'label',
 					$field,
 					[
-						'slug'          => 'default_value',
-						'value'         => esc_html__( 'Default Value', 'wpforms-lite' ),
-						'tooltip'       => $tooltip,
-						'after_tooltip' => $toggle,
+						'slug'    => 'default_value',
+						'value'   => esc_html__( 'Default Value', 'wpforms-lite' ),
+						'tooltip' => $tooltip,
 					],
 					false
 				);
@@ -1983,8 +1994,12 @@ abstract class WPForms_Field {
 					'text',
 					$field,
 					[
-						'slug'  => 'default_value',
-						'value' => $value,
+						'slug'      => 'default_value',
+						'value'     => $value,
+						'class'     => 'wpforms-smart-tags-enabled',
+						'smarttags' => [
+							'type' => 'other',
+						],
 					],
 					false
 				);
@@ -2723,6 +2738,7 @@ abstract class WPForms_Field {
 				$list_class  = [ 'primary-input' ];
 				$with_images = empty( $field['dynamic_choices'] ) && empty( $field['choices_icons'] ) && ! empty( $field['choices_images'] );
 				$with_icons  = empty( $field['dynamic_choices'] ) && empty( $field['choices_images'] ) && ! empty( $field['choices_icons'] );
+				$is_modern   = ! empty( $field['style'] ) && $field['style'] === 'modern';
 
 				if ( $with_images ) {
 					$list_class[] = 'wpforms-image-choices';
@@ -2757,31 +2773,38 @@ abstract class WPForms_Field {
 						$multiple
 					);
 
-					// Optional placeholder.
-					if ( ! empty( $placeholder ) ) {
-						$output .= sprintf(
-							'<option value="" class="placeholder">%s</option>',
-							esc_html( $placeholder )
-						);
-					}
+					$options      = '';
+					$has_selected = false;
 
 					// Build the select options.
 					foreach ( $values as $key => $value ) {
 
 						$default  = isset( $value['default'] ) && $value['default'];
-						$selected = ! empty( $placeholder ) && empty( $multiple ) ? '' : selected( true, $default, false );
+						$selected = selected( true, $default, false );
+
+						if ( $selected ) {
+							$has_selected = true;
+						}
 
 						$label  = $this->get_choices_label( $value['label'] ?? '', $key + 1, $field );
 						$label .= ! empty( $field['show_price_after_labels'] ) && isset( $value['value'] ) ? ' - ' . wpforms_format_amount( wpforms_sanitize_amount( $value['value'] ), true ) : '';
 
-						$output .= sprintf(
+						$options .= sprintf(
 							'<option value="%2$s" %1$s>%2$s</option>',
 							$selected,
 							esc_html( $label )
 						);
 					}
 
-					$output .= '</select>';
+					// Optional placeholder.
+					if ( ( ! empty( $placeholder ) || $is_modern ) && ! $has_selected ) {
+						$options = sprintf(
+							'<option value="" class="placeholder">%s</option>',
+							esc_html( $placeholder )
+						) . $options;
+					}
+
+					$output .= $options . '</select>';
 				} else {
 					// Normal checkbox/radio-based fields.
 					$output = sprintf(

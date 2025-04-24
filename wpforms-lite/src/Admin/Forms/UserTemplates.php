@@ -351,21 +351,35 @@ class UserTemplates {
 	 *
 	 * @since 1.8.8
 	 */
-	public function ajax_remove_user_template() {
+	public function ajax_remove_user_template(): void {
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-form-templates', 'nonce' );
 
-		// Check for permissions.
-		if ( ! wpforms_current_user_can( 'delete_forms' ) ) {
+		$template_id = isset( $_POST['template'] ) ? absint( $_POST['template'] ) : 0;
+
+		if ( ! $template_id ) {
 			wp_send_json_error();
 		}
 
-		if ( ! isset( $_POST['template'] ) ) {
-			wp_send_json_error();
+		// Check for permissions for the specific template.
+		if ( ! wpforms_current_user_can( 'delete_form_single', $template_id ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to delete this template.', 'wpforms-lite' ) );
 		}
 
-		wp_delete_post( absint( $_POST['template'] ), true );
+		// Verify the post exists and is a template.
+		$template = get_post( $template_id );
+
+		if ( ! $template || $template->post_type !== 'wpforms-template' ) {
+			wp_send_json_error( esc_html__( 'Template not found.', 'wpforms-lite' ) );
+		}
+
+		// Delete the template.
+		$result = wp_delete_post( $template_id, true );
+
+		if ( ! $result ) {
+			wp_send_json_error( esc_html__( 'Failed to delete the template.', 'wpforms-lite' ) );
+		}
 
 		wp_send_json_success();
 	}

@@ -27,13 +27,7 @@ class AttributeNode extends AbstractNode
     private $attribute;
     private $operator;
     private $value;
-    /**
-     * @param string $namespace
-     * @param string $attribute
-     * @param string $operator
-     * @param string $value
-     */
-    public function __construct(NodeInterface $selector, $namespace, $attribute, $operator, $value)
+    public function __construct(NodeInterface $selector, ?string $namespace, string $attribute, string $operator, ?string $value)
     {
         $this->selector = $selector;
         $this->namespace = $namespace;
@@ -41,52 +35,34 @@ class AttributeNode extends AbstractNode
         $this->operator = $operator;
         $this->value = $value;
     }
-    /**
-     * @return NodeInterface
-     */
-    public function getSelector()
+    public function getSelector() : NodeInterface
     {
         return $this->selector;
     }
-    /**
-     * @return string
-     */
-    public function getNamespace()
+    public function getNamespace() : ?string
     {
         return $this->namespace;
     }
-    /**
-     * @return string
-     */
-    public function getAttribute()
+    public function getAttribute() : string
     {
         return $this->attribute;
     }
-    /**
-     * @return string
-     */
-    public function getOperator()
+    public function getOperator() : string
     {
         return $this->operator;
     }
-    /**
-     * @return string
-     */
-    public function getValue()
+    public function getValue() : ?string
     {
         return $this->value;
     }
     /**
      * {@inheritdoc}
      */
-    public function getSpecificity()
+    public function getSpecificity() : Specificity
     {
         return $this->selector->getSpecificity()->plus(new Specificity(0, 1, 0));
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function __toString()
+    public function __toString() : string
     {
         $attribute = $this->namespace ? $this->namespace . '|' . $this->attribute : $this->attribute;
         return 'exists' === $this->operator ? \sprintf('%s[%s[%s]]', $this->getNodeName(), $this->selector, $attribute) : \sprintf("%s[%s[%s %s '%s']]", $this->getNodeName(), $this->selector, $attribute, $this->operator, $this->value);

@@ -985,7 +985,7 @@ class Frontend {
 				'primary' => [
 					'attr'     => [
 						'name'        => "wpforms[fields][{$field_id}]",
-						'value'       => isset( $field['default_value'] ) ? wpforms_process_smart_tags( $field['default_value'], $form_data ) : '',
+						'value'       => isset( $field['default_value'] ) ? wpforms_process_smart_tags( $field['default_value'], $form_data, [], '', 'field-properties' ) : '',
 						'placeholder' => $field['placeholder'] ?? '',
 					],
 					'class'    => $attributes['input_class'],
@@ -1009,7 +1009,7 @@ class Frontend {
 				'data'     => [],
 				'id'       => implode( '', array_slice( $attributes['description_id'], 0 ) ),
 				'position' => 'after',
-				'value'    => ! empty( $field['description'] ) ? wpforms_process_smart_tags( $field['description'], $form_data ) : '',
+				'value'    => ! empty( $field['description'] ) ? wpforms_process_smart_tags( $field['description'], $form_data, [], '', 'field-properties' ) : '',
 			],
 		];
 
@@ -1373,9 +1373,9 @@ class Frontend {
 			<?php
 		}
 
-		echo '<input type="hidden" name="page_title" value="' . esc_attr( wpforms_process_smart_tags( '{page_title}', [] ) ) . '">';
-		echo '<input type="hidden" name="page_url" value="' . esc_url( wpforms_process_smart_tags( '{page_url}', [] ) ) . '">';
-		echo '<input type="hidden" name="url_referer" value="' . esc_url( wpforms_process_smart_tags( '{url_referer}', [] ) ) . '">';
+		echo '<input type="hidden" name="page_title" value="' . esc_attr( wpforms_process_smart_tags( '{page_title}', [], [], '', 'frontend-foot-hidden-input' ) ) . '">';
+		echo '<input type="hidden" name="page_url" value="' . esc_url( wpforms_process_smart_tags( '{page_url}', [], [], '', 'frontend-foot-hidden-input' ) ) . '">';
+		echo '<input type="hidden" name="url_referer" value="' . esc_url( wpforms_process_smart_tags( '{url_referer}', [], [], '', 'frontend-foot-hidden-input' ) ) . '">';
 
 		if ( is_singular() ) {
 			// The field is used for some smart tags determination.

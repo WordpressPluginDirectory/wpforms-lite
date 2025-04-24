@@ -223,7 +223,7 @@ trait ContentTrait {
 				href="#"
 				class="wpforms-panel-content-section-payment-button wpforms-panel-content-section-payment-button-add-plan education-modal"
 				data-action="upgrade"
-				data-name="' . esc_attr__( 'Multiple Stripe Subscription Plans', 'wpforms-lite' ) . '"
+				data-name="' . esc_attr__( 'Multiple Subscriptions', 'wpforms-lite' ) . '"
 			>' . esc_html( $label ) . '</a>';
 	}
 
@@ -455,6 +455,8 @@ trait ContentTrait {
 			false
 		);
 
+		$is_empty_email = isset( $this->form_data['payments'][ $this->slug ]['recurring'][ $plan_id ]['email'] ) && empty( $this->form_data['payments'][ $this->slug ]['recurring'][ $plan_id ]['email'] );
+
 		$content .= wpforms_panel_field(
 			'select',
 			$this->slug,
@@ -465,6 +467,7 @@ trait ContentTrait {
 				'parent'      => 'payments',
 				'subsection'  => 'recurring',
 				'index'       => $plan_id,
+				'input_class' => $is_empty_email ? 'wpforms-required-field-error' : '',
 				'field_map'   => [ 'email' ],
 				'placeholder' => esc_html__( '--- Select Email ---', 'wpforms-lite' ),
 				'tooltip'     => esc_html__( "Select the field that contains the customer's email address. This field is required.", 'wpforms-lite' ),

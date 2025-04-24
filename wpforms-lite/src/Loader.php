@@ -132,6 +132,11 @@ class Loader {
 	private function populate_frontend(): void {
 
 		$this->classes[] = [
+			'name' => 'Frontend\Address',
+			'id'   => 'address',
+		];
+
+		$this->classes[] = [
 			'name' => 'Frontend\Amp',
 			'id'   => 'amp',
 		];
@@ -324,10 +329,6 @@ class Loader {
 			[
 				'name' => 'LicenseApi\PluginUpdateCache',
 				'id'   => 'license_api_plugin_update_cache',
-			],
-			[
-				'name' => 'LicenseApi\PluginInfoCache',
-				'id'   => 'license_api_plugin_info_cache',
 			],
 			[
 				'name' => 'LicenseApi\ValidateKeyCache',
@@ -585,6 +586,7 @@ class Loader {
 			],
 			[
 				'name' => 'Admin\Entries\Export\Export',
+				'hook' => 'init',
 			],
 			[
 				'name' => 'Admin\Entries\DefaultScreen',
@@ -848,6 +850,10 @@ class Loader {
 			[
 				'name' => 'Admin\Education\Admin\EditPost',
 				'hook' => 'load-post.php',
+			],
+			[
+				'name' => 'Admin\Education\Admin\EditPost',
+				'hook' => 'load-site-editor.php',
 			],
 			[
 				'name'     => 'Admin\Education\Pointers\Payment',

@@ -114,10 +114,11 @@ class ErrorHandler {
 			WP_PLUGIN_DIR . '/wpforms-paypal-standard/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-post-submissions/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-salesforce/vendor/',
+			WP_PLUGIN_DIR . '/wpforms-salesforce/vendor_prefixed/',
 			WP_PLUGIN_DIR . '/wpforms-save-resume/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-sendinblue/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-signatures/vendor/',
-			WP_PLUGIN_DIR . '/wpforms-square/vendor/',
+			WP_PLUGIN_DIR . '/wpforms-square/vendor/', // Backward compatibility.
 			WP_PLUGIN_DIR . '/wpforms-stripe/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-surveys-polls/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-user-journey/vendor/',

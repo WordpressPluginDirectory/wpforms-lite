@@ -1,6 +1,15 @@
 <?php
 
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedFunctionInspection */
+// phpcs:enable Generic.Commenting.DocComment.MissingShort
+
 namespace WPForms\Admin\Tools\Importers;
+
+use NF_Database_Models_Action;
+use NF_Database_Models_Field;
+use NF_Database_Models_Form;
 
 /**
  * Ninja Forms Importer class.
@@ -26,7 +35,7 @@ class NinjaForms extends Base {
 	 *
 	 * @since 1.6.6
 	 *
-	 * @return \NF_Database_Models_Form[]
+	 * @return NF_Database_Models_Form[]
 	 */
 	public function get_forms() {
 
@@ -36,11 +45,16 @@ class NinjaForms extends Base {
 			return $forms_final;
 		}
 
-		$forms = \Ninja_Forms()->form()->get_forms();
+		// phpcs:ignore WordPress.WP.Capabilities.Unknown, WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.PHP.ValidateHooks.InvalidHookName
+		if ( ! current_user_can( apply_filters( 'ninja_forms_admin_all_forms_capabilities', 'manage_options' ) ) ) {
+			return $forms_final;
+		}
+
+		$forms = Ninja_Forms()->form()->get_forms();
 
 		if ( ! empty( $forms ) ) {
 			foreach ( $forms as $form ) {
-				if ( ! $form instanceof \NF_Database_Models_Form ) {
+				if ( ! $form instanceof NF_Database_Models_Form ) {
 					continue;
 				}
 
@@ -63,12 +77,12 @@ class NinjaForms extends Base {
 	public function get_form( $id ) {
 
 		$form             = [];
-		$form['settings'] = \Ninja_Forms()->form( $id )->get()->get_settings();
-		$fields           = \Ninja_Forms()->form( $id )->get_fields();
-		$actions          = \Ninja_Forms()->form( $id )->get_actions();
+		$form['settings'] = Ninja_Forms()->form( $id )->get()->get_settings();
+		$fields           = Ninja_Forms()->form( $id )->get_fields();
+		$actions          = Ninja_Forms()->form( $id )->get_actions();
 
 		foreach ( $fields as $field ) {
-			if ( ! $field instanceof \NF_Database_Models_Field ) {
+			if ( ! $field instanceof NF_Database_Models_Field ) {
 				continue;
 			}
 
@@ -81,7 +95,7 @@ class NinjaForms extends Base {
 		}
 
 		foreach ( $actions as $action ) {
-			if ( ! $action instanceof \NF_Database_Models_Action ) {
+			if ( ! $action instanceof NF_Database_Models_Action ) {
 				continue;
 			}
 
@@ -96,7 +110,7 @@ class NinjaForms extends Base {
 	 *
 	 * @since 1.6.6
 	 */
-	public function import_form() {
+	public function import_form() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.NestingLevel.MaxExceeded
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-admin', 'nonce' );
@@ -155,7 +169,7 @@ class NinjaForms extends Base {
 			],
 		];
 
-		// If form does not contain fields, bail.
+		// If the form does not contain fields, bail.
 		if ( empty( $nf_form['fields'] ) ) {
 			wp_send_json_success(
 				[
@@ -171,27 +185,27 @@ class NinjaForms extends Base {
 			// Try to determine field label to use.
 			$label = $this->get_field_label( $nf_field );
 
-			// Next, check if field is unsupported. If unsupported make note and
-			// then continue to the next field.
+			// Next, check if the field is unsupported.
+			// If unsupported, make note and then continue to the next field.
 			if ( in_array( $nf_field['type'], $fields_unsupported, true ) ) {
 				$unsupported[] = $label;
 
 				continue;
 			}
 
-			// Now check if this install is Lite. If it is Lite and it's a
-			// field type not included, make a note then continue to the next
+			// Now check if this installation is Lite.
+			// If it is Lite, and it's a field type not included, make a note then continue to the next
 			// field.
-			if ( ! wpforms()->is_pro() && in_array( $nf_field['type'], $fields_pro_plain, true ) ) {
+			if ( in_array( $nf_field['type'], $fields_pro_plain, true ) && ! wpforms()->is_pro() ) {
 				$upgrade_plain[] = $label;
 			}
-			if ( ! wpforms()->is_pro() && in_array( $nf_field['type'], $fields_pro_omit, true ) ) {
+			if ( in_array( $nf_field['type'], $fields_pro_omit, true ) && ! wpforms()->is_pro() ) {
 				$upgrade_omit[] = $label;
 
 				continue;
 			}
 
-			// Determine next field ID to assign.
+			// Determine the next field ID to assign.
 			if ( empty( $form['fields'] ) ) {
 				$field_id = 1;
 			} else {
@@ -331,7 +345,7 @@ class NinjaForms extends Base {
 						'id'            => $field_id,
 						'type'          => $type,
 						'label'         => $label,
-						'format'        => ! empty( $nf_field['mask'] ) && '(999) 999-9999' === $nf_field['mask'] ? 'us' : 'international',
+						'format'        => ! empty( $nf_field['mask'] ) && $nf_field['mask'] === '(999) 999-9999' ? 'us' : 'international',
 						'description'   => ! empty( $nf_field['desc_text'] ) ? $nf_field['desc_text'] : '',
 						'size'          => 'medium',
 						'required'      => ! empty( $nf_field['required'] ) ? '1' : '',
@@ -470,7 +484,7 @@ class NinjaForms extends Base {
 				$form['settings']['notifications'][ $action_count ]['sender_address'] = $this->get_smarttags( $action['from_address'], $form['fields'] );
 			}
 
-			$action_count ++;
+			++$action_count;
 		}
 
 		$this->add_form( $form, $unsupported, $upgrade_plain, $upgrade_omit );
@@ -504,17 +518,17 @@ class NinjaForms extends Base {
 	 *
 	 * @since 1.6.6
 	 *
-	 * @param string $string Text to look for Smart Tags in.
+	 * @param string $text   Text to look for Smart Tags in.
 	 * @param array  $fields List of fields to process Smart Tags in.
 	 *
 	 * @return string
 	 */
-	public function get_smarttags( $string, $fields ) {
+	public function get_smarttags( $text, $fields ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
-		preg_match_all( '/\{(.+?)\}/', $string, $tags );
+		preg_match_all( '/\{(.+?)\}/', $text, $tags );
 
 		if ( empty( $tags[1] ) ) {
-			return $string;
+			return $text;
 		}
 
 		foreach ( $tags[1] as $tag ) {
@@ -523,19 +537,19 @@ class NinjaForms extends Base {
 
 			foreach ( $fields as $field ) {
 				if ( ! empty( $field['nf_key'] ) && $field['nf_key'] === $tag_formatted ) {
-					$string = str_replace( '{' . $tag . '}', '{field_id="' . $field['id'] . '"}', $string );
+					$text = str_replace( '{' . $tag . '}', '{field_id="' . $field['id'] . '"}', $text );
 				}
 			}
 
 			if ( in_array( $tag, [ 'wp:admin_email', 'system:admin_email' ], true ) ) {
-				$string = str_replace( [ '{wp:admin_email}', '{system:admin_email}' ], '{admin_email}', $string );
+				$text = str_replace( [ '{wp:admin_email}', '{system:admin_email}' ], '{admin_email}', $text );
 			}
 
 			if ( $tag === 'all_fields_table' || $tag === 'fields_table' ) {
-				$string = str_replace( '{' . $tag . '}', '{all_fields}', $string );
+				$text = str_replace( '{' . $tag . '}', '{all_fields}', $text );
 			}
 		}
 
-		return $string;
+		return $text;
 	}
 }

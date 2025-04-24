@@ -27,7 +27,7 @@
 .wpforms-challenge {
   display: none;
   position: fixed;
-  right: 20px;
+  inset-inline-end: 20px;
   bottom: 0;
   width: 230px;
   z-index: 100110;
@@ -83,12 +83,12 @@
 
 .wpforms-challenge .wpforms-challenge-list-block .list-block-button.toggle-list {
   display: none;
-  right: 30px;
+  inset-inline-end: 30px;
   background-image: url(../images/challenge/chevron-circle-down-regular.svg);
 }
 
 .wpforms-challenge .wpforms-challenge-list-block .list-block-button.challenge-skip, .wpforms-challenge .wpforms-challenge-list-block .list-block-button.challenge-cancel {
-  right: 10px;
+  inset-inline-end: 10px;
   background-image: url(../images/challenge/times-circle-regular.svg);
   color: #b6b6b6;
 }
@@ -166,7 +166,7 @@
   content: "\f1db";
   font-size: 18px;
   color: #b6b6b6;
-  margin-right: 8px;
+  margin-inline-end: 8px;
   line-height: 16px;
   vertical-align: bottom;
   border-radius: 50%;
@@ -355,9 +355,11 @@ span.wpforms-challenge-dot {
 }
 
 span.wpforms-challenge-dot.wpforms-challenge-dot-step1 {
-  margin: 0 80px 0 20px;
+  margin: 0;
+  margin-inline-start: 20px;
+  margin-inline-end: 80px;
   position: absolute;
-  right: 1px;
+  inset-inline-end: 1px;
 }
 
 span.wpforms-challenge-dot.wpforms-challenge-dot-step2 {

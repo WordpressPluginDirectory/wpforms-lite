@@ -396,7 +396,12 @@ class Integration extends API {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$action = isset( $_GET['wpforms_lite_connect_action'] ) ? sanitize_key( $_GET['wpforms_lite_connect_action'] ) : '';
 
-		if ( $action !== 'update-access-token' || ! current_user_can( 'manage_options' ) ) {
+		if (
+			! isset( $_GET['_wpnonce'] ) ||
+			$action !== 'update-access-token' ||
+			! current_user_can( 'manage_options' ) ||
+			! wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ), 'wpforms_lite_connect_action' )
+		) {
 			return;
 		}
 

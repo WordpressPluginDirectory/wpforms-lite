@@ -28,7 +28,7 @@ abstract class SmartTag {
 	 *
 	 * @var string
 	 */
-	protected $context;
+	public $context;
 
 	/**
 	 * List of attributes.
@@ -257,10 +257,11 @@ abstract class SmartTag {
 	 * @param int    $field_id  Field ID.
 	 * @param array  $fields    List of fields.
 	 * @param string $field_key Field key to get value from.
+	 * @param array  $form_data Form data.
 	 *
-	 * @return mixed|string
+	 * @return string
 	 */
-	protected function get_formatted_field_value( int $field_id, array $fields, string $field_key ) {
+	protected function get_formatted_field_value( int $field_id, array $fields, string $field_key, array $form_data = [] ): string {
 
 		$value = $fields[ $field_id ][ $field_key ] ?? '';
 
@@ -273,10 +274,11 @@ abstract class SmartTag {
 		 * @param int    $field_id  Field ID.
 		 * @param array  $fields    List of fields.
 		 * @param string $field_key Field key to get value from.
+		 * @param array  $form_data Form data.
 		 *
 		 * @return string
 		 */
-		$value = (string) apply_filters( 'wpforms_smart_tags_formatted_field_value', $value, $field_id, $fields, $field_key ); //phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+		$value = (string) apply_filters( 'wpforms_smart_tags_formatted_field_value', $value, $field_id, $fields, $field_key, $form_data ); //phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		if ( ! wpforms_is_repeated_field( $field_id, $fields ) ) {
 			return $value;

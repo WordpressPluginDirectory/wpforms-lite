@@ -231,13 +231,13 @@ textarea:hover::-webkit-resizer, textarea:hover::-webkit-scrollbar-button, texta
 #wpforms-panel-fields .wpforms-panel-sidebar-content .wpforms-tab-content.wpforms-add-fields,
 #wpforms-panel-fields .wpforms-panel-sidebar-content .wpforms-tab-content .wpforms-field-option-group-inner,
 #wpforms-panel-fields .wpforms-panel-sidebar-content .wpforms-tab-content .wpforms-field-option-field-title-notice {
-  padding-right: 6px;
+  padding-inline-end: 6px;
 }
 
 .wpforms-panel .wpforms-panel-sidebar-content .wpforms-panel-content-wrap {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
-  padding-right: 16px;
+  padding-inline-end: 16px;
 }
 
 .wpforms-builder-dropdown-list ul::-webkit-scrollbar {
@@ -301,9 +301,9 @@ textarea:hover::-webkit-resizer, textarea:hover::-webkit-scrollbar-button, texta
 @-moz-document url-prefix() {
   #wpforms-panel-fields .wpforms-panel-sidebar-content .wpforms-tab-content.wpforms-add-fields,
   #wpforms-panel-fields .wpforms-panel-sidebar-content .wpforms-tab-content .wpforms-field-option-group-inner {
-    padding-right: 20px !important;
+    padding-inline-end: 20px !important;
   }
   .wpforms-panel .wpforms-panel-sidebar-content .wpforms-panel-content-wrap {
-    padding-right: 30px !important;
+    padding-inline-end: 30px !important;
   }
 }

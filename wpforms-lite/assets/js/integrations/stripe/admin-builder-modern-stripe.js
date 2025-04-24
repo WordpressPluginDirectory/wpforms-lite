@@ -1,4 +1,4 @@
-/* global wpforms_builder, wpforms_builder_stripe */
+/* global wpforms_builder, wpforms_builder_stripe, WPFormsBuilderPaymentsUtils */
 
 // noinspection ES6ConvertVarToLetConst
 /**
@@ -53,20 +53,22 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 			};
 
 			app.bindUIActions();
+			app.bindPlanUIActions();
 
 			if ( ! wpforms_builder_stripe.is_pro ) {
-				const toggleInput = '.wpforms-panel-content-section-payment-toggle input',
-					planNameInput = '.wpforms-panel-content-section-payment-plan-name input';
+				const baseSelector = '.wpforms-panel-content-section-stripe',
+					toggleInput = `${ baseSelector } .wpforms-panel-content-section-payment-toggle input`,
+					planNameInput = `${ baseSelector } .wpforms-panel-content-section-payment-plan-name input`;
 
-				$( toggleInput ).each( app.toggleContent );
-				$( planNameInput ).each( app.checkPlanName );
+				$( toggleInput ).each( WPFormsBuilderPaymentsUtils.toggleContent );
+				$( planNameInput ).each( WPFormsBuilderPaymentsUtils.checkPlanName );
 
 				$( '#wpforms-panel-payments' )
-					.on( 'click', toggleInput, app.toggleContent )
-					.on( 'click', '.wpforms-panel-content-section-payment-plan-head-buttons-toggle', app.togglePlan )
-					.on( 'click', '.wpforms-panel-content-section-stripe .wpforms-panel-content-section-payment-plan-head-buttons-delete', app.deletePlan )
-					.on( 'input', planNameInput, app.renamePlan )
-					.on( 'focusout', planNameInput, app.checkPlanName );
+					.on( 'click', toggleInput, WPFormsBuilderPaymentsUtils.toggleContent )
+					.on( 'click', `${ baseSelector } .wpforms-panel-content-section-payment-plan-head-buttons-toggle`, WPFormsBuilderPaymentsUtils.togglePlan )
+					.on( 'click', `${ baseSelector } .wpforms-panel-content-section-payment-plan-head-buttons-delete`, WPFormsBuilderPaymentsUtils.deletePlan )
+					.on( 'input', planNameInput, WPFormsBuilderPaymentsUtils.renamePlan )
+					.on( 'focusout', planNameInput, WPFormsBuilderPaymentsUtils.checkPlanName );
 			}
 		},
 
@@ -83,7 +85,17 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 				.on( 'wpformsFieldAdd', app.fieldAdded )
 				.on( 'wpformsFieldDelete', app.fieldDeleted )
 				.on( 'wpformsPaymentsPlanCreated', app.toggleMultiplePlansWarning )
+				.on( 'wpformsPaymentsPlanCreated', app.bindPlanUIActions )
 				.on( 'wpformsPaymentsPlanDeleted', app.toggleMultiplePlansWarning );
+		},
+
+		/**
+		 * Bind plan UI actions.
+		 *
+		 * @since 1.9.5
+		 */
+		bindPlanUIActions() {
+			el.$panelContent.find( '.wpforms-panel-content-section-payment-plan-body .wpforms-panel-field-select select[name*="email"]' ).on( 'change', app.resetEmailAlertErrorClass );
 		},
 
 		/**
@@ -96,16 +108,34 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 				return;
 			}
 
+			let showAlert = false;
+
 			el.$panelContent.find( '.wpforms-panel-content-section-payment-plan' ).each( function() {
 				const $plan = $( this ),
-					planId = $plan.data( 'plan-id' );
+					planId = $plan.data( 'plan-id' ),
+					$emailField = $( `#wpforms-panel-field-stripe-recurring-${ planId }-email` );
 
-				if ( ! $plan.find( `#wpforms-panel-field-stripe-recurring-${ planId }-email` ).val() ) {
-					app.recurringEmailAlert();
+				if ( ! $emailField.val() ) {
+					$emailField.addClass( 'wpforms-required-field-error' );
 
-					return false;
+					showAlert = true;
 				}
 			} );
+
+			if ( ! showAlert ) {
+				return;
+			}
+
+			app.recurringEmailAlert();
+		},
+
+		/**
+		 * Maybe reset required email field error class.
+		 *
+		 * @since 1.9.5
+		 */
+		resetEmailAlertErrorClass() {
+			$( this ).toggleClass( 'wpforms-required-field-error', ! $( this ).val() );
 		},
 
 		/**
@@ -114,11 +144,17 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @since 1.8.4
 		 */
 		recurringEmailAlert() {
+			let alertMessage = wpforms_builder.stripe_recurring_email;
+
+			if ( ! $( '.wpforms-panel-content-section-stripe' ).is( ':visible' ) ) {
+				alertMessage += ' ' + wpforms_builder.stripe_recurring_settings;
+			}
+
 			$.alert( {
-				title: wpforms_builder.heads_up,
-				content: wpforms_builder.stripe_recurring_email,
+				title: wpforms_builder.stripe_recurring_heading,
+				content: alertMessage,
 				icon: 'fa fa-exclamation-circle',
-				type: 'orange',
+				type: 'red',
 				buttons: {
 					confirm: {
 						text: wpforms_builder.ok,
@@ -126,7 +162,27 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 						keys: [ 'enter' ],
 					},
 				},
+				onOpen() {
+					$( '.wpforms-stripe-settings-redirect' ).on( 'click', app.settingsRedirect );
+				},
 			} );
+		},
+
+		/**
+		 * Redirect to the settings tab.
+		 *
+		 * @since 1.9.5
+		 */
+		settingsRedirect() {
+			// Open the Stripe settings tab.
+			$( '.wpforms-panel-payments-button' ).trigger( 'click' );
+			$( '.wpforms-panel-sidebar-section-stripe' ).trigger( 'click' );
+
+			// Scroll to the Stripe settings.
+			window.location.href = window.location.pathname + window.location.search + '#wpforms-panel-field-stripe-enable_recurring-wrap';
+
+			// Close the alert.
+			$( this ).closest( '.jconfirm-box' ).find( '.btn-confirm' ).trigger( 'click' );
 		},
 
 		/**
@@ -140,6 +196,10 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 */
 		disableNotifications( e, id, type ) {
 			if ( ! app.isStripeField( type ) ) {
+				return;
+			}
+
+			if ( app.hasStripeCreditCardFieldInBuilder() ) {
 				return;
 			}
 
@@ -174,6 +234,10 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 				return;
 			}
 
+			if ( ! app.hasStripeCreditCardFieldInBuilder() ) {
+				return;
+			}
+
 			app.settingsToggle( true );
 			el.$feeNotice.toggleClass( 'wpforms-hidden' );
 		},
@@ -192,7 +256,12 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 				return;
 			}
 
+			if ( app.hasStripeCreditCardFieldInBuilder() ) {
+				return;
+			}
+
 			app.settingsToggle( false );
+			app.disablePayments();
 			el.$feeNotice.toggleClass( 'wpforms-hidden' );
 		},
 
@@ -206,7 +275,18 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @return {boolean} True if Stripe field.
 		 */
 		isStripeField( type ) {
-			return wpforms_builder_stripe.field_slugs.includes( type );
+			return type === wpforms_builder_stripe.field_slug;
+		},
+
+		/**
+		 * Checks if the Stripe Credit Card field is in the form builder.
+		 *
+		 * @since 1.9.5
+		 *
+		 * @return {boolean} True if the Stripe Credit Card field is in the builder.
+		 */
+		hasStripeCreditCardFieldInBuilder() {
+			return $( `.wpforms-field.wpforms-field-${ wpforms_builder_stripe.field_slug }` ).length > 0;
 		},
 
 		/**
@@ -243,36 +323,10 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @since 1.8.4
 		 */
 		toggleContent() {
-			const $input = $( this );
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsStripeModernBuilder.toggleContent()" has been deprecated, please use the new "WPFormsPaymentsUtils.toggleContent()" function instead!' );
 
-			if (
-				$( '#wpforms-panel-field-stripe-enable_recurring' ).is( ':checked' ) &&
-				$( '#wpforms-panel-field-stripe-enable_one_time' ).is( ':checked' )
-			) {
-				$input.prop( 'checked', false );
-
-				$.alert( {
-					title: wpforms_builder.heads_up,
-					content: $input.attr( 'id' ) === 'wpforms-panel-field-stripe-enable_recurring' ? wpforms_builder_stripe.disabled_recurring : wpforms_builder_stripe.disabled_one_time,
-					icon: 'fa fa-exclamation-circle',
-					type: 'orange',
-					buttons: {
-						confirm: {
-							text: wpforms_builder.ok,
-							btnClass: 'btn-confirm',
-							keys: [ 'enter' ],
-						},
-					},
-				} );
-
-				$input.prop( 'checked', false );
-			}
-
-			const $wrapper = $input.closest( '.wpforms-panel-content-section-payment' ),
-				isChecked = $input.prop( 'checked' ) && ! $( '#wpforms-panel-field-settings-disable_entries' ).prop( 'checked' );
-
-			$wrapper.find( '.wpforms-panel-content-section-payment-toggled-body' ).toggle( isChecked );
-			$wrapper.toggleClass( 'wpforms-panel-content-section-payment-open', isChecked );
+			WPFormsBuilderPaymentsUtils.toggleContent();
 		},
 
 		/**
@@ -281,11 +335,10 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @since 1.8.4
 		 */
 		togglePlan() {
-			const $plan = $( this ).closest( '.wpforms-panel-content-section-payment-plan' ),
-				$icon = $plan.find( '.wpforms-panel-content-section-payment-plan-head-buttons-toggle' );
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsStripeModernBuilder.togglePlan()" has been deprecated, please use the new "WPFormsPaymentsUtils.togglePlan()" function instead!' );
 
-			$icon.toggleClass( 'fa-chevron-circle-up fa-chevron-circle-down' );
-			$plan.find( '.wpforms-panel-content-section-payment-plan-body' ).toggle( $icon.hasClass( 'fa-chevron-circle-down' ) );
+			WPFormsBuilderPaymentsUtils.togglePlan();
 		},
 
 		/**
@@ -294,8 +347,10 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @since 1.8.4
 		 */
 		deletePlan() {
-			// Trigger a warning modal when trying to delete a single plan without pro addon.
-			$( '.wpforms-panel-content-section-stripe .wpforms-panel-content-section-payment-button-add-plan' ).click();
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsStripeModernBuilder.checkPlanName()" has been deprecated, please use the new "WPFormsPaymentsUtils.deletePlan()" function instead!' );
+
+			WPFormsBuilderPaymentsUtils.deletePlan();
 		},
 
 		/**
@@ -304,20 +359,10 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @since 1.8.4
 		 */
 		checkPlanName() {
-			const $input = $( this ),
-				$plan = $input.closest( '.wpforms-panel-content-section-payment-plan' ),
-				$planName = $plan.find( '.wpforms-panel-content-section-payment-plan-head-title' );
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsStripeModernBuilder.checkPlanName()" has been deprecated, please use the new "WPFormsPaymentsUtils.checkPlanName()" function instead!' );
 
-			if ( $input.val() ) {
-				$planName.html( $input.val() );
-
-				return;
-			}
-
-			const defaultValue = wpforms_builder_stripe.plan_placeholder;
-
-			$planName.html( defaultValue );
-			$input.val( defaultValue );
+			WPFormsBuilderPaymentsUtils.checkPlanName();
 		},
 
 		/**
@@ -326,17 +371,21 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @since 1.8.4
 		 */
 		renamePlan() {
-			const $input = $( this ),
-				$plan = $input.closest( '.wpforms-panel-content-section-payment-plan' ),
-				$planName = $plan.find( '.wpforms-panel-content-section-payment-plan-head-title' );
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsStripeModernBuilder.renamePlan()" has been deprecated, please use the new "WPFormsPaymentsUtils.renamePlan()" function instead!' );
 
-			if ( ! $input.val() ) {
-				$planName.html( '' );
+			WPFormsBuilderPaymentsUtils.renamePlan();
+		},
 
-				return;
-			}
+		/**
+		 * Make sure that "One-Time Payments" and "Recurring Payments" toggles are turned off.
+		 *
+		 * @since 1.9.5
+		 */
+		disablePayments() {
+			const toggleInput = $( '#wpforms-panel-field-stripe-enable_one_time, #wpforms-panel-field-stripe-enable_recurring' );
 
-			$planName.html( $input.val() );
+			toggleInput.prop( 'checked', false ).trigger( 'change' ).each( WPFormsBuilderPaymentsUtils.toggleContent );
 		},
 	};
 

@@ -1123,6 +1123,10 @@ class Single implements PaymentsViewsInterface {
 				$link = 'billing/subscriptions/';
 				break;
 
+			case 'square':
+				$link = 'subscriptions/';
+				break;
+
 			default:
 				$link = '';
 				break;

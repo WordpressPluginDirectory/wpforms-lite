@@ -16,7 +16,7 @@ class Addons {
 	 *
 	 * @since 1.9.2
 	 */
-	const FIELD_OPTIONS = [
+	private const FIELD_OPTIONS = [
 		'calculations'  => [
 			'calculation_code',
 			'calculation_code_js',
@@ -37,18 +37,11 @@ class Addons {
 	];
 
 	/**
-	 * Field options for disabled addons.
-	 *
-	 * @since 1.9.2
-	 *
-	 * @var array
-	 */
-	private $disabled_field_options = [];
-
-	/**
 	 * Initialize.
 	 *
 	 * @since 1.9.2
+	 *
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
 	public function init() {
 
@@ -56,37 +49,11 @@ class Addons {
 	}
 
 	/**
-	 * Get a list of fields options added by disabled addons.
-	 *
-	 * @since 1.9.2
-	 *
-	 * @return array
-	 */
-	private function get_disabled_field_options(): array {
-
-		$disabled_field_options = [];
-
-		foreach ( self::FIELD_OPTIONS as $addon_slug => $addon_fields ) {
-			if ( wpforms_is_addon_initialized( $addon_slug ) ) {
-				continue;
-			}
-
-			$disabled_field_options[] = $addon_fields;
-		}
-
-		if ( empty( $disabled_field_options ) ) {
-			return [];
-		}
-
-		return array_merge( ...$disabled_field_options );
-	}
-
-	/**
 	 * Add hooks.
 	 *
 	 * @since 1.9.2
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		add_filter( 'wpforms_save_form_args', [ $this, 'save_disabled_addons_options' ], 10, 3 );
 	}
@@ -104,119 +71,177 @@ class Addons {
 	 */
 	public function save_disabled_addons_options( $post_data ): array {
 
-		$post_data    = (array) $post_data;
-		$post_content = json_decode( wp_unslash( $post_data['post_content'] ?? '' ), true );
-		$form_obj     = wpforms()->obj( 'form' );
+		$post_data = (array) $post_data;
+		$form_obj  = wpforms()->obj( 'form' );
+		$form_data = json_decode( stripslashes( $post_data['post_content'] ?? '' ), true );
+		$form_id   = $form_data['id'] ?? '';
 
-		if ( ! $form_obj || empty( $post_content['id'] ) ) {
+		if ( ! $form_obj || ! $form_id ) {
 			return $post_data;
 		}
 
-		$previous_form_data = $form_obj->get( $post_content['id'], [ 'content_only' => true ] );
+		$previous_form_data   = $form_obj->get( $form_id, [ 'content_only' => true ] );
+		$not_validated_addons = Requirements::get_instance()->get_not_validated_addons();
 
-		if ( empty( $previous_form_data ) ) {
+		if ( empty( $previous_form_data ) || empty( $not_validated_addons ) ) {
 			return $post_data;
 		}
 
-		$post_content = $this->preserve_fields( $post_content, $previous_form_data );
-		$post_content = $this->preserve_providers( $post_content, $previous_form_data );
-		$post_content = $this->preserve_payments( $post_content, $previous_form_data );
-		$post_content = $this->preserve_settings( $post_content, $previous_form_data );
+		foreach ( $not_validated_addons as $path ) {
+			$slug = str_replace( 'wpforms-', '', basename( $path, '.php' ) );
 
-		$post_data['post_content'] = wpforms_encode( $post_content );
+			$this->preserve_addon( $slug, $form_data, $previous_form_data );
+		}
+
+		$this->preserve_providers( $form_data, $previous_form_data );
+		$this->preserve_payments( $form_data, $previous_form_data );
+
+		$post_data['post_content'] = wpforms_encode( $form_data );
 
 		return $post_data;
 	}
 
 	/**
-	 * Preserve fields data from inactive addons.
+	 * Preserve addon fields, settings, panels, notifications, etc.
 	 *
 	 * @since 1.9.3
 	 *
-	 * @param array $form_data          Form data.
-	 * @param array $previous_form_data Previous form data.
+	 * @param string $slug               Addon slug.
+	 * @param array  $form_data          Form data.
+	 * @param array  $previous_form_data Previous form data.
 	 *
-	 * @return array
+	 * @return void
 	 */
-	private function preserve_fields( array $form_data, array $previous_form_data ): array {
+	private function preserve_addon( string $slug, array &$form_data, array $previous_form_data ): void {
 
-		if ( empty( $form_data['fields'] ) ) {
-			return $form_data;
+		if ( ! empty( $form_data['fields'] ) && ! empty( $previous_form_data['fields'] ) ) {
+			$this->preserve_addon_fields_settings( $slug, $form_data['fields'], $previous_form_data['fields'] );
 		}
 
-		$this->disabled_field_options = $this->get_disabled_field_options();
-		$previous_fields              = $previous_form_data['fields'] ?? [];
+		$this->preserve_addon_panel( $slug, $form_data, $previous_form_data );
 
-		if ( empty( $this->disabled_field_options ) || empty( $previous_fields ) ) {
-			return $form_data;
+		if ( ! empty( $form_data['settings'] ) && ! empty( $previous_form_data['settings'] ) ) {
+			$this->preserve_addon_settings( $slug, $form_data['settings'], $previous_form_data['settings'] );
 		}
 
-		foreach ( $form_data['fields'] as $field_id => $new_field ) {
-			if ( empty( $previous_fields[ $field_id ] ) ) {
-				continue;
-			}
-
-			$form_data['fields'][ $field_id ] =
-				$this->add_disabled_addons_options_field( (array) $new_field, (array) $previous_fields[ $field_id ] );
+		if ( ! empty( $form_data['settings']['notifications'] ) && ! empty( $previous_form_data['settings']['notifications'] ) ) {
+			$this->preserve_addon_notifications(
+				$slug,
+				$form_data['settings']['notifications'],
+				$previous_form_data['settings']['notifications']
+			);
 		}
-
-		return $form_data;
 	}
 
 	/**
-	 * Preserve Providers that are not active.
+	 * Preserve addon fields.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param string $slug            Addon slug.
+	 * @param array  $new_fields      Form fields settings.
+	 * @param array  $previous_fields Previous form fields settings.
+	 *
+	 * @return void
+	 */
+	private function preserve_addon_fields_settings( string $slug, array &$new_fields, array $previous_fields ): void {
+
+		foreach ( $previous_fields as $field_id => $previous_field ) {
+			$new_field = $new_fields[ $field_id ] ?? [];
+
+			if ( empty( $new_field ) ) {
+				continue;
+			}
+
+			$this->preserve_addon_field_settings( $slug, $new_field, $previous_field );
+
+			$new_fields[ $field_id ] = $new_field;
+		}
+	}
+
+	/**
+	 * Preserve addon field.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param string $slug           Addon slug.
+	 * @param array  $new_field      Previous form fields settings.
+	 * @param array  $previous_field Form fields settings.
+	 *
+	 * @return void
+	 */
+	private function preserve_addon_field_settings( string $slug, array &$new_field, array $previous_field ): void {
+
+		$prefix           = $this->prepare_prefix( $slug );
+		$changed_settings = array_diff_key( $previous_field, $new_field );
+		$preserve_fields  = self::FIELD_OPTIONS[ $slug ] ?? [];
+
+		foreach ( $changed_settings as $setting_name => $setting_value ) {
+			if (
+				strpos( $setting_name, $prefix ) === 0 ||
+				in_array( $setting_name, $preserve_fields, true )
+			) {
+				$new_field[ $setting_name ] = $setting_value;
+			}
+		}
+	}
+
+	/**
+	 * Preserve addon panel.
 	 *
 	 * @since 1.9.3
 	 *
-	 * @param array $form_data          Form data.
-	 * @param array $previous_form_data Previous form data.
-	 *
-	 * @return array
+	 * @param string $slug               Addon slug.
+	 * @param array  $form_data          Form data.
+	 * @param array  $previous_form_data Previous form data.
 	 */
-	private function preserve_providers( array $form_data, array $previous_form_data ): array {
+	private function preserve_addon_panel( string $slug, array &$form_data, array $previous_form_data ): void {
 
-		if ( empty( $previous_form_data['providers'] ) ) {
-			return $form_data;
+		$panel = $this->prepare_prefix( $slug );
+
+		// The addon settings stored its own panel, e.g., $form_data[lead_forms], $form_data[webhooks], etc.
+		if ( ! empty( $previous_form_data[ $panel ] ) ) {
+			$form_data[ $panel ] = $previous_form_data[ $panel ];
 		}
-
-		$active_providers = wpforms_get_providers_available();
-
-		foreach ( $previous_form_data['providers'] as $provider_id => $provider ) {
-			if ( ! empty( $active_providers[ $provider_id ] ) ) {
-				continue;
-			}
-
-			$form_data['providers'][ $provider_id ] = $provider;
-		}
-
-		return $form_data;
 	}
 
 	/**
-	 * Preserve Payments providers that are not active.
+	 * Preserve addon settings stored inside the settings panel with a specific prefix.
+	 * e.g. $form_data[settings][{$prefix}_enabled], $form_data[settings][{$prefix}_email], etc.
 	 *
 	 * @since 1.9.4
 	 *
-	 * @param array $form_data          Form data.
-	 * @param array $previous_form_data Previous form data.
-	 *
-	 * @return array
+	 * @param string $slug              Addon option prefix.
+	 * @param array  $new_settings      Form settings.
+	 * @param array  $previous_settings Previous form settings.
 	 */
-	private function preserve_payments( array $form_data, array $previous_form_data ): array {
+	private function preserve_addon_settings( string $slug, array &$new_settings, array $previous_settings ): void {
 
-		if ( empty( $previous_form_data['payments'] ) ) {
-			return $form_data;
+		$prefix = $this->prepare_prefix( $slug );
+
+		static $legacy_options = [
+			'offline_forms'     => [ 'offline_form' ],
+			'user_registration' => [ 'user_login_hide', 'user_reset_hide' ],
+			'surveys_polls'     => [ 'survey_enable', 'poll_enable' ],
+		];
+
+		// BC: User Registration addon has `registration_` prefix instead of `user_registration`.
+		if ( $prefix === 'user_registration' ) {
+			$prefix = 'registration';
 		}
 
-		foreach ( $previous_form_data['payments'] as $slug => $value ) {
-			if ( ! empty( $form_data['payments'][ $slug ] ) ) {
+		foreach ( $previous_settings as $setting_name => $value ) {
+			if ( strpos( $setting_name, $prefix ) === 0 ) {
+				$new_settings[ $setting_name ] = $value;
+
 				continue;
 			}
 
-			$form_data['payments'][ $slug ] = $value;
+			// BC: The options don't have a prefix and hard-coded in the `$legacy_options` variable.
+			if ( isset( $legacy_options[ $prefix ] ) && in_array( $setting_name, $legacy_options[ $prefix ], true ) ) {
+				$new_settings[ $setting_name ] = $value;
+			}
 		}
-
-		return $form_data;
 	}
 
 	/**
@@ -239,12 +264,9 @@ class Addons {
 				continue;
 			}
 
-			$changed_notifications = array_diff_key(
-				$notification_settings,
-				$new_notifications[ $notification_id ]
-			);
+			$changed_notification_settings = array_diff_key( $notification_settings, $new_notifications[ $notification_id ] );
 
-			foreach ( $changed_notifications as $setting_name => $value ) {
+			foreach ( $changed_notification_settings as $setting_name => $value ) {
 				if ( strpos( $setting_name, $prefix ) === 0 ) {
 					$new_notifications[ $notification_id ][ $setting_name ] = $value;
 				}
@@ -253,101 +275,51 @@ class Addons {
 	}
 
 	/**
-	 * Preserve settings of not active addons from the Settings tab.
+	 * Preserve Providers that are not active.
 	 *
 	 * @since 1.9.4
 	 *
 	 * @param array $form_data          Form data.
 	 * @param array $previous_form_data Previous form data.
-	 *
-	 * @return array
 	 */
-	public function preserve_settings( array $form_data, array $previous_form_data ): array {
+	private function preserve_providers( array &$form_data, array $previous_form_data ): void {
 
-		$requirements         = Requirements::get_instance();
-		$not_validated_addons = $requirements->get_not_validated_addons();
-
-		foreach ( $not_validated_addons as $path ) {
-			$slug  = str_replace( 'wpforms-', '', basename( $path, '.php' ) );
-			$panel = $this->prepare_prefix( $slug );
-
-			// The addon settings stored its own panel, e.g., $form_data[lead_forms], $form_data[webhooks], etc.
-			if ( ! empty( $previous_form_data[ $panel ] ) ) {
-				$form_data[ $panel ] = $previous_form_data[ $panel ];
-
-				continue;
-			}
-
-			if ( empty( $previous_form_data['settings'] ) ) {
-				continue;
-			}
-
-			$this->preserve_addon_settings( $panel, $form_data, $previous_form_data );
-
-			if ( ! empty( $form_data['settings']['notifications'] ) && ! empty( $previous_form_data['settings']['notifications'] ) ) {
-				$this->preserve_addon_notifications( $slug, $form_data['settings']['notifications'], $previous_form_data['settings']['notifications'] );
-			}
+		if ( empty( $previous_form_data['providers'] ) ) {
+			return;
 		}
 
-		return $form_data;
+		$active_providers = wpforms_get_providers_available();
+
+		foreach ( $previous_form_data['providers'] as $slug => $provider ) {
+			if ( ! empty( $active_providers[ $slug ] ) ) {
+				continue;
+			}
+
+			$form_data['providers'][ $slug ] = $provider;
+		}
 	}
 
 	/**
-	 * Preserve addon settings stored inside the settings panel with a specific prefix.
-	 * e.g. $form_data[settings][{$prefix}_enabled], $form_data[settings][{$prefix}_email], etc.
+	 * Preserve Payments providers that are not active.
 	 *
 	 * @since 1.9.4
 	 *
-	 * @param string $prefix             Addon option prefix.
-	 * @param array  $form_data          Form data.
-	 * @param array  $previous_form_data Previous form data.
+	 * @param array $form_data          Form data.
+	 * @param array $previous_form_data Previous form data.
 	 */
-	private function preserve_addon_settings( string $prefix, array &$form_data, array $previous_form_data ): void {
+	private function preserve_payments( array &$form_data, array $previous_form_data ): void {
 
-		static $legacy_options = [
-			'offline_forms'     => [ 'offline_form' ],
-			'user_registration' => [ 'user_login_hide', 'user_reset_hide' ],
-			'surveys_polls'     => [ 'survey_enable', 'poll_enable' ],
-		];
-
-		// BC: User Registration addon has `registration_` prefix instead of `user_registration`.
-		if ( $prefix === 'user_registration' ) {
-			$prefix = 'registration';
+		if ( empty( $previous_form_data['payments'] ) ) {
+			return;
 		}
 
-		foreach ( $previous_form_data['settings'] as $setting_name => $value ) {
-			if ( strpos( $setting_name, $prefix ) === 0 ) {
-				$form_data['settings'][ $setting_name ] = $value;
-
+		foreach ( $previous_form_data['payments'] as $slug => $value ) {
+			if ( ! empty( $form_data['payments'][ $slug ] ) ) {
 				continue;
 			}
 
-			// BC: The options don't have a prefix and hard-coded in the `$legacy_options` variable.
-			if ( isset( $legacy_options[ $prefix ] ) && in_array( $setting_name, $legacy_options[ $prefix ], true ) ) {
-				$form_data['settings'][ $setting_name ] = $value;
-			}
+			$form_data['payments'][ $slug ] = $value;
 		}
-	}
-
-	/**
-	 * Add disabled addons options to the field.
-	 *
-	 * @since 1.9.2
-	 *
-	 * @param array $new_field Updated field data.
-	 * @param array $old_field Old field data.
-	 *
-	 * @return array
-	 */
-	private function add_disabled_addons_options_field( array $new_field, array $old_field ): array {
-
-		foreach ( $this->disabled_field_options as $option ) {
-			if ( isset( $old_field[ $option ] ) ) {
-				$new_field[ $option ] = $old_field[ $option ];
-			}
-		}
-
-		return $new_field;
 	}
 
 	/**

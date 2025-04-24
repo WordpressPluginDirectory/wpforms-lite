@@ -37,7 +37,7 @@ class IdentifierHandler implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(Reader $reader, TokenStream $stream)
+    public function handle(Reader $reader, TokenStream $stream) : bool
     {
         $match = $reader->findPattern($this->patterns->getIdentifierPattern());
         if (!$match) {

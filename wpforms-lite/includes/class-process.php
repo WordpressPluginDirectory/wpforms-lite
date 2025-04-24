@@ -7,6 +7,7 @@
 
 // phpcs:ignore WPForms.PHP.UseStatement.UnusedUseStatement
 use WPForms\Emails\Mailer;
+use WPForms\Emails\Notifications;
 
 /**
  * Process and validate form entries.
@@ -126,6 +127,7 @@ class WPForms_Process {
 		add_action( 'wp_ajax_wpforms_submit', [ $this, 'ajax_submit' ] );
 		add_action( 'wp_ajax_nopriv_wpforms_submit', [ $this, 'ajax_submit' ] );
 		add_filter( 'wpforms_ajax_submit_redirect', [ $this, 'maybe_open_in_new_tab' ] );
+		add_filter( 'wpforms_smarttags_process_value', [ Notifications::class, 'filter_smarttags_process_value' ], PHP_INT_MAX, 6 );
 	}
 
 	/**
@@ -1139,7 +1141,7 @@ class WPForms_Process {
 		 */
 		$verify_url = apply_filters( 'wpforms_process_captcha_verify_url', $verify_url_raw, $verify_url_raw, $verify_query_arg, $this->form_data );
 
-		$response = wp_remote_post( $verify_url, [ 'body' => $verify_query_arg ] );
+		$response = wp_safe_remote_post( $verify_url, [ 'body' => $verify_query_arg ] );
 
 		$response_body = json_decode( wp_remote_retrieve_body( $response ), false );
 
@@ -1733,7 +1735,7 @@ class WPForms_Process {
 			$email = apply_filters( 'wpforms_entry_email_atts', $email, $fields, $entry, $form_data, $notification_id ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 			// Create new email.
-			$emails = ( new WPForms\Emails\Notifications() )->init( $email['template'] );
+			$emails = ( new Notifications() )->init( $email['template'] );
 
 			$emails->__set( 'form_data', $form_data );
 			$emails->__set( 'fields', $fields );

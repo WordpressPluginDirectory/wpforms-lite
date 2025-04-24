@@ -246,10 +246,10 @@ class Akismet {
 		// We can't use certain real-time functions when the entry is marked as not spam.
 		// In this case, we need to use the smart tag value.
 		if ( ! empty( $entry_id ) ) {
-			$page_url    = wpforms_process_smart_tags( '{page_url}', $form_data, [], $entry_id );
-			$url_referer = wpforms_process_smart_tags( '{url_referer}', $form_data, [], $entry_id );
-			$user_id     = wpforms_process_smart_tags( '{user_id}', $form_data, [], $entry_id );
-			$user_ip     = wpforms_process_smart_tags( '{user_ip}', $form_data, [], $entry_id );
+			$page_url    = wpforms_process_smart_tags( '{page_url}', $form_data, [], $entry_id, 'akismet-request-args' );
+			$url_referer = wpforms_process_smart_tags( '{url_referer}', $form_data, [], $entry_id, 'akismet-request-args' );
+			$user_id     = wpforms_process_smart_tags( '{user_id}', $form_data, [], $entry_id, 'akismet-request-args' );
+			$user_ip     = wpforms_process_smart_tags( '{user_ip}', $form_data, [], $entry_id, 'akismet-request-args' );
 			$user_agent  = '';
 		} else {
 			$page_url    = wpforms_current_url();

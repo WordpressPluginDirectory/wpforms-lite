@@ -115,7 +115,7 @@ class Requirements {
 	 * @var string[]
 	 */
 	private $defaults = [
-		self::PHP      => '7.1',
+		self::PHP      => '7.2',
 		self::WP       => '5.5',
 		self::WPFORMS  => self::WPFORMS_DEV_VERSION_IN_ADDON,
 		self::LICENSE  => self::PRO_AND_TOP,
@@ -133,6 +133,7 @@ class Requirements {
 	 * Addon requirements.
 	 *
 	 * Array has the format 'addon basename' => 'addon requirements array'.
+	 *
 	 * The requirement array can have the following keys:
 	 * self::PHP ('php') for the minimal PHP version required,
 	 * self::EXT ('ext') for the PHP extensions required,
@@ -143,6 +144,7 @@ class Requirements {
 	 * self::ADDON_VERSION_CONSTANT ('addon_version_constant') for the addon version constant.
 	 * self::PRIORITY ('priority') for the priority of the current requirements.
 	 *
+	 * The requirement array can have the following values:
 	 * The 'php' value can be string like '5.6' or an array like 'php' => [ 'version' => '7.2', compare => '=' ].
 	 * The 'ext' value can be string like 'curl' or an array like 'ext' => [ 'curl', 'mbstring' ].
 	 * The 'wp' value can be string like '5.5' or an array like 'wp' => [ 'version' => '6.4', compare => '=' ].
@@ -257,6 +259,9 @@ class Requirements {
 		'wpforms-offline-forms/wpforms-offline-forms.php'               => [],
 		'wpforms-paypal-commerce/wpforms-paypal-commerce.php'           => [],
 		'wpforms-paypal-standard/wpforms-paypal-standard.php'           => [],
+		'wpforms-pipedrive/wpforms-pipedrive.php'                       => [
+			self::LICENSE => self::TOP,
+		],
 		'wpforms-post-submissions/wpforms-post-submissions.php'         => [],
 		'wpforms-salesforce/wpforms-salesforce.php'                     => [
 			self::LICENSE => self::TOP,
@@ -436,7 +441,7 @@ class Requirements {
 		}
 
 		// We didn't check the addon before.
-		if ( ! isset( $this->not_validated[ $basename ], $this->validated[ $basename ] ) ) {
+		if ( ! isset( $this->not_validated[ $basename ] ) && ! in_array( $basename, $this->validated, true ) ) {
 			$addon_load_function = $this->get_addon_load_function( $basename );
 
 			if ( ! is_callable( $addon_load_function ) ) {
@@ -1319,7 +1324,7 @@ class Requirements {
 	 */
 	public function get_not_validated_addons(): array {
 
-		$all_addons = array_unique( array_keys( $this->requirements ) );
+		$all_addons = array_keys( $this->requirements );
 
 		return array_values( array_diff( $all_addons, $this->validated ) );
 	}

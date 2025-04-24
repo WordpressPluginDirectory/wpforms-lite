@@ -41,7 +41,7 @@ class InvoicePaymentSucceeded extends Base {
 		}
 
 		$currency = strtoupper( $this->data->object->currency );
-		$amount   = $this->data->object->amount_paid / Helpers::get_decimals_amount( $currency );
+		$amount   = $this->data->object->amount_paid / wpforms_get_currency_multiplier( $currency );
 
 		wpforms()->obj( 'payment' )->update(
 			$db_renewal->id,

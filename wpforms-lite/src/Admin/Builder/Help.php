@@ -247,6 +247,7 @@ class Help {
 			'providers/slack'                         => 'slack',
 			'providers/hubspot'                       => 'hubspot',
 			'providers/twilio'                        => 'twilio',
+			'providers/pipedrive'                     => 'pipedrive',
 			'payments'                                => '',
 			'payments/paypal_commerce'                => 'paypal commerce',
 			'payments/paypal_standard'                => 'paypal standard',
@@ -1211,6 +1212,9 @@ class Help {
 			],
 			'zapier'                    => [
 				'/docs/how-to-install-and-use-zapier-addon-with-wpforms/',
+			],
+			'pipedrive'                 => [
+				'/docs/pipedrive-addon/',
 			],
 			'salesforce'                => [
 				'/docs/how-to-install-and-use-the-salesforce-addon-with-wpforms/',

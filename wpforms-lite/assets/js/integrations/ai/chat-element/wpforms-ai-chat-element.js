@@ -60,6 +60,34 @@
  */
 class WPFormsAIChatHTMLElement extends HTMLElement {
 	/**
+	 * Whether the events have been initialized.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @type {boolean}
+	 */
+	eventInitializes = false;
+
+	/**
+	 * Whether the prefill has been submitted.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @type {boolean}
+	 */
+	prefillSubmitted = false;
+
+	/**
+	 * The input (textarea) height.
+	 *
+	 * @type {Object}
+	 */
+	inputHeight = {
+		min: 54,
+		max: 95,
+	};
+
+	/**
 	 * Element constructor.
 	 *
 	 * @since 1.9.1
@@ -127,8 +155,10 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 		}
 
 		// Auto-submit if enabled and prefill is provided
-		if ( this.autoSubmit && this.prefill ) {
+		if ( this.autoSubmit && this.prefill && ! this.prefillSubmitted ) {
 			this.input.value = this.prefill;
+
+			this.prefillSubmitted = true;
 
 			setTimeout( () => this.sendMessage( true ), 250 );
 		}
@@ -172,7 +202,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 			return this.modeHelpers.getMessageInputField();
 		}
 
-		return `<input type="text" placeholder="${ this.modeStrings.placeholder }">`;
+		return `<textarea placeholder="${ this.modeStrings.placeholder }"></textarea>`;
 	}
 
 	/**
@@ -198,7 +228,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 					<div class="wpforms-ai-chat-header">
 						<h3 class="wpforms-ai-chat-header-title">${ this.modeStrings.title }</h3>
 						<span class="wpforms-ai-chat-header-description">${ this.modeStrings.description }
-							<a href="${ this.modeStrings.learnMoreUrl }" target="_blank" rel="noopener noreferrer">${ this.modeStrings.learnMore }</a>${ this.modeStrings.descrEndDot }
+							<a href="${ this.modeStrings.learnMoreUrl }" target="_blank" rel="noopener noreferrer">${ this.modeStrings.learnMore }</a>
 						</span>
 					</div>
 					${ content }
@@ -266,10 +296,17 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	 * @since 1.9.1
 	 */
 	events() {
+		if ( this.eventInitializes ) {
+			return;
+		}
+
 		this.sendButton.addEventListener( 'click', this.sendMessage.bind( this ) );
 		this.stopButton.addEventListener( 'click', this.stopLoading.bind( this ) );
+		this.input.addEventListener( 'keydown', this.keyDown.bind( this ) );
 		this.input.addEventListener( 'keyup', this.keyUp.bind( this ) );
 		this.bindWelcomeScreenEvents();
+
+		this.eventInitializes = true;
 	}
 
 	/**
@@ -320,6 +357,12 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	 * @param {KeyboardEvent} e The keyboard event.
 	 */
 	keyUp( e ) { // eslint-disable-line complexity
+		if ( typeof this.modeHelpers.resizeInput === 'function' ) {
+			this.modeHelpers.resizeInput( e );
+		} else {
+			this.resizeInput( e );
+		}
+
 		switch ( e.code ) {
 			case 'Enter':
 				// Send a message on `Enter` key press.
@@ -353,6 +396,69 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 				// Update the chat history.
 				this.history.update( { question: this.input.value } );
 		}
+	}
+
+	/**
+	 * Detect the Enter key press.
+	 * Prevent resizing the input if Enter key pressed without Shift.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param {KeyboardEvent} e The keyboard event.
+	 */
+	keyDown( e ) {
+		this.preventResizeInput = e.code === 'Enter' && ! e.shiftKey;
+
+		if ( this.preventResizeInput ) {
+			e.preventDefault();
+			this.setInputHeight( this.inputHeight.min );
+		}
+	}
+
+	/**
+	 * Resize textarea while added new lines.
+	 *
+	 * @since 1.9.5
+	 */
+	resizeInput() {
+		if ( this.preventResizeInput ) {
+			this.preventResizeInput = false;
+
+			return;
+		}
+
+		// Reset style to get the correct scroll height.
+		this.input.style.height = '';
+		this.input.style.paddingTop = '10px';
+		this.input.style.paddingBottom = '10px';
+
+		let height;
+		const scrollHeight = this.input.scrollHeight;
+
+		// Calculate the height based on the scroll height.
+		height = Math.min( scrollHeight, this.inputHeight.max );
+		height = Math.max( height, this.inputHeight.min );
+
+		this.setInputHeight( height );
+	}
+
+	/**
+	 * Set textarea height.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param {number} height The height.
+	 */
+	setInputHeight( height ) {
+		// Adjust padding based on the height.
+		if ( height <= this.inputHeight.min ) {
+			this.input.style.paddingTop = '';
+			this.input.style.paddingBottom = '';
+		}
+
+		// Set the height.
+		this.input.style.height = height + 'px';
+		this.style.setProperty( '--wpforms-ai-chat-input-height', height + 'px' );
 	}
 
 	/**
@@ -408,6 +514,8 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	 */
 	apiResponseError( error ) { // eslint-disable-line complexity
 		const cause	= error?.cause ?? null;
+
+		this.triggerEvent( 'wpformsAIChatBeforeError', { fieldId: this.fieldId } );
 
 		// Handle the rate limit error.
 		if ( cause === 429 ) {
@@ -821,6 +929,8 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 		const sanitizedResponse = this.sanitizeResponse( { ...response } );
 
 		if ( this.hasProhibitedCode( response, sanitizedResponse ) ) {
+			this.triggerEvent( 'wpformsAIChatBeforeError', { fieldId: this.fieldId } );
+
 			this.addProhibitedCodeWarning();
 
 			return;
@@ -829,6 +939,8 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 		const answerHTML = this.modeHelpers.getAnswer( sanitizedResponse );
 
 		if ( ! answerHTML ) {
+			this.triggerEvent( 'wpformsAIChatBeforeError', { fieldId: this.fieldId } );
+
 			this.addEmptyResultsError();
 
 			return;
@@ -1027,6 +1139,8 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 				setTimeout( type, 20 );
 			} else if ( typeof finishedCallback === 'function' ) {
 				// Call the callback function when typing is finished.
+				chat.triggerEvent( 'wpformsAIChatAfterTypeText', { chat } );
+
 				finishedCallback( element );
 			}
 

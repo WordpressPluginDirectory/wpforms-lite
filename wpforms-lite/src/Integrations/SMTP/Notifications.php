@@ -57,7 +57,7 @@ class Notifications implements IntegrationInterface {
 
 		// Before checking if $_POST['email'] is valid email, we need to check if smart tag is used and return its value.
 		$email = ! empty( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
-		$email = $email ? sanitize_email( wpforms_process_smart_tags( $email, [], [], '' ) ) : '';
+		$email = $email ? sanitize_email( wpforms_process_smart_tags( $email, [], [], '', 'smtp-notification-validation' ) ) : '';
 
 		if ( ! is_email( $email ) ) {
 			wp_send_json_error(
@@ -87,7 +87,9 @@ class Notifications implements IntegrationInterface {
 	 */
 	public function form_builder_strings( $strings, $form ) {
 
-		$strings['allow_only_one_email'] = esc_html__( 'Notifications can only use 1 From Email. Please do not enter multiple addresses.', 'wpforms-lite' );
+		$strings['empty_email_address']     = esc_html__( 'Please enter a valid email address. Your notifications won\'t be sent if the field is not filled in correctly.', 'wpforms-lite' );
+		$strings['allow_only_one_email']    = esc_html__( 'Notifications can only use 1 From Email. Please do not enter multiple addresses.', 'wpforms-lite' );
+		$strings['allow_only_email_fields'] = esc_html__( 'This smart tag does not point to an Email field in your form.', 'wpforms-lite' );
 
 		return $strings;
 	}
@@ -246,7 +248,7 @@ class Notifications implements IntegrationInterface {
 	private function email_domain_matches_site_domain( $email ) {
 
 		// Process smart tags if they are used as a value.
-		$email = wpforms_process_smart_tags( $email, [] );
+		$email = wpforms_process_smart_tags( $email, [], [], '', 'smtp-notification-validation' );
 
 		// Skip processing when email is empty or does not set.
 		// e.g. {field_id="3"} which we don't have at the moment.

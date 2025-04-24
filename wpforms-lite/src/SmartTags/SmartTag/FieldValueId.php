@@ -38,7 +38,7 @@ class FieldValueId extends SmartTag {
 			? 'value_raw'
 			: 'value';
 
-		$value = $this->get_formatted_field_value( (int) $field_id, (array) $fields, $field_key );
+		$value = $this->get_formatted_field_value( (int) $field_id, (array) $fields, $field_key, $form_data );
 
 		return wp_kses_post( wp_unslash( $value ) );
 	}

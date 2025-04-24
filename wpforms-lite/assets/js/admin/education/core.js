@@ -104,7 +104,7 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 		/**
 		 * Action button click handler.
 		 *
-		 * @since 1.9.4.2
+		 * @since 1.9.5
 		 *
 		 * @param {Event} event Event.
 		 */
