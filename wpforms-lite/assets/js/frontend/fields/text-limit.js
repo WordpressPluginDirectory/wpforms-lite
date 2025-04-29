@@ -230,6 +230,20 @@
 	}
 
 	/**
+	 * Remove existing hint.
+	 *
+	 * @since 1.9.5.1
+	 *
+	 * @param {Object} element Element.
+	 */
+	const removeExistingHint = ( element ) => {
+		const existingHint = element.parentNode.querySelector( '.wpforms-field-limit-text' );
+		if ( existingHint ) {
+			existingHint.remove();
+		}
+	};
+
+	/**
 	 * Public functions and properties.
 	 *
 	 * @since 1.8.9
@@ -264,6 +278,8 @@
 
 						const fn = checkCharacters( hint, limit );
 
+						removeExistingHint( e );
+
 						e.parentNode.appendChild( hint );
 						e.addEventListener( 'keydown', fn );
 						e.addEventListener( 'keyup', fn );
@@ -289,6 +305,8 @@
 						);
 
 						const fn = checkWords( hint, limit );
+
+						removeExistingHint( e );
 
 						e.parentNode.appendChild( hint );
 

@@ -227,12 +227,13 @@ class WPForms_Lite {
 						$settings->form_data,
 						esc_html__( 'CC', 'wpforms-lite' ),
 						[
-							'smarttags'  => [
+							'smarttags'   => [
 								'type'   => 'fields',
 								'fields' => 'email',
 							],
-							'parent'     => 'settings',
-							'subsection' => $id,
+							'parent'      => 'settings',
+							'subsection'  => $id,
+							'input_class' => 'wpforms-smart-tags-enabled',
 						]
 					);
 				endif;

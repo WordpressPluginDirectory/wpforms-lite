@@ -241,6 +241,7 @@ class Help {
 			'providers/mailchimpv3'                   => 'mailchimp',
 			'providers/mailerlite'                    => 'mailerlite',
 			'providers/mailpoet'                      => 'mailpoet',
+			'providers/make'                          => 'make',
 			'providers/zapier'                        => 'zapier',
 			'providers/salesforce'                    => 'salesforce',
 			'providers/sendinblue'                    => 'brevo',
@@ -1209,6 +1210,9 @@ class Help {
 			],
 			'mailpoet'                  => [
 				'/docs/mailpoet-addon/',
+			],
+			'make'                      => [
+				'/docs/make-addon/',
 			],
 			'zapier'                    => [
 				'/docs/how-to-install-and-use-zapier-addon-with-wpforms/',

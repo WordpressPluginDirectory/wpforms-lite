@@ -794,8 +794,6 @@ tr:last-child > .summary-notice-content,
 
 .wpforms-layout-table .wpforms-layout-table-row {
   width: 100%;
-  margin-left: -10px;
-  margin-right: -10px;
 }
 
 .wpforms-layout-table .wpforms-layout-table-row .field-value {
@@ -803,8 +801,11 @@ tr:last-child > .summary-notice-content,
 }
 
 .wpforms-layout-table .wpforms-layout-table-row > tr > td {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-right: 20px;
+}
+
+.wpforms-layout-table .wpforms-layout-table-row > tr > td:last-child {
+  padding-right: 0;
 }
 
 .wpforms-layout-table-display-rows .wpforms-layout-table-row:not(.wpforms-first-row) td.field-name {

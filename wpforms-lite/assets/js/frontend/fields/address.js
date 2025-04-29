@@ -100,6 +100,7 @@
 				$stateInput
 					.val( '' )
 					.prop( 'disabled', true )
+					.prop( 'required', false )
 					.on( 'change', function() {
 						$( this ).val( '' );
 					} );
@@ -111,6 +112,7 @@
 
 			$stateInput
 				.prop( 'disabled', false )
+				.prop( 'required', $rowWithState.find( '.wpforms-first input' ).prop( 'required' ) ) // Set required same as first input.
 				.off( 'change' );
 
 			$rowWithState.removeClass( 'wpforms-without-state' );

@@ -66,6 +66,11 @@ var WPFormsElementorFrontend = window.WPFormsElementorFrontend || ( function( do
 				app.initFields( $form );
 			} );
 
+			// Add Elementor popup support for text limit.
+			window.addEventListener( 'elementor/popup/show', function() {
+				window.WPFormsTextLimit.initHint( '.elementor-popup-modal' );
+			} );
+
 			// Force load ChoicesJS for elementor popup.
 			$( document ).on( 'elementor/popup/show', () => {
 				app.forceLoadChoices = true;

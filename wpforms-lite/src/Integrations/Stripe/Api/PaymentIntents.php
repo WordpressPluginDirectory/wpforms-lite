@@ -445,7 +445,7 @@ class PaymentIntents extends Common implements ApiInterface {
 
 		$defaults = [
 			'payment_method'            => $this->payment_method_id,
-			'setup_future_usage'        => 'off_session',
+			'confirm'                   => true,
 			'automatic_payment_methods' => [
 				'enabled'         => true,
 				'allow_redirects' => 'never',

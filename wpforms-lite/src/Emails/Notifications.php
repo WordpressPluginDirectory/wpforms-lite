@@ -849,9 +849,13 @@ class Notifications extends Mailer {
 			'notification-from',
 			'notification-reply-to',
 		];
+		$allowed_tags    = [
+			'admin_email',
+			'user_email',
+		];
 
-		// Allow `admin_email` smart tag OR skip in case of unrelated context.
-		if ( $tag_name === 'admin_email' || ! in_array( $context, $address_context, true ) ) {
+		// Check if the smart tag is allowed AND if the context is allowed.
+		if ( in_array( $tag_name, $allowed_tags, true ) || ! in_array( $context, $address_context, true ) ) {
 			return $value;
 		}
 
@@ -890,8 +894,8 @@ class Notifications extends Mailer {
 			return $value;
 		}
 
-		// Otherwise, return empty string.
-		return '';
+		// Otherwise, return empty string if the value is not an email.
+		return wpforms_is_email( $value ) ? $value : '';
 	}
 
 	/**
@@ -1207,6 +1211,11 @@ class Notifications extends Mailer {
 		if ( $table_start !== false && $table_start < $tr_end ) {
 			$table_end = (int) strpos( $content, '</table>' );
 			$tr_end    = strpos( $content, '</tr>', $table_end );
+		}
+
+		// Double-check if we have closed `</tr>` position.
+		if ( $tr_end === false ) {
+			return sprintf( $row_template, $content );
 		}
 
 		$tr_end += 5; // The length of the `</tr>' closing tag.

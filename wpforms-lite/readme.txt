@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.8
-Stable tag: 1.9.5
+Stable tag: 1.9.5.1
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -381,6 +381,11 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.5.1 =
+- Fixed: AJAX request for Stripe payments was sent twice, which might lead to missed entries and payment records.
+- Fixed: `{field_id="#"}` smart tag didn't work for CC field in email notifications.
+- Fixed: Email notification was misformatted when the form had a Total field with the "Order Summary" enabled.
 
 = 1.9.5 =
 - IMPORTANT: Support for PHP 7.1 has been discontinued. If you are running PHP 7.1, you MUST upgrade PHP before installing WPForms 1.9.5. Failure to do that will disable WPForms core functionality.

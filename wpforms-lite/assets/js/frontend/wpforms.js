@@ -1962,9 +1962,27 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 * @param {jQuery} $form Form element.
 		 */
 		maybeSetStartTime( $form ) {
-			if ( ! $form.data( 'start_timestamp' ) ) {
+			if ( ! app.getStartTimestampData( $form ) ) {
 				$form.data( 'start_timestamp', app.getTimestampSec() );
 			}
+		},
+
+		/**
+		 * Get start timestamp data.
+		 *
+		 * @since 1.9.5.1
+		 *
+		 * @param {jQuery} $form Form element.
+		 * @return {number} Start timestamp.
+		 */
+		getStartTimestampData( $form ) {
+			if ( ! $form.hasClass( 'wpforms-form' ) ) {
+				return 0;
+			}
+
+			const startTimestamp = parseInt( $form.data( 'start_timestamp' ), 10 ) || 0;
+
+			return startTimestamp > 0 ? startTimestamp : 0;
 		},
 
 		/**
@@ -3151,7 +3169,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				$submit.get( 0 ).recaptchaID = false;
 			}
 
-			$form.append( '<input type="hidden" name="start_timestamp" value="' + $form.data( 'start_timestamp' ) + '">' );
+			$form.append( '<input type="hidden" name="start_timestamp" value="' + app.getStartTimestampData( $form ) + '">' );
 			$form.append( '<input type="hidden" name="end_timestamp" value="' + app.getTimestampSec() + '">' );
 
 			$form.get( 0 ).submit();
@@ -3506,7 +3524,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			const formData = new FormData( $form.get( 0 ) );
 
 			formData.append( 'action', 'wpforms_submit' );
-			formData.append( 'start_timestamp', $form.data( 'start_timestamp' ) );
+			formData.append( 'start_timestamp', app.getStartTimestampData( $form ) );
 			formData.append( 'end_timestamp', app.getTimestampSec() );
 
 			const args = {

@@ -1329,6 +1329,7 @@ class WPForms_About {
 								'Kit',
 								'Slack',
 								'Twilio',
+								'Make',
 							]
 						),
 						'',
@@ -1362,6 +1363,7 @@ class WPForms_About {
 								'Slack',
 								'Twilio',
 								'Pipedrive',
+								'Make',
 							]
 						),
 						'',
@@ -1395,6 +1397,7 @@ class WPForms_About {
 								'Slack',
 								'Twilio',
 								'Pipedrive',
+								'Make',
 							]
 						),
 						'',
@@ -1428,6 +1431,7 @@ class WPForms_About {
 								'Slack',
 								'Twilio',
 								'Pipedrive',
+								'Make',
 							]
 						),
 						'',
