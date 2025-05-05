@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.9.5.2 =
+- Fixed: Issue sending form notifications using email fields that had ID=0.
+
 = 1.9.5.1 =
 - Fixed: AJAX request for Stripe payments was sent twice, which might lead to missed entries and payment records.
 - Fixed: `{field_id="#"}` smart tag didn't work for CC field in email notifications.

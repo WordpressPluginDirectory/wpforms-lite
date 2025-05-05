@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.8
-Stable tag: 1.9.5.1
+Stable tag: 1.9.5.2
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -381,6 +381,9 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.5.2 =
+- Fixed: Issue sending form notifications using email fields that had ID=0.
 
 = 1.9.5.1 =
 - Fixed: AJAX request for Stripe payments was sent twice, which might lead to missed entries and payment records.

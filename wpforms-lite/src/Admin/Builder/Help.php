@@ -226,6 +226,8 @@ class Help {
 			'settings/form_pages'                     => 'form pages',
 			'settings/save_resume'                    => 'save and resume',
 			'settings/google_sheets'                  => 'google sheets',
+			'settings/dropbox'                        => 'dropbox',
+			'settings/google_drive'                   => 'google drive',
 			'settings/webhooks'                       => 'webhooks',
 			'providers'                               => '',
 			'providers/aweber'                        => 'aweber',
@@ -234,7 +236,6 @@ class Help {
 			'providers/constant_contact'              => 'constant contact',
 			'providers/convertkit'                    => 'kit',
 			'providers/drip'                          => 'drip',
-			'providers/dropbox'                       => 'dropbox',
 			'providers/getresponse'                   => 'getresponse',
 			'providers/getresponse_v3'                => 'getresponse',
 			'providers/mailchimp'                     => 'mailchimp',
@@ -1194,6 +1195,9 @@ class Help {
 			],
 			'dropbox'                   => [
 				'/docs/dropbox-addon/',
+			],
+			'google-drive'              => [
+				'/docs/google-drive-addon/',
 			],
 			'getresponse'               => [
 				'/docs/how-to-install-and-use-getresponse-addon-with-wpforms/',

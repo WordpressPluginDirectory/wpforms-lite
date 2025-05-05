@@ -876,13 +876,14 @@ class Notifications extends Mailer {
 	 */
 	private static function validate_notification_email_smart_tags( string $value, string $tag_name, array $fields, SmartTag $smart_tag_object ): string {
 
-		$field_id   = self::get_smart_tag_field_id( $tag_name, $smart_tag_object );
-		$field_type = $fields[ $field_id ]['type'] ?? null;
+		$field_id = self::get_smart_tag_field_id( $tag_name, $smart_tag_object );
 
 		// Empty value for all non-field smart tags.
-		if ( ! $field_id || ! $field_type ) {
+		if ( $field_id === null || $field_id === '' || ! isset( $fields[ $field_id ]['type'] ) ) {
 			return '';
 		}
+
+		$field_type = $fields[ $field_id ]['type'];
 
 		// If the field type is Email, return the value.
 		if ( $field_type === 'email' ) {

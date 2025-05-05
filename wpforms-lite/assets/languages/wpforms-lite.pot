@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.9.5.1\n"
+"Project-Id-Version: WPForms Lite 1.9.5.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-04-29T10:10:04+00:00\n"
+"POT-Creation-Date: 2025-05-05T10:56:03+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: wpforms-lite\n"
@@ -2203,7 +2203,7 @@ msgid "Pro Addons Included"
 msgstr ""
 
 #: includes/admin/class-about.php:1576
-msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, Dropbox, and more (30+ total)"
+msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, Dropbox, Google Drive, and more (30+ total)"
 msgstr ""
 
 #: includes/admin/class-about.php:1582
@@ -2215,7 +2215,7 @@ msgstr ""
 #: includes/admin/class-about.php:1583
 #: includes/admin/class-about.php:1590
 #: includes/admin/class-about.php:1597
-msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Webhooks, Google Sheets, Coupons, Dropbox, and more (35+ total)"
+msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Webhooks, Google Sheets, Coupons, Dropbox, Google Drive, and more (35+ total)"
 msgstr ""
 
 #: includes/admin/class-about.php:1605
@@ -3218,7 +3218,7 @@ msgstr ""
 
 #: includes/emails/class-emails.php:606
 #: src/Admin/Education/Fields.php:101
-#: src/Emails/Notifications.php:954
+#: src/Emails/Notifications.php:955
 #: src/Forms/Fields/Pagebreak/Field.php:44
 #: src/Forms/Fields/Pagebreak/Field.php:472
 #: src/Integrations/Gutenberg/FormSelector.php:588
@@ -3226,7 +3226,7 @@ msgid "Page Break"
 msgstr ""
 
 #: includes/emails/class-emails.php:610
-#: src/Emails/Notifications.php:959
+#: src/Emails/Notifications.php:960
 #: src/Forms/Fields/Html/Field.php:191
 msgid "HTML / Code Block"
 msgstr ""
@@ -3234,7 +3234,7 @@ msgstr ""
 #: includes/emails/class-emails.php:614
 #: includes/integrations.php:44
 #: src/Admin/Education/Fields.php:125
-#: src/Emails/Notifications.php:964
+#: src/Emails/Notifications.php:965
 #: src/Forms/Fields/Content/Field.php:27
 #: src/Forms/Fields/Content/Field.php:107
 #: src/Integrations/AI/API/Forms.php:290
@@ -3363,7 +3363,7 @@ msgstr ""
 #: includes/fields/class-base.php:1795
 #: includes/fields/class-base.php:1952
 #: includes/fields/class-select.php:323
-#: src/Emails/Notifications.php:1300
+#: src/Emails/Notifications.php:1301
 #: src/Forms/Fields/Addons/LikertScale/Field.php:247
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:123
 #: src/Forms/Fields/FileUpload/Field.php:263
@@ -3374,7 +3374,7 @@ msgstr ""
 #: includes/fields/class-base.php:1796
 #: includes/fields/class-base.php:1953
 #: includes/fields/class-select.php:322
-#: src/Emails/Notifications.php:1290
+#: src/Emails/Notifications.php:1291
 #: src/Forms/Fields/Addons/LikertScale/Field.php:248
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:124
 #: src/Forms/Fields/FileUpload/Field.php:264
@@ -9337,24 +9337,24 @@ msgid "You cannot send emails with WPForms\\Emails\\Mailer until init/admin_init
 msgstr ""
 
 #. translators: %1$d - field ID.
-#: src/Emails/Notifications.php:1115
+#: src/Emails/Notifications.php:1116
 msgid "Field ID #%1$s"
 msgstr ""
 
-#: src/Emails/Notifications.php:1295
+#: src/Emails/Notifications.php:1296
 #: src/Forms/Fields/EntryPreview/Field.php:265
 msgid "Compact"
 msgstr ""
 
-#: src/Emails/Notifications.php:1305
+#: src/Emails/Notifications.php:1306
 msgid "Elegant"
 msgstr ""
 
-#: src/Emails/Notifications.php:1310
+#: src/Emails/Notifications.php:1311
 msgid "Tech"
 msgstr ""
 
-#: src/Emails/Notifications.php:1315
+#: src/Emails/Notifications.php:1316
 msgid "Plain Text"
 msgstr ""
 
