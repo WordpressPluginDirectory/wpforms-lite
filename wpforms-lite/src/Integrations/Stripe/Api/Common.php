@@ -177,14 +177,17 @@ abstract class Common {
 	 * @since 1.8.2
 	 * @since 1.8.6 Added customer name argument and allow empty email.
 	 * @since 1.8.8 Added customer billing address argument.
+	 * @since 1.9.6 Added customer phone and metadata arguments.
 	 *
-	 * @param string $email   Email to fetch an existing customer.
-	 * @param string $name    Customer name.
-	 * @param array  $address Customer billing address.
+	 * @param string $email    Email to fetch an existing customer.
+	 * @param string $name     Customer name.
+	 * @param array  $address  Customer billing address.
+	 * @param string $phone    Customer phone number.
+	 * @param array  $metadata Customer metadata.
 	 */
-	protected function set_customer( string $email = '', string $name = '', array $address = [] ) {
+	protected function set_customer( string $email = '', string $name = '', array $address = [], string $phone = '', array $metadata = [] ) {
 
-		if ( ! $email && ! $name ) {
+		if ( ! $email && ! $name && ! $phone ) {
 			return;
 		}
 
@@ -196,6 +199,14 @@ abstract class Common {
 
 		if ( $address ) {
 			$args['address'] = $address;
+		}
+
+		if ( $phone ) {
+			$args['phone'] = $phone;
+		}
+
+		if ( $metadata ) {
+			$args['metadata'] = $metadata;
 		}
 
 		// Create a customer with name only if email is empty.
@@ -230,6 +241,7 @@ abstract class Common {
 			$this->customer = $customers->data[0];
 
 			$needUpdateName    = ! empty( $name ) && $name !== $this->customer->name;
+			$needUpdatePhone   = ! empty( $phone ) && $phone !== $this->customer->phone;
 			$needUpdateAddress = false;
 
 			if ( ! $needUpdateName ) {
@@ -237,8 +249,8 @@ abstract class Common {
 				$needUpdateAddress = ! empty( array_diff_assoc( $address, $existingAddress ) );
 			}
 
-			// Update customer name/address.
-			if ( $needUpdateName || $needUpdateAddress ) {
+			// Update customer name/address/phone.
+			if ( $needUpdateName || $needUpdateAddress || $needUpdatePhone ) {
 				try {
 					$this->customer = Customer::update(
 						$this->customer->id,

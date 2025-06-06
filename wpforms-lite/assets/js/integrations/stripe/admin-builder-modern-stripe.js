@@ -41,6 +41,8 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @since 1.8.4
 		 */
 		ready() {
+			app.customMetadataActions();
+
 			if ( app.isLegacySettings() ) {
 				return;
 			}
@@ -70,6 +72,50 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 					.on( 'input', planNameInput, WPFormsBuilderPaymentsUtils.renamePlan )
 					.on( 'focusout', planNameInput, WPFormsBuilderPaymentsUtils.checkPlanName );
 			}
+		},
+
+		/**
+		 * Process custom metadata actions.
+		 *
+		 * @since 1.9.6
+		 */
+		customMetadataActions() {
+			$( '#wpforms-panel-payments' )
+				.on( 'focusout', '.wpforms-panel-field-stripe-custom-metadata-meta-key', function() {
+					// Remove invalid characters for meta key.
+					$( this ).val( $( this ).val().replace( /[^\p{L}\p{N}_-]/gu, '' ) );
+				} )
+				// Add metadata row.
+				.on( 'click', '.wpforms-panel-content-section-stripe-custom-metadata-add', function( e ) {
+					e.preventDefault();
+
+					const $table = $( this ).parents( '.wpforms-panel-content-section-stripe-custom-metadata-table' ),
+						$lastRow = $table.find( 'tr' ).last(),
+						$clone = $lastRow.clone( true ),
+						lastID = $lastRow.data( 'key' ),
+						nextID = lastID + 1;
+
+					// Update row key ID.
+					$clone.attr( 'data-key', nextID );
+
+					// Increment the counter.
+					$clone.html( $clone.html().replaceAll( '[' + lastID + ']', '[' + nextID + ']' ).replaceAll( '-' + lastID + '-', '-' + nextID + '-' ) );
+
+					// Clear values.
+					$clone.find( 'select, input' ).val( '' );
+
+					// Re-enable "delete" button.
+					$clone.find( '.wpforms-panel-content-section-stripe-custom-metadata-delete' ).removeClass( 'hidden' );
+
+					// Put it back to the table.
+					$table.find( 'tbody' ).append( $clone.get( 0 ) );
+				} )
+				// Delete metadata row.
+				.on( 'click', '.wpforms-panel-content-section-stripe-custom-metadata-delete', function( e ) {
+					e.preventDefault();
+
+					$( this ).parents( '.wpforms-panel-content-section-stripe-custom-metadata-table tr' ).remove();
+				} );
 		},
 
 		/**

@@ -362,10 +362,8 @@ WPForms.Admin.Builder.ContextMenu = WPForms.Admin.Builder.ContextMenu || ( funct
 				return;
 			}
 
-			const isModified = wpf.savedState !== wpf.getFormState( '#wpforms-builder-form' );
-
 			// The form was changed and must be saved before following the action URL.
-			if ( isModified ) {
+			if ( ! WPFormsBuilder.formIsSaved() ) {
 				el.$builder.on( 'wpformsSaved', () => {
 					newTab ? window.open( actionUrl ) : window.location.assign( actionUrl ); // eslint-disable-line no-unused-expressions
 				} );

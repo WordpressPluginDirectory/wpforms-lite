@@ -360,40 +360,6 @@ abstract class CacheBase {
 	}
 
 	/**
-	 * Get cached data.
-	 *
-	 * @since 1.6.8
-	 * @deprecated 1.8.2
-	 *
-	 * @return array Cached data.
-	 * @noinspection PhpUnused
-	 */
-	public function get_cached() {
-
-		_deprecated_function( __METHOD__, '1.8.2 of the WPForms plugin', __CLASS__ . '::get()' );
-
-		return $this->get();
-	}
-
-	/**
-	 * Update cached data with actual data retrieved from the remote source.
-	 *
-	 * @since 1.6.8
-	 * @deprecated 1.8.2
-	 *
-	 * @return array
-	 * @noinspection PhpUnused
-	 */
-	public function update_cache() {
-
-		_deprecated_function( __METHOD__, '1.8.2 of the WPForms plugin' );
-
-		$this->update();
-
-		return $this->get();
-	}
-
-	/**
 	 * Get data from API.
 	 *
 	 * @since 1.8.2

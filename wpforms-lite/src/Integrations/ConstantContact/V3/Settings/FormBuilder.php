@@ -269,7 +269,6 @@ class FormBuilder extends FormBuilderAbstract {
 						'parent'     => 'providers',
 						'panel'      => $this->core->slug,
 						'subsection' => $connection['id'],
-						'reference'  => esc_html__( 'Marketing provider connection', 'wpforms-lite' ),
 					],
 					false
 				)

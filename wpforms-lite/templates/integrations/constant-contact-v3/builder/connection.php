@@ -51,7 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<# if ( _.isEmpty( data.connection.account_id ) ) { #>disabled<# } #>
 			name="providers[<?php echo esc_attr( $slug ); ?>][{{ data.connection.id }}][action]">
 
-			<option value=""<# if ( _.isEmpty( data.connection.action ) ) { #> selected disabled<# } #>>
+			<option value=""<# if ( _.isEmpty( data.connection.action ) ) { #> selected<# } #>>
 				<?php esc_html_e( '--- Select Action ---', 'wpforms-lite' ); ?>
 			</option>
 

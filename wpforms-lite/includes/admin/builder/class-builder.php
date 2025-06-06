@@ -561,10 +561,10 @@ class WPForms_Builder {
 		);
 
 		wp_enqueue_script(
-			'conditionals',
-			WPFORMS_PLUGIN_URL . 'assets/lib/jquery.conditionals.min.js',
+			'conditions',
+			WPFORMS_PLUGIN_URL . 'assets/lib/conditions.min.js',
 			[ 'jquery' ],
-			'1.0.1',
+			'1.1.0',
 			false
 		);
 
@@ -588,7 +588,7 @@ class WPForms_Builder {
 			'dom-purify',
 			WPFORMS_PLUGIN_URL . 'assets/lib/purify.min.js',
 			[],
-			'3.2.5',
+			'3.2.6',
 			false
 		);
 
@@ -827,7 +827,11 @@ class WPForms_Builder {
 			'operator_greater_than'                   => esc_html__( 'greater than', 'wpforms-lite' ),
 			'operator_less_than'                      => esc_html__( 'less than', 'wpforms-lite' ),
 			'payments_entries_off'                    => esc_html__( 'Entry storage is currently disabled, but is required to accept payments. Please enable in your form settings.', 'wpforms-lite' ),
-			'payments_on_entries_off'                 => esc_html__( 'This form is currently accepting payments. Entry storage is required to accept payments. To disable entry storage, please first disable payments.', 'wpforms-lite' ),
+			'payments_on_entries_off'                 => sprintf( /* translators: %s - marketing or gateway integration name. */
+				esc_html__( 'Some third-party integrations require entry storage. If you’d like to continue, you’ll first need to disable %s.', 'wpforms-lite' ),
+				'{integration}'
+			),
+			'entry_storage_required'                  => esc_html__( 'Entry Storage Required', 'wpforms-lite' ),
 			'previous'                                => esc_html__( 'Previous', 'wpforms-lite' ),
 			'provider_required_flds'                  => sprintf( /* translators: %s - marketing integration name. */
 				esc_html__( 'In order to complete your form\'s %s integration, please check that all required (*) fields have been filled out.', 'wpforms-lite' ),
@@ -885,6 +889,10 @@ class WPForms_Builder {
 			'scrollbars_css_url'                      => WPFORMS_PLUGIN_URL . 'assets/css/builder/builder-scrollbars.css',
 			'is_ai_disabled'                          => AIHelpers::is_disabled(),
 			'connection_label'                        => esc_html__( 'Connection', 'wpforms-lite' ),
+			'cl_reference'                            => sprintf( /* translators: %s - Integration name. */
+				esc_html__( '%s connection', 'wpforms-lite' ),
+				'{integration}'
+			),
 		];
 
 		$strings = $this->add_localized_currencies( $strings );

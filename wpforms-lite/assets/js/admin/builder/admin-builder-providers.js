@@ -1,4 +1,4 @@
-/* global wpforms_builder_providers, wpforms_builder, wpf, WPForms */
+/* global wpforms_builder_providers, wpforms_builder, wpf, WPForms, WPFormsBuilder */
 
 ( function( $ ) {
 
@@ -69,14 +69,20 @@
 				WPFormsProviders.accountListSelect( this, e );
 			} );
 
+			// BC: Constant Contact v2, Aweber v1 and Campaign Monitor don't have JS logic for updating select fields with form fields options.
+			// That's why we have to refresh the form every time when change something in fields and visit the Marketing tab.
 			$( document ).on( 'wpformsPanelSwitch', function( e, targetPanel ) {
-				WPFormsProviders.providerPanelConfirm( targetPanel );
+				const legacyProviders = [ 'aweber', 'campaign-monitor', 'constant-contact' ];
+				const hasConfiguredLegacyProvider = legacyProviders.some( ( legacyProvider ) => $( `.wpforms-panel-content-section-${ legacyProvider } .wpforms-provider-connection` ).length > 0 );
+
+				if ( hasConfiguredLegacyProvider ) {
+					WPFormsProviders.providerPanelConfirm( targetPanel );
+				}
 			} );
 
 			// Alert users if they save a form and do not configure required
 			// fields.
-			$( document ).on( 'wpformsSaved', function() {
-
+			$( document ).on( 'wpformsSaved', function( e, data ) {
 				var providerAlerts = [];
 				var $connectionBlocks = $( '#wpforms-panel-providers' ).find( '.wpforms-connection-block' );
 
@@ -391,7 +397,7 @@
 
 			wpforms_panel_switch = true;
 			if ( targetPanel === 'providers' && ! s.form.data( 'revision' ) ) {
-				if ( wpf.savedState != wpf.getFormState( '#wpforms-builder-form' ) ) {
+				if ( ! WPFormsBuilder.formIsSaved() ) {
 					wpforms_panel_switch = false;
 					$.confirm( {
 						title: false,

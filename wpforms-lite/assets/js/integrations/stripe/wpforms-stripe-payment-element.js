@@ -859,8 +859,8 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 		 */
 		displayStripeError( $form, message ) {
 			wpforms.clearFormAjaxGeneralErrors( $form );
-
 			wpforms.displayFormAjaxErrors( $form, message );
+			wpforms.resetFormRecaptcha( $form );
 
 			app.formAjaxUnblock( $form );
 		},

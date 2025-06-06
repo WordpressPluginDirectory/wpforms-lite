@@ -32,13 +32,15 @@ function wpforms_requirements( array $requirements ): bool {
  */
 function wpforms_is_addon_initialized( string $addon_slug ): bool {
 
-	$addon_function = 'wpforms_' . str_replace( '-', '_', $addon_slug );
-
-	if ( ! function_exists( $addon_function ) ) {
-		return false;
-	}
-
 	$basename = sprintf( 'wpforms-%1$s/wpforms-%1$s.php', $addon_slug );
+
+	if ( is_multisite() ) {
+		$active_plugins = (array) get_option( 'active_plugins', [] );
+
+		if ( in_array( $basename, $active_plugins, true ) ) {
+			return true;
+		}
+	}
 
 	return Requirements::get_instance()->is_validated( $basename );
 }

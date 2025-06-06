@@ -20,16 +20,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<img src="<?php echo esc_url( $icon ); ?>" alt="<?php echo esc_attr( $name ); ?>">
 
-	<?php echo esc_html( $name ); ?>
+	<div class="wpforms-panel-sidebar-info">
+		<span class="wpforms-panel-sidebar-name"><?php echo esc_html( $name ); ?></span>
 
-	<?php if ( ! empty( $recommended ) ) : ?>
-	<span class="wpforms-panel-sidebar-recommended">
-		<i class="fa fa-star" aria-hidden="true"></i>&nbsp;
-		<?php esc_html_e( 'Recommended', 'wpforms-lite' ); ?>
-	</span>
-	<?php endif; ?>
+		<?php if ( ! empty( $recommended ) ) : ?>
+		<span class="wpforms-panel-sidebar-recommended">
+			<i class="fa fa-star" aria-hidden="true"></i>&nbsp;
+			<?php esc_html_e( 'Recommended', 'wpforms-lite' ); ?>
+		</span>
+		<?php endif; ?>
+	</div>
 
-	<i class="fa fa-angle-right wpforms-toggle-arrow"></i>
-
-	<i class="fa fa-check-circle-o <?php echo empty( $configured ) ? 'wpforms-hidden' : ''; ?>"></i>
+	<div class="wpforms-panel-sidebar-controls">
+		<i class="fa fa-angle-right wpforms-toggle-arrow"></i>
+		<i class="fa fa-check-circle-o <?php echo empty( $configured ) ? 'wpforms-hidden' : ''; ?>"></i>
+	</div>
 </a>

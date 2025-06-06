@@ -418,53 +418,6 @@ abstract class FormSelector implements IntegrationInterface {
 	}
 
 	/**
-	 * Register API route for Gutenberg block.
-	 *
-	 * @since 1.8.4
-	 * @deprecated 1.8.8
-	 */
-	public function register_api_route() {
-
-		_deprecated_function( __METHOD__, '1.8.8 of the WPForms plugin', '\WPForms\Integrations\Gutenberg\RestApi::register_api_routes()' );
-
-		$this->rest_api_obj->register_api_routes();
-	}
-
-	/**
-	 * Wrap localized data in a protected WP_REST_Response object.
-	 *
-	 * @since 1.8.4
-	 * @deprecated 1.8.8
-	 *
-	 * @see https://developer.wordpress.org/reference/functions/rest_ensure_response/
-	 *
-	 * @return WP_Error|WP_REST_Response
-	 */
-	public function protected_data_callback() {
-
-		_deprecated_function( __METHOD__, '1.8.8 of the WPForms plugin', '\WPForms\Integrations\Gutenberg\RestApi::get_forms()' );
-
-		return $this->rest_api_obj->get_forms();
-	}
-
-	/**
-	 * Check if a user has permission to access private data.
-	 *
-	 * @since 1.8.4
-	 * @deprecated 1.8.8
-	 *
-	 * @see https://developer.wordpress.org/rest-api/extending-the-rest-api/routes-and-endpoints/#permissions-callback
-	 *
-	 * @return true|WP_Error True if a user has permission.
-	 */
-	public function protected_permissions_callback() {
-
-		_deprecated_function( __METHOD__, '1.8.8 of the WPForms plugin', '\WPForms\Integrations\Gutenberg\RestApi::permissions_check()' );
-
-		return $this->rest_api_obj->permissions_check();
-	}
-
-	/**
 	 * Get localize data.
 	 *
 	 * @since 1.8.1
@@ -646,17 +599,6 @@ abstract class FormSelector implements IntegrationInterface {
 			},
 			$forms
 		);
-	}
-
-	/**
-	 * Let's WP know that we have translation strings on our block script.
-	 *
-	 * @since 1.8.3
-	 * @deprecated 1.8.5
-	 */
-	public function enable_block_translations() {
-
-		_deprecated_function( __METHOD__, '1.8.5' );
 	}
 
 	/**

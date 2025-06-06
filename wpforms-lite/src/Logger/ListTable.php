@@ -560,24 +560,6 @@ class ListTable extends WP_List_Table {
 	}
 
 	/**
-	 * Check if the database table exists.
-	 *
-	 * @since 1.6.4
-	 * @deprecated 1.8.7
-	 *
-	 * @return bool
-	 * @noinspection PhpMissingReturnTypeInspection
-	 * @noinspection ReturnTypeCanBeDeclaredInspection
-	 */
-	public function table_exists() {
-
-		// Deprecated as unused.
-		_deprecated_function( __METHOD__, '1.8.7 of the WPForms plugin' );
-
-		return $this->repository->table_exists();
-	}
-
-	/**
 	 * Get total logs.
 	 *
 	 * @since 1.6.3

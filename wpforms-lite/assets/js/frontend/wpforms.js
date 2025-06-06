@@ -1192,8 +1192,9 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					return;
 				}
 
-				const insta = window.intlTelInputGlobals.getInstance( $field[ 0 ] );
-				insta.destroy();
+				const instance = window.intlTelInput?.getInstance( $field[ 0 ] );
+
+				instance?.destroy();
 
 				options.initialCountry = options.initialCountry.toLowerCase();
 				options.onlyCountries = options.onlyCountries.map( ( v ) => v.toLowerCase() );
@@ -1973,6 +1974,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 * @since 1.9.5.1
 		 *
 		 * @param {jQuery} $form Form element.
+		 *
 		 * @return {number} Start timestamp.
 		 */
 		getStartTimestampData( $form ) {

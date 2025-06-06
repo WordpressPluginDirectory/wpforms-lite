@@ -33,9 +33,9 @@ class OrderSummary extends SmartTag {
 
 		$fields = $this->prepare_fields( $fields, $form_data );
 
-		list( $items, $foot, $total_width ) = $this->prepare_payment_fields_data( $fields );
+		[ $items, $foot, $total_width ] = $this->prepare_payment_fields_data( $fields );
 
-		return wpforms_render(
+		$preview = wpforms_render(
 			'fields/total/summary-preview',
 			[
 				'items'       => $this->filter_items( $items ),
@@ -45,6 +45,14 @@ class OrderSummary extends SmartTag {
 			],
 			true
 		);
+
+		if ( $this->context === 'email' ) {
+			// Remove new lines for the legacy Notification template to prevent HTML markup breaks.
+			// We remove only new lines before closing HTML tag symbol to keep new lines inside the table content.
+			return preg_replace( '/(>$\n)/m', '>', $preview );
+		}
+
+		return $preview;
 	}
 
 	/**

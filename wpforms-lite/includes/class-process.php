@@ -458,6 +458,25 @@ class WPForms_Process {
 			return;
 		}
 
+		// Format fields.
+		foreach ( (array) $this->form_data['fields'] as $field_properties ) {
+
+			$field_id     = $field_properties['id'];
+			$field_type   = $field_properties['type'];
+			$field_submit = $entry['fields'][ $field_id ] ?? '';
+
+			/**
+			 * Format field by type.
+			 *
+			 * @since 1.4.0
+			 *
+			 * @param string $field_id     Field ID.
+			 * @param string $field_submit Submitted field value.
+			 * @param array  $form_data    Form data and settings.
+			 */
+			do_action( "wpforms_process_format_{$field_type}", $field_id, $field_submit, $this->form_data );
+		}
+
 		$honeypot = wpforms()->obj( 'honeypot' )->validate( $this->form_data, $this->fields, $entry );
 
 		// If we trigger the honey pot, we want to log the entry, disable the errors, and fail silently.
@@ -481,27 +500,37 @@ class WPForms_Process {
 			return;
 		}
 
+		// Detect direct POST requests when the AJAX submission is enabled.
+		$this->direct_post_request_check( $entry );
+
+		$is_pro = wpforms()->is_pro();
+
+		if ( ! $this->is_bypass_spam_check( $entry ) ) {
+			// Store spam entries detected by filtering.
+			if ( $is_pro && ! empty( $this->form_data['settings']['anti_spam']['filtering_store_spam'] ) ) {
+				$this->country_filter_check( $entry, $form_id );
+				$this->keyword_filter_check( $entry, $form_id );
+			}
+
+			// Check if the form was submitted too quickly.
+			$this->time_limit_check();
+
+			// Check for spam.
+			$this->process_spam_check( $entry );
+		}
+
+		// Convert spam errors to form errors if spam entries are not stored.
+		if ( ! $store_spam_entries && ! empty( $this->spam_errors ) ) {
+			$this->errors = $this->spam_errors;
+		}
+
+		// Store spam reason.
+		if ( $this->spam_reason ) {
+			$this->form_data['spam_reason'] = $this->spam_reason;
+		}
+
 		// Pass the form created date into the form data.
 		$this->form_data['created'] = $form->post_date;
-
-		// Format fields.
-		foreach ( (array) $this->form_data['fields'] as $field_properties ) {
-
-			$field_id     = $field_properties['id'];
-			$field_type   = $field_properties['type'];
-			$field_submit = $entry['fields'][ $field_id ] ?? '';
-
-			/**
-			 * Format field by type.
-			 *
-			 * @since 1.4.0
-			 *
-			 * @param string $field_id     Field ID.
-			 * @param string $field_submit Submitted field value.
-			 * @param array  $form_data    Form data and settings.
-			 */
-			do_action( "wpforms_process_format_{$field_type}", $field_id, $field_submit, $this->form_data );
-		}
 
 		/**
 		 * Format form data after all fields have been processed.
@@ -546,38 +575,6 @@ class WPForms_Process {
 		 * @param array $form_data Form data and settings.
 		 */
 		do_action( "wpforms_process_{$form_id}", $this->fields, $entry, $this->form_data );
-
-		// Detect direct POST requests when the AJAX submission is enabled.
-		$this->direct_post_request_check( $entry );
-
-		$is_pro = wpforms()->is_pro();
-
-		if ( ! $this->is_bypass_spam_check( $entry ) ) {
-			// Store spam entries detected by filtering.
-			if ( $is_pro && ! empty( $this->form_data['settings']['anti_spam']['filtering_store_spam'] ) ) {
-				$this->country_filter_check( $entry, $form_id );
-				$this->keyword_filter_check( $entry, $form_id );
-			}
-
-			// Check if the form was submitted too quickly.
-			$this->time_limit_check();
-
-			// Check for spam.
-			$this->process_spam_check( $entry );
-		}
-
-		// Mark submission as spam if one of the spam checks failed and spam entries are stored.
-		$marked_as_spam = $this->spam_reason && $store_spam_entries;
-
-		// Store spam reason.
-		if ( $this->spam_reason ) {
-			$this->form_data['spam_reason'] = $this->spam_reason;
-		}
-
-		// Convert spam errors to form errors if spam entries are not stored.
-		if ( ! $store_spam_entries && ! empty( $this->spam_errors ) ) {
-			$this->errors = $this->spam_errors;
-		}
 
 		/**
 		 * Filter fields after processing.
@@ -657,6 +654,9 @@ class WPForms_Process {
 				]
 			);
 		}
+
+		// Mark submission as spam if one of the spam checks failed and spam entries are stored.
+		$marked_as_spam = $this->spam_reason && $store_spam_entries;
 
 		// Does not proceed if a form is marked as spam.
 		if ( ! $marked_as_spam ) {

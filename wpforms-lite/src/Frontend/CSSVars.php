@@ -10,22 +10,13 @@ namespace WPForms\Frontend;
 class CSSVars {
 
 	/**
-	 * White color.
-	 *
-	 * @since 1.8.8
-	 *
-	 * @var string
-	 */
-	const WHITE = '#ffffff';
-
-	/**
 	 * Root vars and values.
 	 *
 	 * @since 1.8.1
 	 *
 	 * @var array
 	 */
-	const ROOT_VARS = [
+	public const ROOT_VARS = [
 		'field-border-radius'     => '3px',
 		'field-border-style'      => 'solid',
 		'field-border-size'       => '1px',
@@ -70,7 +61,7 @@ class CSSVars {
 	 *
 	 * @var array
 	 */
-	const CONTAINER_SHADOW_SIZE = [
+	public const CONTAINER_SHADOW_SIZE = [
 		'none'   => [
 			'box-shadow' => 'none',
 		],
@@ -92,7 +83,7 @@ class CSSVars {
 	 *
 	 * @var array
 	 */
-	const FIELD_SIZE = [
+	public const FIELD_SIZE = [
 		'small'  => [
 			'input-height'     => '31px',
 			'input-spacing'    => '10px',
@@ -132,7 +123,7 @@ class CSSVars {
 	 *
 	 * @var array
 	 */
-	const LABEL_SIZE = [
+	public const LABEL_SIZE = [
 		'small'  => [
 			'font-size'            => '14px',
 			'line-height'          => '17px',
@@ -160,7 +151,7 @@ class CSSVars {
 	 *
 	 * @var array
 	 */
-	const BUTTON_SIZE = [
+	public const BUTTON_SIZE = [
 		'small'  => [
 			'font-size'  => '14px',
 			'height'     => '37px',
@@ -188,7 +179,16 @@ class CSSVars {
 	 *
 	 * @var array
 	 */
-	const SPARE_VARS = [ 'field-border-color' ];
+	private const SPARE_VARS = [ 'field-border-color' ];
+
+	/**
+	 * White color.
+	 *
+	 * @since 1.8.8
+	 *
+	 * @var string
+	 */
+	private const WHITE = '#ffffff';
 
 	/**
 	 * Render engine.
@@ -426,6 +426,10 @@ class CSSVars {
 		$result = '';
 
 		foreach ( $vars as $name => $value ) {
+			if ( ! is_string( $value ) ) {
+				continue;
+			}
+
 			if ( $value === '0' ) {
 				$value = '0px';
 			}
@@ -604,7 +608,7 @@ class CSSVars {
 		$is_hex = preg_match( '/[0-9a-f]{6,8}$/', $rgba );
 
 		if ( $is_hex ) {
-			// Search and split HEX(A) color into an array of couples of chars.
+			// Search and split HEX(A) color into an array of char couples.
 			preg_match_all( '/\w\w/', $rgba, $rgb_array );
 
 			$rgb_array    = array_map(

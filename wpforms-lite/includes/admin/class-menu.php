@@ -253,19 +253,6 @@ class WPForms_Admin_Menu {
 	}
 
 	/**
-	 * Add the PRO badge to left sidebar menu item.
-	 *
-	 * @since 1.7.8
-	 * @deprecated 1.8.1
-	 */
-	public function adjust_pro_menu_item_class() {
-
-		_deprecated_function( __METHOD__, '1.8.1 of the WPForms plugin', __CLASS__ . '::adjust_pro_menu_item()' );
-
-		$this->adjust_pro_menu_item();
-	}
-
-	/**
 	 * Make changes to the PRO menu item.
 	 *
 	 * @since 1.8.1

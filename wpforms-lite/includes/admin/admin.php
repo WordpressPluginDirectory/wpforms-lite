@@ -126,10 +126,10 @@ function wpforms_admin_scripts() {
 
 	// jQuery Conditionals.
 	wp_enqueue_script(
-		'jquery-conditionals',
-		WPFORMS_PLUGIN_URL . 'assets/lib/jquery.conditionals.min.js',
+		'conditions',
+		WPFORMS_PLUGIN_URL . 'assets/lib/conditions.min.js',
 		[ 'jquery' ],
-		'1.0.1',
+		'1.1.0',
 		false
 	);
 

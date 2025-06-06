@@ -91,51 +91,6 @@ class Help {
 	}
 
 	/**
-	 * Get docs from the cache.
-	 *
-	 * @since      1.6.3
-	 * @deprecated 1.8.2
-	 *
-	 * @return array Docs data.
-	 * @noinspection PhpUnused, NullPointerExceptionInspection
-	 */
-	public function get_docs() {
-
-		_deprecated_function( __METHOD__, '1.8.2 of the WPForms plugin', 'wpforms()->obj( \'builder_help_cache\' )->get()' );
-
-		return wpforms()->obj( 'builder_help_cache' )->get();
-	}
-
-	/**
-	 * Update docs cache with actual data retrieved from the remote source.
-	 *
-	 * @since      1.6.3
-	 * @deprecated 1.8.2
-	 *
-	 * @return array|boolean Updated docs data. Or false on error.
-	 * @noinspection PhpUnused, NullPointerExceptionInspection
-	 */
-	public function update_docs() {
-
-		_deprecated_function( __METHOD__, '1.8.2 of the WPForms plugin', 'wpforms()->obj( \'builder_help_cache\' )->get()' );
-
-		return wpforms()->obj( 'builder_help_cache' )->get();
-	}
-
-	/**
-	 * Schedule docs updates.
-	 *
-	 * @since      1.6.3
-	 * @deprecated 1.8.2
-	 *
-	 * @noinspection PhpUnused
-	 */
-	public function schedule_update_docs() {
-
-		_deprecated_function( __METHOD__, '1.8.2 of the WPForms plugin' );
-	}
-
-	/**
 	 * Get categories.
 	 *
 	 * @return array Categories data.
@@ -1313,35 +1268,6 @@ class Help {
 		}
 
 		return $docs;
-	}
-
-	/**
-	 * Get doc id.
-	 *
-	 * @since 1.6.3
-	 * @deprecated 1.8.3
-	 *
-	 * @param string $link Absolute link to the doc without the domain part.
-	 *
-	 * @return array Array with doc id as element.
-	 */
-	public function get_doc_id( $link ) {
-
-		_deprecated_function( __METHOD__, '1.8.3 of the WPForms plugin', __CLASS__ . '::get_doc_id_int()' );
-
-		if ( empty( $this->docs ) ) {
-			return [];
-		}
-
-		$result = array_filter(
-			$this->docs,
-			static function( $doc ) use ( $link ) {
-
-				return ! empty( $doc['url'] ) && $doc['url'] === 'https://wpforms.com' . $link;
-			}
-		);
-
-		return array_keys( $result );
 	}
 
 	/**

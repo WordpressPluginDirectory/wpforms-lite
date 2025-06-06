@@ -25,6 +25,15 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 	const __private = {
 
 		/**
+		 * Flag to determine if we have a new connection which is unsaved.
+		 *
+		 * @since 1.9.6
+		 *
+		 * @type {boolean}
+		 */
+		hasUnsavedNewConnection: false,
+
+		/**
 		 * Internal cache storage.
 		 * Do not use it directly, but app.cache.{(get|set|delete|clear)()} instead.
 		 * Key is the provider slug, value is a Map, that will have its own key as a connection id (or not).
@@ -187,12 +196,6 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 
 						if ( 'success' === textStatus ) {
 							$lock.val( 0 );
-
-							// Update the form state when the provider data is unlocked.
-							// We need to do it on the next tick to ensure that provider fields are already initialized.
-							setTimeout( function() {
-								wpf.savedState = wpf.getFormState( '#wpforms-builder-form' );
-							}, 0 );
 						}
 					} );
 			},
@@ -421,6 +424,8 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 		bindActions() {
 			// On Form save - notify user about required fields.
 			$( document ).on( 'wpformsSaved', function() {
+				__private.hasUnsavedNewConnection = false;
+
 				const $connectionBlocks = app.panelHolder.find( '.wpforms-builder-provider-connection' );
 
 				if ( ! $connectionBlocks.length ) {
@@ -479,15 +484,40 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 				}
 			} );
 
+			$( document ).on( 'wpformsFieldUpdate', function() {
+				const $connectionBlocks = app.panelHolder.find( '.wpforms-builder-provider-connection' );
+
+				app.updateMapSelects( $connectionBlocks );
+			} );
+
+			app.panelHolder.on( 'connectionCreate', function() {
+				__private.hasUnsavedNewConnection = true;
+			} );
+
 			/*
 			 * Update form state when each connection is loaded into the DOM.
-			 * This will prevent a please-save-prompt to appear when navigating
-			 * out and back to Marketing tab without doing any changes anywhere.
+			 * This will prevent a please-save-prompt from appearing when navigating
+			 * out and back to the Marketing or Settings tab without doing any changes anywhere.
 			 */
-			app.panelHolder.on( 'connectionRendered', function() {
-				if ( wpf.initialSave === true ) {
-					wpf.savedState = wpf.getFormState( '#wpforms-builder-form' );
+			app.panelHolder.on( 'connectionGeneralSettingsRendered connectionRendered', function( e, provider ) {
+				if ( typeof provider !== 'string' ) {
+					return;
 				}
+
+				if ( __private.hasUnsavedNewConnection ) {
+					return;
+				}
+
+				// We need to save the form next tick to ensure that JS fields are already initialized.
+				setTimeout( () => {
+					const currentState = wpf._getCurrentFormState();
+
+					for ( const [ key, value ] of Object.entries( currentState ) ) {
+						if ( key.includes( '[' + provider + ']' ) && typeof wpf.savedFormState[ key ] === 'undefined' ) {
+							wpf.savedFormState[ key ] = value;
+						}
+					}
+				}, 0 );
 			} );
 		},
 
@@ -594,12 +624,6 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 
 				$select.replaceWith( $newSelect );
 			} );
-
-			// If selects for mapping was changed, that whole form state was changed as well.
-			// That's why we need to re-save it.
-			if ( wpf.savedState !== wpf.getFormState( '#wpforms-builder-form' ) ) {
-				wpf.savedState = wpf.getFormState( '#wpforms-builder-form' );
-			}
 
 			// Save form fields state for the next saving process.
 			__private.fields = fields;

@@ -9,6 +9,10 @@ div.wpforms-container-full .wpforms-form .sq-card-iframe-container::before {
   border-radius: 2px;
 }
 
+div.wpforms-container-full .wpforms-form .sq-card-wrapper {
+  min-width: auto;
+}
+
 div.wpforms-container-full .wpforms-form .sq-card-wrapper.sq-focus .sq-card-iframe-container::before {
   border-color: #999;
 }
@@ -34,7 +38,7 @@ div.wpforms-container-full .wpforms-form .wpforms-field-square-consent {
 }
 
 div.wpforms-container-full .wpforms-form .wpforms-field-square .wpforms-field-row.wpforms-field-small .wpforms-field-square-cardname {
-  min-width: 250px;
+  width: 100%;
 }
 
 div.wpforms-container-full .wpforms-form .wpforms-field-layout .wpforms-layout-column .wpforms-field-row.wpforms-field-small .wpforms-field-square-cardname {

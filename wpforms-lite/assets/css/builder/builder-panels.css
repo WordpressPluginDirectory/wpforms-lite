@@ -1907,6 +1907,43 @@
   background-position: left 5px top 55%;
 }
 
+#wpforms-builder #wpforms-panel-payments .wpforms-panel-sidebar-section:not(.wpforms-panel-sidebar-section-default) {
+  display: flex;
+  align-items: center;
+  padding-inline-start: 20px;
+}
+
+#wpforms-builder #wpforms-panel-payments .wpforms-panel-sidebar-section:not(.wpforms-panel-sidebar-section-default) img {
+  position: unset;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+#wpforms-builder #wpforms-panel-payments .wpforms-panel-sidebar-section:not(.wpforms-panel-sidebar-section-default) .wpforms-panel-sidebar-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+#wpforms-builder #wpforms-panel-payments .wpforms-panel-sidebar-section:not(.wpforms-panel-sidebar-section-default) .wpforms-panel-sidebar-recommended {
+  margin-top: 5px;
+  margin-inline-end: auto;
+}
+
+#wpforms-builder #wpforms-panel-payments .wpforms-panel-sidebar-section:not(.wpforms-panel-sidebar-section-default) .wpforms-panel-sidebar-controls {
+  margin-inline-start: auto;
+  margin-left: auto;
+}
+
+#wpforms-builder #wpforms-panel-payments .wpforms-panel-sidebar-section:not(.wpforms-panel-sidebar-section-default) .wpforms-panel-sidebar-controls .wpforms-toggle-arrow {
+  margin-inline-start: 10px;
+  margin-left: 10px;
+}
+
+#wpforms-builder #wpforms-panel-payments .wpforms-panel-sidebar-section:not(.wpforms-panel-sidebar-section-default) .wpforms-toggle-arrow {
+  margin-left: auto;
+}
+
 #wpforms-builder #wpforms-panel-payments .wpforms-panel-content-section-title {
   margin-bottom: 20px;
 }

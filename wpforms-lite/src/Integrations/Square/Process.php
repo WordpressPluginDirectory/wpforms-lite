@@ -151,11 +151,10 @@ class Process {
 	protected function hooks() {
 
 		add_action( 'wpforms_process', [ $this, 'process_entry' ], 10, 3 );
-		add_action( 'wpforms_process_complete', [ $this, 'update_entry_meta' ], 10, 4 );
+		add_action( 'wpforms_process_entry_saved', [ $this, 'update_entry_meta' ], 10, 4 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_data', [ $this, 'prepare_payment_data' ], 10, 3 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_meta', [ $this, 'prepare_payment_meta' ], 10, 3 );
 		add_action( 'wpforms_process_payment_saved', [ $this, 'process_payment_saved' ], 10, 3 );
-		add_filter( 'wpforms_process_bypass_captcha', [ $this, 'bypass_captcha' ] );
 	}
 
 	/**
@@ -210,12 +209,15 @@ class Process {
 	 * Bypass captcha if payment has been processed.
 	 *
 	 * @since 1.9.5
+	 * @deprecated 1.9.6
 	 *
 	 * @param bool $bypass_captcha Whether to bypass captcha.
 	 *
 	 * @return bool
 	 */
 	public function bypass_captcha( $bypass_captcha ): bool {
+
+		_deprecated_function( __METHOD__, '1.9.6 of the WPForms plugin' );
 
 		if ( (bool) $bypass_captcha ) {
 			return true;
@@ -1004,9 +1006,7 @@ class Process {
 	 * @param array  $form_data Form data and settings.
 	 * @param string $entry_id  Entry ID.
 	 */
-	public function update_entry_meta( $fields, array $entry, array $form_data, string $entry_id ) {
-
-		$fields = (array) $fields;
+	public function update_entry_meta( $fields, $entry, $form_data, $entry_id ) {
 
 		if ( empty( $entry_id ) || $this->errors || ! $this->api ) {
 			return;

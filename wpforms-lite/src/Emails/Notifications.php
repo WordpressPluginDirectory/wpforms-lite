@@ -1,7 +1,11 @@
 <?php
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpDeprecationInspection */
+
 namespace WPForms\Emails;
 
+use DOMDocument;
 use WPForms\SmartTags\SmartTag\SmartTag;
 use WPForms_WP_Emails;
 use WPForms\Tasks\Actions\EntryEmailsTask;
@@ -123,6 +127,7 @@ class Notifications extends Mailer {
 	 * @param string $template Email template name.
 	 *
 	 * @return $this|WPForms_WP_Emails
+	 * @noinspection PhpDeprecationInspection
 	 */
 	public function init( $template = '' ) {
 
@@ -239,6 +244,8 @@ class Notifications extends Mailer {
 		// Set the attachments to the email.
 		$this->__set( 'attachments', $data['attachments'] );
 
+		$entry_obj = wpforms()->obj( 'entry' );
+
 		/**
 		 * Filter whether to send the email in the same process.
 		 *
@@ -258,7 +265,7 @@ class Notifications extends Mailer {
 			'wpforms_tasks_entry_emails_trigger_send_same_process',
 			false,
 			$this->fields,
-			! empty( wpforms()->obj( 'entry' ) ) ? wpforms()->obj( 'entry' )->get( $this->entry_id ) : [],
+			$entry_obj ? $entry_obj->get( $this->entry_id ) : [],
 			$this->form_data,
 			$this->entry_id,
 			'entry'
@@ -372,21 +379,10 @@ class Notifications extends Mailer {
 	 */
 	private function process_message( $message ) {
 
-		// Check if the placeholder '{all_fields}' is not present in the message.
-		if ( strpos( $message, '{all_fields}' ) === false ) {
-			// Wrap the message with a table row after processing tags.
-			$message = $this->wrap_content_with_table_row( $message );
-		} else {
-			// If {all_fields} is present, extract content before and after into separate variables.
-			[ $before, $after ] = array_map( 'trim', explode( '{all_fields}', $message, 2 ) );
+		$message = $this->process_tag( $message );
 
-			// Wrap before and after content with <tr> tags if they are not empty to maintain styling.
-			// Note that whatever comes after the {all_fields} should be wrapped in a table row to avoid content misplacement.
-			$before_tr = ! empty( $before ) ? $this->wrap_content_with_table_row( $before ) : '';
-			$after_tr  = ! empty( $after ) ? $this->wrap_content_with_table_row( $after ) : '';
-
-			// Replace {all_fields} with $this->process_field_values() output.
-			$message = $before_tr . $this->process_field_values() . $after_tr;
+		if ( strpos( $message, '{all_fields}' ) !== false ) {
+			$message = str_replace( '{all_fields}', $this->process_field_values(), $message );
 		}
 
 		/**
@@ -399,7 +395,9 @@ class Notifications extends Mailer {
 		 * @param string        $template The email template name.
 		 * @param Notifications $this     The instance of the "Notifications" class.
 		 */
-		$message = apply_filters( 'wpforms_emails_notifications_message', $message, $this->current_template, $this );
+		$message = (string) apply_filters( 'wpforms_emails_notifications_message', $message, $this->current_template, $this );
+
+		$message = $this->fix_table_body_markup( $message );
 
 		// Leave early if the template is set to plain text.
 		if ( Helpers::is_plain_text_template( $this->current_template ) ) {
@@ -666,7 +664,9 @@ class Notifications extends Mailer {
 			 * @param array         $fields            List of submitted fields.
 			 * @param Notifications $notifications     Notifications instance.
 			 */
-			$message .= apply_filters( 'wpforms_emails_notifications_field_message_html', $field_message, $field, $show_empty_fields, $other_fields, $this->form_data, $this->fields, $this );
+			$field_message = (string) apply_filters( 'wpforms_emails_notifications_field_message_html', $field_message, $field, $show_empty_fields, $other_fields, $this->form_data, $this->fields, $this );
+
+			$message .= trim( $field_message );
 		}
 
 		return $message;
@@ -755,7 +755,7 @@ class Notifications extends Mailer {
 
 		// Replace the payment total value if an order summary is enabled.
 		// Ideally, it could be done through the `wpforms_html_field_value` filter,
-		// but needed data is missed there, e.g., entry data ($this->fields).
+		// but necessary data is missed there, e.g., entry data ($this->fields).
 		if ( $field_type === 'payment-total' && ! empty( $field['summary'] ) ) {
 			$field_val = $this->get_payment_total_value( $field_val );
 		}
@@ -841,17 +841,16 @@ class Notifications extends Mailer {
 			return null;
 		}
 
-		$value           = (string) $value;
-		$context         = $smart_tag_object->context ?? '';
-		$address_context = [
-			'notification-send-to-email',
-			'notification-carboncopy',
-			'notification-from',
-			'notification-reply-to',
-		];
-		$allowed_tags    = [
+		$value        = (string) $value;
+		$context      = $smart_tag_object->context ?? '';
+		$allowed_tags = [
 			'admin_email',
 			'user_email',
+		];
+
+		// In these contexts, we need to check if the smart tag is allowed.
+		$address_context = [
+			'notification-from',
 		];
 
 		// Check if the smart tag is allowed AND if the context is allowed.
@@ -1119,125 +1118,83 @@ class Notifications extends Mailer {
 	}
 
 	/**
-	 * Wrap the given content with a table row.
-	 * This method has been added for styling purposes.
+	 * Wrap content in the 'tr' tag on the first level depth.
 	 *
-	 * @since 1.8.6
+	 * @since 1.9.6
 	 *
 	 * @param string $content Processed smart tag content.
 	 *
 	 * @return string
 	 */
-	private function wrap_content_with_table_row( $content ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function fix_table_body_markup( string $content ): string {
 
-		// If the content is empty, return it as is.
-		if ( empty( $content ) ) {
-			return $content;
+		$content = trim( $content );
+
+		libxml_use_internal_errors( true );
+
+		$dom = new DOMDocument( '1.0', 'UTF-8' );
+
+		// We should encode `<` and `>` symbols to prevent unexpected HTML tags.
+		$html = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' . wp_pre_kses_less_than( $content ) . '</body></html>';
+
+		$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR );
+
+		libxml_clear_errors();
+
+		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
+
+		if ( ! $body ) {
+			return $this->wrap_content_with_row( $content );
 		}
 
-		// Process the smart tags in the content.
-		$processed_content = $this->process_tag( $content );
-
-		// If the content doesn't contain any smart tags, wrap it in a table row, and return early.
-		// Don't go beyond this point if the content doesn't contain any smart tags.
-		if ( ! preg_match( '/{\w+}/', $processed_content ) ) {
-			return $this->wrap_content_with_row_recursively( $processed_content );
-		}
-
-		// Split the content into lines and remove empty lines.
-		$lines = array_filter( explode( "\n", $content ), 'strlen' );
-
-		// Initialize an empty string to store the modified content.
 		$modified_content = '';
+		$content_to_wrap  = '';
 
-		// Iterate through each line.
-		foreach ( $lines as $line ) {
-			// Trim the line.
-			$trimmed_line = $this->process_tag( trim( $line ) );
+		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		foreach ( $body->childNodes as $node ) {
+			$node_text = $node->nodeType === XML_TEXT_NODE ? $node->nodeValue : $dom->saveHTML( $node );
 
-			// Extract tags at the beginning of the line.
-			preg_match( '/^(?:\{[^}]+}\s*)+/i', $trimmed_line, $before_line_tags );
+			if ( ! property_exists( $node, 'tagName' ) || $node->tagName !== 'tr' ) {
+				$content_to_wrap .= $node_text;
 
-			if ( ! empty( $before_line_tags[0] ) ) {
-				// Include the extracted tags at the beginning to the modified content.
-				$modified_content .= trim( $before_line_tags[0] );
-				// Remove the extracted tags from the trimmed line.
-				$trimmed_line = trim( substr( $trimmed_line, strlen( $before_line_tags[0] ) ) );
+				continue;
 			}
 
-			// Extract all smart tags from the remaining content.
-			preg_match_all( '/\{([^}]+)}/i', $trimmed_line, $after_line_tags );
+			// Wrap content before the `tr` tag.
+			$modified_content .= $this->wrap_content_with_row( $content_to_wrap );
 
-			// Remove the smart tags from the content.
-			$content_without_smart_tags = str_replace( $after_line_tags[0], '', $trimmed_line );
+			// Save the `tr` tag without wrapping.
+			$modified_content .= $node_text;
 
-			if ( ! empty( $content_without_smart_tags ) ) {
-				// Wrap the content without the smart tags in a new table row.
-				$modified_content .= '<tr class="smart-tag"><td class="field-name field-value" colspan="2">' . $content_without_smart_tags . '</td></tr>';
-			}
+			$content_to_wrap = '';
+		}
+		// phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
-			if ( ! empty( $after_line_tags[0] ) ) {
-				// Move all smart tags to the end of the line after the closing </tr> tag.
-				$modified_content .= implode( ' ', $after_line_tags[0] );
-			}
+		if ( ! wpforms_is_empty_string( $content_to_wrap ) ) {
+			$modified_content .= $this->wrap_content_with_row( $content_to_wrap );
 		}
 
-		// Return the modified content.
 		return $modified_content;
 	}
 
 	/**
-	 * Wrap content with tr-tags.
+	 * Wrap content to the `tr` tag.
 	 *
-	 * @since 1.9.5
+	 * @since 1.9.6
 	 *
 	 * @param string $content Content.
 	 *
 	 * @return string
 	 */
-	private function wrap_content_with_row_recursively( string $content ): string {
+	private function wrap_content_with_row( string $content ): string {
 
-		$row_template = '<tr class="smart-tag"><td class="field-name field-value" colspan="2">%s</td></tr>';
+		$content = trim( $content );
 
-		$tr_start = strpos( $content, '<tr' );
-		$tr_end   = strpos( $content, '</tr>' );
-
-		if ( $tr_start === false || $tr_end === false ) {
-			return sprintf( $row_template, $content );
+		if ( wpforms_is_empty_string( $content ) ) {
+			return '';
 		}
 
-		$table_start = strpos( $content, '<table' );
-
-		// We allow using tables inside the `<tr>` tag.
-		if ( $table_start !== false && $table_start < $tr_end ) {
-			$table_end = (int) strpos( $content, '</table>' );
-			$tr_end    = strpos( $content, '</tr>', $table_end );
-		}
-
-		// Double-check if we have closed `</tr>` position.
-		if ( $tr_end === false ) {
-			return sprintf( $row_template, $content );
-		}
-
-		$tr_end += 5; // The length of the `</tr>' closing tag.
-
-		$before_content = trim( substr( $content, 0, $tr_start ) );
-		$tr_content     = substr( $content, $tr_start, $tr_end - $tr_start );
-		$after_content  = trim( substr( $content, $tr_end ) );
-
-		$wrapped_content = '';
-
-		if ( ! empty( $before_content ) ) {
-			$wrapped_content .= sprintf( $row_template, $before_content );
-		}
-
-		$wrapped_content .= $tr_content;
-
-		if ( ! empty( $after_content ) ) {
-			$wrapped_content .= $this->wrap_content_with_row_recursively( $after_content );
-		}
-
-		return $wrapped_content;
+		return sprintf( '<tr class="smart-tag"><td class="field-name field-value" colspan="2">%s</td></tr>', $content );
 	}
 
 	/**

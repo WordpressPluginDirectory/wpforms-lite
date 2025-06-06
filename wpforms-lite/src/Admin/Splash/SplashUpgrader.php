@@ -47,57 +47,6 @@ class SplashUpgrader {
 	}
 
 	/**
-	 * Update splash modal data.
-	 *
-	 * @since 1.8.7
-	 * @deprecated 1.8.8
-	 *
-	 * @param object $upgrader Upgrader object.
-	 */
-	public function update_splash_data( $upgrader ) {
-
-		_deprecated_function( __METHOD__, '1.8.8 of the WPForms plugin', '\WPForms\Admin\Splash\SplashUpgrader::update_splash_data_on_migration()' );
-
-		$result = $upgrader->result ?? null;
-
-		// Check if plugin was updated successfully.
-		if ( ! $result ) {
-			return;
-		}
-
-		// Check if WPForms plugin was updated.
-		$wpforms_updated = $this->is_wpforms_updated( $upgrader );
-
-		if ( ! $wpforms_updated ) {
-			return;
-		}
-
-		// Retrieve plugin version after update.
-		$version = $this->get_plugin_updated_version( $upgrader );
-
-		if ( empty( $version ) ) {
-			return;
-		}
-
-		// Skip if plugin wasn't updated.
-		// Continue if plugin was upgraded to the PRO version.
-		if ( version_compare( $version, WPFORMS_VERSION, '<' ) ) {
-			return;
-		}
-
-		$version = $this->get_major_version( $version );
-
-		// Store updated plugin major version.
-		$this->update_splash_data_version( $version );
-
-		// Force update splash data cache.
-		wpforms()->obj( 'splash_cache' )->update( true );
-
-		// Reset hide_welcome_block widget meta for all users.
-		$this->remove_hide_welcome_block_widget_meta();
-	}
-
-	/**
 	 * Update splash modal data on migration.
 	 *
 	 * @since 1.8.8

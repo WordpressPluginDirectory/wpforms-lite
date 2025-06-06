@@ -1724,31 +1724,6 @@ class Frontend {
 	}
 
 	/**
-	 * Retrieve the string containing the CAPTCHA inline javascript.
-	 *
-	 * Deprecation note:
-	 * The only reason we haven't removed this method at all is that it's protected.
-	 * There is a non-zero probability that people have their own classes that extend Frontend class.
-	 *
-	 * @since 1.6.4
-	 * @deprecated 1.8.2
-	 *
-	 * @param array $captcha_settings The CAPTCHA settings.
-	 *
-	 * @return string
-	 * @noinspection PhpMissingParamTypeInspection
-	 * @noinspection PhpMissingReturnTypeInspection
-	 * @noinspection ReturnTypeCanBeDeclaredInspection
-	 * @noinspection PhpUnusedParameterInspection
-	 */
-	protected function get_captcha_inline_script( $captcha_settings ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
-
-		_deprecated_function( __METHOD__, '1.8.2 of the WPForms plugin', '\WPForms\Frontend\Captcha::get_captcha_inline_script' );
-
-		return '';
-	}
-
-	/**
 	 * Cloudflare Turnstile captcha requires defer attribute.
 	 *
 	 * @since 1.8.0

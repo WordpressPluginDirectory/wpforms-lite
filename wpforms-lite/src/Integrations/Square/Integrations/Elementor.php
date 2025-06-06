@@ -30,7 +30,7 @@ class Elementor implements IntegrationInterface {
 	 */
 	public function hooks() {
 
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_editor_assets' ] );
+		add_action( 'elementor/frontend/after_enqueue_scripts', [ $this, 'enqueue_editor_assets' ] );
 	}
 
 	/**
@@ -53,7 +53,11 @@ class Elementor implements IntegrationInterface {
 	 */
 	public function enqueue_editor_assets() {
 
-		if ( ! ElementorPlugin::$instance->preview->is_preview_mode() ) {
+		if (
+			! class_exists( ElementorPlugin::class ) ||
+			empty( ElementorPlugin::instance()->preview ) ||
+			! ElementorPlugin::instance()->preview->is_preview_mode()
+		) {
 			return;
 		}
 

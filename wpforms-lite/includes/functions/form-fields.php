@@ -665,3 +665,24 @@ function wpforms_get_column_width( array $column ): float {
 
 	return (float) $preset_width;
 }
+
+/**
+ * Parse a field ID into its components.
+ *
+ * @since 1.9.6
+ *
+ * @param string|int $field_id Field ID to parse.
+ *
+ * @return array Parsed field components.
+ */
+function wpforms_parse_field_id( $field_id ): array {
+
+	$field_parts = (array) explode( '.', (string) $field_id );
+	$field_id    = (int) $field_parts[0];
+	$field_key   = isset( $field_parts[1] ) && $field_parts[1] !== 'full' ? $field_parts[1] : 'value';
+
+	return [
+		'id'  => $field_id,
+		'key' => $field_key,
+	];
+}

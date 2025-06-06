@@ -1002,7 +1002,6 @@ abstract class WPForms_Provider {
 				'panel'      => $this->slug,
 				'parent'     => 'providers',
 				'subsection' => $connection_id,
-				'reference'  => esc_html__( 'Marketing provider connection', 'wpforms-lite' ),
 			],
 			false
 		);

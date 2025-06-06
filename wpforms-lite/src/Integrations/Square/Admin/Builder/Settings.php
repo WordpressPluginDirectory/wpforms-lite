@@ -120,7 +120,8 @@ class Settings {
 	 */
 	public function builder_output() {
 		?>
-		<div class="wpforms-panel-content-section wpforms-panel-content-section-<?php echo esc_attr( $this->slug ); ?>" id="<?php echo esc_attr( $this->slug ); ?>-provider" data-provider="<?php echo esc_attr( $this->slug ); ?>">
+		<div class="wpforms-panel-content-section wpforms-panel-content-section-<?php echo esc_attr( $this->slug ); ?>"
+			id="<?php echo esc_attr( $this->slug ); ?>-provider" data-provider="<?php echo esc_attr( $this->slug ); ?>" data-provider-name="<?php echo esc_attr( $this->name ); ?>">
 
 			<div class="wpforms-panel-content-section-title">
 				<?php echo esc_html( $this->name ); ?>

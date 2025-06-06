@@ -108,7 +108,6 @@ abstract class FormBuilder implements FormBuilderInterface {
 						'parent'     => 'providers',
 						'panel'      => esc_attr( $this->core->slug ),
 						'subsection' => '%connection_id%',
-						'reference'  => esc_html__( 'Marketing provider connection', 'wpforms-lite' ),
 					],
 					false
 				) :
@@ -126,40 +125,6 @@ abstract class FormBuilder implements FormBuilderInterface {
 							<th colspan="3"><?php esc_html_e( 'Form Field Value', 'wpforms-lite' ); ?></th>
 						</tr>
 					</thead>
-					<# if ( data.isSupportSubfields ) {
-						const extendedFieldsList = {};
-						let counter = 0;
-						_.each( data.fields, function( field, key ) {
-
-							if ( _.isEmpty( field ) || ! _.has( field, 'id' ) || ! _.has( field, 'type' ) ) {
-								return;
-							}
-
-							if ( 'name' !== field.type || ! _.has( field, 'format' ) ) {
-								extendedFieldsList[counter++] = field;
-
-								return;
-							}
-
-							field.id = field.id.toString();
-
-							const fieldLabel = ! _.isUndefined( field.label ) && field.label.toString().trim() !== '' ?
-								field.label.toString().trim() :
-								wpforms_builder.field + ' #' + key;
-
-							// Add data for Name field in "extended" format (Full, First, Middle and Last).
-							_.each( wpforms_builder.name_field_formats, function( formatLabel, valueSlug ) {
-								if ( -1 !== field.format.indexOf( valueSlug ) || valueSlug === 'full' ) {
-									extendedFieldsList[counter++] = {
-										id: field.id + '.' + valueSlug,
-										label: fieldLabel + ' (' + formatLabel + ')',
-										format: field.format,
-									};
-								}
-							} );
-						} );
-						data.fields = extendedFieldsList;
-					} #>
 					<tbody>
 						<# if ( ! _.isEmpty( data.connection.fields_meta ) ) { #>
 							<# _.each( data.connection.fields_meta, function( item, meta_id ) { #>
@@ -193,14 +158,18 @@ abstract class FormBuilder implements FormBuilderInterface {
 											<option value=""><?php esc_html_e( '--- Select Form Field ---', 'wpforms-lite' ); ?></option>
 
 											<# _.each( data.fields, function( field, key ) { #>
-												<option value="{{ field.id }}"
-														<# if ( field.id.toString() === item.field_id.toString() ) { #>selected="selected"<# } #>
-												>
-												<# if ( ! _.isUndefined( field.label ) && field.label.toString().trim() !== '' ) { #>
-													{{ field.label.toString().trim() }}
-												<# } else { #>
-													{{ wpforms_builder.field + ' #' + key }}
-												<# } #>
+												<# item.field_id = item.field_id.toString();
+												field.id = field.id.toString();
+												isSelected = field.id === item.field_id
+													<?php // BC: Previously saved name fields don't have the `.full` suffix in DB. ?>
+													|| ( ! item.field_id.includes('.') && field.id === item.field_id + '.full' );
+												#>
+												<option value="{{ field.id }}"<# if ( isSelected ) { #> selected="selected"<# } #>>
+													<# if ( ! _.isUndefined( field.label ) && field.label.toString().trim() !== '' ) { #>
+														{{ field.label.toString().trim() }}
+													<# } else { #>
+														{{ wpforms_builder.field + ' #' + key }}
+													<# } #>
 												</option>
 											<# } ); #>
 										</select>
@@ -657,6 +626,8 @@ abstract class FormBuilder implements FormBuilderInterface {
 				'field_id' => $field_id,
 			];
 		}
+
+		$connection['fields_meta'] = array_values( $connection['fields_meta'] );
 	}
 
 	/**

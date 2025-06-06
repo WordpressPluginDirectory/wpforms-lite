@@ -10229,6 +10229,14 @@ body.rtl .wpforms-tablenav-filters {
   color: #2c3338;
 }
 
+#wpforms-tools.wpforms-tools-tab-action-scheduler .wpforms-admin-content .wrap > p:last-of-type {
+  margin-bottom: 20px;
+}
+
+#wpforms-tools.wpforms-tools-tab-action-scheduler .wpforms-admin-content #wpforms-reset-filter {
+  margin-top: 0;
+}
+
 #wpforms-tools.wpforms-tools-tab-action-scheduler .wpforms-admin-content .search-box {
   margin: 0 0 11px 0;
 }

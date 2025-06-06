@@ -1,4 +1,4 @@
-/* global wpforms_builder_settings, Choices, wpf */
+/* global wpforms_builder_settings, Choices, wpforms_builder */
 
 // noinspection ES6ConvertVarToLetConst
 /**
@@ -75,6 +75,9 @@ WPForms.Admin.Builder.Settings = WPForms.Admin.Builder.Settings || ( function( d
 				$panel:      $( '#wpforms-panel-settings' ),
 				$selectTags: $( '#wpforms-panel-field-settings-form_tags' ),
 			};
+
+			// Give a chance to interact with "Disable entry..." option immediately.
+			app.allowEditDisabledEntriesOption();
 		},
 
 		/**
@@ -92,6 +95,8 @@ WPForms.Admin.Builder.Settings = WPForms.Admin.Builder.Settings || ( function( d
 
 			el.$selectTags
 				.on( 'change', app.changeTags );
+
+			$( document ).on( 'connectionsDataLoaded', app.allowEditDisabledEntriesOption );
 		},
 
 		/**
@@ -113,7 +118,54 @@ WPForms.Admin.Builder.Settings = WPForms.Admin.Builder.Settings || ( function( d
 		 * @since 1.9.2
 		 */
 		disableEntries() {
-			app.toggleFilteringMessages( ! $( this ).prop( 'checked' ) && $( '#wpforms-panel-field-settings-store_spam_entries' ).prop( 'checked' ) );
+			const $this = $( this );
+			const isChecked = $this.prop( 'checked' );
+			const isStoreSpamEntriesChecked = $( '#wpforms-panel-field-settings-store_spam_entries' ).prop( 'checked' );
+
+			app.toggleFilteringMessages( ! isChecked && isStoreSpamEntriesChecked );
+			// Toggle the store spam entries toggle.
+			$( '#wpforms-panel-field-settings-store_spam_entries-wrap' ).toggleClass( 'wpforms-hidden', $this.prop( 'checked' ) );
+
+			if ( ! $this.prop( 'checked' ) ) {
+				return;
+			}
+
+			const entryRequirement = app.getEntryRequirement();
+
+			// Don't allow users to disable entries if some third-party integrations
+			// require it.
+			if ( entryRequirement.required ) {
+				$.confirm( {
+					title: wpforms_builder.entry_storage_required,
+					content: app.getDisabledEntryMessage( entryRequirement ),
+					icon: 'fa fa-exclamation-circle',
+					type: 'orange',
+					buttons: {
+						confirm: {
+							text: wpforms_builder.ok,
+							btnClass: 'btn-confirm',
+							keys: [ 'enter' ],
+						},
+					},
+				} );
+				$this.prop( 'checked', false );
+
+				return;
+			}
+
+			$.alert( {
+				title: wpforms_builder.heads_up,
+				content: wpforms_builder.disable_entries,
+				icon: 'fa fa-exclamation-circle',
+				type: 'orange',
+				buttons: {
+					confirm: {
+						text: wpforms_builder.ok,
+						btnClass: 'btn-confirm',
+						keys: [ 'enter' ],
+					},
+				},
+			} );
 		},
 
 		/**
@@ -197,12 +249,6 @@ WPForms.Admin.Builder.Settings = WPForms.Admin.Builder.Settings || ( function( d
 
 			// Update hidden input value.
 			app.changeTags( null );
-
-			// Update form state when hidden input initialized.
-			// This will prevent a please-save-prompt to appear when switching from revisions without doing any changes anywhere.
-			if ( wpf.initialSave === true ) {
-				wpf.savedState = wpf.getFormState( '#wpforms-builder-form' );
-			}
 		},
 
 		/**
@@ -318,6 +364,83 @@ WPForms.Admin.Builder.Settings = WPForms.Admin.Builder.Settings || ( function( d
 			// Update Tags field hidden input value.
 			el.$selectTagsHiddenInput.val(
 				JSON.stringify( tags )
+			);
+		},
+
+		/**
+		 * Generates a message to indicate why certain entries are disabled,
+		 * including necessary dependencies for enabling them.
+		 *
+		 * @since 1.9.6
+		 *
+		 * @param {Object} entryRequirement An object containing details about the requirements.
+		 *
+		 * @return {string} The customized message indicating why the entries are disabled.
+		 */
+		getDisabledEntryMessage( entryRequirement ) {
+			const dependencies = entryRequirement?.dependencies || {};
+
+			if ( ! Object.keys( dependencies ).length ) {
+				return wpforms_builder.payments_on_entries_off;
+			}
+
+			const dependenciesHTML = Object.values( dependencies ).map( ( { text, href }, index, arr ) => {
+				const linkHTML = `<a href="${ href }" target="_blank">${ text }</a>`;
+
+				if ( index === arr.length - 1 && arr.length > 1 ) {
+					// The very last item when array has multiple items, prepend with "and".
+					return `and ${ linkHTML }`;
+				} else if ( index < arr.length - 2 ) {
+					// Any item except the last two, append comma.
+					return `${ linkHTML },`;
+				}
+
+				// Second-to-last item, no comma needed as next item will prepend "and".
+				return linkHTML;
+			} ).join( ' ' );
+
+			return wpforms_builder.payments_on_entries_off.replace( '{integration}', dependenciesHTML );
+		},
+
+		/**
+		 * Allows interacting with the option for disabled entries in the WPForms settings panel.
+		 * This method ensures that the entry requirement is met before enabling the option.
+		 * If some providers or gateways are still loading, the process is aborted.
+		 *
+		 * @since 1.9.6
+		 */
+		allowEditDisabledEntriesOption() {
+			const $toggleSpan = $( '#wpforms-panel-field-settings-disable_entries-wrap > span' );
+
+			if ( ! $toggleSpan.hasClass( 'wpforms-toggle-control-disabled' ) ) {
+				return;
+			}
+
+			const entryRequirement = app.getEntryRequirement();
+
+			if ( entryRequirement?.loadingStack?.size ) {
+				return;
+			}
+
+			$toggleSpan.removeClass( 'wpforms-toggle-control-disabled' );
+		},
+
+		/**
+		 * Allows modifying the entry requirement configuration, including whether
+		 * the entry is required and any dependencies associated with it.
+		 *
+		 * @since 1.9.6
+		 *
+		 * @property {boolean} required     Indicates whether the entry is required.
+		 * @property {Object}  dependencies Specifies dependencies for the entry. See app.getDisabledEntryMessage for more details.
+		 * @property {Set}     loadingStack A set used to manage loading states.
+		 *
+		 * @return {Object} The entry requirement object.
+		 */
+		getEntryRequirement() {
+			return wp.hooks.applyFilters(
+				'wpforms.Builder.entryRequirement',
+				{ required: false, dependencies: {}, loadingStack: new Set() }
 			);
 		},
 	};

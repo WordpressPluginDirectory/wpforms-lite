@@ -456,13 +456,13 @@ class PaymentIntents extends Common implements ApiInterface {
 
 		try {
 
-			if ( isset( $args['customer_email'] ) || isset( $args['customer_name'] ) ) {
-				$this->set_customer( $args['customer_email'] ?? '', $args['customer_name'] ?? '', $args['customer_address'] ?? [] );
+			if ( isset( $args['customer_email'] ) || isset( $args['customer_name'] ) || isset( $args['customer_phone'] ) ) {
+				$this->set_customer( $args['customer_email'] ?? '', $args['customer_name'] ?? '', $args['customer_address'] ?? [], $args['customer_phone'] ?? '', $args['customer_metadata'] ?? [] );
 
 				$args['customer'] = $this->get_customer( 'id' );
 			}
 
-			unset( $args['customer_email'], $args['customer_name'], $args['customer_address'] );
+			unset( $args['customer_email'], $args['customer_name'], $args['customer_address'], $args['customer_phone'], $args['customer_metadata'] );
 
 			$this->intent = PaymentIntent::create( $args, Helpers::get_auth_opts() );
 
@@ -476,7 +476,7 @@ class PaymentIntents extends Common implements ApiInterface {
 				return;
 			}
 
-			$this->set_bypass_captcha_3dsecure_token();
+			$this->set_bypass_captcha_3dsecure_token( $args );
 
 			if ( $this->intent->status === 'requires_confirmation' ) {
 				$this->request_confirm_payment_ajax( $this->intent );
@@ -573,7 +573,7 @@ class PaymentIntents extends Common implements ApiInterface {
 		}
 
 		try {
-			$this->set_customer( $args['email'], $args['customer_name'] ?? '', $args['customer_address'] ?? [] );
+			$this->set_customer( $args['email'], $args['customer_name'] ?? '', $args['customer_address'] ?? [], $args['customer_phone'] ?? '', $args['customer_metadata'] ?? [] );
 
 			$sub_args['customer']         = $this->get_customer( 'id' );
 			$sub_args['payment_behavior'] = 'default_incomplete';
@@ -601,7 +601,7 @@ class PaymentIntents extends Common implements ApiInterface {
 				return;
 			}
 
-			$this->set_bypass_captcha_3dsecure_token();
+			$this->set_bypass_captcha_3dsecure_token( $args );
 
 			if ( in_array( $this->intent->status , [ 'requires_confirmation', 'requires_payment_method' ], true ) ) {
 				$this->request_confirm_payment_ajax( $this->intent );
@@ -745,10 +745,13 @@ class PaymentIntents extends Common implements ApiInterface {
 	 * Set an encrypted token as a PaymentIntent metadata item.
 	 *
 	 * @since 1.8.2
+	 * @since 1.9.6 Added $args parameter.
+	 *
+	 * @param array $args Additional arguments.
 	 *
 	 * @throws ApiErrorException In case payment intent save wasn't successful.
 	 */
-	private function set_bypass_captcha_3dsecure_token() {
+	private function set_bypass_captcha_3dsecure_token( array $args = [] ) {
 
 		$form_data = wpforms()->obj( 'process' )->form_data;
 
@@ -758,6 +761,7 @@ class PaymentIntents extends Common implements ApiInterface {
 		}
 
 		$this->intent->metadata['captcha_3dsecure_token'] = Crypto::encrypt( $this->intent->id );
+		$this->intent->metadata['spam_reason']            = $args['metadata']['spam_reason'] ?? null;
 
 		$this->intent->update( $this->intent->id, $this->intent->serializeParameters(), Helpers::get_auth_opts() );
 	}
@@ -779,7 +783,7 @@ class PaymentIntents extends Common implements ApiInterface {
 
 		// Firstly, run checks that may prevent bypassing:
 		// 1) Sanity check to prevent possible tinkering with captcha on non-payment forms.
-		// 2) Both reCAPTCHA and hCaptcha are enabled by the same setting.
+		// 2) All Captcha providers are enabled by the same setting.
 		if (
 			! Helpers::is_payments_enabled( $form_data ) ||
 			empty( $form_data['settings']['recaptcha'] ) ||
@@ -806,6 +810,10 @@ class PaymentIntents extends Common implements ApiInterface {
 		$intent->metadata['captcha_3dsecure_token'] = null;
 
 		$intent->update( $intent->id, $intent->serializeParameters(), Helpers::get_auth_opts() );
+
+		if ( isset( $intent->metadata['spam_reason'] ) ) {
+			return $is_bypassed;
+		}
 
 		return true;
 	}

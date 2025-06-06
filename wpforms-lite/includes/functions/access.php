@@ -89,7 +89,7 @@ function wpforms_get_license_type() {
 
 	$type = wpforms_setting( 'type', '', 'wpforms_license' );
 
-	if ( empty( $type ) || ! wpforms()->is_pro() ) {
+	if ( empty( $type ) || ! wpforms_is_pro() ) {
 		return false;
 	}
 

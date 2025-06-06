@@ -220,7 +220,11 @@ class Frontend {
 	 */
 	public function elementor_enqueues() {
 
-		if ( ! class_exists( Plugin::class ) || ! Plugin::instance()->preview->is_preview_mode() ) {
+		if (
+			! class_exists( Plugin::class ) ||
+			empty( Plugin::instance()->preview ) ||
+			! Plugin::instance()->preview->is_preview_mode()
+		) {
 			return;
 		}
 

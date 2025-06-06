@@ -28,7 +28,6 @@
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-square.size-small .wpforms-square-cardnumber-wrapper,
 .et-db #et-boc .et-l .et_pb_module .et-db #et-boc .et-l .et_pb_module .wpforms-field-square.size-small .wpforms-square-cardnumber-wrapper {
   width: 25%;
-  min-width: 250px;
   flex-direction: column;
 }
 
@@ -210,7 +209,6 @@
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-square .wpforms-field-small.wpforms-square-cardnumber-wrapper {
   width: 25%;
-  min-width: 250px;
   flex-direction: column;
 }
 
@@ -220,10 +218,6 @@
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-square .wpforms-field-small.wpforms-square-cardnumber-wrapper .card-number input {
   width: 100% !important;
-}
-
-.et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-square .wpforms-square-cardname input {
-  min-width: 250px;
 }
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-layout .wpforms-layout-column:not(.wpforms-layout-column-100) .wpforms-field-square .wpforms-square-cardname input {

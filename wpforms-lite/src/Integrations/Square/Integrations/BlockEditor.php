@@ -68,7 +68,6 @@ class BlockEditor implements IntegrationInterface {
 	public function enqueue_assets() {
 
 		$this->enqueue_css();
-		$this->enqueue_js();
 	}
 
 	/**
@@ -96,51 +95,6 @@ class BlockEditor implements IntegrationInterface {
 			WPFORMS_PLUGIN_URL . "assets/css/integrations/square/wpforms-square-card-placeholder{$min}.css",
 			[],
 			WPFORMS_VERSION
-		);
-	}
-
-	/**
-	 * Enqueue js.
-	 *
-	 * @since 1.9.5
-	 */
-	private function enqueue_js() {
-
-		$min = wpforms_get_min_suffix();
-
-		// phpcs:disable WordPress.WP.EnqueuedResourceParameters.MissingVersion
-		wp_enqueue_script(
-			'square-web-payments-sdk',
-			Helpers::is_sandbox_mode() ? 'https://sandbox.web.squarecdn.com/v1/square.js' : 'https://web.squarecdn.com/v1/square.js',
-			[],
-			null,
-			true
-		);
-		// phpcs:enable WordPress.WP.EnqueuedResourceParameters.MissingVersion
-
-		wp_enqueue_script(
-			'wpforms-square',
-			WPFORMS_PLUGIN_URL . "assets/js/integrations/square/wpforms-square{$min}.js",
-			[ 'jquery', 'square-web-payments-sdk' ],
-			WPFORMS_VERSION,
-			true
-		);
-
-		/** This filter is documented in src/Frontend.php */
-		$card_config = (array) apply_filters( 'wpforms_square_frontend_enqueues_card_config', [], [] ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
-		$connection  = Connection::get();
-
-		wp_localize_script(
-			'wpforms-square',
-			'wpforms_square',
-			[
-				'client_id'   => $connection instanceof Connection ? $connection->get_client_id() : 0,
-				'location_id' => Helpers::get_location_id(),
-				'card_config' => $card_config,
-				'i18n'        => [
-					'card_init_error' => esc_html__( 'Initializing Card failed.', 'wpforms-lite' ),
-				],
-			]
 		);
 	}
 

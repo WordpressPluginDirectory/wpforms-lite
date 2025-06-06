@@ -215,7 +215,7 @@ function wpforms_utm_link( $link, $medium, $content = '', $term = '' ) {
 	return add_query_arg(
 		array_filter(
 			[
-				'utm_campaign' => wpforms()->is_pro() ? 'plugin' : 'liteplugin',
+				'utm_campaign' => wpforms_is_pro() ? 'plugin' : 'liteplugin',
 				'utm_source'   => strpos( $link, 'https://wpforms.com' ) === 0 ? 'WordPress' : 'wpformsplugin',
 				'utm_medium'   => rawurlencode( $medium ),
 				'utm_content'  => rawurlencode( $content ),
@@ -225,6 +225,26 @@ function wpforms_utm_link( $link, $medium, $content = '', $term = '' ) {
 		),
 		$link
 	);
+}
+
+/**
+ * Check if it is a Pro version of the plugin.
+ * This function be used on very early stage of WPForms loading, to check the requirements.
+ * At requirements' check, the wpforms() function is not defined.
+ *
+ * @since 1.9.6
+ *
+ * @return bool
+ */
+function wpforms_is_pro(): bool {
+
+	if ( function_exists( 'wpforms' ) ) {
+		return wpforms()->is_pro();
+	}
+
+	// This filter is documented in \WPForms\WPForms::is_pro.
+	// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+	return apply_filters( 'wpforms_allow_pro_version', file_exists( WPFORMS_PLUGIN_DIR . 'pro/wpforms-pro.php' ) );
 }
 
 /**

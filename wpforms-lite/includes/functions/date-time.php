@@ -116,20 +116,3 @@ function wpforms_get_day_period_date( $period, $timestamp = '', $format = 'Y-m-d
 
 	return $date;
 }
-
-/**
- * Retrieve a timezone from the site settings as a `DateTimeZone` object.
- *
- * Timezone can be based on a PHP timezone string or a ±HH:MM offset.
- *
- * @since 1.6.6
- * @deprecated 1.8.7
- *
- * @return DateTimeZone Timezone object.
- */
-function wpforms_get_timezone() {
-
-	_deprecated_function( __FUNCTION__, '1.8.7 of the WPForms plugin', 'wp_timezone' );
-
-	return wp_timezone();
-}

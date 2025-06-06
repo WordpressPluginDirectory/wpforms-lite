@@ -1,4 +1,4 @@
-/* global wpforms_builder, WPFormsUtils */
+/* global wpforms_builder, WPFormsUtils, tinyMCE */
 
 /**
  * @param window.DOMPurify
@@ -11,7 +11,22 @@
 const wpf = {
 
 	cachedFields: {},
+
+	/**
+	 * The savedState property is deprecated.
+	 *
+	 * @deprecated 1.9.6
+	 */
 	savedState: false,
+
+	/**
+	 * Save current form state to determine if the form was changed.
+	 *
+	 * @since 1.9.6
+	 *
+	 * @type {Object}
+	 */
+	savedFormState: {},
 	initialSave: true,
 	orders: {
 		fields: [],
@@ -40,9 +55,6 @@ const wpf = {
 	 * @since 1.0.1
 	 */
 	ready() {
-		// Load initial form saved state.
-		wpf.savedState = wpf.getFormState( '#wpforms-builder-form' );
-
 		// Save field and choice order for sorting later.
 		wpf.setFieldOrders();
 		wpf.setChoicesOrders();
@@ -430,12 +442,15 @@ const wpf = {
 	 * Get form state.
 	 *
 	 * @since 1.3.8
+	 * @deprecated 1.9.6
 	 *
 	 * @param {Object} el Element.
 	 *
 	 * @return {string} Form state.
 	 */
 	getFormState( el ) {
+		// eslint-disable-next-line
+		console.warn( 'WARNING! Function "wpf.getFormState( el )" has been deprecated.' );
 		// Serialize tested the most performant string we can use for comparisons.
 		return jQuery( el ).serialize();
 	},
@@ -857,12 +872,11 @@ const wpf = {
 			return;
 		}
 
-		const isRTL = jQuery( 'body' ).hasClass( 'rtl' );
-		const position = isRTL ? 'left' : 'right';
+		const isRTL = jQuery( 'body' ).hasClass( 'rtl' ),
+			position = isRTL ? 'left' : 'right',
+			$tooltips = $scope ? jQuery( $scope ).find( '.wpforms-help-tooltip' ) : jQuery( '.wpforms-help-tooltip' );
 
-		const $tooltips = ! $scope ? jQuery( '.wpforms-help-tooltip' ) : jQuery( $scope ).find( '.wpforms-help-tooltip' );
-
-		$tooltips.each( function() {
+		$tooltips.one( 'mouseenter', function() {
 			const $this = jQuery( this );
 
 			$this.tooltipster( {
@@ -874,7 +888,7 @@ const wpf = {
 				debug: false,
 				IEmin: 11,
 				zIndex: 99999999,
-			} );
+			} ).tooltipster( 'open' );
 		} );
 	},
 
@@ -1351,6 +1365,66 @@ const wpf = {
 		setTimeout( () => wpf.isRepeatedCallData[ context ] = false, timeout );
 
 		return false;
+	},
+
+	/**
+	 * Receive current form settings in the key=>value format.
+	 *
+	 * @since 1.9.6
+	 *
+	 * @internal
+	 *
+	 * @return {Object} Object with all field names and their values.
+	 */
+	_getCurrentFormState() { // eslint-disable-line complexity
+		const currentState = Object.fromEntries( new FormData( document.getElementById( 'wpforms-builder-form' ) ).entries() );
+
+		// noinspection JSUnusedLocalSymbols
+		// eslint-disable-next-line no-unused-vars
+		for ( const [ key, value ] of Object.entries( currentState ) ) {
+			// The lock option is used to keep AJAX requests up to date.
+			if ( key.includes( '[__lock__]' ) ) {
+				delete currentState[ key ];
+			}
+		}
+
+		// Textarea created by tinyMCE updates only before form saving.
+		// We should determine if these fields where updated and update the form state separately.
+		if ( typeof tinyMCE !== 'undefined' && tinyMCE.editors ) {
+			for ( const key in tinyMCE.editors ) {
+				const editor = tinyMCE.editors[ key ];
+				const editorName = editor.targetElm.getAttribute( 'name' );
+
+				if ( ! editorName ) {
+					continue;
+				}
+
+				if ( editor.isDirty() ) {
+					currentState[ editorName ] = editor.getContent();
+				}
+			}
+		}
+
+		currentState.fieldsOrder = wpf.orders.fields.toString();
+
+		// Keyword filter stores separately and doesn't have a name attribute.
+		const $keywordFilter = jQuery( '.wpforms-panel-field-keyword-keywords textarea' );
+
+		if ( $keywordFilter.length ) {
+			currentState.keywordFilter = $keywordFilter.val();
+		}
+
+		return currentState;
+	},
+
+	/**
+	 * Update form state.
+	 * For internal usage only.
+	 *
+	 * @since 1.9.6
+	 */
+	_updateFormState() {
+		wpf.savedFormState = wpf._getCurrentFormState();
 	},
 };
 

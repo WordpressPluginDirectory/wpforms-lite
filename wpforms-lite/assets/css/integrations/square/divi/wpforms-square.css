@@ -9,6 +9,10 @@
   border-radius: 2px;
 }
 
+.et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .sq-card-wrapper {
+  min-width: auto;
+}
+
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .sq-card-wrapper.sq-focus .sq-card-iframe-container::before {
   border-color: #999;
 }
@@ -34,7 +38,7 @@
 }
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-square .wpforms-field-row.wpforms-field-small .wpforms-field-square-cardname {
-  min-width: 250px;
+  width: 100%;
 }
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-layout .wpforms-layout-column .wpforms-field-row.wpforms-field-small .wpforms-field-square-cardname {

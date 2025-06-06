@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.8
-Stable tag: 1.9.5.2
+Stable tag: 1.9.6
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -148,7 +148,10 @@ We also know that our developer friends may want more control, so we added tons 
 * [Salesforce](https://wpforms.com/features/salesforce-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Slack](https://wpforms.com/features/slack-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Dropbox](https://wpforms.com/features/dropbox-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Google Drive](https://wpforms.com/features/google-drive-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Twilio](https://wpforms.com/features/twilio-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Pipedrive](https://wpforms.com/features/pipedrive-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Make](https://wpforms.com/features/make-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 
 You can see why WPForms is the best WordPress contact form plugin on the market! Want to unlock these features? [Upgrade to our Pro version](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
 
@@ -381,6 +384,27 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.6 =
+- Added: Form Themes for Elementor.
+- Added: Customer phone, Payment, and Customer metadata can now be configured on the Form Builder > Payments > Stripe screen.
+- Changed: Improved styles on Tools > Scheduled Actions page with reset search filter.
+- Changed: Improved Form Builder loading.
+- Changed: Required select fields have default placeholder text to prevent the submission of default values.
+- Changed: Improved message about missing PHP extensions.
+- Changed: Updated DOMPurify library to 3.2.6.
+- Fixed: Captcha verification was skipped for payment forms.
+- Fixed: Email notification was malformed when a form had a Total field with the "Order Summary" enabled.
+- Fixed: The marketing provider's name was not specified in the warning popup when a field with conditional logic was removed.
+- Fixed: An error occurred when installing a plugin through the Gutenberg block.
+- Fixed: Addon fields were not rendered on the front-end on multisite if addons were not activated site-wide.
+- Fixed: Missing popup about unsaved changes when closing the form from the Marketing tab.
+- Fixed: Compatibility with Elementor editor.
+- Fixed: The "Plugin is in the Latest Version" error occurred when updating several addons using bulk update on the Plugins page.
+- Fixed: There was no popup about unsaved changes displayed after typing into the MCE editor.
+- Fixed: Layout issues of the Square credit card field.
+- Fixed: JavaScript error occurred when a form was added in the Elementor popup.
+- Fixed: Fields were added to the form in the wrong order under some conditions.
 
 = 1.9.5.2 =
 - Fixed: Issue sending form notifications using email fields that had ID=0.

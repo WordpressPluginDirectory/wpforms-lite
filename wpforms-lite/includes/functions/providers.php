@@ -60,5 +60,18 @@ function wpforms_update_providers_options( $provider, $options, $key = '' ) {
 		unset( $providers[ $provider ] );
 	}
 
+	/**
+	 * A collection of service providers used for dependency injection or service registration
+	 * within the application.
+	 *
+	 * @since 1.9.6
+	 *
+	 * @param array  $providers List of all registered providers.
+	 * @param string $provider  Provider slug.
+	 * @param array  $options   Provider options data. If false - provider will be removed.
+	 * @param string $id        Provider connection ID.
+	 */
+	$providers = (array) apply_filters( 'wpforms_update_providers_options', $providers, $provider, $options, $id );
+
 	update_option( 'wpforms_providers', $providers );
 }

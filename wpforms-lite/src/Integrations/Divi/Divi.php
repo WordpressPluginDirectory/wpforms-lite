@@ -256,7 +256,18 @@ class Divi implements IntegrationInterface {
 
 		$form_id = absint( filter_input( INPUT_POST, 'form_id', FILTER_SANITIZE_NUMBER_INT ) );
 
-		if ( ! wpforms_current_user_can( 'view_form_single', $form_id ) ) {
+		if ( $form_id ) {
+			$form_obj = wpforms()->obj( 'form' );
+			$form     = $form_obj ? $form_obj->get( $form_id ) : null;
+			$author   = $form ? (int) $form->post_author : 0;
+			$cap      = $author === get_current_user_id() ? 'wpforms_view_own_forms' : 'wpforms_view_others_forms';
+
+			$has_permission = wpforms_current_user_can( $cap, $form_id );
+		} else {
+			$has_permission = wpforms_current_user_can( [ 'wpforms_view_own_forms', 'wpforms_view_others_forms' ] );
+		}
+
+		if ( ! $has_permission ) {
 			wp_send_json_error(
 				esc_html__( 'You do not have permission to preview form.', 'wpforms-lite' )
 			);

@@ -73,7 +73,7 @@ class Enqueues {
 		wp_enqueue_script(
 			'wpforms-builder-stripe',
 			WPFORMS_PLUGIN_URL . "assets/js/integrations/stripe/admin-builder-stripe{$min}.js",
-			[ 'conditionals' ],
+			[ 'conditions' ],
 			WPFORMS_VERSION,
 			false
 		);
