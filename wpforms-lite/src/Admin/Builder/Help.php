@@ -184,6 +184,7 @@ class Help {
 			'settings/dropbox'                        => 'dropbox',
 			'settings/google_drive'                   => 'google drive',
 			'settings/webhooks'                       => 'webhooks',
+			'settings/entry_automation'               => 'entry automation',
 			'providers'                               => '',
 			'providers/aweber'                        => 'aweber',
 			'providers/activecampaign'                => 'activecampaign',
@@ -1243,6 +1244,9 @@ class Help {
 			'ai'                        => [
 				'/docs/generating-form-choices-with-wpforms-ai/',
 				'/docs/generating-forms-with-wpforms-ai/',
+			],
+			'entry automation'          => [
+				'/docs/entry-automation-addon/',
 			],
 		];
 	}

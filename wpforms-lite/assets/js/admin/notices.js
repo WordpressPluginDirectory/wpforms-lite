@@ -6,16 +6,13 @@
  * @since 1.6.7.1
  */
 
-'use strict';
-
 var WPFormsAdminNotices = window.WPFormsAdminNotices || ( function( document, window, $ ) {
-
 	/**
 	 * Public functions and properties.
 	 *
 	 * @since 1.6.7.1
 	 *
-	 * @type {object}
+	 * @type {Object}
 	 */
 	var app = {
 
@@ -24,8 +21,7 @@ var WPFormsAdminNotices = window.WPFormsAdminNotices || ( function( document, wi
 		 *
 		 * @since 1.6.7.1
 		 */
-		init: function() {
-
+		init() {
 			$( app.ready );
 		},
 
@@ -34,8 +30,7 @@ var WPFormsAdminNotices = window.WPFormsAdminNotices || ( function( document, wi
 		 *
 		 * @since 1.6.7.1
 		 */
-		ready: function() {
-
+		ready() {
 			app.events();
 		},
 
@@ -44,8 +39,7 @@ var WPFormsAdminNotices = window.WPFormsAdminNotices || ( function( document, wi
 		 *
 		 * @since 1.6.7.1
 		 */
-		events: function() {
-
+		events() {
 			$( document ).on(
 				'click',
 				'.wpforms-notice .notice-dismiss, .wpforms-notice .wpforms-notice-dismiss',
@@ -58,10 +52,9 @@ var WPFormsAdminNotices = window.WPFormsAdminNotices || ( function( document, wi
 		 *
 		 * @since 1.6.7.1
 		 *
-		 * @param {object} e Event object.
-		 * */
-		dismissNotice: function( e ) {
-
+		 * @param {Object} e Event object.
+		 */
+		dismissNotice( e ) {
 			const $element = $( e.target );
 
 			if ( ! $element.hasClass( 'wpforms-review-out' ) ) {
@@ -82,7 +75,6 @@ var WPFormsAdminNotices = window.WPFormsAdminNotices || ( function( document, wi
 	};
 
 	return app;
-
 }( document, window, jQuery ) );
 
 // Initialize.

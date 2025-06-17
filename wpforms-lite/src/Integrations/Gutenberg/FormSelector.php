@@ -186,7 +186,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 */
 	public function filter_is_honeypot_enabled( $is_enabled ): bool {
 
-		if ( wpforms_is_rest() ) {
+		if ( wpforms_is_wpforms_rest() ) {
 			return false;
 		}
 

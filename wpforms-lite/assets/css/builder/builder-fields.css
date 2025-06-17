@@ -1270,6 +1270,15 @@
   color: #86919e;
 }
 
+.wpforms-panel-sidebar .wpforms-field-options-column .wpforms-smart-tags-widget-container {
+  width: calc(100% - 2px);
+}
+
+.wpforms-panel-sidebar .wpforms-field-options-column .wpforms-builder-dropdown-list {
+  width: 370px;
+  left: -192px;
+}
+
 .wp-editor-wrap .mce-toolbar .mce-wpforms-smart-tags-mce-button.active {
   background: #f0f0f1;
   border-color: #50575e;

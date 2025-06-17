@@ -297,6 +297,10 @@ class AdminBarMenu {
 					'title' => esc_html__( 'Export', 'wpforms-lite' ),
 					'path'  => 'admin.php?page=wpforms-tools&view=export',
 				],
+				'wpforms-tools-entry-automation' => [
+					'title' => esc_html__( 'Entry Automation', 'wpforms-lite' ),
+					'path'  => 'admin.php?page=wpforms-tools&view=entry-automation',
+				],
 				'wpforms-tools-system'           => [
 					'title' => esc_html__( 'System Info', 'wpforms-lite' ),
 					'path'  => 'admin.php?page=wpforms-tools&view=system',

@@ -51,7 +51,7 @@ class RestApi {
 	 */
 	public function __construct( $widget_obj, $themes_data ) {
 
-		if ( ! $widget_obj || ! $themes_data || ! wpforms_is_rest() ) {
+		if ( ! $widget_obj || ! $themes_data || ! wpforms_is_wpforms_rest() ) {
 			return;
 		}
 

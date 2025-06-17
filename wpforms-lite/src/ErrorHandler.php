@@ -99,6 +99,7 @@ class ErrorHandler {
 			WP_PLUGIN_DIR . '/wpforms-coupons/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-drip/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-e2e-helpers/vendor/',
+			WP_PLUGIN_DIR . '/wpforms-entry-automation/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-form-abandonment/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-form-locker/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-form-pages/vendor/',

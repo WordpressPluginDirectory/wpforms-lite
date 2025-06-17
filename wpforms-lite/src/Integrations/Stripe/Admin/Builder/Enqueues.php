@@ -70,6 +70,15 @@ class Enqueues {
 
 		$min = wpforms_get_min_suffix();
 
+		if ( Helpers::has_stripe_keys() ) {
+			wp_enqueue_style(
+				'wpforms-builder-stripe-common',
+				WPFORMS_PLUGIN_URL . "assets/css/integrations/stripe/builder-stripe-common{$min}.css",
+				[],
+				WPFORMS_VERSION
+			);
+		}
+
 		wp_enqueue_script(
 			'wpforms-builder-stripe',
 			WPFORMS_PLUGIN_URL . "assets/js/integrations/stripe/admin-builder-stripe{$min}.js",

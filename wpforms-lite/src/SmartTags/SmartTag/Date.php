@@ -28,6 +28,8 @@ class Date extends SmartTag {
 			return wpforms_date_format( time(), '', true );
 		}
 
-		return wpforms_datetime_format( time(), $attributes['format'], true );
+		$format = strtolower( $attributes['format'] ) === 'timestamp' ? 'U' : $attributes['format'];
+
+		return wpforms_datetime_format( time(), $format, true );
 	}
 }

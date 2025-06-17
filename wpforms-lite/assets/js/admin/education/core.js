@@ -129,13 +129,15 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 		 * Open education modal handler.
 		 *
 		 * @since 1.8.0
+		 * @since 1.9.6.1 Added `$element` parameter.
 		 *
-		 * @param {Event} event Event.
+		 * @param {Event}  event    Event.
+		 * @param {jQuery} $element jQuery element.
 		 */
-		openModalButtonHandler( event ) {
+		openModalButtonHandler( event, $element = null ) {
 			event.preventDefault();
 
-			const $this = $( this );
+			const $this = $element || $( this );
 
 			switch ( $this.data( 'action' ) ) {
 				case 'activate':
@@ -399,6 +401,17 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 					},
 					cancel: {
 						text: wpforms_education.cancel,
+						action() {
+							/**
+							 * Trigger event when modal is closed.
+							 * This event is used to handle any custom logic when the modal is closed.
+							 *
+							 * @since 1.9.6.1
+							 *
+							 * @param {jQuery} $button jQuery button element.
+							 */
+							$( document ).trigger( 'wpformsEducationModalClose', $button );
+						},
 					},
 				},
 			} );
@@ -512,6 +525,14 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 					},
 					cancel: {
 						text: wpforms_education.close,
+						action() {
+							/**
+							 * Triggers an event to notify that the education save modal has been closed.
+							 *
+							 * @since 1.9.6.1
+							 */
+							$( document ).trigger( 'wpformsEducationSaveModalClose' );
+						},
 					},
 				},
 			} );
@@ -577,6 +598,9 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 					},
 					cancel: {
 						text: wpforms_education.cancel,
+						action() {
+							$( document ).trigger( 'wpformsEducationModalClose', $button );
+						},
 					},
 				},
 			} );
@@ -638,6 +662,9 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 					},
 					cancel: {
 						text: wpforms_education.cancel,
+						action() {
+							$( document ).trigger( 'wpformsEducationModalClose', $button );
+						},
 					},
 				},
 			} );

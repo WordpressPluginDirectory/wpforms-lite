@@ -77,7 +77,7 @@ function wpforms_is_email( $email ) { // phpcs:ignore Generic.Metrics.Cyclomatic
 		return false;
 	}
 
-	list( $local, $domain ) = $email_arr;
+	[ $local, $domain ] = $email_arr;
 
 	/**
 	 * RFC requires local part to be no longer than 64 octets.
@@ -240,24 +240,66 @@ function wpforms_is_empty_string( $value ): bool {
 /**
  * Determine if the request is a rest API call.
  *
- * NOTE: The function shouldn't be used before the `rest_api_init` action.
+ * Case #1: After WP_REST_Request initialization
+ * Case #2: Support "plain" permalink settings
+ * Case #3: It can happen that WP_Rewrite is not yet initialized,
+ *          so do this (wp-settings.php)
+ * Case #4: URL Path begins with wp-json/ (your REST prefix)
+ *          Also supports WP installations in sub folders
  *
  * @since 1.8.8
  *
- * @return bool|null True if the request is a REST API call, null if the function is called incorrectly.
+ * @return bool True if the request is a REST API call, false if not.
+ * @author matzeeable
  */
-function wpforms_is_rest() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+function wpforms_is_rest(): bool { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
-	// The function is not available, means that `wpforms_is_rest` is called incorrectly.
-	// The possible reason is that the function is called too early, before the `rest-api.php` is loaded.
-	// In this case, we should not proceed with the check.
-	if ( ! function_exists( 'rest_url' ) ) {
-		return null;
+	if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+		return false;
 	}
 
-	// We can replace `wpforms_is_rest` with `wp_is_rest_endpoint` function when the minimum WP version is bumped to 6.5.
-	if ( function_exists( 'wp_is_rest_endpoint' ) ) {
-		return wp_is_rest_endpoint();
+	// Case #1.
+	if ( defined( 'REST_REQUEST' ) && constant( 'REST_REQUEST' ) ) {
+		return true;
+	}
+
+	// Case #2.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$rest_route = isset( $_GET['rest_route'] ) ?
+		filter_input( INPUT_GET, 'rest_route', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) :
+		'';
+
+	if ( strpos( trim( $rest_route, '\\/' ), rest_get_url_prefix() ) === 0 ) {
+		return true;
+	}
+
+	// Case #3.
+	global $wp_rewrite;
+	if ( $wp_rewrite === null ) {
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$wp_rewrite = new WP_Rewrite();
+	}
+
+	// Case #4.
+	$current_url = (string) wp_parse_url( add_query_arg( [] ), PHP_URL_PATH );
+	$rest_url    = wp_parse_url( trailingslashit( rest_url() ), PHP_URL_PATH );
+
+	return strpos( $current_url, $rest_url ) === 0;
+}
+
+/**
+ * Determine if the request is a WPForms related rest API call.
+ *
+ * NOTE: The function shouldn't be used before the `rest_api_init` action.
+ *
+ * @since 1.9.6.1
+ *
+ * @return bool True if the request is a WPForms related rest API call, false if not.
+ */
+function wpforms_is_wpforms_rest(): bool { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+
+	if ( ! wpforms_is_rest() ) {
+		return false;
 	}
 
 	$rest_url         = wp_parse_url( trailingslashit( rest_url() ) );
@@ -265,8 +307,8 @@ function wpforms_is_rest() { // phpcs:ignore Generic.Metrics.CyclomaticComplexit
 	$rest_url['path'] = $rest_url['path'] ?? '';
 
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended
-	$is_rest_plain    = $rest_url['path'] === '/index.php' && ! empty( $_GET['rest_route'] );
-	$is_rest_postname = strpos( $rest_url['path'], '/wp-json/' ) !== false;
+	$is_rest_plain     = $rest_url['path'] === '/index.php' && ! empty( $_GET['rest_route'] );
+	$is_rest_post_name = strpos( $rest_url['path'], '/wp-json/' ) !== false;
 
 	if ( $is_rest_plain ) {
 		$rest_route = sanitize_text_field( wp_unslash( $_GET['rest_route'] ) );
@@ -275,7 +317,7 @@ function wpforms_is_rest() { // phpcs:ignore Generic.Metrics.CyclomaticComplexit
 	}
 	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-	if ( $is_rest_postname ) {
+	if ( $is_rest_post_name ) {
 		return strpos( $current_url['path'] ?? '', '/wpforms/' ) !== false;
 	}
 

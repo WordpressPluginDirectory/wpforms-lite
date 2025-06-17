@@ -669,6 +669,22 @@ class WPForms_Builder {
 			true
 		);
 
+		wp_register_script(
+			'wpforms-builder-choices-list',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/choices-list{$min}.js",
+			[ 'jquery' ],
+			WPFORMS_VERSION,
+			true
+		);
+
+		wp_register_script(
+			'wpforms-builder-chocolate-choices',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/chocolate-choices{$min}.js",
+			[ 'jquery' ],
+			WPFORMS_VERSION,
+			true
+		);
+
 		wp_localize_script(
 			'wpforms-builder',
 			'wpforms_builder',

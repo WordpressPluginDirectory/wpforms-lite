@@ -1,4 +1,4 @@
-/* global jQuery, wpforms_builder, wpf, jconfirm, wpforms_panel_switch, Choices, WPForms, WPFormsFormEmbedWizard, wpCookies, tinyMCE, WPFormsUtils, List, wpforms_preset_choices */
+/* global wpforms_builder, wpf, jconfirm, wpforms_panel_switch, Choices, WPForms, WPFormsFormEmbedWizard, wpCookies, tinyMCE, WPFormsUtils, List, wpforms_preset_choices */
 
 /**
  * @param wpforms_builder.smart_tags_disabled_for_confirmations
@@ -6237,8 +6237,15 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				app.notificationUpdateStatus( $element );
 			} );
 
-			$builder.on( 'click', '.wpforms-notification .wpforms-status-button', function() {
-				app.notificationChangeStatus( $( this ) );
+			$builder.on( 'click', '.wpforms-status-button', function() {
+				// Notification block has a different HTML structure.
+				if ( $( this ).hasClass( 'wpforms-notification-status-button' ) ) {
+					app.notificationChangeStatus( $( this ) );
+
+					return;
+				}
+
+				app.handleStatusButton( $( this ) );
 			} );
 
 			// Toggle Open Confirmations in New Tab options on AJAX form submit setting change.
@@ -6921,31 +6928,47 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * Show or hide settings block panel content.
 		 *
 		 * @since 1.4.8
+		 * @since 1.9.6.1 Added `isShow` parameter.
 		 *
-		 * @param {Object} $el Toggle icon DOM element.
+		 * @param {Object}       $el    Toggle icon DOM element.
+		 * @param {boolean|null} isShow Force showing or hiding. If null - toggle (default), if true - show, if false - hide.
 		 */
-		settingsBlockPanelToggle( $el ) {
+		settingsBlockPanelToggle( $el, isShow = null ) {
 			const $settingsBlock = $el.closest( '.wpforms-builder-settings-block' ),
 				settingsBlockId = $settingsBlock.data( 'block-id' ),
 				settingsBlockType = $settingsBlock.data( 'block-type' ),
 				$content = $settingsBlock.find( '.wpforms-builder-settings-block-content' ),
-				isVisible = $content.is( ':visible' );
+				isVisible = $content.is( ':visible' ),
+				slideSettings = {
+					duration: 400,
+					start() {
+						// Send it early to save fast.
+						// It's an animation start, so we should save the state for the animation end (reversed).
+						app.settingsBlockUpdateState( isVisible, settingsBlockId, settingsBlockType );
+					},
+					always() {
+						if ( $content.is( ':visible' ) ) {
+							$el.html( '<i class="fa fa-chevron-circle-up"></i>' );
+						} else {
+							$el.html( '<i class="fa fa-chevron-circle-down"></i>' );
+						}
+					},
+				};
 
-			$content.stop().slideToggle( {
-				duration: 400,
-				start() {
-					// Send it early to save fast.
-					// It's an animation start, so we should save the state for the animation end (reversed).
-					app.settingsBlockUpdateState( isVisible, settingsBlockId, settingsBlockType );
-				},
-				always() {
-					if ( $content.is( ':visible' ) ) {
-						$el.html( '<i class="fa fa-chevron-circle-up"></i>' );
-					} else {
-						$el.html( '<i class="fa fa-chevron-circle-down"></i>' );
-					}
-				},
-			} );
+			$content.stop();
+
+			// Determine the action based on force parameter.
+			if ( isShow === true ) {
+				$content.slideDown( slideSettings );
+
+				return;
+			} else if ( isShow === false ) {
+				$content.slideUp( slideSettings );
+
+				return;
+			}
+
+			$content.slideToggle( slideSettings );
 		},
 
 		/**
@@ -7080,6 +7103,23 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		},
 
 		/**
+		 * Handles the toggle functionality of the status button, updating its state
+		 * and reflecting the change in a corresponding hidden input field.
+		 *
+		 * @since 1.9.6.1
+		 *
+		 * @param {jQuery} $statusButton The jQuery object for the status button being toggled.
+		 */
+		handleStatusButton( $statusButton ) {
+			const connectionId = $statusButton.data( 'connection-id' ),
+				isActive = $statusButton.data( 'active' );
+
+			app.changeStatusButton( $statusButton, ! isActive );
+
+			$( `#wpforms-connection-status-${ connectionId }` ).val( ! isActive ? '1' : '0' );
+		},
+
+		/**
 		 * Change the status of a button.
 		 *
 		 * @since 1.9.5
@@ -7088,12 +7128,12 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * @param {boolean} isActive Whether the button is active.
 		 */
 		changeStatusButton( $button, isActive ) {
-			$button.removeClass( [ 'wpforms-badge-green', 'wpforms-badge-silver' ] );
+			$button.removeClass( 'wpforms-badge-green wpforms-badge-silver' );
 
 			const $icon = $button.find( '.fa' ),
 				$label = $button.find( '.wpforms-status-label' );
 
-			$icon.removeClass( [ 'fa-check', 'fa-times' ] );
+			$icon.removeClass( 'fa-check fa-times' );
 
 			if ( isActive ) {
 				$button.addClass( 'wpforms-badge-green' );

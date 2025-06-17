@@ -14,6 +14,7 @@
  * @var string $features_description Features description.
  * @var array  $features             List of features.
  * @var array  $images               List of images.
+ * @var string $license_level        License level.
  * @var string $utm_medium           UTM medium.
  * @var string $utm_content          UTM content.
  * @var string $upgrade_link         Upgrade link.
@@ -91,7 +92,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 				[
 					'medium'  => $utm_medium,
 					'content' => $utm_content,
-				]
+				],
+				$license_level
 			);
 		} else {
 			printf(

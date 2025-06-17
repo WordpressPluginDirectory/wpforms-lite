@@ -742,6 +742,7 @@
 #wpforms-panel-settings .wpforms-builder-settings-block {
   border: 1px solid #cccccc;
   margin: 0 0 20px 0;
+  background-color: #ffffff;
 }
 
 #wpforms-panel-settings .wpforms-builder-settings-block .wpforms-panel-field,
@@ -1164,6 +1165,22 @@
 
 #wpforms-panel-settings .wpforms-panel-content-section-themes-inner .wpforms-panel-content-section-themes-bottom .wpforms-alert.wpforms-alert-info.wpforms-bottom .wpforms-aside-left .wpforms-alert-heading {
   font-size: 14px;
+}
+
+#wpforms-panel-settings .wpforms-builder-provider-connections-error {
+  color: #b32d2e;
+  font-size: 16px;
+  background-color: #fcf0f1;
+  border-radius: 4px;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 7px 15px;
+  line-height: 24px;
+  text-align: center;
+}
+
+#wpforms-panel-settings .wpforms-builder-provider-connections-error a {
+  color: inherit;
 }
 
 @media (max-height: 864px) {

@@ -116,6 +116,7 @@ class Tools {
 				'import'           => new Views\Import(),
 				'importer'         => new Views\Importer(),
 				'export'           => new Views\Export(),
+				'entry-automation' => new Views\EntryAutomation(),
 				'system'           => new Views\System(),
 				'action-scheduler' => new Views\ActionScheduler(),
 				'logs'             => new Views\Logs(),

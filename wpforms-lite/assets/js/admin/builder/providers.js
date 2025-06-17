@@ -513,7 +513,12 @@ WPForms.Admin.Builder.Providers = WPForms.Admin.Builder.Providers || ( function(
 					const currentState = wpf._getCurrentFormState();
 
 					for ( const [ key, value ] of Object.entries( currentState ) ) {
-						if ( key.includes( '[' + provider + ']' ) && typeof wpf.savedFormState[ key ] === 'undefined' ) {
+						// What it matches:
+						// - `[provider]`
+						// - `provider[`
+						const providerRegex = new RegExp( `\\[?${ provider }[\\[\\]]` );
+
+						if ( providerRegex.test( key ) && typeof wpf.savedFormState[ key ] === 'undefined' ) {
 							wpf.savedFormState[ key ] = value;
 						}
 					}

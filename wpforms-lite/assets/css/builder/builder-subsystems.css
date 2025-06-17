@@ -835,6 +835,14 @@
   line-height: 21px;
 }
 
+.wpforms-admin-page .wpforms-panel-content .wpforms-alert.wpforms-pro-fields-notice .wpforms-alert-message a {
+  color: #e27730;
+}
+
+.wpforms-admin-page .wpforms-panel-content .wpforms-alert.wpforms-pro-fields-notice .wpforms-alert-message a:hover {
+  color: #cd6622;
+}
+
 .wpforms-admin-page .wpforms-panel-content .wpforms-alert.wpforms-pro-fields-notice.wpforms-alert-error {
   background: #fcf0f1;
 }

@@ -92,11 +92,13 @@ $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpforms_protected_files
  * 1. Form Locker.
  * 2. User Journey.
  * 3. Coupons.
+ * 4. Entry Automation.
  */
 $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpforms_form_locker_email_verification' );
 $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpforms_user_journey' );
 $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpforms_coupons' );
 $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpforms_coupons_forms' );
+$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpforms_entry_automation_tasks' );
 
 // Delete Preview page.
 $preview_page = get_option( 'wpforms_preview_page', false );

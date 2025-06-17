@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.9.6.1 =
+- Added: Smart Tags support in the Default Value setting for Name field subfields.
+- Fixed: WPForms updates did not work consistently with the WP Umbrella plugin.
+- Fixed: The layout of the Order Summary table was broken on Windows operating systems.
+- Fixed: The layout of the Stripe custom fields mapping table was broken in the form builder.
+
 = 1.9.6 =
 - Added: Form Themes for Elementor.
 - Added: Customer phone, Payment, and Customer metadata can now be configured on the Form Builder > Payments > Stripe screen.

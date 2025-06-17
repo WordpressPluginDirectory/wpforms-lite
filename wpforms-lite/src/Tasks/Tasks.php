@@ -376,6 +376,42 @@ class Tasks {
 	}
 
 	/**
+	 * Delete a task by its ID.
+	 *
+	 * @since 1.9.6.1
+	 *
+	 * @param int $action_id Action ID.
+	 */
+	public function delete_action( $action_id ): void {
+
+		global $wpdb;
+
+		$sql = "DELETE FROM {$wpdb->prefix}actionscheduler_actions WHERE action_id = %d";
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( $wpdb->prepare( $sql, (int) $action_id ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	}
+
+	/**
+	 * Fetch action by ID.
+	 *
+	 * @since 1.9.6.1
+	 *
+	 * @param int $action_id Action ID.
+	 *
+	 * @return null|ActionScheduler_Action
+	 */
+	public function fetch_action( $action_id ): ?ActionScheduler_Action {
+
+		if ( ! class_exists( 'ActionScheduler' ) ) {
+			return null;
+		}
+
+		return ActionScheduler::store()->fetch_action( $action_id );
+	}
+
+	/**
 	 * Clear the meta after action complete.
 	 * Fired before an action is marked as completed.
 	 *

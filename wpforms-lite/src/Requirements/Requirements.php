@@ -233,6 +233,9 @@ class Requirements {
 		'wpforms-dropbox/wpforms-dropbox.php'                           => [
 			self::ADDON => '1.1.0',
 		],
+		'wpforms-entry-automation/wpforms-entry-automation.php'         => [
+			self::LICENSE => self::TOP,
+		],
 		'wpforms-form-abandonment/wpforms-form-abandonment.php'         => [],
 		'wpforms-form-locker/wpforms-form-locker.php'                   => [
 			self::ADDON => '2.8.0',

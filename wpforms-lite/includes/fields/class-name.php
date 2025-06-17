@@ -1,5 +1,8 @@
 <?php
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection AutoloadingIssuesInspection */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -33,12 +36,12 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @since 1.8.1
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		// Define additional field properties.
 		add_filter( 'wpforms_field_properties_name', [ $this, 'field_properties' ], 5, 3 );
 
-		// Set field to default to required.
+		// Set field to default required.
 		add_filter( 'wpforms_field_new_required', [ $this, 'default_required' ], 10, 2 );
 
 		// This field requires fieldset+legend instead of the field label.
@@ -50,20 +53,26 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @since 1.3.7
 	 *
-	 * @param array $properties Field properties.
-	 * @param array $field      Field data and settings.
-	 * @param array $form_data  Form data and settings.
+	 * @param array|mixed $properties Field properties.
+	 * @param array       $field      Field data and settings.
+	 * @param array       $form_data  Form data and settings.
 	 *
 	 * @return array
 	 */
-	public function field_properties( $properties, $field, $form_data ) {
+	public function field_properties( $properties, $field, $form_data ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+
+		$properties = (array) $properties;
 
 		$format = ! empty( $field['format'] ) ? esc_attr( $field['format'] ) : 'first-last';
 
 		// Simple format.
-		if ( 'simple' === $format ) {
-			$properties['inputs']['primary']['attr']['placeholder'] = ! empty( $field['simple_placeholder'] ) ? $field['simple_placeholder'] : '';
-			$properties['inputs']['primary']['attr']['value']       = ! empty( $field['simple_default'] ) ? wpforms_process_smart_tags( $field['simple_default'], $form_data, [], '', 'field-properties' ) : '';
+		if ( $format === 'simple' ) {
+			$properties['inputs']['primary']['attr']['placeholder'] = ! empty( $field['simple_placeholder'] )
+				? $field['simple_placeholder'] :
+				'';
+			$properties['inputs']['primary']['attr']['value']       = ! empty( $field['simple_default'] )
+				? wpforms_process_smart_tags( $field['simple_default'], $form_data, [], '', 'field-properties' )
+				: '';
 
 			return $properties;
 		}
@@ -85,7 +94,9 @@ class WPForms_Field_Name extends WPForms_Field {
 				'first'  => [
 					'attr'     => [
 						'name'        => "wpforms[fields][{$field_id}][first]",
-						'value'       => ! empty( $field['first_default'] ) ? wpforms_process_smart_tags( $field['first_default'], $form_data, [], '', 'field-properties' ) : '',
+						'value'       => ! empty( $field['first_default'] )
+							? wpforms_process_smart_tags( $field['first_default'], $form_data, [], '', 'field-properties' )
+							: '',
 						'placeholder' => ! empty( $field['first_placeholder'] ) ? $field['first_placeholder'] : '',
 					],
 					'block'    => [
@@ -106,7 +117,9 @@ class WPForms_Field_Name extends WPForms_Field {
 				'middle' => [
 					'attr'     => [
 						'name'        => "wpforms[fields][{$field_id}][middle]",
-						'value'       => ! empty( $field['middle_default'] ) ? wpforms_process_smart_tags( $field['middle_default'], $form_data, [], '', 'field-properties' ) : '',
+						'value'       => ! empty( $field['middle_default'] )
+							? wpforms_process_smart_tags( $field['middle_default'], $form_data, [], '', 'field-properties' )
+							: '',
 						'placeholder' => ! empty( $field['middle_placeholder'] ) ? $field['middle_placeholder'] : '',
 					],
 					'block'    => [
@@ -127,7 +140,9 @@ class WPForms_Field_Name extends WPForms_Field {
 				'last'   => [
 					'attr'     => [
 						'name'        => "wpforms[fields][{$field_id}][last]",
-						'value'       => ! empty( $field['last_default'] ) ? wpforms_process_smart_tags( $field['last_default'], $form_data, [], '', 'field-properties' ) : '',
+						'value'       => ! empty( $field['last_default'] )
+							? wpforms_process_smart_tags( $field['last_default'], $form_data, [], '', 'field-properties' )
+							: '',
 						'placeholder' => ! empty( $field['last_placeholder'] ) ? $field['last_placeholder'] : '',
 					],
 					'block'    => [
@@ -163,7 +178,7 @@ class WPForms_Field_Name extends WPForms_Field {
 		}
 
 		// Input First: add column class.
-		$properties['inputs']['first']['block'][] = 'first-last' === $format ? 'wpforms-one-half' : 'wpforms-two-fifths';
+		$properties['inputs']['first']['block'][] = $format === 'first-last' ? 'wpforms-one-half' : 'wpforms-two-fifths';
 
 		// Input Middle: add error class if needed.
 		if ( $has_common_error ) {
@@ -181,7 +196,7 @@ class WPForms_Field_Name extends WPForms_Field {
 		}
 
 		// Input Last: add column class.
-		$properties['inputs']['last']['block'][] = 'first-last' === $format ? 'wpforms-one-half' : 'wpforms-two-fifths';
+		$properties['inputs']['last']['block'][] = $format === 'first-last' ? 'wpforms-one-half' : 'wpforms-two-fifths';
 
 		return $properties;
 	}
@@ -191,17 +206,18 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @since 1.0.8
 	 *
-	 * @param bool  $required
-	 * @param array $field
+	 * @param bool|mixed $required Whether the field is required.
+	 * @param array      $field    Field data.
 	 *
 	 * @return bool
 	 */
-	public function default_required( $required, $field ) {
+	public function default_required( $required, $field ): bool {
 
-		if ( 'name' === $field['type'] ) {
+		if ( $field['type'] === 'name' ) {
 			return true;
 		}
-		return $required;
+
+		return (bool) $required;
 	}
 
 	/**
@@ -209,9 +225,9 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $field
+	 * @param array $field Field information.
 	 */
-	public function field_options( $field ) {
+	public function field_options( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
 
 		// Define data.
 		$format = ! empty( $field['format'] ) ? esc_attr( $field['format'] ) : 'first-last';
@@ -313,7 +329,7 @@ class WPForms_Field_Name extends WPForms_Field {
 						printf( '<label for="wpforms-field-option-%d-simple_placeholder" class="sub-label">%s</label>', (int) $field['id'], esc_html__( 'Placeholder', 'wpforms-lite' ) );
 					echo '</div>';
 					echo '<div class="default wpforms-field-options-column">';
-						printf( '<input type="text" class="default" id="wpforms-field-option-%d-simple_default" name="fields[%d][simple_default]" value="%s">', (int) $field['id'], (int) $field['id'], esc_attr( $simple_default ) );
+						printf( '<input type="text" class="default wpforms-smart-tags-enabled" id="wpforms-field-option-%d-simple_default" name="fields[%d][simple_default]" data-type="other" value="%s">', (int) $field['id'], (int) $field['id'], esc_attr( $simple_default ) );
 						printf( '<label for="wpforms-field-option-%d-simple_default" class="sub-label">%s</label>', (int) $field['id'], esc_html__( 'Default Value', 'wpforms-lite' ) );
 					echo '</div>';
 				echo '</div>';
@@ -339,7 +355,7 @@ class WPForms_Field_Name extends WPForms_Field {
 						printf( '<label for="wpforms-field-option-%d-first_placeholder" class="sub-label">%s</label>', (int) $field['id'], esc_html__( 'Placeholder', 'wpforms-lite' ) );
 					echo '</div>';
 					echo '<div class="default wpforms-field-options-column">';
-						printf( '<input type="text" class="default" id="wpforms-field-option-%1$d-first_default" name="fields[%1$d][first_default]" value="%2$s">', (int) $field['id'], esc_attr( $first_default ) );
+						printf( '<input type="text" class="default wpforms-smart-tags-enabled" id="wpforms-field-option-%1$d-first_default" name="fields[%1$d][first_default]" data-type="other" value="%2$s">', (int) $field['id'], esc_attr( $first_default ) );
 						printf( '<label for="wpforms-field-option-%d-first_default" class="sub-label">%s</label>', (int) $field['id'], esc_html__( 'Default Value', 'wpforms-lite' ) );
 					echo '</div>';
 				echo '</div>';
@@ -365,7 +381,7 @@ class WPForms_Field_Name extends WPForms_Field {
 						printf( '<label for="wpforms-field-option-%d-middle_placeholder" class="sub-label">%s</label>', (int) $field['id'], esc_html__( 'Placeholder', 'wpforms-lite' ) );
 					echo '</div>';
 					echo '<div class="default wpforms-field-options-column">';
-						printf( '<input type="text" class="default" id="wpforms-field-option-%1$d-middle_default" name="fields[%1$d][middle_default]" value="%2$s">', (int) $field['id'], esc_attr( $middle_default ) );
+						printf( '<input type="text" class="default wpforms-smart-tags-enabled" id="wpforms-field-option-%1$d-middle_default" name="fields[%1$d][middle_default]" data-type="other" value="%2$s">', (int) $field['id'], esc_attr( $middle_default ) );
 						printf( '<label for="wpforms-field-option-%d-middle_default" class="sub-label">%s</label>', (int) $field['id'], esc_html__( 'Default Value', 'wpforms-lite' ) );
 					echo '</div>';
 				echo '</div>';
@@ -391,7 +407,7 @@ class WPForms_Field_Name extends WPForms_Field {
 						printf( '<label for="wpforms-field-option-%d-last_placeholder" class="sub-label">%s</label>', (int) $field['id'], esc_html__( 'Placeholder', 'wpforms-lite' ) );
 					echo '</div>';
 					echo '<div class="default wpforms-field-options-column">';
-						printf( '<input type="text" class="default" id="wpforms-field-option-%1$d-last_default" name="fields[%1$d][last_default]" value="%2$s">', (int) $field['id'], esc_attr( $last_default ) );
+						printf( '<input type="text" class="default wpforms-smart-tags-enabled" id="wpforms-field-option-%1$d-last_default" name="fields[%1$d][last_default]" data-type="other" value="%2$s">', (int) $field['id'], esc_attr( $last_default ) );
 						printf( '<label for="wpforms-field-option-%d-last_default" class="sub-label">%s</label>', (int) $field['id'], esc_html__( 'Default Value', 'wpforms-lite' ) );
 					echo '</div>';
 				echo '</div>';
@@ -425,7 +441,7 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @param array $field Field information.
 	 */
-	public function field_preview( $field ) {
+	public function field_preview( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Define data.
 		$simple_placeholder = ! empty( $field['simple_placeholder'] ) ? $field['simple_placeholder'] : '';
@@ -478,8 +494,10 @@ class WPForms_Field_Name extends WPForms_Field {
 	 * @param array $field      Field information.
 	 * @param array $deprecated Deprecated parameter, not used anymore.
 	 * @param array $form_data  Form data and settings.
+	 *
+	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function field_display( $field, $deprecated, $form_data ) {
+	public function field_display( $field, $deprecated, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Define data.
 		$format  = ! empty( $field['format'] ) ? esc_attr( $field['format'] ) : 'first-last';
@@ -489,7 +507,7 @@ class WPForms_Field_Name extends WPForms_Field {
 		$last    = ! empty( $field['properties']['inputs']['last'] ) ? $field['properties']['inputs']['last'] : '';
 
 		// Simple format.
-		if ( 'simple' === $format ) {
+		if ( $format === 'simple' ) {
 
 			// Primary field (Simple).
 			printf(
@@ -517,7 +535,7 @@ class WPForms_Field_Name extends WPForms_Field {
 				echo '</div>';
 
 				// Middle name.
-				if ( 'first-middle-last' === $format ) {
+				if ( $format === 'first-middle-last' ) {
 					echo '<div ' . wpforms_html_attributes( false, $middle['block'] ) . '>';
 						$this->field_display_sublabel( 'middle', 'before', $field );
 						printf(
@@ -548,7 +566,7 @@ class WPForms_Field_Name extends WPForms_Field {
 	}
 
 	/**
-	 * Validate field on form submit.
+	 * Validate field on submitting a form.
 	 *
 	 * @since 1.0.0
 	 *
@@ -620,7 +638,7 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @since 1.8.1
 	 *
-	 * @param bool  $requires_fieldset True if requires fieldset.
+	 * @param bool  $requires_fieldset True if it requires fieldset.
 	 * @param array $field             Field data.
 	 *
 	 * @return bool

@@ -50,7 +50,7 @@ class RestApi {
 	 */
 	public function __construct( $form_selector_obj, $themes_data_obj ) {
 
-		if ( ! $form_selector_obj || ! $themes_data_obj || ! wpforms_is_rest() ) {
+		if ( ! $form_selector_obj || ! $themes_data_obj || ! wpforms_is_wpforms_rest() ) {
 			return;
 		}
 

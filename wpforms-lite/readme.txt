@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.8
-Stable tag: 1.9.6
+Stable tag: 1.9.6.1
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -384,6 +384,12 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.6.1 =
+- Added: Smart Tags support in the Default Value setting for Name field subfields.
+- Fixed: WPForms updates did not work consistently with the WP Umbrella plugin.
+- Fixed: The layout of the Order Summary table was broken on Windows operating systems.
+- Fixed: The layout of the Stripe custom fields mapping table was broken in the form builder.
 
 = 1.9.6 =
 - Added: Form Themes for Elementor.

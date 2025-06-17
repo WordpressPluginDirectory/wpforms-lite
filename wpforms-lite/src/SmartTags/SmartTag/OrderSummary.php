@@ -175,8 +175,9 @@ class OrderSummary extends SmartTag {
 			'class'    => 'wpforms-order-summary-preview-total',
 		];
 
-		// Adding 1 extra character to account for symbols that may occupy more than 1ch. For example: €.
-		$total_width = max( $total_width, mb_strlen( html_entity_decode( $total, ENT_COMPAT, 'UTF-8' ) ) + 1 );
+		// Add two extra characters units to accommodate symbols that can be wider than one character (e.g. “€”),
+		// and to normalize the ch-unit width discrepancy between Windows and Unix-based operating systems.
+		$total_width = max( $total_width, mb_strlen( html_entity_decode( $total, ENT_COMPAT, 'UTF-8' ) ) + 2 );
 
 		return [ $items, $foot, $total_width ];
 	}

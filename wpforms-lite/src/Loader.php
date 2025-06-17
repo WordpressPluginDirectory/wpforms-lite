@@ -586,6 +586,7 @@ class Loader {
 			],
 			[
 				'name' => 'Admin\Entries\Export\Export',
+				'id'   => 'entries_export',
 				'hook' => 'init',
 			],
 			[

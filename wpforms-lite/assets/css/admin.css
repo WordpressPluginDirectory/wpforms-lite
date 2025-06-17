@@ -2748,36 +2748,42 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-container-page .wpforms-setting-field,
-#wpforms-settings .wpforms-admin-content .wpforms-education-container-page .wpforms-setting-field {
+#wpforms-settings .wpforms-admin-content .wpforms-education-container-page .wpforms-setting-field,
+#wpforms-tools .wpforms-admin-content .wpforms-education-container-page .wpforms-setting-field {
   margin: 0;
   max-width: none;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page .wpforms-setting-field,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page .wpforms-setting-field {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page .wpforms-setting-field,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page .wpforms-setting-field {
   margin: 0;
   max-width: 1000px;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page {
   max-width: 1000px;
   margin-bottom: 30px;
   padding: 0;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page.wpforms-setting-row,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page.wpforms-setting-row {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page.wpforms-setting-row,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page.wpforms-setting-row {
   padding: 0;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page .fa,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page .fa {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page .fa,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page .fa {
   font-family: FontAwesome;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-heading h4,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-heading h4 {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-heading h4,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-heading h4 {
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -2785,7 +2791,8 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-heading p,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-heading p {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-heading p,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-heading p {
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
@@ -2793,20 +2800,29 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
   margin-top: 0;
 }
 
+#wpforms-payments .wpforms-admin-content .wpforms-education-page-heading p .wpforms-upgrade-link,
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-heading p .wpforms-upgrade-link,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-heading p .wpforms-upgrade-link {
+  white-space: nowrap;
+}
+
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-images,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-images {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-images,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-images {
   display: flex;
   gap: 25px;
   margin: 25px 0;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-images figure,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-images figure {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-images figure,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-images figure {
   margin: 0;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-images figcaption,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-images figcaption {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-images figcaption,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-images figcaption {
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -2817,7 +2833,8 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-images-image,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-images-image {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-images-image,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-images-image {
   display: inline-block;
   position: relative;
   padding: 5px;
@@ -2827,13 +2844,15 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-images-image img,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-images-image img {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-images-image img,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-images-image img {
   max-width: 100%;
   display: block;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-images-image .hover,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-images-image .hover {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-images-image .hover,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-images-image .hover {
   position: absolute;
   opacity: 0;
   height: calc(100% - 10px);
@@ -2851,13 +2870,15 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-images-image:hover .hover,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-images-image:hover .hover {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-images-image:hover .hover,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-images-image:hover .hover {
   opacity: 1;
   transition: all 0.3s;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-caps,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-caps {
   max-width: 986px;
   box-sizing: content-box;
   background: #ffffff;
@@ -2868,7 +2889,8 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-caps p,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps p {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps p,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-caps p {
   font-weight: 600;
   font-size: 16px;
   line-height: 16px;
@@ -2878,21 +2900,24 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-caps ul,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-caps ul {
   margin: 0;
   margin-bottom: -20px;
 }
 
 @media (min-width: 783px) {
   #wpforms-payments .wpforms-admin-content .wpforms-education-page-caps ul,
-  #wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul {
+  #wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul,
+  #wpforms-tools .wpforms-admin-content .wpforms-education-page-caps ul {
     display: flex;
     flex-wrap: wrap;
   }
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-caps ul li,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul li {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul li,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-caps ul li {
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
@@ -2902,24 +2927,28 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 
 @media (min-width: 783px) {
   #wpforms-payments .wpforms-admin-content .wpforms-education-page-caps ul li,
-  #wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul li {
+  #wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul li,
+  #wpforms-tools .wpforms-admin-content .wpforms-education-page-caps ul li {
     flex: 0 0 33.3333%;
   }
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-caps ul li i,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul li i {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-caps ul li i,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-caps ul li i {
   color: #008a20;
   margin-right: 10px;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page-button,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page-button {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page-button,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-button {
   margin-top: 25px;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page .msg,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page .msg {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page .msg,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page .msg {
   background: #ffffff;
   line-height: 1.5em;
   font-size: 14px;
@@ -2930,13 +2959,20 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page .msg.error,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page .msg.error {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page .msg.error,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page .msg.error {
   border-left: 4px solid #dc3232;
 }
 
 #wpforms-payments .wpforms-admin-content .wpforms-education-page .msg.info,
-#wpforms-settings .wpforms-admin-content .wpforms-education-page .msg.info {
+#wpforms-settings .wpforms-admin-content .wpforms-education-page .msg.info,
+#wpforms-tools .wpforms-admin-content .wpforms-education-page .msg.info {
   border-left: 4px solid #22a0d0;
+}
+
+#wpforms-tools .wpforms-admin-content .wpforms-education-page-heading h4 {
+  margin-top: 6px;
+  font-size: 16px;
 }
 
 @media screen and (max-width: 1023px) {
@@ -3874,6 +3910,10 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
   .wpforms-admin-wrap p.search-box {
     width: 100%;
   }
+}
+
+.wpforms-admin-wrap .subsubsub {
+  margin-top: 20px;
 }
 
 .wpforms-admin-wrap .tablenav {
@@ -9589,6 +9629,17 @@ body.rtl .wpforms-tablenav-filters {
   margin-bottom: 30px;
 }
 
+.wpforms-admin-settings #wpforms-tools-entries-export-notice {
+  position: relative;
+  margin: revert;
+  margin-bottom: 20px;
+  border-left: 4px solid #72ade6;
+}
+
+.wpforms-admin-settings #wpforms-tools-entries-export-notice button {
+  margin-inline-end: 0;
+}
+
 .wpforms-admin-settings p.submit {
   margin: 0;
   padding: 30px 0 20px 0;
@@ -10250,9 +10301,12 @@ body.rtl .wpforms-tablenav-filters {
   margin: 0;
 }
 
-#wpforms-tools.wpforms-tools-tab-action-scheduler .wpforms-admin-content .wrap,
-#wpforms-tools.wpforms-tools-tab-action-scheduler .wpforms-admin-content .subsubsub {
+#wpforms-tools.wpforms-tools-tab-action-scheduler .wpforms-admin-content .wrap {
   margin: 0;
+}
+
+#wpforms-tools.wpforms-tools-tab-action-scheduler .wpforms-admin-content .subsubsub {
+  margin: 10px 0 5px;
 }
 
 @media screen and (max-width: 782px) {
