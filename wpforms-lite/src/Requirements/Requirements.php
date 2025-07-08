@@ -312,6 +312,9 @@ class Requirements {
 			self::LICENSE => self::TOP,
 		],
 		'wpforms-zapier/wpforms-zapier.php'                             => [],
+		'wpforms-zoho-crm/wpforms-zoho-crm.php'                         => [
+			self::LICENSE => self::TOP,
+		],
 	];
 	// phpcs:enable WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned, WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow
 

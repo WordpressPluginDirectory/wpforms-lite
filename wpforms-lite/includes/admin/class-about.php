@@ -1364,6 +1364,7 @@ class WPForms_About {
 								'Twilio',
 								'Pipedrive',
 								'Make',
+								'Zoho CRM',
 							]
 						),
 						'',
@@ -1398,6 +1399,7 @@ class WPForms_About {
 								'Twilio',
 								'Pipedrive',
 								'Make',
+								'Zoho CRM',
 							]
 						),
 						'',
@@ -1432,6 +1434,7 @@ class WPForms_About {
 								'Twilio',
 								'Pipedrive',
 								'Make',
+								'Zoho CRM',
 							]
 						),
 						'',

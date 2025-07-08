@@ -206,6 +206,8 @@ class Help {
 			'providers/hubspot'                       => 'hubspot',
 			'providers/twilio'                        => 'twilio',
 			'providers/pipedrive'                     => 'pipedrive',
+			'providers/zoho_crm'                      => 'zoho crm',
+			'providers/zoho-crm'                      => 'zoho crm',
 			'payments'                                => '',
 			'payments/paypal_commerce'                => 'paypal commerce',
 			'payments/paypal_standard'                => 'paypal standard',
@@ -1194,6 +1196,9 @@ class Help {
 			],
 			'twilio'                    => [
 				'/docs/twilio-addon/',
+			],
+			'zoho crm'                  => [
+				'/docs/zoho-crm-addon/',
 			],
 			'integrate'                 => [
 				'/docs/how-to-install-and-use-zapier-addon-with-wpforms/',

@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.9.6.1\n"
+"Project-Id-Version: WPForms Lite 1.9.6.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-06-17T09:45:42+00:00\n"
+"POT-Creation-Date: 2025-07-08T10:18:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpforms-lite\n"
@@ -1477,7 +1477,7 @@ msgid "General"
 msgstr ""
 
 #: includes/admin/builder/panels/class-settings.php:59
-#: includes/admin/class-about.php:1738
+#: includes/admin/class-about.php:1741
 #: src/Admin/Builder/AntiSpam.php:57
 msgid "Spam Protection and Security"
 msgstr ""
@@ -2168,165 +2168,165 @@ msgid "Additional Marketing Integrations"
 msgstr ""
 
 #: includes/admin/class-about.php:1337
-#: includes/admin/class-about.php:1371
-#: includes/admin/class-about.php:1405
-#: includes/admin/class-about.php:1439
+#: includes/admin/class-about.php:1372
+#: includes/admin/class-about.php:1407
+#: includes/admin/class-about.php:1442
 msgid "<strong>Bonus:</strong> 7000+ integrations with Zapier."
 msgstr ""
 
 #: includes/admin/class-about.php:1347
-#: includes/admin/class-about.php:1381
-#: includes/admin/class-about.php:1415
+#: includes/admin/class-about.php:1382
+#: includes/admin/class-about.php:1417
 msgid "All Marketing Integrations"
 msgstr ""
 
-#: includes/admin/class-about.php:1451
-#: includes/admin/class-about.php:1458
-#: includes/admin/class-about.php:1465
+#: includes/admin/class-about.php:1454
+#: includes/admin/class-about.php:1461
+#: includes/admin/class-about.php:1468
 msgid "Limited Payment Forms"
 msgstr ""
 
-#: includes/admin/class-about.php:1452
-#: includes/admin/class-about.php:1459
-#: includes/admin/class-about.php:1466
+#: includes/admin/class-about.php:1455
+#: includes/admin/class-about.php:1462
+#: includes/admin/class-about.php:1469
 msgid "Accept payments using Stripe and Square only"
 msgstr ""
 
-#: includes/admin/class-about.php:1472
-#: includes/admin/class-about.php:1479
-#: includes/admin/class-about.php:1486
-#: includes/admin/class-about.php:1493
+#: includes/admin/class-about.php:1475
+#: includes/admin/class-about.php:1482
+#: includes/admin/class-about.php:1489
+#: includes/admin/class-about.php:1496
 msgid "Create Payment Forms"
 msgstr ""
 
-#: includes/admin/class-about.php:1473
+#: includes/admin/class-about.php:1476
 msgid "Accept payments using PayPal Commerce, Stripe, Square, and PayPal Standard"
 msgstr ""
 
-#: includes/admin/class-about.php:1480
-#: includes/admin/class-about.php:1487
-#: includes/admin/class-about.php:1494
+#: includes/admin/class-about.php:1483
+#: includes/admin/class-about.php:1490
+#: includes/admin/class-about.php:1497
 msgid "Accept payments using PayPal Commerce, Stripe, Square, PayPal Standard, and Authorize.Net"
 msgstr ""
 
-#: includes/admin/class-about.php:1502
-#: includes/admin/class-about.php:1508
-#: includes/admin/class-about.php:1514
+#: includes/admin/class-about.php:1505
+#: includes/admin/class-about.php:1511
+#: includes/admin/class-about.php:1517
 msgid "Not Available"
 msgstr ""
 
-#: includes/admin/class-about.php:1520
+#: includes/admin/class-about.php:1523
 msgid "Create interactive Surveys and Polls with beautiful reports"
 msgstr ""
 
-#: includes/admin/class-about.php:1528
+#: includes/admin/class-about.php:1531
 msgid "No Advanced Features"
 msgstr ""
 
-#: includes/admin/class-about.php:1534
-#: includes/admin/class-about.php:1541
+#: includes/admin/class-about.php:1537
+#: includes/admin/class-about.php:1544
 msgid "Limited Advanced Features"
 msgstr ""
 
-#: includes/admin/class-about.php:1535
+#: includes/admin/class-about.php:1538
 msgid "Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation"
 msgstr ""
 
-#: includes/admin/class-about.php:1542
+#: includes/admin/class-about.php:1545
 msgid "Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation, Save and Resume Form"
 msgstr ""
 
-#: includes/admin/class-about.php:1548
+#: includes/admin/class-about.php:1551
 msgid "All Advanced Features"
 msgstr ""
 
-#: includes/admin/class-about.php:1549
+#: includes/admin/class-about.php:1552
 msgid "Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation, Custom CAPTCHA, Offline Forms, Signature Forms, Save and Resume Form, Coupons"
 msgstr ""
 
-#: includes/admin/class-about.php:1557
-#: includes/admin/class-about.php:1563
+#: includes/admin/class-about.php:1560
+#: includes/admin/class-about.php:1566
 msgid "No Addons Included"
 msgstr ""
 
-#: includes/admin/class-about.php:1569
+#: includes/admin/class-about.php:1572
 msgid "Email Marketing Addons included"
 msgstr ""
 
-#: includes/admin/class-about.php:1575
+#: includes/admin/class-about.php:1578
 msgid "Pro Addons Included"
 msgstr ""
 
-#: includes/admin/class-about.php:1576
+#: includes/admin/class-about.php:1579
 msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, Dropbox, Google Drive, and more (30+ total)"
 msgstr ""
 
-#: includes/admin/class-about.php:1582
-#: includes/admin/class-about.php:1589
-#: includes/admin/class-about.php:1596
+#: includes/admin/class-about.php:1585
+#: includes/admin/class-about.php:1592
+#: includes/admin/class-about.php:1599
 msgid "All Addons Included"
 msgstr ""
 
-#: includes/admin/class-about.php:1583
-#: includes/admin/class-about.php:1590
-#: includes/admin/class-about.php:1597
+#: includes/admin/class-about.php:1586
+#: includes/admin/class-about.php:1593
+#: includes/admin/class-about.php:1600
 msgid "Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Webhooks, Google Sheets, Coupons, Dropbox, Google Drive, Entry Automation, and more (35+ total)"
 msgstr ""
 
-#: includes/admin/class-about.php:1605
+#: includes/admin/class-about.php:1608
 msgid "Limited Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1611
-#: includes/admin/class-about.php:1617
+#: includes/admin/class-about.php:1614
+#: includes/admin/class-about.php:1620
 msgid "Standard Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1623
+#: includes/admin/class-about.php:1626
 msgid "Priority Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1629
-#: includes/admin/class-about.php:1635
-#: includes/admin/class-about.php:1641
+#: includes/admin/class-about.php:1632
+#: includes/admin/class-about.php:1638
+#: includes/admin/class-about.php:1644
 msgid "Premium Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1649
+#: includes/admin/class-about.php:1652
 msgid "1 Site"
 msgstr ""
 
-#: includes/admin/class-about.php:1655
+#: includes/admin/class-about.php:1658
 msgid "3 Sites"
 msgstr ""
 
-#: includes/admin/class-about.php:1661
+#: includes/admin/class-about.php:1664
 msgid "5 Sites"
 msgstr ""
 
-#: includes/admin/class-about.php:1667
-#: includes/admin/class-about.php:1673
-#: includes/admin/class-about.php:1679
+#: includes/admin/class-about.php:1670
+#: includes/admin/class-about.php:1676
+#: includes/admin/class-about.php:1682
 msgid "Unlimited Sites"
 msgstr ""
 
-#: includes/admin/class-about.php:1735
+#: includes/admin/class-about.php:1738
 #: includes/admin/class-menu.php:79
 msgid "Form Entries"
 msgstr ""
 
-#: includes/admin/class-about.php:1736
+#: includes/admin/class-about.php:1739
 msgid "Form Fields"
 msgstr ""
 
-#: includes/admin/class-about.php:1737
+#: includes/admin/class-about.php:1740
 #: includes/admin/class-menu.php:108
 #: includes/admin/class-welcome.php:196
 #: src/Admin/Pages/Templates.php:114
 msgid "Form Templates"
 msgstr ""
 
-#: includes/admin/class-about.php:1739
+#: includes/admin/class-about.php:1742
 #: includes/admin/class-welcome.php:208
 #: src/Integrations/Square/Admin/Builder/Settings.php:278
 #: src/Integrations/Stripe/Admin/Builder/Settings.php:301
@@ -2334,38 +2334,38 @@ msgstr ""
 msgid "Smart Conditional Logic"
 msgstr ""
 
-#: includes/admin/class-about.php:1740
+#: includes/admin/class-about.php:1743
 #: includes/admin/class-welcome.php:279
 #: src/Admin/Builder/Help.php:107
 msgid "Marketing Integrations"
 msgstr ""
 
-#: includes/admin/class-about.php:1741
+#: includes/admin/class-about.php:1744
 #: includes/admin/class-welcome.php:270
 #: src/Admin/Builder/Help.php:108
 msgid "Payment Forms"
 msgstr ""
 
-#: includes/admin/class-about.php:1742
+#: includes/admin/class-about.php:1745
 #: includes/admin/class-welcome.php:271
 msgid "Surveys & Polls"
 msgstr ""
 
-#: includes/admin/class-about.php:1743
+#: includes/admin/class-about.php:1746
 msgid "Advanced Form Features"
 msgstr ""
 
-#: includes/admin/class-about.php:1744
+#: includes/admin/class-about.php:1747
 #: includes/admin/class-menu.php:147
 #: lite/templates/admin/addons.php:21
 msgid "WPForms Addons"
 msgstr ""
 
-#: includes/admin/class-about.php:1745
+#: includes/admin/class-about.php:1748
 msgid "Customer Support"
 msgstr ""
 
-#: includes/admin/class-about.php:1746
+#: includes/admin/class-about.php:1749
 msgid "Number of Sites"
 msgstr ""
 
@@ -14007,45 +14007,45 @@ msgid "Missing required data in payload."
 msgstr ""
 
 #. translators: %1$s - requirements message.
-#: src/Requirements/Requirements.php:998
+#: src/Requirements/Requirements.php:1001
 #, php-format
 msgid "It requires %1$s."
 msgstr ""
 
-#: src/Requirements/Requirements.php:1033
+#: src/Requirements/Requirements.php:1036
 msgid "WPForms plugin"
 msgstr ""
 
 #. translators: %1$s - WPForms addon name.
-#: src/Requirements/Requirements.php:1037
+#: src/Requirements/Requirements.php:1040
 #, php-format
 msgid "%1$s addon"
 msgstr ""
 
 #. translators: %1$s - WPForms plugin or addon name, %2$d - requirements message.
-#: src/Requirements/Requirements.php:1044
+#: src/Requirements/Requirements.php:1047
 #, php-format
 msgid "The %1$s requires %2$s."
 msgstr ""
 
 #. translators: %1$s - Read More link.
-#: src/Requirements/Requirements.php:1080
+#: src/Requirements/Requirements.php:1083
 #, php-format
 msgid "%1$s for additional information on PHP version."
 msgstr ""
 
 #. translators: %1$s - Read More link.
-#: src/Requirements/Requirements.php:1086
+#: src/Requirements/Requirements.php:1089
 #, php-format
 msgid "%1$s for additional information on PHP extensions."
 msgstr ""
 
-#: src/Requirements/Requirements.php:1113
+#: src/Requirements/Requirements.php:1116
 msgid "Read more"
 msgstr ""
 
 #. translators: %s - PHP extension name(s).
-#: src/Requirements/Requirements.php:1187
+#: src/Requirements/Requirements.php:1190
 #, php-format
 msgid "%s PHP extension"
 msgid_plural "%s PHP extensions"
@@ -14053,31 +14053,31 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s - license name(s).
-#: src/Requirements/Requirements.php:1258
+#: src/Requirements/Requirements.php:1261
 #, php-format
 msgid "%s license"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1367
+#: src/Requirements/Requirements.php:1370
 #, php-format
 msgid "%1$s %2$s or above"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1369
+#: src/Requirements/Requirements.php:1372
 #, php-format
 msgid "%1$s %2$s or below"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1372
+#: src/Requirements/Requirements.php:1375
 #, php-format
 msgid "a newer version of %1$s than %2$s"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1374
+#: src/Requirements/Requirements.php:1377
 #, php-format
 msgid "an older version of %1$s than %2$s"
 msgstr ""

@@ -46,7 +46,7 @@ class Modern extends Classic {
 	public function noscript( $msg ) {
 
 		printf(
-			'<noscript class="wpforms-error-noscript">%1$s</noscript><div class="wpforms-hidden" id="wpforms-error-noscript">%1$s</div>',
+			'<noscript class="wpforms-error-noscript">%1$s</noscript><div id="wpforms-error-noscript" style="display: none;">%1$s</div>',
 			esc_html( $msg )
 		);
 	}
