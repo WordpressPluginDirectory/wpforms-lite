@@ -110,46 +110,47 @@ class SplashCache extends CacheBase {
 	 *
 	 * @return array Prepared blocks.
 	 */
-	private function prepare_blocks( array $data ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function prepare_blocks( array $data ): array {
 
-		$version = $this->get_splash_data_version();
-		$version = $this->get_major_version( $version );
-
-		$latest_version = $this->get_latest_splash_version();
-
-		// If the latest version is empty - set the latest version to the previous WPForms version.
-		// This is needed for the first update from the version without the "What's New?" feature.
-		$latest_version = empty( $latest_version ) ? $this->get_previous_plugin_version() : $latest_version;
-
-		// If the latest version is bigger than the current - set latest version to current.
-		$latest_version = version_compare( $latest_version, $version, '>' ) ? $version : $latest_version;
-		$latest_version = $this->get_major_version( $latest_version );
+		$user_license = $this->get_user_license();
+		$user_version = $this->get_user_version();
 
 		// Filter data by plugin version.
 		$blocks = array_filter(
 			$data,
-			static function ( $block ) use ( $version, $latest_version ) {
+			static function ( $block ) use ( $user_license ) {
 
-				$block_version = $block['version'] ?? '';
-
-				// If the version is latest - return only blocks with the current version.
-				if ( $version === $latest_version ) {
-					return version_compare( $block_version, $version, '=' );
-				}
-
-				// If the version is not latest - return only blocks between latest and current versions.
-				return version_compare( $block_version, $latest_version, '>' ) && version_compare( $block_version, $version, '<=' );
+				// Return only blocks that match the user license.
+				return in_array( $user_license, $block['type'] ?? [], true );
 			}
 		);
+
+		// Get the latest 10 blocks.
+		$blocks = array_slice( $blocks, 0, 10 );
 
 		// Reset indexes.
 		$blocks = array_values( $blocks );
 
 		return array_map(
-			function ( $block ) {
+			function ( $block ) use ( $user_version ) {
+
+				$block_version = $block['version'] ?? '';
 
 				// Prepare buttons URLs.
 				$block['buttons'] = $this->prepare_buttons( $block['btns'] ?? [] );
+
+				// Change main button URL if the block version is greater than the user version.
+				if ( version_compare( $block_version, $user_version, '>' ) ) {
+					$block['buttons']['main'] = [
+						'url'  => $this->get_update_url(),
+						'text' => __( 'Update Now', 'wpforms-lite' ),
+					];
+				}
+
+				// If the block version is less than the user version, set 'new' to false.
+				if ( version_compare( $block_version, $user_version, '<' ) ) {
+					$block['new'] = false;
+				}
 
 				// Set layout based on an image type.
 				$block['layout'] = $this->get_block_layout( $block['img'] );

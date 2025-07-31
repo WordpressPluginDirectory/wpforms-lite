@@ -12,28 +12,28 @@ use WPForms_Template_Blank;
  */
 class Forms extends Base {
 
-    /**
-     * The addons required for the AI form generator.
-     *
-     * @since 1.9.2
-     *
-     * @var array
-     */
-    public const FORM_GENERATOR_REQUIRED_ADDONS = [ 'surveys-polls', 'signatures', 'coupons' ];
+	/**
+	 * The addons required for the AI form generator.
+	 *
+	 * @since 1.9.2
+	 *
+	 * @var array
+	 */
+	public const FORM_GENERATOR_REQUIRED_ADDONS = [ 'surveys-polls', 'signatures', 'coupons', 'calculations' ];
 
-    /**
-     * The addon fields.
-     *
-     * @since 1.9.4
-     *
-     * @var array
-     */
-    public const FORM_GENERATOR_ADDON_FIELDS = [
-	    'likert_scale'       => 'surveys-polls',
-	    'net_promoter_score' => 'surveys-polls',
-	    'signature'          => 'signatures',
-	    'payment-coupon'     => 'coupons',
-    ];
+	/**
+	 * The addon fields.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @var array
+	 */
+	public const FORM_GENERATOR_ADDON_FIELDS = [
+		'likert_scale'       => 'surveys-polls',
+		'net_promoter_score' => 'surveys-polls',
+		'signature'          => 'signatures',
+		'payment-coupon'     => 'coupons',
+	];
 
 	/**
 	 * Forms API instance.
@@ -73,7 +73,7 @@ class Forms extends Base {
 	}
 
 	/**
-	 * Get form AJAX callback.
+	 * "Get form" AJAX callback.
 	 *
 	 * @since 1.9.2
 	 */
@@ -97,6 +97,16 @@ class Forms extends Base {
 		$form       = $this->forms_api->form( $prompt, $session_id );
 
 		$form['fieldsOrder'] = array_keys( $form['fields'] ?? [] );
+
+		/**
+		 * Filters the form data before outputting it.
+		 *
+		 * @since 1.9.7
+		 *
+		 * @param array  $form       Form data.
+		 * @param string $session_id Session ID.
+		 */
+		$form = apply_filters( 'wpforms_integrations_ai_admin_ajax_forms_get_form_before_send', $form, $session_id );
 
 		wp_send_json_success( $form );
 	}
@@ -172,7 +182,7 @@ class Forms extends Base {
 	 *
 	 * @return array
 	 */
-	private function prepare_field_data( array $field_data ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function prepare_field_data( array $field_data ): array {
 
 		$field_type = $field_data['type'] ?? '';
 
@@ -252,7 +262,7 @@ class Forms extends Base {
 	 *
 	 * @return array Form ID and the generated form data.
 	 */
-	private function use_form_check_data(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function use_form_check_data(): array {
 
 		if ( ! $this->validate_nonce() ) {
 			wp_send_json_error(
@@ -269,36 +279,36 @@ class Forms extends Base {
 			);
 		}
 
-        if ( ! wpforms_current_user_can( 'edit_form_single', $form_id ) ) {
-            wp_send_json_error(
-                [ 'error' => esc_html__( 'Sorry, you are not allowed to edit this form.', 'wpforms-lite' ) ]
-            );
-        }
+		if ( ! wpforms_current_user_can( 'edit_form_single', $form_id ) ) {
+			wp_send_json_error(
+				[ 'error' => esc_html__( 'Sorry, you are not allowed to edit this form.', 'wpforms-lite' ) ]
+			);
+		}
 
-        $form_obj = wpforms()->obj( 'form' );
+		$form_obj = wpforms()->obj( 'form' );
 
-        if ( ! $form_obj ) {
-        	wp_send_json_error(
+		if ( ! $form_obj ) {
+			wp_send_json_error(
 				[ 'error' => esc_html__( 'Form database object not found.', 'wpforms-lite' ) ]
 			);
-        }
+		}
 
-        $form_post = ! empty( $form_id ) ? $form_obj->get( $form_id ) : null;
+		$form_post = ! empty( $form_id ) ? $form_obj->get( $form_id ) : null;
 
-        if (
+		if (
 			( empty( $form_post ) && ! empty( $form_id ) ) ||
-            ( ! empty( $form_post->post_status ) && $form_post->post_status === 'trash' )
-        ) {
-            wp_send_json_error(
-                [ 'error' => esc_html__( 'It looks like the form you are trying to access is no longer available.', 'wpforms-lite' ) ]
-            );
-        }
+			( ! empty( $form_post->post_status ) && $form_post->post_status === 'trash' )
+		) {
+			wp_send_json_error(
+				[ 'error' => esc_html__( 'It looks like the form you are trying to access is no longer available.', 'wpforms-lite' ) ]
+			);
+		}
 
 		$session_id       = $this->get_post_data( 'sessionId' );
-        $response_history = $this->get_post_data( 'responseHistory', 'array' );
-        $chat_html        = $this->get_post_data( 'chatHtml', 'string' );
+		$response_history = $this->get_post_data( 'responseHistory', 'array' );
+		$chat_html        = $this->get_post_data( 'chatHtml', 'string' );
 
-        return [ $form_id, $form_data, $session_id, $response_history, $chat_html, $form_obj ];
+		return [ $form_id, $form_data, $session_id, $response_history, $chat_html, $form_obj ];
 	}
 
 	/**
@@ -386,7 +396,7 @@ class Forms extends Base {
 	 *
 	 * @since 1.9.2
 	 */
-	public function dismiss() {
+	public function dismiss(): void {
 
 		if ( ! $this->validate_nonce() ) {
 			wp_send_json_error(
@@ -408,10 +418,10 @@ class Forms extends Base {
 
 		// Check for permissions.
 		if ( ! wpforms_current_user_can( 'edit_forms' ) ) {
-            wp_send_json_error(
-                [ 'error' => esc_html__( 'Sorry, you are not allowed to dismiss.', 'wpforms-lite' ) ]
-            );
-        }
+			wp_send_json_error(
+				[ 'error' => esc_html__( 'Sorry, you are not allowed to dismiss.', 'wpforms-lite' ) ]
+			);
+		}
 
 		$user_id   = get_current_user_id();
 		$dismissed = get_user_meta( $user_id, 'wpforms_dismissed', true );

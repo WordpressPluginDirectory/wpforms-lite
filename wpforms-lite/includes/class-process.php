@@ -135,7 +135,7 @@ class WPForms_Process {
 	 *
 	 * @since 1.0.0
 	 */
-	public function listen() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function listen() {
 
 		// Catch the post_max_size overflow.
 		if ( $this->post_max_size_overflow() ) {
@@ -905,7 +905,7 @@ class WPForms_Process {
 	 *
 	 * @since 1.8.3
 	 */
-	private function time_limit_check() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function time_limit_check() {
 
 		/**
 		 * Allow bypassing the time limit check.
@@ -1058,7 +1058,7 @@ class WPForms_Process {
 	 *
 	 * @return void
 	 */
-	private function process_captcha( $entry ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh,Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	private function process_captcha( $entry ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Skip if spam was already detected.
 		if ( $this->spam_reason ) {
@@ -1173,7 +1173,7 @@ class WPForms_Process {
 	 * @noinspection PhpMissingParamTypeInspection
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	private function allow_process_captcha( $entry, $captcha_settings ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function allow_process_captcha( $entry, $captcha_settings ) {
 
 		// Skip captcha processing if an AMP form.
 		if ( isset( $_POST['__amp_form_verify'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -1367,7 +1367,7 @@ class WPForms_Process {
 	 * @param array  $form_data Form data and settings.
 	 * @param string $hash      Base64-encoded hash of form and entry IDs.
 	 */
-	public function entry_confirmation_redirect( $form_data = [], $hash = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	public function entry_confirmation_redirect( $form_data = [], $hash = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		// Maybe process return hash.
 		if ( ! empty( $hash ) ) {
@@ -1614,7 +1614,7 @@ class WPForms_Process {
 	 * @param int    $entry_id  Saved entry id.
 	 * @param string $context   In which context this email is sent.
 	 */
-	public function entry_email( $fields, $entry, $form_data, $entry_id, $context = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	public function entry_email( $fields, $entry, $form_data, $entry_id, $context = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Check that the form was configured for email notifications.
 		if ( empty( $form_data['settings']['notification_enable'] ) ) {
@@ -1944,7 +1944,7 @@ class WPForms_Process {
 	 * @param int   $form_id   Form ID.
 	 * @param array $form_data Form data and settings.
 	 */
-	protected function ajax_process_errors( $form_id, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function ajax_process_errors( $form_id, $form_data ) {
 
 		$errors = $this->errors[ $form_id ] ?? [];
 

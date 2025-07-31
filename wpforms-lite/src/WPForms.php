@@ -366,7 +366,7 @@ namespace WPForms {
 		 * - run: optional -- method to run on class instantiation -- default init.
 		 * - condition: optional -- condition to check before registering the class.
 		 */
-		public function register( $class_data ): void { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+		public function register( $class_data ): void { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 			if ( empty( $class_data['name'] ) || ! is_string( $class_data['name'] ) ) {
 				return;

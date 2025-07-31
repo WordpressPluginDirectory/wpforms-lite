@@ -286,7 +286,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @param array $field Field settings.
 	 */
-	public function field_preview( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	public function field_preview( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Define data.
 		$scale      = ! empty( $field['scale'] ) ? esc_attr( $field['scale'] ) : 5;

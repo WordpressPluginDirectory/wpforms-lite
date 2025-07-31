@@ -16,7 +16,7 @@ trait StringsTrait {
 	 *
 	 * @return array
 	 */
-	protected function get_js_strings(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function get_js_strings(): array {
 
 		$strings = [];
 		$name    = '%name%';
@@ -177,6 +177,7 @@ trait StringsTrait {
 			),
 			'url'            => wpforms_admin_upgrade_link( $upgrade_utm_medium ),
 			'url_template'   => wpforms_is_admin_page( 'templates' ) ? wpforms_admin_upgrade_link( 'Form Templates Subpage' ) : wpforms_admin_upgrade_link( 'builder-modal-template' ),
+			'url_themes'     => wpforms_admin_upgrade_link( 'Builder Themes' ),
 			'modal'          => wpforms_get_upgrade_modal_text( strtolower( $level ) ),
 		];
 	}

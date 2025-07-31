@@ -83,7 +83,7 @@ class WPForms_Lite {
 	 *
 	 * @noinspection HtmlUnknownTarget
 	 */
-	public function form_settings_notifications( $settings ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function form_settings_notifications( $settings ) {
 
 		$cc         = wpforms_setting( 'email-carbon-copy' );
 		$from_email = '{admin_email}';
@@ -471,7 +471,7 @@ class WPForms_Lite {
 	 *
 	 * @param WPForms_Builder_Panel_Settings $settings Builder panel settings.
 	 */
-	public function form_settings_confirmations( $settings ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function form_settings_confirmations( $settings ) {
 
 		wp_enqueue_editor();
 

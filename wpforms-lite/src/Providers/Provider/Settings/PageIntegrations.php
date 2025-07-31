@@ -153,7 +153,7 @@ abstract class PageIntegrations implements PageIntegrationsInterface {
 	 * @param string $account_id Account ID.
 	 * @param array  $account    Account data.
 	 */
-	protected function display_connected_account( $account_id, $account ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function display_connected_account( $account_id, $account ) {
 
 		$account_connected = ! empty( $account['date'] )
 			? wpforms_date_format( $account['date'], '', true )

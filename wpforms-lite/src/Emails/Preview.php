@@ -296,7 +296,7 @@ class Preview {
 	 *
 	 * @return array Updated styles.
 	 */
-	private function process_override( $param, $styles, $overrides ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	private function process_override( $param, $styles, $overrides ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Use a switch to handle specific cases.
 		switch ( $param ) {

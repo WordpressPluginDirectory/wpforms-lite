@@ -156,7 +156,7 @@ abstract class WPForms_Provider {
 	 *
 	 * @since 1.0.0
 	 */
-	public function process_ajax() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	public function process_ajax() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-builder', 'nonce' );
@@ -380,7 +380,7 @@ abstract class WPForms_Provider {
 	 *
 	 * @return bool|array
 	 */
-	public function get_form_fields( $form = false, $allowlist = [] ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function get_form_fields( $form = false, $allowlist = [] ) {
 
 		// Accept form (post) object or form ID.
 		if ( is_object( $form ) ) {
@@ -449,7 +449,7 @@ abstract class WPForms_Provider {
 	 *
 	 * @return array
 	 */
-	public function get_form_field_select( $form_fields = [], $form_field_type = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function get_form_field_select( $form_fields = [], $form_field_type = '' ) {
 
 		if ( empty( $form_fields ) || empty( $form_field_type ) ) {
 			return [];
@@ -906,7 +906,7 @@ abstract class WPForms_Provider {
 	 * @return WP_Error|string
 	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function output_fields( $connection_id = '', $connection = [], $form = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function output_fields( $connection_id = '', $connection = [], $form = '' ) {
 
 		if ( empty( $connection_id ) || empty( $connection['account_id'] ) || empty( $connection['list_id'] ) || empty( $form ) ) {
 			return '';
@@ -1330,7 +1330,7 @@ abstract class WPForms_Provider {
 	 * @param array $active   Array of active connections.
 	 * @param array $settings Array of all connection settings.
 	 */
-	public function integrations_tab_options( $active, $settings ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function integrations_tab_options( $active, $settings ) {
 
 		$connected = ! empty( $active[ $this->slug ] );
 		$accounts  = ! empty( $settings[ $this->slug ] ) ? $settings[ $this->slug ] : [];

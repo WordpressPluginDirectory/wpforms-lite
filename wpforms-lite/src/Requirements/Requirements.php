@@ -25,7 +25,7 @@ class Requirements {
 	private const SHOW_PHP_NOTICE = true;
 
 	/**
-	 * Whether to show PHP extension notice.
+	 * Whether to show a PHP extension notice.
 	 *
 	 * @since 1.8.2.2
 	 */
@@ -253,6 +253,7 @@ class Requirements {
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
 			self::PHP     => '7.3',
 		],
+		'wpforms-google-calendar/wpforms-calendar.php'                  => [],
 		'wpforms-google-drive/wpforms-google-drive.php'                 => [
 			self::EXT => 'fileinfo',
 		],
@@ -312,7 +313,7 @@ class Requirements {
 			self::LICENSE => self::TOP,
 		],
 		'wpforms-zapier/wpforms-zapier.php'                             => [],
-		'wpforms-zoho-crm/wpforms-zoho-crm.php'                         => [
+		'wpforms-zoho-crm/wpforms-zoho-crm.php'                                 => [
 			self::LICENSE => self::TOP,
 		],
 	];
@@ -586,10 +587,12 @@ class Requirements {
 	 * @param bool   $markup      Optional. If the returned data should have HTML markup applied.
 	 * @param bool   $translate   Optional. If the returned data should be translated. Default true.
 	 *
+	 * We set markup and translate to false by default, because we need raw values to compare.
+	 *
 	 * @return array
 	 * @noinspection PhpSameParameterValueInspection
 	 */
-	private function get_plugin_data( string $plugin_file, bool $markup = true, bool $translate = true ): array {
+	private function get_plugin_data( string $plugin_file, bool $markup = false, bool $translate = false ): array {
 
 		if ( ! file_exists( $plugin_file ) ) {
 			return [];

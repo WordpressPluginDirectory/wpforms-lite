@@ -297,7 +297,7 @@ class Locator {
 	 *
 	 * @return array
 	 */
-	public function row_actions_all( $row_actions, $form ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function row_actions_all( $row_actions, $form ) {
 
 		$form_locations = get_post_meta( $form->ID, self::LOCATIONS_META, true );
 
@@ -1238,7 +1238,7 @@ class Locator {
 	 *
 	 * @return bool
 	 */
-	private function is_post_visible( $location ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function is_post_visible( $location ) {
 
 		$edit_cap = 'edit_post';
 		$read_cap = 'read_post';

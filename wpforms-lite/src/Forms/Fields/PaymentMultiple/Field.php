@@ -87,7 +87,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @return array
 	 */
-	public function field_properties( $properties, $field, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	public function field_properties( $properties, $field, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Define data.
 		$form_id  = absint( $form_data['id'] );
@@ -367,7 +367,7 @@ class Field extends WPForms_Field {
 	 * @noinspection HtmlUnknownAttribute
 	 * @noinspection HtmlUnknownTarget
 	 */
-	public function field_display( $field, $deprecated, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_display( $field, $deprecated, $form_data ) {
 
 		// Define data.
 		$container = $field['properties']['input_container'];

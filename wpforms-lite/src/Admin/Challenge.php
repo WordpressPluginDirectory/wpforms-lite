@@ -115,7 +115,7 @@ class Challenge {
 	 *
 	 * @return bool
 	 */
-	public function is_form_embed_page() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function is_form_embed_page() {
 
 		if ( ! function_exists( 'get_current_screen' ) || ! is_admin() || ! is_user_logged_in() ) {
 			return false;
@@ -467,7 +467,7 @@ class Challenge {
 	 *
 	 * @return bool
 	 */
-	public function challenge_can_start() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function challenge_can_start() {
 
 		static $can_start = null;
 
@@ -641,7 +641,7 @@ class Challenge {
 	 *
 	 * @since 1.5.0
 	 */
-	public function save_challenge_option_ajax() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function save_challenge_option_ajax() {
 
 		check_admin_referer( 'wpforms_challenge_ajax_nonce' );
 

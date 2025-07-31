@@ -109,7 +109,7 @@ function wpforms_debug_data( $data, $echo = true ) {
  * @param mixed  $message Content of a log message.
  * @param array  $args    Expected keys: type, form_id, meta, parent, force.
  */
-function wpforms_log( $title = '', $message = '', $args = [] ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+function wpforms_log( $title = '', $message = '', $args = [] ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 	// Skip if logs disabled in Tools -> Logs.
 	if ( empty( $args['force'] ) && ! wpforms_setting( 'logs-enable' ) ) {

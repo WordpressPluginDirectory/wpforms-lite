@@ -227,7 +227,7 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @param array $field Field information.
 	 */
-	public function field_options( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	public function field_options( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Define data.
 		$format = ! empty( $field['format'] ) ? esc_attr( $field['format'] ) : 'first-last';
@@ -441,7 +441,7 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @param array $field Field information.
 	 */
-	public function field_preview( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_preview( $field ) {
 
 		// Define data.
 		$simple_placeholder = ! empty( $field['simple_placeholder'] ) ? $field['simple_placeholder'] : '';
@@ -497,7 +497,7 @@ class WPForms_Field_Name extends WPForms_Field {
 	 *
 	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function field_display( $field, $deprecated, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_display( $field, $deprecated, $form_data ) {
 
 		// Define data.
 		$format  = ! empty( $field['format'] ) ? esc_attr( $field['format'] ) : 'first-last';

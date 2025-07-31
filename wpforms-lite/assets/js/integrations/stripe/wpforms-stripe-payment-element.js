@@ -5,6 +5,7 @@
  * @param wpforms_stripe.data.element_appearance
  * @param wpforms_stripe.data.element_locale
  * @param wpforms_stripe.i18n.element_load_error
+ * @param wpforms_stripe.i18n.token_already_used
  * @param wpforms_stripe.i18n.empty_details
  * @param wpforms_stripe.publishable_key
  */
@@ -799,20 +800,25 @@ var WPFormsStripePaymentElement = window.WPFormsStripePaymentElement || ( functi
 				if ( result.error ) {
 					// eslint-disable-next-line prefer-const
 					const basicErrors = [
-							'incomplete_email',
-							'email_invalid',
-							'incomplete_number',
-							'invalid_number',
-							'incomplete_expiry',
-							'invalid_expiry_year_past',
-							'invalid_expiry_year',
-							'incomplete_cvc',
-							'incomplete_name',
-							'incomplete_phone_number',
-							'empty_phone_number',
-							'invalid_postal_code',
-						],
-						message = basicErrors.includes( result.error.code ) ? '' : result.error.message;
+						'incomplete_email',
+						'email_invalid',
+						'incomplete_number',
+						'invalid_number',
+						'incomplete_expiry',
+						'invalid_expiry_year_past',
+						'invalid_expiry_year',
+						'incomplete_cvc',
+						'incomplete_name',
+						'incomplete_phone_number',
+						'empty_phone_number',
+						'invalid_postal_code',
+					];
+					let message = basicErrors.includes( result.error.code ) ? '' : result.error.message;
+
+					// Use custom error messages for specific errors.
+					if ( result.error.code === 'token_already_used' ) {
+						message = wpforms_stripe.i18n.token_already_used;
+					}
 
 					app.displayStripeFieldError( $form, message );
 

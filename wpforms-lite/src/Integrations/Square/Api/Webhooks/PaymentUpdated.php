@@ -31,7 +31,7 @@ class PaymentUpdated extends Base {
 	 *
 	 * @return bool
 	 */
-	public function handle(): bool { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function handle(): bool {
 
 		$order_id        = $this->data->object->payment->order_id ?? '';
 		$this->invoice   = $this->api->get_invoice_by_order_id( $order_id );

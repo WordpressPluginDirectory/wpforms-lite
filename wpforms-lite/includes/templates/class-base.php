@@ -240,7 +240,7 @@ abstract class WPForms_Template {
 	 *
 	 * @return array
 	 */
-	public function template_replace( $form, $data, $args ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function template_replace( $form, $data, $args ): array {
 
 		// We should proceed only if the template slug passed via $args['template'] is equal to the current template slug.
 		// This will work only for offline templates: Blank Form, all the Addons Templates, and all the custom templates.

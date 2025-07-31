@@ -171,7 +171,7 @@ class Field extends \WPForms_Field {
 	 *
 	 * @return array Modified field properties.
 	 */
-	protected function get_field_populated_single_property_value( $raw_value, $input, $properties, $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function get_field_populated_single_property_value( $raw_value, $input, $properties, $field ) {
 
 		if ( ! is_string( $raw_value ) ) {
 			return $properties;
@@ -567,7 +567,7 @@ class Field extends \WPForms_Field {
 	 * @param array $deprecated Deprecated field attributes.
 	 * @param array $form_data  Form data and settings.
 	 */
-	public function field_display( $field, $deprecated, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_display( $field, $deprecated, $form_data ) {
 
 		// Shortcut for easier access.
 		$primary      = $field['properties']['inputs']['primary'];

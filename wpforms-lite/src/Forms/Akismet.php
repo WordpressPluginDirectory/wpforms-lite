@@ -157,7 +157,7 @@ class Akismet {
 	 *
 	 * @return bool
 	 */
-	private function entry_is_spam( array $form_data, array $entry ): bool { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function entry_is_spam( array $form_data, array $entry ): bool {
 
 		$request = $this->get_request_args( $form_data, $entry );
 
@@ -237,7 +237,7 @@ class Akismet {
 	 *
 	 * @return array $request_args Request arguments to be sent to Akismet.
 	 */
-	private function get_request_args( $form_data, $entry ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function get_request_args( $form_data, $entry ) {
 
 		$entry_data = $this->get_entry_data( $form_data['fields'], $entry );
 

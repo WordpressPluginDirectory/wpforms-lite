@@ -103,12 +103,47 @@ class Field extends WPForms_Field {
 		// Custom CSS classes.
 		$this->field_option( 'css', $field );
 
+		// Hide Divider Line toggle.
+		$this->hide_divider_line_option( $field );
+
 		// Options close markup.
 		$args = [
 			'markup' => 'close',
 		];
 
 		$this->field_option( 'advanced-options', $field, $args );
+	}
+
+	/**
+	 * Hide the Divider Line option.
+	 *
+	 * @since 1.9.7
+	 *
+	 * @param array $field Field data.
+	 */
+	private function hide_divider_line_option( array $field ) {
+
+		$hide_divider_line_value = $field['hide_divider_line'] ?? '0';
+		$hide_divider_line       = $this->field_element(
+			'toggle',
+			$field,
+			[
+				'slug'    => 'hide_divider_line',
+				'value'   => $hide_divider_line_value,
+				'desc'    => esc_html__( 'Hide Divider Line', 'wpforms-lite' ),
+				'tooltip' => esc_html__( 'Do not show the horizontal divider line.', 'wpforms-lite' ),
+			],
+			false
+		);
+
+		$this->field_element(
+			'row',
+			$field,
+			[
+				'slug'    => 'hide_divider_line',
+				'content' => $hide_divider_line,
+			]
+		);
 	}
 
 	/**

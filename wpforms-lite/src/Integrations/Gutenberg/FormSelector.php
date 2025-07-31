@@ -5,11 +5,9 @@ namespace WPForms\Integrations\Gutenberg;
 use WPForms\Frontend\CSSVars;
 use WPForms\Integrations\IntegrationInterface;
 use WPForms\Admin\Education\StringsTrait;
-use WP_Error; // phpcs:ignore WPForms.PHP.UseStatement.UnusedUseStatement
-use WP_REST_Response; // phpcs:ignore WPForms.PHP.UseStatement.UnusedUseStatement
 
 /**
- * Form Selector Gutenberg block with live preview.
+ * Form Selector Gutenberg block with a live preview.
  *
  * @since 1.4.8
  */
@@ -24,11 +22,11 @@ abstract class FormSelector implements IntegrationInterface {
 	 *
 	 * @var array
 	 */
-	const DEFAULT_ATTRIBUTES = [
+	private const DEFAULT_ATTRIBUTES = [
 		'formId'                => '',
 		'displayTitle'          => false,
 		'displayDesc'           => false,
-		'theme'                 => 'default',
+		'theme'                 => '',
 		'themeName'             => '',
 		'fieldSize'             => 'medium',
 		'backgroundImage'       => CSSVars::ROOT_VARS['background-image'],
@@ -124,7 +122,7 @@ abstract class FormSelector implements IntegrationInterface {
 	private $callbacks = [];
 
 	/**
-	 * Currently displayed form Id.
+	 * Currently displayed form ID.
 	 *
 	 * @since 1.8.8
 	 *
@@ -133,7 +131,7 @@ abstract class FormSelector implements IntegrationInterface {
 	private $current_form_id = 0;
 
 	/**
-	 * Indicate if current integration is allowed to load.
+	 * Indicate if the current integration is allowed to load.
 	 *
 	 * @since 1.4.8
 	 *
@@ -202,7 +200,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 *
 	 * @return void
 	 */
-	public function replace_wpforms_frontend_container_class_filter( $form_data ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	public function replace_wpforms_frontend_container_class_filter( array $form_data ): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		if ( empty( $this->callbacks[ $form_data['id'] ] ) ) {
 			return;
@@ -222,7 +220,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 *
 	 * @since 1.4.8
 	 */
-	public function register_block() {
+	public function register_block(): void {
 
 		$type_string  = [ 'type' => 'string' ];
 		$type_boolean = [ 'type' => 'boolean' ];
@@ -535,7 +533,7 @@ abstract class FormSelector implements IntegrationInterface {
 			'custom_css_notice'            => esc_html__( 'Further customize the look of this form without having to edit theme files.', 'wpforms-lite' ),
 			// Translators: %1$s: Opening strong tag, %2$s: Closing strong tag.
 			'wpforms_empty_info'           => sprintf( esc_html__( 'You can use %1$sWPForms%2$s to build contact forms, surveys, payment forms, and more with just a few clicks.', 'wpforms-lite' ), '<strong>','</strong>' ),
-			// Translators: %1$s: Opening anchor tag, %2$s: Closing achor tag.
+			// Translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag.
 			'wpforms_empty_help'           => sprintf( esc_html__( 'Need some help? Check out our %1$scomprehensive guide.%2$s', 'wpforms-lite' ), '<a target="_blank" href="' . esc_url( wpforms_utm_link( 'https://wpforms.com/docs/creating-first-form/', 'gutenberg', 'Create Your First Form Documentation' ) ) . '">','</a>' ),
 			'other_styles'                 => esc_html__( 'Other Styles', 'wpforms-lite' ),
 			'page_break'                   => esc_html__( 'Page Break', 'wpforms-lite' ),
@@ -610,6 +608,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 * @param array|mixed  $form_data Form data.
 	 *
 	 * @return string
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function form_action_filter( $action, $form_data ): string {
 
@@ -694,6 +693,10 @@ abstract class FormSelector implements IntegrationInterface {
 			return $attr;
 		}
 
+		if ( $theme_slug === '' ) {
+			$theme_slug = $this->get_theme_slug( $attr );
+		}
+
 		$theme_data = $this->themes_data_obj->get_theme( $theme_slug );
 
 		// Theme doesn't exist, let's return.
@@ -706,6 +709,33 @@ abstract class FormSelector implements IntegrationInterface {
 	}
 
 	/**
+	 * Get the theme slug.
+	 *
+	 * @since 1.9.7
+	 *
+	 * @param array $attr Attributes passed by WPForms Gutenberg block.
+	 *
+	 * @return string
+	 */
+	private function get_theme_slug( array $attr ): string {
+
+		$form_handler = wpforms()->obj( 'form' );
+
+		if ( ! $form_handler ) {
+			return 'default';
+		}
+
+		$form_id   = (int) $attr['formId'];
+		$form_data = $form_handler->get( $form_id, [ 'content_only' => true ] );
+
+		if ( empty( $form_data['settings']['themes']['wpformsTheme'] ) ) {
+			return 'default';
+		}
+
+		return $form_data['settings']['themes']['wpformsTheme'];
+	}
+
+	/**
 	 * Add class callback.
 	 *
 	 * @since 1.8.1
@@ -715,7 +745,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 *
 	 * @return void
 	 */
-	private function add_class_callback( $id, $attr ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	private function add_class_callback( int $id, array $attr ): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		$class_callback = static function ( $classes, $form_data ) use ( $id, $attr ) {
 
@@ -758,8 +788,9 @@ abstract class FormSelector implements IntegrationInterface {
 	 * @param array $attr  Form attributes.
 	 *
 	 * @return string
+	 * @noinspection JSUnresolvedReference
 	 */
-	private function get_content( $id, $title, $desc, $attr ): string {
+	private function get_content( int $id, bool $title, bool $desc, array $attr ): string {
 
 		/**
 		 * Filter allow render block content flag.
@@ -855,8 +886,8 @@ abstract class FormSelector implements IntegrationInterface {
 				);
 			" class="wpforms-pix-trigger" alt="">',
 			absint( $id ),
-			var_export( (bool) $title, true ),
-			var_export( (bool) $desc, true )
+			var_export( $title, true ),
+			var_export( $desc, true )
 		);
 
 		// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_var_export
@@ -885,7 +916,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 *
 	 * @return void
 	 */
-	private function disable_fields_in_gb_editor() { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	private function disable_fields_in_gb_editor(): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		add_filter(
 			'wpforms_frontend_container_class',
@@ -921,7 +952,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 *
 	 * @param array $attr Attributes passed by WPForms Gutenberg block.
 	 */
-	private function output_css_vars( $attr ) {
+	private function output_css_vars( array $attr ): void {
 
 		if ( empty( $this->css_vars_obj ) || ! method_exists( $this->css_vars_obj, 'get_vars' ) ) {
 			return;
@@ -955,6 +986,9 @@ abstract class FormSelector implements IntegrationInterface {
 			$css_vars
 		);
 
+		$style_id      = rtrim( $style_id, '-' );
+		$vars_selector = rtrim( $vars_selector, '-' );
+
 		$this->css_vars_obj->output_selector_vars( $vars_selector, $css_vars, $style_id, $this->current_form_id );
 	}
 
@@ -965,7 +999,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 *
 	 * @param array $attr Attributes passed by WPForms Gutenberg block.
 	 */
-	private function output_custom_css( $attr ) {
+	private function output_custom_css( array $attr ): void {
 
 		if ( wpforms_get_render_engine() === 'classic' ) {
 			return;
@@ -997,6 +1031,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 * @param array      $field         Field data.
 	 *
 	 * @return bool
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function disable_richtext_media( $media_enabled, array $field ): bool {
 

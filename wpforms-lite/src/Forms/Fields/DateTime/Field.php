@@ -90,7 +90,7 @@ class Field extends WPForms_Field {
 	 * @noinspection PackedHashtableOptimizationInspection
 	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function field_options( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	public function field_options( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		/**
 		 * Basic field options
@@ -607,7 +607,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @param array $field Field data and settings.
 	 */
-	public function field_preview( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_preview( $field ) {
 
 		$date_placeholder = ! empty( $field['date_placeholder'] ) ? $field['date_placeholder'] : '';
 		$time_placeholder = ! empty( $field['time_placeholder'] ) ? $field['time_placeholder'] : '';
@@ -772,7 +772,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @return string
 	 */
-	private function field_options_limit_hours_body( array $field, int $time_format ): string { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function field_options_limit_hours_body( array $field, int $time_format ): string {
 
 		$output = '';
 

@@ -104,6 +104,7 @@
 }
 
 #wpforms-panel-fields .wpforms-panel-sidebar .sub-label {
+  display: block;
   color: #86919e;
   font-size: 12px;
   line-height: 14px;

@@ -34,7 +34,7 @@ class Fields extends Education\Builder\Fields {
 	 *
 	 * @return array
 	 */
-	public function add_fields( $fields ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function add_fields( $fields ) {
 
 		foreach ( $fields as $group => $group_data ) {
 			$edu_fields = $this->fields->get_by_group( $group );
@@ -96,7 +96,7 @@ class Fields extends Education\Builder\Fields {
 	 *
 	 * @return array Attributes array.
 	 */
-	public function fields_attributes( $atts, $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function fields_attributes( $atts, $field ) {
 
 		$atts['data']['utm-content'] = ! empty( $field['name_en'] ) ? $field['name_en'] : '';
 

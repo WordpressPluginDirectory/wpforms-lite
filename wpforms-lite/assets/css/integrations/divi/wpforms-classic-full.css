@@ -1075,11 +1075,11 @@ div.wpforms-container-full .wpforms-datepicker-wrap {
 
 div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear {
   position: absolute;
-  background-image: url("../../../pro/images/times-solid-white.svg");
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-color: #cccccc;
-  background-size: 8px;
+  background-image: url("../../../pro/images/times-solid-white.svg") !important;
+  background-position: 50% 50% !important;
+  background-repeat: no-repeat !important;
+  background-color: #cccccc !important;
+  background-size: 8px !important;
   width: 16px;
   height: 16px;
   cursor: pointer;
@@ -1091,8 +1091,9 @@ div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear {
   transition: all 0.3s;
 }
 
-div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear:hover {
-  background-color: red;
+div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear:hover,
+div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear:focus {
+  background-color: red !important;
 }
 
 div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-field-small + .wpforms-datepicker-clear {
@@ -3729,11 +3730,11 @@ div.wpforms-container-full .wpforms-form .wpforms-error-container blockquote {
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear {
   position: absolute;
-  background-image: url("../../../pro/images/times-solid-white.svg");
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-color: #cccccc;
-  background-size: 8px;
+  background-image: url("../../../pro/images/times-solid-white.svg") !important;
+  background-position: 50% 50% !important;
+  background-repeat: no-repeat !important;
+  background-color: #cccccc !important;
+  background-size: 8px !important;
   width: 16px;
   height: 16px;
   cursor: pointer;
@@ -3745,8 +3746,9 @@ div.wpforms-container-full .wpforms-form .wpforms-error-container blockquote {
   transition: all 0.3s;
 }
 
-.et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear:hover {
-  background-color: red;
+.et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear:hover,
+.et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-datepicker-clear:focus {
+  background-color: red !important;
 }
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-datepicker-wrap .wpforms-field-small + .wpforms-datepicker-clear {

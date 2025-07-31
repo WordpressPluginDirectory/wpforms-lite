@@ -298,7 +298,7 @@ class Field extends WPForms_Field {
 	 * @noinspection HtmlWrongAttributeValue
 	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function field_display( $field, $deprecated, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_display( $field, $deprecated, $form_data ) {
 
 		$primary = $field['properties']['inputs']['primary'];
 		$type    = ! empty( $field['required'] ) ? 'text' : 'hidden';
@@ -672,7 +672,7 @@ class Field extends WPForms_Field {
 	 * @param array $fields Fields data.
 	 * @param float $total  Fields total.
 	 */
-	private function prepare_payment_field_choices( array $field, array &$fields, float &$total ): void { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function prepare_payment_field_choices( array $field, array &$fields, float &$total ): void {
 
 		if ( empty( $field['choices'] ) ) {
 			return;

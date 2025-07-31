@@ -31,7 +31,7 @@ class PaymentCreated extends Base {
 	 *
 	 * @throws RuntimeException If subscription ID or order ID is missing.
 	 */
-	public function handle(): bool { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function handle(): bool {
 
 		$order_id      = $this->data->object->payment->order_id ?? '';
 		$this->invoice = $this->api->get_invoice_by_order_id( $order_id );
@@ -100,7 +100,7 @@ class PaymentCreated extends Base {
 	 *
 	 * @return int|false
 	 */
-	private function insert_renewal( $original_subscription ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function insert_renewal( $original_subscription ) {
 
 		// Retrieve payment requests from the invoice.
 		$payment_requests = $this->invoice->getPaymentRequests();

@@ -182,7 +182,7 @@ class Token {
 	 *
 	 * @return bool|string True or a string with the error.
 	 */
-	public function validate( array $form_data, array $fields, array $entry ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function validate( array $form_data, array $fields, array $entry ) {
 
 		// Bail out if we don't have the antispam setting.
 		if ( empty( $form_data['settings']['antispam'] ) ) {

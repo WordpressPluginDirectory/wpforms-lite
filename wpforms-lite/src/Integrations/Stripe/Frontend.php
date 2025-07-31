@@ -171,6 +171,7 @@ class Frontend {
 				'i18n'            => [
 					'empty_details'      => esc_html__( 'Please fill out payment details to continue.', 'wpforms-lite' ),
 					'element_load_error' => esc_html__( 'Payment Element failed to load. Stripe API responded with the message:', 'wpforms-lite' ),
+					'token_already_used' => esc_html__( 'The security token has expired. Please resubmit the form.', 'wpforms-lite' ),
 				],
 				'styles_enabled'  => (int) wpforms_setting( 'disable-css', '1' ) !== 3,
 			]

@@ -77,7 +77,7 @@ class Forms extends API {
      *
      * @return array
      */
-    private function get_available_addons(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+    private function get_available_addons(): array {
 
 		// Since starting from 1.9.4, we display unavailable addon fields in Lite and all Pro licenses,
 	    // we need to return all required addons to let AI generate addon fields.
@@ -205,7 +205,7 @@ class Forms extends API {
 	 *
 	 * @return array
 	 */
-	private function fix_field_cl( array $field, array $form_data ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function fix_field_cl( array $field, array $form_data ): array {
 
 		if ( empty( $field['conditionals'] ) || empty( $field['conditional_logic'] ) ) {
 			return $field;
@@ -346,7 +346,7 @@ class Forms extends API {
 	 *
 	 * @return array
 	 */
-	private function fix_page_breaks( array $form_data, array $page_breaks ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	private function fix_page_breaks( array $form_data, array $page_breaks ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		reset( $form_data['fields'] );
 

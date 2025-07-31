@@ -182,6 +182,7 @@ class Help {
 			'settings/save_resume'                    => 'save and resume',
 			'settings/google_sheets'                  => 'google sheets',
 			'settings/dropbox'                        => 'dropbox',
+			'settings/google_calendar'                => 'google calendar',
 			'settings/google_drive'                   => 'google drive',
 			'settings/webhooks'                       => 'webhooks',
 			'settings/entry_automation'               => 'entry automation',
@@ -1153,6 +1154,9 @@ class Help {
 			],
 			'dropbox'                   => [
 				'/docs/dropbox-addon/',
+			],
+			'google-calendar'           => [
+				'/docs/google-calendar-addon/',
 			],
 			'google-drive'              => [
 				'/docs/google-drive-addon/',

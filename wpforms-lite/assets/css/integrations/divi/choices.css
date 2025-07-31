@@ -80,9 +80,9 @@ div.wpforms-container .wpforms-form .choices[data-type*="select-one"] .choices__
   background-size: 8px;
   position: absolute;
   top: 50%;
-  right: 0;
+  inset-inline-end: 0;
   margin-top: -10px;
-  margin-right: 25px;
+  margin-inline-end: 25px;
   height: 20px;
   width: 20px;
   border-radius: 10em;
@@ -218,13 +218,13 @@ div.wpforms-container .wpforms-form .choices__list--single .choices__item {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 20px;
+  padding-inline-end: 20px;
   white-space: nowrap;
   color: #2c3338;
 }
 
 div.wpforms-container .wpforms-form .choices__list--single .choices__item[data-value=''] {
-  padding-right: 0;
+  padding-inline-end: 0;
 }
 
 div.wpforms-container .wpforms-form .choices__list--multiple {
@@ -574,9 +574,9 @@ div.wpforms-container .wpforms-form .choices[data-type*="select-one"] .choices__
   background-size: 8px;
   position: absolute;
   top: 50%;
-  right: 0;
+  inset-inline-end: 0;
   margin-top: -10px;
-  margin-right: 25px;
+  margin-inline-end: 25px;
   height: 20px;
   width: 20px;
   border-radius: 10em;
@@ -712,13 +712,13 @@ div.wpforms-container .wpforms-form .choices[data-type*="select-one"] .choices__
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 20px;
+  padding-inline-end: 20px;
   white-space: nowrap;
   color: #2c3338;
 }
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container .wpforms-form .choices__list--single .choices__item[data-value=''] {
-  padding-right: 0;
+  padding-inline-end: 0;
 }
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container .wpforms-form .choices__list--multiple {

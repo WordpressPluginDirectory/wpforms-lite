@@ -81,9 +81,9 @@
   background-size: 8px;
   position: absolute;
   top: 50%;
-  right: 0;
+  inset-inline-end: 0;
   margin-top: -10px;
-  margin-right: 25px;
+  margin-inline-end: 25px;
   height: 20px;
   width: 20px;
   border-radius: 10em;
@@ -223,13 +223,13 @@
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 20px;
+  padding-inline-end: 20px;
   white-space: nowrap;
   color: #2c3338;
 }
 
 .choices__list--single .choices__item[data-value=''] {
-  padding-right: 0;
+  padding-inline-end: 0;
 }
 
 .choices__list--multiple {
@@ -555,7 +555,6 @@ body.rtl .choices[data-type*="select-multiple"] .choices__button, body.rtl .choi
 .wpforms-builder-provider .choices[data-type*="select-one"] .choices__inner .choices__item {
   font-size: 14px;
   margin-bottom: 0;
-  margin-top: 2px;
 }
 
 .wpforms-panel-fields .choices[data-type*="select-multiple"]:after,
@@ -785,7 +784,7 @@ body.rtl .choices[data-type*="select-multiple"] .choices__button, body.rtl .choi
 .choices__inner {
   min-height: 36px;
   padding-top: 6px;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 div.wpforms-container.wpforms-edit-entry-container .wpforms-form .choices .choices__inner .choices__list--multiple .choices__item {
@@ -2639,7 +2638,7 @@ div.wpforms-container.wpforms-edit-entry-container .wpforms-form .choices .choic
   min-height: 82px;
   margin-top: 40px;
   /* Display top border over the divider. */
-  /* Hide top border on the first divider and on hover. */
+  /* Hide top border on the first divider, on hover and when it is switched off in the settings. */
 }
 
 .wpforms-panel-fields .wpforms-field-divider:first-child {
@@ -2657,7 +2656,7 @@ div.wpforms-container.wpforms-edit-entry-container .wpforms-form .choices .choic
   right: 15px;
 }
 
-.wpforms-panel-fields .wpforms-field-divider:hover::before, .wpforms-panel-fields .wpforms-field-divider:focus::before, .wpforms-panel-fields .wpforms-field-divider.active::before, .wpforms-panel-fields .wpforms-field-divider:first-child::before {
+.wpforms-panel-fields .wpforms-field-divider:hover::before, .wpforms-panel-fields .wpforms-field-divider:focus::before, .wpforms-panel-fields .wpforms-field-divider.active::before, .wpforms-panel-fields .wpforms-field-divider:first-child::before, .wpforms-panel-fields .wpforms-field-divider.hide_line::before {
   display: none;
 }
 

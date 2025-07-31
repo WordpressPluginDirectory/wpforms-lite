@@ -247,7 +247,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @return array|bool|null|WP_Post
 	 */
-	protected function get_single( $id = '', array $args = [] ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function get_single( $id = '', array $args = [] ) {
 
 		// phpcs:disable WPForms.PHP.ValidateHooks.InvalidHookName
 
@@ -647,7 +647,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @return int|false
 	 */
-	public function update( $form_id = '', array $data = [], array $args = [] ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh, Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	public function update( $form_id = '', array $data = [], array $args = [] ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		if ( empty( $data ) ) {
 			return false;
@@ -678,7 +678,7 @@ class WPForms_Form_Handler {
 		} else {
 			// phpcs:ignore Generic.Commenting.DocComment.MissingShort
 			/** @noinspection CallableParameterUseCaseInTypeContextInspection */
-			$data = wp_unslash( $data );
+			$data = (array) wp_unslash( $data );
 		}
 
 		$title = empty( $data['settings']['form_title'] ) ? get_the_title( $form_id ) : $data['settings']['form_title'];
@@ -865,10 +865,10 @@ class WPForms_Form_Handler {
 			}
 
 			// Get the form data.
-			$new_form_data = wpforms_decode( $form->post_content );
+			$new_form_data = (array) wpforms_decode( $form->post_content );
 
 			if ( $this->is_form_data_slashing_enabled ) {
-				$new_form_data = wp_slash( $new_form_data );
+				$new_form_data = (array) wp_slash( $new_form_data );
 			}
 
 			// Remove form ID from title if present.

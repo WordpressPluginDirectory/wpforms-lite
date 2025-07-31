@@ -3342,6 +3342,10 @@ div.wpforms-container-full .wpforms-form .wpforms-field-divider:first-child {
   border-top: none;
 }
 
+div.wpforms-container-full .wpforms-form .wpforms-field-divider-hide_line {
+  border-top: none;
+}
+
 div.wpforms-container-full .wpforms-form .wpforms-field-divider h3 {
   color: var(--wpforms-label-color);
   padding-top: var(--wpforms-field-size-input-spacing);
@@ -7238,6 +7242,10 @@ div.wpforms-container-full .et-db #et-boc .et-l .et_pb_module * img, .et-db #et-
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-divider:first-child {
   margin-top: 0;
+  border-top: none;
+}
+
+.et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form .wpforms-field-divider-hide_line {
   border-top: none;
 }
 

@@ -523,7 +523,7 @@ class NinjaForms extends Base {
 	 *
 	 * @return string
 	 */
-	public function get_smarttags( $text, $fields ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function get_smarttags( $text, $fields ) {
 
 		preg_match_all( '/\{(.+?)\}/', $text, $tags );
 

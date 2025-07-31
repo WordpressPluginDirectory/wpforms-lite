@@ -1,3 +1,41 @@
+.wpforms-links {
+  display: flex;
+  padding: 13px;
+  align-items: center;
+  gap: 18px;
+  border-top: 1px solid #eeeeee;
+}
+
+.wpforms-links .wpforms-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.wpforms-links .wpforms-link {
+  text-decoration: none;
+  color: #646970;
+  line-height: normal;
+}
+
+.wpforms-links .wpforms-link svg {
+  width: auto;
+  fill: #646970;
+  transition: fill 0.05s ease-in-out;
+}
+
+.wpforms-links .wpforms-link-whats-new svg {
+  height: 17px;
+}
+
+.wpforms-links .wpforms-link:hover {
+  color: #2c3338;
+}
+
+.wpforms-links .wpforms-link:hover svg {
+  fill: #2c3338;
+}
+
 #wpforms_reports_widget_lite .inside,
 #wpforms_reports_widget_pro .inside {
   margin: 0;
@@ -294,23 +332,6 @@
   font-size: 16px;
   height: 1em;
   width: 1em;
-}
-
-.wpforms-dash-widget .wpforms-dash-widget-welcome-block {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-left: 4px solid #056aab;
-  background: #fafafa;
-  color: #787c82;
-  font-size: 13px;
-  padding: 13px;
-  margin-top: 0;
-}
-
-.wpforms-dash-widget .wpforms-dash-widget-welcome-block strong {
-  color: #3c434a;
-  font-weight: 500;
 }
 
 .wpforms-dash-widget .wpforms-error {
@@ -622,10 +643,4 @@
 .wpforms-dash-widget-no-graph.wpforms-dash-widget .wpforms-dash-widget-settings .wpforms-dash-widget-settings-container .wpforms-dash-widget-settings-menu {
   top: 40px;
   bottom: auto;
-}
-
-@media screen and (max-width: 782px) {
-  .wpforms-dash-widget .wpforms-dash-widget-welcome-block {
-    display: none;
-  }
 }

@@ -207,7 +207,7 @@ class Connect {
 	 * @param string $account_id Account ID.
 	 * @param string $mode       Stripe mode (e.g. 'live' or 'test').
 	 */
-	public function update_account_meta( $account_id = '', $mode = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function update_account_meta( $account_id = '', $mode = '' ) {
 
 		if ( ! $mode ) {
 			$mode = Helpers::get_stripe_mode();

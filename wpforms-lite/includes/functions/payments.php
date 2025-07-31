@@ -327,7 +327,7 @@ function wpforms_get_currencies() {
  *
  * @return string $amount
  */
-function wpforms_sanitize_amount( $amount, $currency = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+function wpforms_sanitize_amount( $amount, $currency = '' ) {
 
 	if ( empty( $currency ) ) {
 		$currency = wpforms_get_currency();
@@ -423,7 +423,7 @@ function wpforms_sanitize_amount( $amount, $currency = '' ) { // phpcs:ignore Ge
  *
  * @return string $amount Newly formatted amount or Price Not Available
  */
-function wpforms_format_amount( $amount, $symbol = false, $currency = '' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+function wpforms_format_amount( $amount, $symbol = false, $currency = '' ) {
 
 	if ( empty( $currency ) ) {
 		$currency = wpforms_get_currency();

@@ -161,7 +161,7 @@ class Connect {
 	 *
 	 * @since 1.5.5
 	 */
-	public function process() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	public function process() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		$error = esc_html__( 'There was an error while installing an upgrade. Please download the plugin from wpforms.com and install it manually.', 'wpforms-lite' );
 

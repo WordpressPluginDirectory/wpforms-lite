@@ -366,7 +366,7 @@ abstract class CacheBase {
 	 *
 	 * @return array
 	 */
-	protected function perform_remote_request(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function perform_remote_request(): array {
 
 		$query_args = $this->settings['query_args'] ?? [];
 

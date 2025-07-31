@@ -3341,6 +3341,10 @@ div.wpforms-container-full .wpforms-form .wpforms-field-divider:first-child {
   border-top: none;
 }
 
+div.wpforms-container-full .wpforms-form .wpforms-field-divider-hide_line {
+  border-top: none;
+}
+
 div.wpforms-container-full .wpforms-form .wpforms-field-divider h3 {
   color: var(--wpforms-label-color);
   padding-top: var(--wpforms-field-size-input-spacing);

@@ -352,7 +352,7 @@ class Forms {
      *
      * @return array
      */
-    private function get_required_addons_data(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+    private function get_required_addons_data(): array {
 
 		// The addon installation procedure has floating issues in PHP < 7.4.
 		// It's better to skip the installation in this case to avoid addon installation errors.

@@ -50,7 +50,7 @@ function wpforms_is_url( $url ): bool {
  *
  * @return string|false Returns a valid email address on success, false on failure.
  */
-function wpforms_is_email( $email ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, Generic.Metrics.CyclomaticComplexity.MaxExceeded
+function wpforms_is_email( $email ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 	static $punycode;
 
@@ -252,7 +252,7 @@ function wpforms_is_empty_string( $value ): bool {
  * @return bool True if the request is a REST API call, false if not.
  * @author matzeeable
  */
-function wpforms_is_rest(): bool { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+function wpforms_is_rest(): bool {
 
 	if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
 		return false;
@@ -296,7 +296,7 @@ function wpforms_is_rest(): bool { // phpcs:ignore Generic.Metrics.CyclomaticCom
  *
  * @return bool True if the request is a WPForms related rest API call, false if not.
  */
-function wpforms_is_wpforms_rest(): bool { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+function wpforms_is_wpforms_rest(): bool {
 
 	if ( ! wpforms_is_rest() ) {
 		return false;

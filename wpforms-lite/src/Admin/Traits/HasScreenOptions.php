@@ -144,7 +144,7 @@ trait HasScreenOptions {
 	 *
 	 * @return string
 	 */
-	public function render_screen_options( $screen_settings ) { // phpcs:ignore Generic.Metrics.NestingLevel.MaxExceeded, Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function render_screen_options( $screen_settings ) { // phpcs:ignore Generic.Metrics.NestingLevel.MaxExceeded
 
 		foreach ( $this->screen_options as $group => $options_group ) {
 			$screen_settings .= '<fieldset>';

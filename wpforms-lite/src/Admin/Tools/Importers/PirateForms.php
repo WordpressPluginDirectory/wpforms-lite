@@ -570,7 +570,7 @@ class PirateForms extends Base {
 	 * @param int   $pf_form_id PirateForms form ID.
 	 * @param array $form       WPForms form array.
 	 */
-	protected function import_smtp( $pf_form_id, $form ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function import_smtp( $pf_form_id, $form ) {
 
 		// At this point we import only default form SMTP settings.
 		if ( $pf_form_id !== 0 ) {

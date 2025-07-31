@@ -350,7 +350,7 @@ export default ( function( document, window, $ ) {
 		},
 
 		/**
-		 * Maybe create custom theme.
+		 * Maybe create a custom theme.
 		 *
 		 * @since 1.8.8
 		 *
@@ -390,13 +390,13 @@ export default ( function( document, window, $ ) {
 		},
 
 		/**
-		 * Create custom theme.
+		 * Create a custom theme.
 		 *
 		 * @since 1.8.8
 		 *
 		 * @param {Object}  props                Block properties.
 		 * @param {Object}  currentStyles        Current style settings.
-		 * @param {boolean} migrateToCustomTheme Whether it is needed to migrate to custom theme.
+		 * @param {boolean} migrateToCustomTheme Whether it is necessary to migrate to custom theme.
 		 *
 		 * @return {boolean} Whether the custom theme is created.
 		 */
@@ -424,7 +424,7 @@ export default ( function( document, window, $ ) {
 
 			themeName += ' (' + copyStr + ')';
 
-			// The first migrated Custom Theme should be without `(Copy)` suffix.
+			// The first migrated Custom Theme should be without a `(Copy)` suffix.
 			themeName = migrateToCustomTheme && counter < 2 ? strings.theme_custom : themeName;
 
 			// Add the new custom theme.
@@ -445,7 +445,7 @@ export default ( function( document, window, $ ) {
 		},
 
 		/**
-		 * Maybe create custom theme by given attributes.
+		 * Maybe create a custom theme by given attributes.
 		 *
 		 * @since 1.8.8
 		 *
@@ -552,18 +552,20 @@ export default ( function( document, window, $ ) {
 		 *
 		 * @return {Object} Themes panel JSX code.
 		 */
-		getThemesPanel( props, formSelectorCommonModule, stockPhotosModule ) {
+		getThemesPanel( props, formSelectorCommonModule, stockPhotosModule ) { // eslint-disable-line max-lines-per-function, complexity
 			// Store common module in app.
 			formSelectorCommon = formSelectorCommonModule;
 			state.stockPhotos = stockPhotosModule;
 
-			// If there are no themes data, it is necessary to fetch it firstly.
+			// If there are no themes data, it is necessary to fetch it first.
 			if ( ! themesData.wpforms ) {
 				app.fetchThemesData();
 
 				// Return empty JSX code.
 				return ( <></> );
 			}
+
+			app.maybeAdjustTheme( props );
 
 			// Get event handlers.
 			const handlers = app.getEventHandlers( props );
@@ -622,6 +624,120 @@ export default ( function( document, window, $ ) {
 		},
 
 		/**
+		 * Maybe adjust the theme.
+		 *
+		 * @since 1.9.7
+		 *
+		 * @param {Object} props Block properties.
+		 */
+		maybeAdjustTheme( props ) {
+			const prevTheme = props.attributes.theme;
+			const formData = app.getFormData( props );
+			const newTheme = props.attributes.theme || app.getThemeFromFormSettings( formData );
+
+			props.attributes.theme = newTheme;
+
+			if ( prevTheme !== newTheme ) {
+				app.updateThemeSettings( props );
+				props.setAttributes( { themeName: app.getThemeNameFromFormSettings( formData ) } );
+			}
+		},
+
+		/**
+		 * Get the theme from the form settings.
+		 *
+		 * This is the first block load (it does not have props.attributes.theme set), so try to get the theme from the form settings.
+		 *
+		 * @since 1.9.7
+		 *
+		 * @param {Object} formData Form data.
+		 *
+		 * @return {string} Theme slug.
+		 */
+		getThemeFromFormSettings( formData ) {
+			if ( ! formData.settings?.themes || ! formData.settings.themes.wpformsTheme ) {
+				return 'default';
+			}
+
+			return formData.settings.themes.wpformsTheme;
+		},
+
+		/**
+		 * Get the theme name from the form settings.
+		 *
+		 * @since 1.9.7
+		 *
+		 * @param {Object} formData Form data.
+		 *
+		 * @return {string} Theme name.
+		 */
+		getThemeNameFromFormSettings( formData ) {
+			if ( ! formData.settings?.themes || ! formData.settings.themes.themeName ) {
+				return 'Default';
+			}
+
+			return formData.settings.themes.themeName;
+		},
+
+		/**
+		 * Get the form data.
+		 *
+		 * @since 1.9.7
+		 *
+		 * @param {Object} props Block properties.
+		 *
+		 * @return {Object} Form data.
+		 */
+		getFormData( props ) {
+			const formList = wpforms_gutenberg_form_selector.forms;
+
+			// Narrow formList to the one that has an element with key 'ID' and value equal to props.attributes.formId (changed to number from string).
+			const form = formList.find( ( singleForm ) => singleForm.ID === Number( props.attributes.formId ) );
+
+			if ( ! form || ! form.post_content ) {
+				return {};
+			}
+
+			let formData = {};
+			try {
+				formData = JSON.parse( form.post_content );
+			} catch ( error ) {
+				// eslint-disable-next-line no-console
+				console.error( 'Invalid JSON in form.post_content:', error );
+
+				return {};
+			}
+
+			return formData;
+		},
+
+		/**
+		 * Update the theme settings.
+		 *
+		 * Form theme has been adjusted, so we need to replace default values with the one taken from the data stored in JSON files (themesData).
+		 *
+		 * @since 1.9.7
+		 *
+		 * @param {Object} props Block properties.
+		 */
+		updateThemeSettings( props ) {
+			const themeSettings = themesData.wpforms[ props.attributes.theme ]?.settings || themesData.custom[ props.attributes.theme ]?.settings;
+			const commonHandlers = formSelectorCommon.getSettingsFieldsHandlers( props );
+
+			if ( themeSettings ) {
+				// For each themeSettings, if props.attributes with the same key exists, update the value.
+				for ( const key in themeSettings ) {
+					if ( key in props.attributes ) {
+						props.attributes[ key ] = themeSettings[ key ];
+					}
+				}
+			}
+
+			state?.stockPhotos?.onSelectTheme( props.attributes.theme, props, app, commonHandlers );
+			commonHandlers.updateCopyPasteContent();
+		},
+
+		/**
 		 * Get the Themes panel items JSX code.
 		 *
 		 * @since 1.8.8
@@ -641,7 +757,7 @@ export default ( function( document, window, $ ) {
 			const themes = Object.keys( allThemesData );
 			let theme, firstThemeSlug;
 
-			// Display the current custom theme on the top of the list.
+			// Display the current custom theme at the top of the list.
 			if ( ! app.isWPFormsTheme( props.attributes.theme ) ) {
 				firstThemeSlug = props.attributes.theme;
 
@@ -713,7 +829,7 @@ export default ( function( document, window, $ ) {
 		},
 
 		/**
-		 * Set block theme.
+		 * Set a block theme.
 		 *
 		 * @since 1.8.8
 		 *
@@ -738,7 +854,7 @@ export default ( function( document, window, $ ) {
 			const container = block.querySelector( `#wpforms-${ props.attributes.formId }` );
 
 			// Overwrite block attributes with the new theme settings.
-			// It is needed to rely on the theme settings only.
+			// It is necessary to rely on the theme settings only.
 			const newProps = { ...props, attributes: { ...props.attributes, ...theme.settings } };
 
 			// Update the preview with the new theme settings.
@@ -816,7 +932,7 @@ export default ( function( document, window, $ ) {
 
 			const handlers = {
 				/**
-				 * Select theme event handler.
+				 * Select a theme event handler.
 				 *
 				 * @since 1.8.8
 				 *
@@ -827,7 +943,7 @@ export default ( function( document, window, $ ) {
 						return;
 					}
 
-					// Maybe open Stock Photo installation window.
+					// Maybe open a Stock Photo installation window.
 					state?.stockPhotos?.onSelectTheme( value, props, app, commonHandlers );
 
 					const block = formSelectorCommon.getBlockContainer( props );
@@ -873,7 +989,7 @@ export default ( function( document, window, $ ) {
 		},
 
 		/**
-		 * Open the theme delete confirmation modal window.
+		 * Open the theme delete a confirmation modal window.
 		 *
 		 * @since 1.8.8
 		 *

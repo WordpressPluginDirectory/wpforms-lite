@@ -21,6 +21,28 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
+#wpforms-splash-modal .wpforms-splash-notice {
+  background-color: #fdf2eb;
+  padding: 15px 20px;
+  margin: 25px 120px 75px;
+  color: #2c3338;
+  border-radius: 6px;
+}
+
+#wpforms-splash-modal .wpforms-splash-notice a {
+  color: #e27730;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(226, 119, 48, 0.35);
+  text-underline-offset: 2px;
+  transition-property: border, background, color, text-decoration-color;
+}
+
+#wpforms-splash-modal .wpforms-splash-notice a:hover, #wpforms-splash-modal .wpforms-splash-notice a:focus {
+  color: #cd6622;
+  text-decoration-color: rgba(226, 119, 48, 0.75);
+}
+
 #wpforms-splash-modal main .wpforms-splash-section {
   display: flex;
   align-items: center;

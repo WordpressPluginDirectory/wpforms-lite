@@ -87,7 +87,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @return array
 	 */
-	public function field_properties( $properties, $field, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	public function field_properties( $properties, $field, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Define data.
 		$form_id  = absint( $form_data['id'] );
@@ -104,6 +104,12 @@ class Field extends WPForms_Field {
 			'attr'  => [],
 			'id'    => "wpforms-{$form_id}-field_{$field_id}",
 		];
+
+		$is_choice_limit_set = ! empty( $field['choice_limit'] ) && (int) $field['choice_limit'] > 0;
+
+		if ( $is_choice_limit_set ) {
+			$properties['input_container']['data']['choice-limit'] = $field['choice_limit'];
+		}
 
 		// Set input properties.
 		foreach ( $choices as $key => $choice ) {
@@ -151,6 +157,11 @@ class Field extends WPForms_Field {
 				'required'   => ! empty( $field['required'] ) ? 'required' : '',
 				'default'    => isset( $choice['default'] ),
 			];
+
+			// Rule for validator only if needed.
+			if ( $is_choice_limit_set ) {
+				$properties['inputs'][ $key ]['data']['rule-check-limit'] = 'true';
+			}
 		}
 
 		// Required class for pagebreak validation.
@@ -332,6 +343,9 @@ class Field extends WPForms_Field {
 		// Input columns.
 		$this->field_option( 'input_columns', $field );
 
+		// Choice Limit.
+		$this->field_option( 'choice_limit', $field );
+
 		// Custom CSS classes.
 		$this->field_option( 'css', $field );
 
@@ -379,7 +393,7 @@ class Field extends WPForms_Field {
 	 * @noinspection HtmlUnknownAttribute
 	 * @noinspection HtmlUnknownTarget
 	 */
-	public function field_display( $field, $deprecated, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_display( $field, $deprecated, $form_data ) {
 
 		// Define data.
 		$container = $field['properties']['input_container'];
@@ -478,7 +492,8 @@ class Field extends WPForms_Field {
 	 */
 	public function validate( $field_id, $field_submit, $form_data ) {
 
-		$error = '';
+		$field_id = (int) $field_id;
+		$error    = '';
 
 		// Basic required check - If field is marked as required, check for entry data.
 		if ( ! empty( $form_data['fields'][ $field_id ]['required'] ) && empty( $field_submit ) ) {
@@ -495,6 +510,10 @@ class Field extends WPForms_Field {
 				}
 			}
 		}
+
+		$field_submit = (array) $field_submit;
+
+		$this->validate_field_choice_limit( $field_id, $field_submit, $form_data );
 
 		if ( ! empty( $error ) ) {
 			wpforms()->obj( 'process' )->errors[ $form_data['id'] ][ $field_id ] = $error;

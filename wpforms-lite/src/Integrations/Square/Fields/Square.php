@@ -363,7 +363,7 @@ class Square extends WPForms_Field {
 	 *
 	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function field_display( $field, $deprecated, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_display( $field, $deprecated, $form_data ) {
 
 		if ( wpforms_is_editor_page() ) {
 			$this->field_preview_placeholder( $field );

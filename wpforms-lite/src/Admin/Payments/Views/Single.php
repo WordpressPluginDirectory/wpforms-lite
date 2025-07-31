@@ -161,7 +161,7 @@ class Single implements PaymentsViewsInterface {
 	 *
 	 * @since 1.8.2
 	 */
-	private function setup() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function setup() {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$payment_id = ! empty( $_GET['payment_id'] ) ? absint( $_GET['payment_id'] ) : 0;
@@ -890,7 +890,7 @@ class Single implements PaymentsViewsInterface {
 	 *
 	 * @return array
 	 */
-	private function prepare_entry_fields( $fields, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function prepare_entry_fields( $fields, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		if ( empty( $form_data['fields'] ) || empty( $fields ) ) {
 			return [];
@@ -1045,7 +1045,7 @@ class Single implements PaymentsViewsInterface {
 	 *
 	 * @return string
 	 */
-	private function get_gateway_transaction_link() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function get_gateway_transaction_link() {
 
 		/**
 		 * Allow to modify a single payment page gateway transaction link.
@@ -1190,7 +1190,7 @@ class Single implements PaymentsViewsInterface {
 	 *
 	 * @return string
 	 */
-	private function get_gateway_dashboard_link() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function get_gateway_dashboard_link() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		/**
 		 * Allow to modify a single payment page gateway dashboard link.
@@ -1224,7 +1224,7 @@ class Single implements PaymentsViewsInterface {
 				break;
 
 			case 'square':
-				$link = $is_test_mode ? 'https://squareupsandbox.com/dashboard/' : 'https://squareup.com/t/cmtp_performance/pr_developers/d_partnerships/p_WPForms/?route=dashboard/';
+				$link = $is_test_mode ? 'https://squareupsandbox.com/dashboard/' : 'https://squareup.com/t/cmtp_performance/pr_developers/d_partnerships/p_0010L00001tJz7nQAC/?route=dashboard/';
 				break;
 
 			default:

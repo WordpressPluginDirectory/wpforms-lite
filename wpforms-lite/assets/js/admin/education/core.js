@@ -316,6 +316,10 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 				baseURL = wpforms_education.upgrade[ type ].url_template;
 			}
 
+			if ( utmContent.toLowerCase().indexOf( 'themes' ) > -1 ) {
+				baseURL = wpforms_education.upgrade[ type ].url_themes;
+			}
+
 			// Test if the base URL already contains `?`.
 			let appendChar = /(\?)/.test( baseURL ) ? '&' : '?';
 

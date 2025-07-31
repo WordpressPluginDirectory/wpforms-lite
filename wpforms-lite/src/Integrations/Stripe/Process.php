@@ -232,8 +232,11 @@ class Process {
 	 * @param array $payment_meta Payment meta.
 	 * @param array $fields       Final/sanitized submitted field data.
 	 * @param array $form_data    Form data and settings.
+	 *
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function prepare_payment_meta( $payment_meta, $fields, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function prepare_payment_meta( $payment_meta, $fields, $form_data ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		$payment = $this->api->get_payment();
 
@@ -406,7 +409,7 @@ class Process {
 	 *
 	 * @return array
 	 */
-	private function get_mapped_custom_metadata( string $type ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function get_mapped_custom_metadata( string $type ): array {
 
 		$settings_key = ! is_null( $this->plan_id ) ? 'recurring_custom_metadata_' . $this->plan_id : 'custom_metadata';
 
@@ -724,7 +727,7 @@ class Process {
 	 *
 	 * @since 1.8.2
 	 */
-	public function process_payment_single() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function process_payment_single() {
 
 		$amount_decimals = wpforms_get_currency_multiplier();
 

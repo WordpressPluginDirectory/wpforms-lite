@@ -24,7 +24,7 @@
 	// Import all modules dynamically.
 	Promise.all( modules.map( ( module ) => import( module.path ) ) )
 		.then( ( importedModules ) => {
-			// Create the helpers object dynamically.
+			// Create the helper object dynamically.
 			const helpers = {};
 			let api;
 
@@ -69,7 +69,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	eventInitializes = false;
 
 	/**
-	 * Whether the prefill has been submitted.
+	 * Whether the prefilling has been submitted.
 	 *
 	 * @since 1.9.5
 	 *
@@ -93,7 +93,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	 * @since 1.9.1
 	 */
 	constructor() { // eslint-disable-line no-useless-constructor
-		// Always call super first in constructor.
+		// Always call super() first in constructor.
 		super();
 	}
 
@@ -111,7 +111,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 		this.modeStrings = wpforms_ai_chat_element[ this.chatMode ] ?? {};
 		this.loadingState = false;
 
-		// Init chat helpers according to the chat mode.
+		// Init chats helpers according to the chat mode.
 		this.modeHelpers = this.getHelpers( this );
 
 		// Bail if chat mode helpers not found.
@@ -305,6 +305,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 		this.input.addEventListener( 'keydown', this.keyDown.bind( this ) );
 		this.input.addEventListener( 'keyup', this.keyUp.bind( this ) );
 		this.bindWelcomeScreenEvents();
+		document.addEventListener( 'wpformsAIChatBeforeAddAnswer', this.preAnswer.bind( this ) );
 
 		this.eventInitializes = true;
 	}
@@ -365,8 +366,8 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 
 		switch ( e.code ) {
 			case 'Enter':
-				// Send a message on `Enter` key press.
-				// In the case of textarea, `Shift + Enter` adds a new line.
+				// Send a message on the ` Enter ` key press.
+				// In the case of the textarea, `Shift + Enter` adds a new line.
 				if ( ! this.isTextarea || ( this.isTextarea && ! e.shiftKey ) ) {
 					e.preventDefault();
 					this.sendMessage();
@@ -376,7 +377,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 
 			case 'ArrowUp':
 				// Navigate through the chat history.
-				// In the case of textarea, `Ctrl + Up` is used.
+				// In the case of the textarea, `Ctrl + Up` is used.
 				if ( ! this.isTextarea || ( this.isTextarea && e.ctrlKey ) ) {
 					e.preventDefault();
 					this.arrowUp();
@@ -385,7 +386,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 
 			case 'ArrowDown':
 				// Navigate through the chat history.
-				// In the case of textarea, `Ctrl + Down` is used.
+				// In the case of the textarea, `Ctrl + Down` is used.
 				if ( ! this.isTextarea || ( this.isTextarea && e.ctrlKey ) ) {
 					e.preventDefault();
 					this.arrowDown();
@@ -400,7 +401,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 
 	/**
 	 * Detect the Enter key press.
-	 * Prevent resizing the input if Enter key pressed without Shift.
+	 * Prevent resizing the input if an Enter key is pressed without Shift.
 	 *
 	 * @since 1.9.5
 	 *
@@ -729,7 +730,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	}
 
 	/**
-	 * Scroll message list to given edge.
+	 * Scroll a message list to given edge.
 	 *
 	 * @since 1.9.1
 	 *
@@ -757,14 +758,19 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	 * @param {string}  message    The message to add.
 	 * @param {boolean} isQuestion Whether it is a question.
 	 * @param {Object}  response   The response data, optional.
-	 *
-	 * @return {HTMLElement} The message element.
+	 * @param {boolean} preMessage Add a preliminary message, optional.
 	 */
-	addMessage( message, isQuestion, response = null ) {
+	addMessage( message, isQuestion, response = null, preMessage = false ) {
 		const { messageList } = this;
 		const element = document.createElement( 'div' );
 
 		element.classList.add( 'wpforms-chat-item' );
+
+		if ( preMessage ) {
+			element.classList.add( 'wpforms-chat-item-pre-message' );
+			element.classList.add( 'pre-active' );
+		}
+
 		messageList.appendChild( element );
 
 		if ( isQuestion ) {
@@ -796,6 +802,8 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 
 			// Remove the active class from the previous answer.
 			this.messageList.querySelector( '.wpforms-chat-item-answer.active' )?.classList.remove( 'active' );
+			this.messageList.querySelector( '.wpforms-chat-item-answer.pre-active' )?.classList.add( 'active' );
+			this.messageList.querySelector( '.wpforms-chat-item-answer.pre-active' )?.classList.remove( 'pre-active' );
 
 			// Update element classes and attributes.
 			element.classList.add( 'wpforms-chat-item-answer' );
@@ -808,12 +816,16 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 			this.history.update( { answer: message } );
 
 			// Type the message with the typewriter effect.
-			this.typeText( itemContent, message, this.addedAnswer.bind( this ) );
+			if ( ! preMessage ) {
+				this.typeText( itemContent, message, this.addedAnswer.bind( this ) );
+
+				return;
+			}
+
+			itemContent.innerHTML = message;
 		}
 
 		this.scrollMessagesTo( 'bottom' );
-
-		return element;
 	}
 
 	/**
@@ -905,6 +917,31 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 			this.modeStrings.warnings.prohibited_code || wpforms_ai_chat_element.warnings.prohibited_code,
 			this.modeStrings.reasons.prohibited_code || wpforms_ai_chat_element.reasons.prohibited_code
 		);
+	}
+
+	/**
+	 * Display a speech bubble with a pre-answer message if it is available.
+	 *
+	 * @since 1.9.7
+	 *
+	 * @param {Object} event The event object.
+	 */
+	preAnswer( event ) {
+		const { response } = event.detail;
+
+		if ( ! response.preMessage ) {
+			return;
+		}
+
+		// Sanitize response.
+		const sanitizedResponse = this.sanitizeResponse( { ...response } );
+
+		if ( ! sanitizedResponse.preMessage || ! sanitizedResponse.preMessage.title || ! sanitizedResponse.preMessage.text ) {
+			return;
+		}
+
+		const preAnswerHTML = `<h4>${ sanitizedResponse.preMessage.title }</h4><span>${ sanitizedResponse.preMessage.text }</span>`;
+		this.addMessage( preAnswerHTML, false, sanitizedResponse, true );
 	}
 
 	/**
@@ -1057,7 +1094,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	}
 
 	/**
-	 * Set active answer.
+	 * Set an active answer.
 	 *
 	 * @since 1.9.2
 	 *
@@ -1122,7 +1159,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 		let content = '';
 
 		/**
-		 * Type single character.
+		 * Type a single character.
 		 *
 		 * @since 1.9.1
 		 */
@@ -1130,7 +1167,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 			const chunk = text.substring( index, index + chunkSize );
 
 			content += chunk;
-			// Remove broken HTML tag from the end of the string.
+			// Remove a broken HTML tag from the end of the string.
 			element.innerHTML = content.replace( /<[^>]{0,300}$/g, '' );
 			index += chunkSize;
 
@@ -1151,7 +1188,7 @@ class WPFormsAIChatHTMLElement extends HTMLElement {
 	}
 
 	/**
-	 * Get the `helpers` object according to the chat mode.
+	 * Get the `helpers` object, according to the chat mode.
 	 *
 	 * @since 1.9.1
 	 *

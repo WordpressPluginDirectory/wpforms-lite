@@ -602,7 +602,7 @@ class WPForms_Field_Email extends WPForms_Field {
 	 * @param mixed $field_submit Submitted field value (raw data).
 	 * @param array $form_data    Form data and settings.
 	 */
-	public function validate( $field_id, $field_submit, $form_data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function validate( $field_id, $field_submit, $form_data ) {
 
 		$form_id = (int) $form_data['id'];
 
@@ -724,7 +724,7 @@ class WPForms_Field_Email extends WPForms_Field {
 	 *
 	 * @return void
 	 */
-	private function ajax_sanitize( $type ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function ajax_sanitize( $type ) {
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-builder', 'nonce' );

@@ -1194,7 +1194,7 @@ class Table extends \WP_List_Table {
 	 *
 	 * @since 1.8.4
 	 */
-	private function can_prepare_records() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function can_prepare_records() {
 
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		if ( isset( $_GET['form_id'] ) && get_post_status( $_GET['form_id'] ) !== 'publish' ) {

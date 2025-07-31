@@ -3,9 +3,9 @@
 namespace WPForms\Integrations\Stripe\Api\Webhooks;
 
 use RuntimeException;
-use WPForms\Integrations\Stripe\Helpers;
 use WPForms\Db\Payments\UpdateHelpers;
 use WPForms\Integrations\Stripe\Api\PaymentIntents;
+use WPForms\Integrations\Stripe\Api\Webhooks\Exceptions\AmountMismatchException;
 
 /**
  * Webhook charge.refunded class.
@@ -55,7 +55,7 @@ class ChargeRefunded extends Base {
 		$event_previous_refunded_amount = isset( $this->data->previous_attributes->amount_refunded ) ? $this->data->previous_attributes->amount_refunded : 0;
 
 		if ( $this->get_refunded_amount() !== $event_previous_refunded_amount ) {
-			throw new RuntimeException( 'Refund amount mismatch detected. Possible reasons: duplicate webhook processing or webhooks received out of order.' );
+			throw new AmountMismatchException( 'Refund amount mismatch detected. Possible reasons: duplicate webhook processing or webhooks received out of order.' );
 		}
 
 		// We need to format amount since it doesn't contain decimals, e.g. 525 instead of 5.25.

@@ -36,7 +36,7 @@ function wpforms_show_fields_options_setting(): bool {
  *
  * @return false|array
  */
-function wpforms_get_field_dynamic_choices( $field, $form_id, $form_data = [] ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+function wpforms_get_field_dynamic_choices( $field, $form_id, $form_data = [] ) {
 
 	if ( empty( $field['dynamic_choices'] ) ) {
 		return false;
@@ -114,7 +114,7 @@ function wpforms_get_field_dynamic_choices( $field, $form_id, $form_data = [] ) 
  *
  * @return array
  */
-function wpforms_get_hierarchical_object( $args = [], $flat = false ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.NestingLevel.MaxExceeded
+function wpforms_get_hierarchical_object( $args = [], $flat = false ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, Generic.Metrics.NestingLevel.MaxExceeded
 
 	if ( empty( $args['taxonomy'] ) && empty( $args['post_type'] ) ) {
 		return [];
@@ -379,7 +379,7 @@ function wpforms_get_term_name( WP_Term $term ): string {
  *
  * @return false|array Page Break details or false.
  */
-function wpforms_get_pagebreak_details( $form = false ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+function wpforms_get_pagebreak_details( $form = false ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 	if ( ! wpforms()->is_pro() ) {
 		return false;

@@ -158,7 +158,7 @@ trait NumberField {
 	 *
 	 * @return string
 	 */
-	private function field_number_option_min_max( $field, $args, $echo_output = true ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function field_number_option_min_max( $field, $args, $echo_output = true ) {
 
 		$class              = $args['class'] ?? 'number_min_max';
 		$range_label_markup = $this->field_element(
@@ -241,7 +241,7 @@ trait NumberField {
 	 *
 	 * @return string
 	 */
-	private function field_number_option_default_value( $field, $args, $echo_output = true ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function field_number_option_default_value( $field, $args, $echo_output = true ) {
 
 		$default_value_args = [
 			'slug'    => 'default_value',
@@ -272,7 +272,7 @@ trait NumberField {
 	 *
 	 * @return string
 	 */
-	private function field_number_option_step( $field, $args, $echo_output = true ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function field_number_option_step( $field, $args, $echo_output = true ) {
 
 		$step_args = [
 			'slug'    => 'step',

@@ -201,7 +201,7 @@ trait ProField {
 	 *
 	 * @noinspection HtmlUnknownAttribute
 	 */
-	private function get_field_options_notice(): string { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function get_field_options_notice(): string {
 
 		if ( empty( $this->is_disabled_field ) ) {
 			return '';
@@ -250,7 +250,7 @@ trait ProField {
 	 *
 	 * @since 1.9.4
 	 */
-	private function get_field_options_notice_texts(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	private function get_field_options_notice_texts(): array {
 
 		$action     = $this->addon_edu_data['action'] ?? 'upgrade';
 		$addon_name = $this->addon_edu_data['title'] ?? '';

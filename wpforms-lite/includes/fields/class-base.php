@@ -382,7 +382,7 @@ abstract class WPForms_Field {
 	 *
 	 * @return array Modified field properties.
 	 */
-	protected function field_prefill_value_property_dynamic( $properties, $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function field_prefill_value_property_dynamic( $properties, $field ) {
 
 		if ( ! $this->is_dynamic_population_allowed( $properties, $field ) ) {
 			return $properties;
@@ -607,7 +607,7 @@ abstract class WPForms_Field {
 	 *
 	 * @return array Modified field properties.
 	 */
-	protected function get_field_populated_single_property_value_normal_choices( $get_value, $properties, $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function get_field_populated_single_property_value_normal_choices( $get_value, $properties, $field ) {
 
 		$default_key = null;
 
@@ -2548,6 +2548,13 @@ abstract class WPForms_Field {
 				}
 				break;
 
+			/*
+			 *  Choice Limit.
+			 */
+			case 'choice_limit':
+				$output = $this->choice_limit_option( $field );
+				break;
+
 			default:
 				/**
 				 * Filters the field preview option output.
@@ -2594,6 +2601,47 @@ abstract class WPForms_Field {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get choice limit option field element.
+	 *
+	 * @since 1.9.7
+	 *
+	 * @param array $field Field data and settings.
+	 *
+	 * @return string
+	 */
+	private function choice_limit_option( array $field ): string {
+
+		return $this->field_element(
+			'row',
+			$field,
+			[
+				'slug'    => 'choice_limit',
+				'content' =>
+					$this->field_element(
+						'label',
+						$field,
+						[
+							'slug'    => 'choice_limit',
+							'value'   => esc_html__( 'Choice Limit', 'wpforms-lite' ),
+							'tooltip' => esc_html__( 'Limit the number of checkboxes a user can select. Leave empty for unlimited.', 'wpforms-lite' ),
+						],
+						false
+					) . $this->field_element(
+						'text',
+						$field,
+						[
+							'slug'  => 'choice_limit',
+							'value' => isset( $field['choice_limit'] ) && (int) $field['choice_limit'] > 0 ? (int) $field['choice_limit'] : '',
+							'type'  => 'number',
+						],
+						false
+					),
+			],
+			false
+		);
 	}
 
 	/**
@@ -2965,7 +3013,7 @@ abstract class WPForms_Field {
 	 *
 	 * @since 1.0.0
 	 */
-	public function field_new() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_new() {
 
 		// Run a security check.
 		if ( ! check_ajax_referer( 'wpforms-builder', 'nonce', false ) ) {
@@ -3710,7 +3758,7 @@ abstract class WPForms_Field {
 	 *
 	 * @return string
 	 */
-	protected function get_empty_dynamic_choices_message( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function get_empty_dynamic_choices_message( $field ) {
 
 		$dynamic = ! empty( $field['dynamic_choices'] ) ? $field['dynamic_choices'] : false;
 
@@ -3961,5 +4009,30 @@ abstract class WPForms_Field {
 	protected function get_price_after_label( $amount ): string {
 
 		return sprintf( ' - <span class="wpforms-currency-symbol">%s</span>', wpforms_format_amount( wpforms_sanitize_amount( $amount ), true ) );
+	}
+
+	/**
+	 * Validate field choice limit.
+	 *
+	 * @since 1.9.7
+	 *
+	 * @param int   $field_id     Field ID.
+	 * @param array $field_submit Submitted field value (raw data).
+	 * @param array $form_data    Form data and settings.
+	 */
+	protected function validate_field_choice_limit( int $field_id, array $field_submit, array $form_data ): void {
+
+		$choice_limit  = isset( $form_data['fields'][ $field_id ]['choice_limit'] ) ? (int) $form_data['fields'][ $field_id ]['choice_limit'] : '';
+		$count_choices = count( $field_submit );
+
+		if ( ! $choice_limit || $count_choices <= $choice_limit ) {
+			return;
+		}
+
+		// Generating the error.
+		$error = wpforms_setting( 'validation-check-limit', esc_html__( 'You have exceeded the number of allowed selections: {#}.', 'wpforms-lite' ) );
+		$error = str_replace( '{#}', $choice_limit, $error );
+
+		wpforms()->obj( 'process' )->errors[ $form_data['id'] ][ $field_id ] = $error;
 	}
 }

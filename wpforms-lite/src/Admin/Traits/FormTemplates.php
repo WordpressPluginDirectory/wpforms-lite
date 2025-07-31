@@ -339,7 +339,7 @@ trait FormTemplates {
 	 *
 	 * @return array Arguments.
 	 */
-	private function prepare_template_render_arguments( $template ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	private function prepare_template_render_arguments( $template ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		$template['plugin_dir'] = $template['plugin_dir'] ?? '';
 		$template['source']     = $this->get_template_source( $template );

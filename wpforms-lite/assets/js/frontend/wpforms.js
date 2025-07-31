@@ -13,6 +13,7 @@
  * @since 1.4.0
  */
 var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-disable-line no-var
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Public functions and properties.
 	 *
@@ -75,7 +76,12 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			app.loadDatePicker();
 			app.loadTimePicker();
 			app.loadInputMask();
-			app.loadPayments();
+
+			// Defer the payment calculations to improve initial load time.
+			setTimeout( function() {
+				app.loadPayments();
+			}, 50 );
+
 			app.loadMailcheck();
 			app.loadChoicesJS();
 			app.initTokenUpdater();
@@ -171,7 +177,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 				$insertBeforeField.before( fieldHTML );
 
-				// Add inline properties for honeypot field on the form.
+				// Add inline properties for the honeypot field on the form.
 				const $fieldContainer = $( `#wpforms-${ formId }-field_${ wpforms_settings.hn_data[ formId ] }-container`, $form );
 
 				$fieldContainer.find( 'input' ).attr( {
@@ -184,7 +190,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Generate random Honeypot label.
+		 * Generate a random Honeypot label.
 		 *
 		 * @since 1.9.0
 		 *
@@ -273,6 +279,8 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			$.validator.messages.url = wpforms_settings.val_url;
 			$.validator.messages.email = wpforms_settings.val_email;
 			$.validator.messages.number = wpforms_settings.val_number;
+			$.validator.messages.min = wpforms_settings.val_min.replace( '{value}', '{0}' );
+			$.validator.messages.max = wpforms_settings.val_max.replace( '{value}', '{0}' );
 
 			// Payments: Validate method for Credit Card Number.
 			if ( typeof $.fn.payment !== 'undefined' ) {
@@ -364,7 +372,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 						return false;
 					}
 
-					// Split email address into local and domain parts.
+					// Split the email address into local and domain parts.
 					const [ local, domain ] = value.split( '@' );
 
 					// Check local and domain parts for existence.
@@ -372,7 +380,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 						return false;
 					}
 
-					// Check local part for invalid characters and length.
+					// Check the local part for invalid characters and length.
 					const localRegex = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/;
 					if ( ! localRegex.test( local ) || local.length > 63 ) {
 						return false;
@@ -384,7 +392,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 						return false;
 					}
 
-					// Check domain part for length.
+					// Check the domain part for length.
 					const domainArr = domain.split( '.' );
 					if ( domainArr.length < 2 ) {
 						return false;
@@ -565,7 +573,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				return ( value === '' && ! $el.hasClass( 'wpforms-field-required' ) ) || strength >= Number( $el.data( 'password-strength-level' ) );
 			}, wpforms_settings.val_password_strength );
 
-			// Finally, load jQuery Validation library for our forms.
+			// Finally, load the jQuery Validation library for our forms.
 			$( '.wpforms-validate' ).each( function() { // eslint-disable-line max-lines-per-function
 				const form = $( this ),
 					formID = form.data( 'formid' );
@@ -623,7 +631,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 								$element.addClass( errorClass ).removeClass( validClass );
 							}
 
-							// Remove password strength container for empty required password field.
+							// Remove the password strength container for empty required password field.
 							if (
 								$element.attr( 'type' ) === 'password' &&
 								$element.val().trim() === '' &&
@@ -657,7 +665,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 								$element.parent().find( 'em.wpforms-error' ).remove();
 							}
 						},
-						submitHandler( form ) {
+						submitHandler( form ) { // eslint-disable-line max-lines-per-function
 							/**
 							 * Captcha error handler.
 							 *
@@ -690,7 +698,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 							};
 
 							/**
-							 * Submit handler routine.
+							 * The 'submit' handler.
 							 *
 							 * @since 1.7.2
 							 *
@@ -705,6 +713,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 									recaptchaID = $submit.get( 0 ).recaptchaID;
 
 								if ( $form.data( 'token' ) && 0 === $( '.wpforms-token', $form ).length ) {
+									// language=HTML
 									$( '<input type="hidden" class="wpforms-token" name="wpforms[token]" />' )
 										.val( $form.data( 'token' ) )
 										.appendTo( $form );
@@ -755,9 +764,9 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 								app.scrollToError( $( validator.errorList[ 0 ].element ) );
 							}
 						},
-						onkeyup: WPFormsUtils.debounce( // eslint-disable-next-line complexity
+						onkeyup: WPFormsUtils.debounce(
 							function( element, event ) {
-								// This code is copied from JQuery Validate 'onkeyup' method with only one change: 'wpforms-novalidate-onkeyup' class check.
+								// This code is copied from the JQuery Validate 'onkeyup' method with only one change: 'wpforms-novalidate-onkeyup' class check.
 								const excludedKeys = [ 16, 17, 18, 20, 35, 36, 37, 38, 39, 40, 45, 144, 225 ];
 
 								if ( $( element ).hasClass( 'wpforms-novalidate-onkeyup' ) ) {
@@ -772,7 +781,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 							},
 							1000
 						),
-						onfocusout: function( element ) { // eslint-disable-line complexity, object-shorthand
+						onfocusout: function( element ) { // eslint-disable-line object-shorthand
 							// This code is copied from JQuery Validate 'onfocusout' method with only one change: 'wpforms-novalidate-onkeyup' class check.
 							let validate = false;
 
@@ -872,7 +881,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Is field inside column.
+		 * Is field inside the column.
 		 *
 		 * @since 1.6.3
 		 *
@@ -982,7 +991,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Print error message into date time fields.
+		 * Print an error message into date time fields.
 		 *
 		 * @since 1.6.3
 		 *
@@ -1037,7 +1046,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					};
 				}
 
-				// Redefine locale only if user doesn't do that manually, and we have the locale.
+				// Redefine locale only if the user doesn't do that manually, and we have the locale.
 				if (
 					! properties.hasOwnProperty( 'locale' ) &&
 					typeof wpforms_settings !== 'undefined' &&
@@ -1079,10 +1088,24 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					} ];
 				}
 
-				// Toggle clear date icon.
+				// Toggle the clear date icon.
 				properties.onChange = function( selectedDates, dateStr, instance ) { // eslint-disable-line no-unused-vars
 					element.find( '.wpforms-datepicker-clear' )
 						.css( 'display', dateStr === '' ? 'none' : 'block' );
+				};
+
+				properties.onReady = function( selectedDates, dateStr, instance ) {
+					element.find( '.wpforms-datepicker-clear' ).on( 'keydown', function( e ) {
+						if ( e.key === 'Enter' || e.key === ' ' ) {
+							e.preventDefault();
+							instance.clear();
+						}
+					} );
+
+					element.find( '.wpforms-datepicker-clear' ).on( 'click', function( e ) {
+						e.preventDefault();
+						instance.clear();
+					} );
 				};
 
 				element.flatpickr( properties );
@@ -1098,7 +1121,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 * @param {jQuery} $context Container to search for datepicker elements.
 		 */
 		loadTimePicker( $context ) {
-			// Only load if jQuery timepicker library exists.
+			// Only load if the jQuery timepicker library exists.
 			if ( typeof $.fn.timepicker === 'undefined' ) {
 				return;
 			}
@@ -1157,7 +1180,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 * @param {jQuery} $context Container to search for datepicker elements.
 		 */
 		loadInputMask( $context ) {
-			// Only load if jQuery input mask library exists.
+			// Only load if the jQuery input mask library exists.
 			if ( typeof $.fn.inputmask === 'undefined' ) {
 				return;
 			}
@@ -1209,7 +1232,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 		/**
 		 * Compatibility fix with an old intl-tel-input library that may include in other addons.
-		 * Also, for custom snippets that use `options.hiddenInput` to recieve fieldId.
+		 * Also, for custom snippets that use `options.hiddenInput` to receive fieldId.
 		 *
 		 * @since 1.9.2
 		 * @deprecated 1.9.4
@@ -1224,7 +1247,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Get a list of default smart phone field options.
+		 * Get a list of default smartphone field options.
 		 *
 		 * @since 1.9.2
 		 * @deprecated 1.9.4
@@ -1255,7 +1278,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Backward compatibility jQuery plugin for IntlTelInput library, to support custom snippets.
+		 * Backward compatibility jQuery plugin for IntlTelInput library to support custom snippets.
 		 * e.g., https://wpforms.com/developers/how-to-set-a-default-flag-on-smart-phone-field-with-gdpr/.
 		 *
 		 * @since 1.9.2
@@ -1269,7 +1292,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Init smart phone field.
+		 * Init smartphone field.
 		 *
 		 * @since 1.9.2
 		 * @deprecated 1.9.4
@@ -1304,7 +1327,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 */
 		loadPayments() {
 			// Update Total field(s) with the latest calculation.
-			$( '.wpforms-payment-total' ).each( function( index, el ) {
+			$( 'input.wpforms-payment-total' ).each( function( index, el ) {
 				app.amountTotal( this );
 			} );
 
@@ -1406,7 +1429,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 			$context = $context?.length ? $context : $( document );
 
-			// eslint-disable-next-line max-lines-per-function, complexity
+			// eslint-disable-next-line max-lines-per-function
 			$context.find( '.wpforms-field-select-style-modern .choicesjs-select, .wpforms-field-payment-select .choicesjs-select' ).each( function( idx, el ) {
 				if ( $( el ).data( 'choicesjs' ) ) {
 					return;
@@ -1421,7 +1444,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				 */
 				const event = WPFormsUtils.triggerEvent( $context, 'wpformsBeforeLoadElementChoices', [ el ] );
 
-				// Allow callbacks on `wpformsBeforeLoadElementChoices` to cancel choices initialization by triggering `event.preventDefault()`.
+				// Allow callbacks on `wpformsBeforeLoadElementChoices` to cancel choice initialization by triggering `event.preventDefault()`.
 				if ( event.isDefaultPrevented() ) {
 					return;
 				}
@@ -1445,19 +1468,19 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 						$input = $( self.input.element ),
 						sizeClass = $element.data( 'size-class' );
 
-					// Remove hidden attribute and hide `<select>` like a screen-reader text.
+					// Remove the hidden attribute and hide `<select>` like a screen-reader text.
 					// It's important for field validation.
 					$element
 						.removeAttr( 'hidden' )
 						.addClass( self.config.classNames.input + '--hidden' );
 
-					// Add CSS-class for size.
+					// Add a CSS class for size.
 					if ( sizeClass ) {
 						$( self.containerOuter.element ).addClass( sizeClass );
 					}
 
 					/**
-					 * If a multiple select has selected choices - hide a placeholder text.
+					 * If a 'multiple select' has selected choices - hide a placeholder text.
 					 * In case if select is empty - we return placeholder text.
 					 */
 					if ( $element.prop( 'multiple' ) ) {
@@ -1500,7 +1523,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 						option( item ) {
 							const opt = Choices.defaults.templates.option.call( this, item );
 
-							// Add a `.placeholder` class for placeholder option - it needs for WPForm CL.
+							// Add a `.placeholder` class for the placeholder option - it needs for WPForm CL.
 							if ( 'undefined' !== typeof item.placeholder && true === item.placeholder ) {
 								opt.classList.add( 'placeholder' );
 							}
@@ -1564,6 +1587,8 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			} );
 
 			// Payments: Update Total field(s) when latest calculation.
+			// Developer note: We need to listen to change and input both in these cases to catch all available events: Single Item (user input type), text typing, input changes, etc.
+			// Also, CL is triggering input event after resetting hidden fields.
 			let debounceTimerPrice;
 			$document.on( 'change input', '.wpforms-payment-price', function() {
 				// Using the setTimeout with an interval of 0,
@@ -1576,7 +1601,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 			// Payments: Update Total field(s) when changing quantity.
 			let debounceTimerQuantity;
-			$document.on( 'change input', 'select.wpforms-payment-quantity', function() {
+			$document.on( 'change', 'select.wpforms-payment-quantity', function() {
 				// Using the setTimeout with an interval of 0,
 				// we can defer the execution of the app.amountTotal() function.
 				clearTimeout( debounceTimerQuantity );
@@ -1653,7 +1678,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					return false;
 				}
 
-				// Cause the input to be clicked when pressing Space bar on the label.
+				// Cause the input to be clicked when pressing the Space bar on the label.
 				if ( event.keyCode !== 32 ) {
 					return;
 				}
@@ -1808,7 +1833,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				return /^[-0-9.]+$/.test( String.fromCharCode( e.keyCode || e.which ) );
 			} );
 
-			// Start anti-spam timer on interaction of the form fields.
+			// Start an anti-spam timer on interaction of the form fields.
 			$document
 				.one( 'input', '.wpforms-field input, .wpforms-field textarea, .wpforms-field select', app.formChanged )
 				.one( 'change', '.wpforms-field-select-style-modern, .wpforms-timepicker', app.formChanged )
@@ -1820,7 +1845,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Skip empty pages (by CL, hidden fields etc.) inside multi-steps forms.
+		 * Skip empty pages (by CL, hidden fields, etc.) inside multi-steps forms.
 		 *
 		 * @since 1.8.5
 		 *
@@ -2019,7 +2044,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Scroll to and focus on the field with error.
+		 * Scroll to and focus on the field with the error.
 		 *
 		 * @since 1.5.8
 		 *
@@ -2085,7 +2110,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Check the validity of all the fields in the current page.
+		 * Check the validity of all the fields on the current page.
 		 *
 		 * @since 1.7.6
 		 *
@@ -2103,7 +2128,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 			$page.find( ':input' ).each( function( index, el ) {
 				const $el = $( el );
-				// Skip input fields without `name` attribute, which could have fields.
+				// Skip input fields without the ` name ` attribute, which could have fields.
 				// E.g. `Placeholder` input for Modern dropdown.
 				if ( ! $el.attr( 'name' ) ) {
 					return;
@@ -2185,7 +2210,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Toggle the reCaptcha and submit container display.
+		 * Toggle the reCaptcha and submit the container display.
 		 *
 		 * @since 1.7.6
 		 *
@@ -2235,7 +2260,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 *
 		 * @param {jQuery} $form WPForms element object.
 		 * @return {number|boolean} Returns a number if position to page scroll is found.
-		 * Otherwise, return `false` if position isn't found.
+		 * Otherwise, return `false` if the position isn't found.
 		 */
 		getPageScroll( $form ) {
 			if ( false === window.wpforms_pageScroll ) {
@@ -2301,7 +2326,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Manipulate 'progress' theme indicator.
+		 * Manipulate the 'progress' theme indicator.
 		 *
 		 * @since 1.7.6
 		 *
@@ -2458,11 +2483,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			const type = $el.prop( 'type' );
 
 			// Force re-calculation for choices and dropdown fields.
-			if ( type === 'radio' || type === 'select-one' || type === 'checkbox' ) {
-				return true;
-			}
-
-			return false;
+			return type === 'radio' || type === 'select-one' || type === 'checkbox';
 		},
 
 		/**
@@ -2475,21 +2496,41 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 * @param {string} total         Formatted form total.
 		 */
 		updateOrderSummaryItems( $form, $paymentField, total ) {
-			$form.find( '.wpforms-order-summary-preview' ).each( function() {
+			const $summaries = $form.find( '.wpforms-order-summary-preview' );
+
+			if ( $summaries.length === 0 ) {
+				return;
+			}
+
+			const $paymentFields = $form.find( '.wpforms-payment-price' );
+			const batchSize = 10; // Increased batch size for better performance.
+
+			$summaries.each( function() {
 				const $summary = $( this );
 
 				if ( total !== '' ) {
 					$summary.find( '.wpforms-order-summary-preview-total .wpforms-order-summary-item-price' ).text( total );
 				}
 
-				$form.find( '.wpforms-payment-price' ).each( function() {
-					app.updateOrderSummaryItem( $( this ), $summary );
-				} );
+				// Use a single setTimeout for all batches to reduce scheduling overhead.
+				const processBatch = ( startIndex ) => {
+					const endIndex = Math.min( startIndex + batchSize, $paymentFields.length );
+
+					for ( let j = startIndex; j < endIndex; j++ ) {
+						app.updateOrderSummaryItem( $( $paymentFields[ j ] ), $summary );
+					}
+
+					if ( endIndex < $paymentFields.length ) {
+						setTimeout( () => processBatch( endIndex ), 0 );
+					}
+				};
+
+				processBatch( 0 );
 			} );
 		},
 
 		/**
-		 * Update value in cache.
+		 * Update value in the cache.
 		 *
 		 * @since 1.9.2
 		 *
@@ -2531,7 +2572,6 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 * @param {jQuery} $paymentField Payment field object.
 		 * @param {jQuery} $summary      Summary object.
 		 */
-		// eslint-disable-next-line complexity
 		updateOrderSummaryItem( $paymentField, $summary ) {
 			if ( ! $paymentField.hasClass( 'wpforms-payment-price' ) ) {
 				return;
@@ -2799,7 +2839,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				amount = whole + '.' + part;
 			}
 
-			// Strip "," from the amount (if set as thousands separator)
+			// Strip "," from the amount (if set as thousands' separator)
 			if ( ',' === currency.thousands_sep && ( amount.indexOf( currency.thousands_sep ) !== -1 ) ) {
 				amount = amount.replace( /,/g, '' );
 			}
@@ -2881,7 +2921,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 * @param {string} number       Number to format.
 		 * @param {number} decimals     How many decimals should be there.
 		 * @param {string} decimalSep   What is the decimal separator.
-		 * @param {string} thousandsSep What is the thousand separator.
+		 * @param {string} thousandsSep What is the thousand's separator.
 		 *
 		 * @return {string} Formatted number.
 		 */
@@ -2977,7 +3017,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Create cookie.
+		 * Create a cookie.
 		 *
 		 * @since 1.3.3
 		 *
@@ -3049,7 +3089,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Get user browser preferred language.
+		 * Get the user browser preferred language.
 		 *
 		 * @since 1.5.2
 		 * @deprecated 1.9.4
@@ -3129,7 +3169,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Restore default state for the form submit button.
+		 * Restore the default state for the form submit button.
 		 *
 		 * @since 1.7.6
 		 *
@@ -3228,7 +3268,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			// Check for invisible recaptcha first.
 			recaptchaID = $form.find( '.wpforms-submit' ).get( 0 ).recaptchaID;
 
-			// Check for hcaptcha/recaptcha v2, if invisible recaptcha is not found.
+			// Check for hcaptcha/recaptcha v2 if invisible recaptcha is not found.
 			if ( app.empty( recaptchaID ) && recaptchaID !== 0 ) {
 				recaptchaID = $form.find( '.g-recaptcha' ).data( 'recaptcha-id' );
 			}
@@ -3285,7 +3325,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Display form AJAX general errors that cannot be displayed using jQuery Validation plugin.
+		 * Display form AJAX general errors that cannot be displayed using the jQuery Validation plugin.
 		 *
 		 * @since 1.5.3
 		 *
@@ -3360,7 +3400,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					$form.find( '.wpforms-submit-container' ).before( html );
 				} else {
 					// Check if it is a multipage form.
-					// If it is a multipage form, we need error only on the first page.
+					// If it is a multipage form, we need an error only on the first page.
 					$form.find( '.wpforms-page-1' ).append( html );
 				}
 			}
@@ -3403,7 +3443,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Clear forms AJAX general errors that cannot be cleared using jQuery Validation plugin.
+		 * Clear forms AJAX general errors that cannot be cleared using the jQuery Validation plugin.
 		 *
 		 * @since 1.5.3
 		 *
@@ -3447,7 +3487,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 			errors = app.splitFieldErrors( errors );
 
-			// Set data attribute for each field with server error.
+			// Set a data attribute for each field with the server error.
 			$.each( errors, function( field, message ) {
 				const $field = $( '[name="' + field + '"]', $form );
 
@@ -3481,9 +3521,9 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					return;
 				}
 
-				// If errors an object consisting of { subfield: errorMessage }, then iterate each to display error.
+				// If errors an object consisting of { subfield: errorMessage }, then iterate each to display an error.
 				$.each( message, function( subfield, errorMessage ) {
-					// Get the last part of the field (in []) and check if it is the same as subfield.
+					// Get the last part of the field (in []) and check if it is the same as the subfield.
 					const lastPart = field.split( '[' ).pop().replace( ']', '' );
 					// Get from the `field` name all except what we caught in `lastPart`.
 					const fieldNameBase = field.replace( '[' + lastPart + ']', '' );
@@ -3598,7 +3638,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 			args.complete = function( jqHXR, textStatus ) {
 				/*
-				 * Do not make form active if the action is required, or
+				 * Do not make the form active if the action is required, or
 				 * if the ajax request was successful and the form has a redirect.
 				 */
 				if (
@@ -3630,12 +3670,12 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Display page with error for multiple page form.
+		 * Display page with error for a multiple page form.
 		 *
 		 * @since 1.7.9
 		 *
 		 * @param {jQuery} $form Form element.
-		 * @param {Object} $json Error json.
+		 * @param {Object} $json Error JSON.
 		 */
 		setCurrentPage( $form, $json ) { // eslint-disable-line complexity
 			// Return for one-page forms.
@@ -3662,14 +3702,14 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				return;
 			}
 
-			// Get the first page with error.
+			// Get the first page with an error.
 			const $currentPage = $errorPages.length > 0 ? $errorPages[ 0 ] : $form.find( '.wpforms-page-1' );
 			const currentPage = $currentPage.data( 'page' );
 
 			let $page,
 				action = 'prev';
 
-			// If error is on the first page, or we have general errors among others, go to the first page.
+			// If the error is on the first page, or we have general errors among others, go to the first page.
 			if ( currentPage === 1 || ( $json.errors !== undefined && $json.errors.general.footer !== undefined ) ) {
 				$page = $form.find( '.wpforms-page-1' ).next();
 			} else {
@@ -3677,11 +3717,11 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				action = $currentPage.next().length !== 0 ? 'prev' : 'next';
 			}
 
-			// Take the page from which navigate to error.
+			// Take the page from which navigate to the error.
 			const $nextBtn = $page.find( '.wpforms-page-next' ),
 				page = $page.data( 'page' );
 
-			// Imitate navigation to the page with error.
+			// Imitate navigation to the page with an error.
 			app.navigateToPage( $nextBtn, action, page, $form, $( '.wpforms-page-' + page ) );
 		},
 
@@ -3851,7 +3891,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 */
 		restoreSubmitButtonOnEventPersisted() {
 			window.onpageshow = function( event ) {
-				// If back/forward button has been clicked, restore submit button for all forms on the page.
+				// If the back / forward button has been clicked, restore the 'submit' button for all forms on the page.
 				if ( event.persisted ) {
 					$( '.wpforms-form' ).each( function() {
 						const $form = $( this );
@@ -3862,7 +3902,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * We need separate method for loading validation groups
+		 * We need a separate method for loading validation groups
 		 * because we may dynamically extend them.
 		 *
 		 * @since 1.9.2.3
@@ -3880,8 +3920,8 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Return validation groups for Date / Time field with
-		 * dropdown and there should only one error message for whole field.
+		 * Return validation groups for the Date / Time field with dropdown
+		 * and there should only one error message for the whole field.
 		 *
 		 * @since 1.9.2.3
 		 *
@@ -3921,7 +3961,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		},
 
 		/**
-		 * Retrieve current timestamp in seconds.
+		 * Retrieve the current timestamp in seconds.
 		 *
 		 * @since 1.9.2.3
 		 *

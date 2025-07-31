@@ -254,6 +254,10 @@ abstract class WPForms_Builder_Panel {
 		$wrap    = $this->sidebar ? 'wpforms-panel-sidebar-content' : 'wpforms-panel-full-content';
 		$classes = [ 'wpforms-panel' ];
 
+		// Determine whether the form data is corrupted and a dedicated alert message needs to be shown,
+		// keep the revisions panel to be able to restore the form.
+		$is_form_corrupted = is_array( $this->form_data ) && empty( $this->form_data ) && $this->slug !== 'revisions';
+
 		if ( in_array( $this->slug, [ 'fields', 'revisions' ], true ) ) {
 			$classes[] = 'wpforms-panel-fields';
 		}
@@ -262,11 +266,15 @@ abstract class WPForms_Builder_Panel {
 			$classes[] = 'active';
 		}
 
+		if ( $is_form_corrupted ) {
+			$classes[] = 'wpforms-panel-corrupted-data';
+		}
+
 		printf( '<div class="%s" id="wpforms-panel-%s">', wpforms_sanitize_classes( $classes, true ), esc_attr( $this->slug ) );
 
 		printf( '<div class="%s">', esc_attr( $wrap ) );
 
-		if ( true === $this->sidebar ) {
+		if ( $this->sidebar === true && ! $is_form_corrupted ) {
 
 			if ( $this->slug === 'fields' ) {
 				echo '<div class="wpforms-panel-sidebar-toggle"><div class="wpforms-panel-sidebar-toggle-vertical-line"></div><div class="wpforms-panel-sidebar-toggle-icon"><i class="fa fa-angle-left"></i></div></div>';
@@ -282,17 +290,47 @@ abstract class WPForms_Builder_Panel {
 
 			echo '</div>';
 
+			/**
+			 * Allow adding custom content after the panel sidebar in the Form Builder.
+			 *
+			 * @since 1.9.7
+			 *
+			 * @param object $form Current form object.
+			 * @param string $slug Current panel slug.
+			 */
+			do_action( 'wpforms_builder_panel_sidebar_after', $this->form, $this->slug );
 		}
 
 		echo '<div class="wpforms-panel-content-wrap">';
 
 		echo '<div class="wpforms-panel-content">';
 
-		do_action( 'wpforms_builder_before_panel_content', $this->form, $this->slug );
+		if ( $is_form_corrupted ) {
+			$this->form_corrupted_message();
+		} else {
 
-		$this->panel_content();
+			/**
+			 * Allow adding custom content before the panel content in the Form Builder.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param object $form Current form object.
+			 * @param string $slug Current panel slug.
+			 */
+			do_action( 'wpforms_builder_before_panel_content', $this->form, $this->slug ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
-		do_action( 'wpforms_builder_after_panel_content', $this->form, $this->slug );
+			$this->panel_content();
+
+			/**
+			 * Allow adding custom content after the panel content in the Form Builder.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param object $form Current form object.
+			 * @param string $slug Current panel slug.
+			 */
+			do_action( 'wpforms_builder_after_panel_content', $this->form, $this->slug ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+		}
 
 		echo '</div>';
 
@@ -367,5 +405,58 @@ abstract class WPForms_Builder_Panel {
 	 * @since 1.0.0
 	 */
 	public function panel_content() {
+	}
+
+	/**
+	 * Error message for a corrupted form.
+	 *
+	 * @since 1.9.7
+	 */
+	private function form_corrupted_message(): void {
+		?>
+
+		<div class="wpforms-builder-preview-corrupted-data-content">
+			<div class="wpforms-builder-corrupted-data-title">
+				<h2>
+					<?php esc_html_e( 'Corrupted Form Data', 'wpforms-lite' ); ?>
+				</h2>
+			</div>
+			<div>
+				<p>
+					<?php
+					printf(
+						wp_kses(
+							__( 'A critical error has occurred, preventing your form from loading. This issue may arise from incorrect code in a third-party theme or plugin, or from invalid characters in your form. You can attempt to restore a previous version of your form using <a href="#" class="wpforms-panel-content-revisions-link">Form Revisions</a>.', 'wpforms-lite' ),
+							[
+								'a' => [
+									'href'  => [],
+									'class' => [],
+								],
+							]
+						)
+					);
+					?>
+				</p>
+				<br>
+				<p>
+					<?php
+					printf(
+						wp_kses( /* translators: %s - WPForms contact support link. */
+							__( 'If the issue persists, <a href="%s" target="_blank" rel="noopener noreferrer">please contact support</a>.', 'wpforms-lite' ),
+							[
+								'a' => [
+									'href'   => [],
+									'target' => [],
+									'rel'    => [],
+								],
+							]
+						),
+						esc_url( wpforms_utm_link( 'https://wpforms.com/account/support/', 'Corrupted Form Data' ) )
+					);
+					?>
+				</p>
+			</div>
+		</div>
+		<?php
 	}
 }

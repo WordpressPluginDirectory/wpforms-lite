@@ -458,7 +458,7 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
  * @return string
  * @noinspection HtmlUnknownAttribute
  */
-function wpforms_panel_field_toggle_control( $args, $input_id, $field_name, $label, $value, $data_attr ): string { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+function wpforms_panel_field_toggle_control( $args, $input_id, $field_name, $label, $value, $data_attr ): string { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 	$checked = checked( true, (bool) $value, false );
 	$status  = '';
@@ -632,7 +632,7 @@ function wpforms_builder_preview_get_allowed_tags(): array {
  * @return string|null
  * @noinspection HtmlUnknownAttribute
  */
-function wpforms_panel_fields_group( $inner, $args = [], $do_echo = true ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+function wpforms_panel_fields_group( $inner, $args = [], $do_echo = true ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 	$group      = ! empty( $args['group'] ) ? $args['group'] : '';
 	$unfoldable = ! empty( $args['unfoldable'] );

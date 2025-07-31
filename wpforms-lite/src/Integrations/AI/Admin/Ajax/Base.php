@@ -84,7 +84,7 @@ abstract class Base {
 	 *
 	 * @return mixed
 	 */
-	protected function get_post_data( string $key, string $type = 'text' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function get_post_data( string $key, string $type = 'text' ) {
 
 		switch ( $type ) {
 			case 'int':

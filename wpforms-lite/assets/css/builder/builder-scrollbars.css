@@ -6,6 +6,7 @@ textarea::-webkit-scrollbar,
 #wpforms-panel-fields .wpforms-tab-content::-webkit-scrollbar,
 .wpforms-panel:not(#wpforms-panel-fields) .wpforms-panel-sidebar::-webkit-scrollbar,
 #wpforms-builder-help::-webkit-scrollbar,
+.wpforms-builder-themes-sidebar-content::-webkit-scrollbar,
 .wpforms-scrollbar-compact::-webkit-scrollbar {
   background: transparent;
   width: 15px;
@@ -20,6 +21,7 @@ textarea::-webkit-scrollbar-track,
 #wpforms-panel-fields .wpforms-tab-content::-webkit-scrollbar-track,
 .wpforms-panel:not(#wpforms-panel-fields) .wpforms-panel-sidebar::-webkit-scrollbar-track,
 #wpforms-builder-help::-webkit-scrollbar-track,
+.wpforms-builder-themes-sidebar-content::-webkit-scrollbar-track,
 .wpforms-scrollbar-compact::-webkit-scrollbar-track {
   background: transparent;
 }
@@ -32,6 +34,7 @@ textarea::-webkit-scrollbar-thumb,
 #wpforms-panel-fields .wpforms-tab-content::-webkit-scrollbar-thumb,
 .wpforms-panel:not(#wpforms-panel-fields) .wpforms-panel-sidebar::-webkit-scrollbar-thumb,
 #wpforms-builder-help::-webkit-scrollbar-thumb,
+.wpforms-builder-themes-sidebar-content::-webkit-scrollbar-thumb,
 .wpforms-scrollbar-compact::-webkit-scrollbar-thumb {
   box-shadow: inset 0 0 5px 5px rgba(0, 0, 0, 0);
   background: transparent;
@@ -61,6 +64,9 @@ textarea::-webkit-resizer, textarea::-webkit-scrollbar-button, textarea::-webkit
 #wpforms-builder-help::-webkit-resizer,
 #wpforms-builder-help::-webkit-scrollbar-button,
 #wpforms-builder-help::-webkit-scrollbar-corner,
+.wpforms-builder-themes-sidebar-content::-webkit-resizer,
+.wpforms-builder-themes-sidebar-content::-webkit-scrollbar-button,
+.wpforms-builder-themes-sidebar-content::-webkit-scrollbar-corner,
 .wpforms-scrollbar-compact::-webkit-resizer,
 .wpforms-scrollbar-compact::-webkit-scrollbar-button,
 .wpforms-scrollbar-compact::-webkit-scrollbar-corner {
@@ -76,6 +82,7 @@ textarea::-webkit-resizer, textarea::-webkit-scrollbar-button, textarea::-webkit
   #wpforms-panel-fields .wpforms-tab-content,
   .wpforms-panel:not(#wpforms-panel-fields) .wpforms-panel-sidebar,
   #wpforms-builder-help,
+  .wpforms-builder-themes-sidebar-content,
   .wpforms-scrollbar-compact {
     scrollbar-color: rgba(0, 0, 0, 0) transparent;
     scrollbar-gutter: initial !important;
@@ -98,6 +105,8 @@ textarea:hover::-webkit-scrollbar, textarea:focus::-webkit-scrollbar,
 .wpforms-panel:not(#wpforms-panel-fields) .wpforms-panel-sidebar:focus::-webkit-scrollbar,
 #wpforms-builder-help:hover::-webkit-scrollbar,
 #wpforms-builder-help:focus::-webkit-scrollbar,
+.wpforms-builder-themes-sidebar-content:hover::-webkit-scrollbar,
+.wpforms-builder-themes-sidebar-content:focus::-webkit-scrollbar,
 .wpforms-scrollbar-compact:hover::-webkit-scrollbar,
 .wpforms-scrollbar-compact:focus::-webkit-scrollbar {
   background: transparent;
@@ -120,6 +129,8 @@ textarea:hover::-webkit-scrollbar-track, textarea:focus::-webkit-scrollbar-track
 .wpforms-panel:not(#wpforms-panel-fields) .wpforms-panel-sidebar:focus::-webkit-scrollbar-track,
 #wpforms-builder-help:hover::-webkit-scrollbar-track,
 #wpforms-builder-help:focus::-webkit-scrollbar-track,
+.wpforms-builder-themes-sidebar-content:hover::-webkit-scrollbar-track,
+.wpforms-builder-themes-sidebar-content:focus::-webkit-scrollbar-track,
 .wpforms-scrollbar-compact:hover::-webkit-scrollbar-track,
 .wpforms-scrollbar-compact:focus::-webkit-scrollbar-track {
   background: transparent;
@@ -140,6 +151,8 @@ textarea:hover::-webkit-scrollbar-thumb, textarea:focus::-webkit-scrollbar-thumb
 .wpforms-panel:not(#wpforms-panel-fields) .wpforms-panel-sidebar:focus::-webkit-scrollbar-thumb,
 #wpforms-builder-help:hover::-webkit-scrollbar-thumb,
 #wpforms-builder-help:focus::-webkit-scrollbar-thumb,
+.wpforms-builder-themes-sidebar-content:hover::-webkit-scrollbar-thumb,
+.wpforms-builder-themes-sidebar-content:focus::-webkit-scrollbar-thumb,
 .wpforms-scrollbar-compact:hover::-webkit-scrollbar-thumb,
 .wpforms-scrollbar-compact:focus::-webkit-scrollbar-thumb {
   box-shadow: inset 0 0 5px 5px rgba(0, 0, 0, 0.5);
@@ -191,6 +204,12 @@ textarea:hover::-webkit-resizer, textarea:hover::-webkit-scrollbar-button, texta
 #wpforms-builder-help:focus::-webkit-resizer,
 #wpforms-builder-help:focus::-webkit-scrollbar-button,
 #wpforms-builder-help:focus::-webkit-scrollbar-corner,
+.wpforms-builder-themes-sidebar-content:hover::-webkit-resizer,
+.wpforms-builder-themes-sidebar-content:hover::-webkit-scrollbar-button,
+.wpforms-builder-themes-sidebar-content:hover::-webkit-scrollbar-corner,
+.wpforms-builder-themes-sidebar-content:focus::-webkit-resizer,
+.wpforms-builder-themes-sidebar-content:focus::-webkit-scrollbar-button,
+.wpforms-builder-themes-sidebar-content:focus::-webkit-scrollbar-corner,
 .wpforms-scrollbar-compact:hover::-webkit-resizer,
 .wpforms-scrollbar-compact:hover::-webkit-scrollbar-button,
 .wpforms-scrollbar-compact:hover::-webkit-scrollbar-corner,
@@ -216,6 +235,8 @@ textarea:hover::-webkit-resizer, textarea:hover::-webkit-scrollbar-button, texta
   .wpforms-panel:not(#wpforms-panel-fields) .wpforms-panel-sidebar:focus,
   #wpforms-builder-help:hover,
   #wpforms-builder-help:focus,
+  .wpforms-builder-themes-sidebar-content:hover,
+  .wpforms-builder-themes-sidebar-content:focus,
   .wpforms-scrollbar-compact:hover,
   .wpforms-scrollbar-compact:focus {
     scrollbar-color: rgba(0, 0, 0, 0.5) transparent;

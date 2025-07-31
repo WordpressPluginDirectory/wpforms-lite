@@ -46,7 +46,7 @@ abstract class Widget {
 	 *
 	 * @return mixed
 	 */
-	protected function widget_meta( $action, $meta, $value = 0 ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	protected function widget_meta( $action, $meta, $value = 0 ) {
 
 		$allowed_actions = [ 'get', 'set' ];
 
@@ -58,7 +58,6 @@ abstract class Widget {
 			'timespan'               => $this->get_timespan_default(),
 			'active_form_id'         => 0,
 			'hide_recommended_block' => 0,
-			'hide_welcome_block'     => 0,
 			'hide_graph'             => 0,
 			'color_scheme'           => 1, // 1 - wpforms, 2 - wp
 			'graph_style'            => 2, // 1 - bar, 2 - line

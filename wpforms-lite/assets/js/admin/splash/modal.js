@@ -92,8 +92,6 @@ const WPSplash = window.WPSplash || ( function( document, window, $ ) {
 				},
 				onOpen() {
 					$( '.jconfirm' ).css( 'bottom', 0 );
-					$( '.wpforms-dash-widget-welcome-block' ).remove();
-					app.dismissDashboardWidgetBanner();
 				},
 				onDestroy() {
 					$( 'body' )
@@ -107,16 +105,11 @@ const WPSplash = window.WPSplash || ( function( document, window, $ ) {
 		 * Dismiss the dashboard widget banner.
 		 *
 		 * @since 1.9.0
+		 * @deprecated 1.9.7
 		 */
 		dismissDashboardWidgetBanner() {
-			const data = {
-				_wpnonce: wpforms_splash_data.nonce,
-				action  : 'wpforms_dash_widget_save_widget_meta',
-				meta: 'hide_welcome_block',
-				value: 1,
-			};
-
-			$.post( ajaxurl, data );
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsBuilder.dismissDashboardWidgetBanner()" has been deprecated.' );
 		},
 	};
 
