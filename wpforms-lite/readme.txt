@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.8
-Stable tag: 1.9.7.1
+Stable tag: 1.9.7.2
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -386,6 +386,9 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.7.2 =
+- Fixed: JS errors might affect the form submission on some environments with installed plugins for caching.
 
 = 1.9.7.1 =
 - Added: Ability to apply Styles and Themes directly within the WPForms Form Builder.

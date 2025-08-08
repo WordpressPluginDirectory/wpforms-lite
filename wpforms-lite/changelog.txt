@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.9.7.2 =
+- Fixed: JS errors might affect the form submission on some environments with installed plugins for caching.
+
 = 1.9.7.1 =
 - Added: Ability to apply Styles and Themes directly within the WPForms Form Builder.
 - Added: Ability to copy whole Smart Tags input content if it contains smart tags.

@@ -14,6 +14,23 @@
  */
 var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-disable-line no-var
 	// noinspection JSUnusedGlobalSymbols
+
+	/**
+	 * Safely get a property from wpforms_settings with a fallback default value.
+	 *
+	 * @since 1.9.7.2
+	 *
+	 * @internal
+	 *
+	 * @param {string} property     The property name to retrieve from wpforms_settings.
+	 * @param {any}    defaultValue The default value to return if property doesn't exist.
+	 *
+	 * @return {any} The property value or default value.
+	 */
+	function getSetting( property, defaultValue = '' ) {
+		return window?.wpforms_settings?.[ property ] ?? defaultValue;
+	}
+
 	/**
 	 * Public functions and properties.
 	 *
@@ -279,8 +296,8 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			$.validator.messages.url = wpforms_settings.val_url;
 			$.validator.messages.email = wpforms_settings.val_email;
 			$.validator.messages.number = wpforms_settings.val_number;
-			$.validator.messages.min = wpforms_settings.val_min.replace( '{value}', '{0}' );
-			$.validator.messages.max = wpforms_settings.val_max.replace( '{value}', '{0}' );
+			$.validator.messages.min = getSetting( 'val_min', 'Please enter a value greater than or equal to {0}' ).replace( '{value}', '{0}' );
+			$.validator.messages.max = getSetting( 'val_max', 'Please enter a value less than or equal to {0}' ).replace( '{value}', '{0}' );
 
 			// Payments: Validate method for Credit Card Number.
 			if ( typeof $.fn.payment !== 'undefined' ) {
