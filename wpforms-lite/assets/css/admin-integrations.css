@@ -1966,6 +1966,12 @@
   width: 24px;
 }
 
+.wpforms-loading-spinner.wpforms-loading-lg {
+  background-size: 32px 32px;
+  height: 32px;
+  width: 32px;
+}
+
 .wpforms-loading-spinner.wpforms-loading-inline {
   display: inline-block;
   margin: auto;

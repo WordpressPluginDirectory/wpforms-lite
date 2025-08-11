@@ -151,14 +151,6 @@ class DashboardWidget extends Widget {
 		);
 
 		wp_enqueue_script(
-			'wpforms-chart-adapter-moment',
-			WPFORMS_PLUGIN_URL . 'assets/lib/chartjs-adapter-moment.min.js',
-			[ 'moment', 'wpforms-chart' ],
-			'1.0.1',
-			true
-		);
-
-		wp_enqueue_script(
 			'wpforms-dashboard-widget',
 			WPFORMS_PLUGIN_URL . "assets/lite/js/admin/dashboard-widget{$min}.js",
 			[ 'jquery', 'wpforms-chart' ],
@@ -177,6 +169,8 @@ class DashboardWidget extends Widget {
 				'i18n'           => [
 					'entries' => esc_html__( 'Entries', 'wpforms-lite' ),
 				],
+				// Adapter for Chart.js to use Moment.js for date formatting.
+				'adapter_path'   => WPFORMS_PLUGIN_URL . 'assets/lib/chartjs-adapter-moment.min.js?ver=1.0.1',
 			]
 		);
 	}

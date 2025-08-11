@@ -8,13 +8,13 @@
 use WPForms\Logger\Log;
 
 /**
- * Check whether plugin works in a debug mode.
+ * Check whether the plugin works in a debug mode.
  *
  * @since 1.2.3
  *
  * @return bool
  */
-function wpforms_debug() {
+function wpforms_debug(): bool {
 
 	$debug = false;
 
@@ -22,7 +22,14 @@ function wpforms_debug() {
 		$debug = true;
 	}
 
-	return apply_filters( 'wpforms_debug', $debug );
+	/**
+	 * Filters wpforms_debug status.
+	 *
+	 * @since 1.2.3
+	 *
+	 * @param bool $debug WPForms debug status.
+	 */
+	return (bool) apply_filters( 'wpforms_debug', $debug );
 }
 
 /**
@@ -30,12 +37,12 @@ function wpforms_debug() {
  *
  * @since 1.0.0
  *
- * @param mixed $data What to dump, can be any type.
- * @param bool  $echo Whether to print or return. Default is to print.
+ * @param mixed $data    What to dump - can be any type.
+ * @param bool  $do_echo Whether to print or return. The default is to print.
  *
  * @return string|void
  */
-function wpforms_debug_data( $data, $echo = true ) {
+function wpforms_debug_data( $data, bool $do_echo = true ) {
 
 	if ( ! wpforms_debug() ) {
 		return;
@@ -92,7 +99,7 @@ function wpforms_debug_data( $data, $echo = true ) {
 	 */
 	$allow_display = apply_filters( 'wpforms_debug_data_allow_display', true );
 
-	if ( $echo && $allow_display ) {
+	if ( $do_echo && $allow_display ) {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $output;
 	} else {
@@ -161,11 +168,11 @@ function wpforms_log( $title = '', $message = '', $args = [] ) { // phpcs:ignore
 
 	// Make arrays and objects look nice.
 	if ( is_array( $message ) || is_object( $message ) ) {
-		$message = '<pre>' . print_r( $message, true ) . '</pre>'; // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		$message = '<pre>' . esc_html( print_r( $message, true ) ) . '</pre>'; // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 	}
 
 	// Filter logs types from Tools -> Logs page.
-	$logs_types = wpforms_setting( 'logs-types', false );
+	$logs_types = wpforms_setting( 'logs-types' );
 
 	if ( $logs_types && empty( array_intersect( $logs_types, $types ) ) ) {
 		return;
@@ -175,14 +182,14 @@ function wpforms_log( $title = '', $message = '', $args = [] ) { // phpcs:ignore
 	$current_user       = function_exists( 'wp_get_current_user' ) ? wp_get_current_user() : null;
 	$current_user_id    = $current_user->ID ?? 0;
 	$current_user_roles = $current_user->roles ?? [];
-	$logs_user_roles    = wpforms_setting( 'logs-user-roles', false );
+	$logs_user_roles    = wpforms_setting( 'logs-user-roles' );
 
 	if ( $logs_user_roles && empty( array_intersect( $logs_user_roles, $current_user_roles ) ) ) {
 		return;
 	}
 
 	// Filter logs users from Tools -> Logs page.
-	$logs_users = wpforms_setting( 'logs-users', false );
+	$logs_users = wpforms_setting( 'logs-users' );
 
 	if ( $logs_users && ! in_array( $current_user_id, $logs_users, true ) ) {
 		return;
@@ -190,7 +197,7 @@ function wpforms_log( $title = '', $message = '', $args = [] ) { // phpcs:ignore
 
 	$log = wpforms()->obj( 'log' );
 
-	if ( ! method_exists( $log, 'add' ) ) {
+	if ( ! $log || ! method_exists( $log, 'add' ) ) {
 		return;
 	}
 
@@ -214,7 +221,7 @@ function wpforms_log( $title = '', $message = '', $args = [] ) { // phpcs:ignore
  */
 function wpforms_set_time_limit( $limit = 0 ) {
 
-	if ( function_exists( 'set_time_limit' ) && false === strpos( ini_get( 'disable_functions' ), 'set_time_limit' ) && ! ini_get( 'safe_mode' ) ) { // phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.safe_modeDeprecatedRemoved
+	if ( function_exists( 'set_time_limit' ) && false === strpos( ini_get( 'disable_functions' ), 'set_time_limit' ) ) {
 		@set_time_limit( $limit ); // @codingStandardsIgnoreLine
 	}
 }

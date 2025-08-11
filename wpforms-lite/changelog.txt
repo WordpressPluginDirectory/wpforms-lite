@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.9.7.3 =
+- Added: Settings for Number fields validation messages in the Settings > Validation page.
+- Fixed: The Dashboard Widget was broken because of compatibility issue with Bookly plugin.
+
 = 1.9.7.2 =
 - Fixed: JS errors might affect the form submission on some environments with installed plugins for caching.
 

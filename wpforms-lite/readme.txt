@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.8
-Stable tag: 1.9.7.2
+Stable tag: 1.9.7.3
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -386,6 +386,10 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.7.3 =
+- Added: Settings for Number fields validation messages in the Settings > Validation page.
+- Fixed: The Dashboard Widget was broken because of compatibility issue with Bookly plugin.
 
 = 1.9.7.2 =
 - Fixed: JS errors might affect the form submission on some environments with installed plugins for caching.

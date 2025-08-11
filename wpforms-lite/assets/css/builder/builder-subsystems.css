@@ -871,3 +871,62 @@
 .wpforms-admin-page .wpforms-panel-content .wpforms-alert.wpforms-pro-fields-notice .wpforms-alert-buttons button:hover {
   opacity: 1;
 }
+
+.wpforms-pdf-popup {
+  position: fixed;
+  bottom: 16px;
+  inset-inline-end: 16px;
+  width: 280px;
+  height: 258px;
+  padding: 63px 30px 30px 30px;
+  background-color: white;
+  z-index: 100109;
+  text-align: center;
+  box-shadow: 5px 10px 30px -5px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+}
+
+.wpforms-pdf-popup .wpforms-pdf-popup-content .icon {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.wpforms-pdf-popup .wpforms-pdf-popup-content .icon img {
+  width: 64px;
+  height: 69px;
+}
+
+.wpforms-pdf-popup .wpforms-pdf-popup-content .close-popup {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 11px;
+  cursor: pointer;
+  transform: scale(1.4);
+  color: #bbbbbb;
+}
+
+.wpforms-pdf-popup .wpforms-pdf-popup-content .badge {
+  color: #30b450;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 100%;
+}
+
+.wpforms-pdf-popup .wpforms-pdf-popup-content h2 {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 100%;
+  margin: 8px;
+}
+
+.wpforms-pdf-popup .wpforms-pdf-popup-content p {
+  line-height: 20px;
+  margin-top: 15px;
+}
+
+.wpforms-pdf-popup .wpforms-pdf-popup-content button {
+  margin-top: 10px;
+}

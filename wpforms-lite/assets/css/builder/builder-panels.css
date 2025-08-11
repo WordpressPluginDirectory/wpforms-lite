@@ -768,11 +768,15 @@
   padding: 15px 20px;
 }
 
+#wpforms-panel-settings .wpforms-builder-settings-block-header .wpforms-builder-settings-block-name-holder {
+  width: calc( 100% - 65px);
+}
+
 #wpforms-panel-settings .wpforms-builder-settings-block-header .wpforms-builder-settings-block-name-edit {
   display: none;
   margin-bottom: -7px;
   margin-top: -6px;
-  width: calc(100% - 65px);
+  width: calc( 100% - 32px);
 }
 
 #wpforms-panel-settings .wpforms-builder-settings-block-header .wpforms-builder-settings-block-name-edit.active {
@@ -1763,7 +1767,7 @@
   transition-property: all;
   transition-duration: 0.05s;
   transition-timing-function: ease-in;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   padding: 0 10px;
   height: 32px;

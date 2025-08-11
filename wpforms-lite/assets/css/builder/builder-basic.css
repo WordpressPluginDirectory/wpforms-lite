@@ -519,6 +519,12 @@ li {
   width: 24px;
 }
 
+.wpforms-loading-spinner.wpforms-loading-lg {
+  background-size: 32px 32px;
+  height: 32px;
+  width: 32px;
+}
+
 .wpforms-loading-spinner.wpforms-loading-inline {
   display: inline-block;
   margin: auto;
@@ -833,6 +839,50 @@ textarea.wpforms-error:focus,
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
+.wpforms-panel-field-image_upload .wpforms-image-upload-control {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.wpforms-panel-field-image_upload .wpforms-image-upload-control .wpforms-image-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  height: 190px;
+  padding: 20px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: none;
+}
+
+.wpforms-panel-field-image_upload .wpforms-image-upload-control .wpforms-image-preview:has(img[src=""]) {
+  background-image: url("../../images/builder/image-upload-placeholder.svg");
+  background-position: center;
+  background-size: 64px 49px;
+  background-color: #E9EAEC;
+  background-repeat: no-repeat;
+}
+
+.wpforms-panel-field-image_upload .wpforms-image-upload-control .wpforms-image-preview img {
+  max-width: 174px;
+  max-height: 148px;
+}
+
+.wpforms-panel-field-image_upload .wpforms-image-upload-control .wpforms-image-preview img[src=""] {
+  display: none;
+}
+
+.wpforms-panel-field-image_upload .wpforms-image-upload-control .wpforms-image-controls {
+  width: 50%;
+}
+
+.wpforms-panel-field-image_upload .wpforms-image-upload-control .wpforms-image-controls .wpforms-image-control-group {
+  margin-bottom: 20px;
+}
+
 .wpforms-admin-page .wpforms-btn {
   border-width: 1px;
   border-style: solid;
@@ -868,7 +918,7 @@ textarea.wpforms-error:focus,
 }
 
 .wpforms-admin-page .wpforms-btn-sm {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   padding: 0 10px;
   height: 32px;
@@ -1032,6 +1082,10 @@ textarea.wpforms-error:focus,
   width: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.wpforms-admin-page .wpforms-dismiss-button.dashicons-no-alt:before {
+  content: "\f335";
 }
 
 .wpforms-admin-page .wpforms-disabled {

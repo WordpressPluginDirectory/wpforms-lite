@@ -146,19 +146,19 @@ class Requirements {
 	 *
 	 * The requirement array can have the following values:
 	 * The 'php' value can be string like '5.6' or an array like 'php' => [ 'version' => '7.2', 'compare' => '=' ].
-	 * The 'ext' value can be string like 'curl' or an array like 'ext' => [ 'curl', 'mbstring' ].
+	 * The 'ext' value can be a string like 'curl' or an array like 'ext' => [ 'curl', 'mbstring' ].
 	 * The 'wp' value can be string like '5.5' or an array like 'wp' => [ 'version' => '6.4', 'compare' => '=' ].
 	 * The 'wpforms' value can be string like '1.8.2' or an array like 'wpforms' => [ 'version' => '1.7.5', 'compare' => '=' ].
-	 *   When 'wpforms' value is '{WPFORMS_VERSION}', it is not checked and should be used for development.
+	 *   When the 'wpforms' value is '{WPFORMS_VERSION}', it is not checked and should be used for development.
 	 * The 'license' value can be string like 'elite, agency, ultimate' or an array like 'license' => [ 'elite', 'agency', 'ultimate' ].
-	 *   When 'license' value is an empty like null, false, [], it is not checked.
-	 * The 'addon' value can be string like '2.0.1' or an array like 'addon' => [ 'version' => '2.0.1', 'compare' => '<=' ].
+	 *   When the 'license' value is empty like null, false, [], it is not checked.
+	 * The 'addon' value can be a string like '2.0.1' or an array like 'addon' => [ 'version' => '2.0.1', 'compare' => '<=' ].
 	 * The 'addon_version_constant' must be a string like 'WPFORMS_ACTIVECAMPAIGN_VERSION'.
 	 * The 'priority' must be an integer like 20. By default, it is 10.
 	 *
 	 * By default, 'compare' is '>='.
 	 *
-	 * Default addon version constant is formed from addon directory name like this:
+	 * The default addon version constant is formed from the addon directory name like this:
 	 * wpforms-activecampaign -> WPFORMS_ACTIVECAMPAIGN_VERSION.
 	 *
 	 * Requirements can be specified here or in the addon as a parameter of wpforms_requirements().
@@ -168,8 +168,8 @@ class Requirements {
 	 * 3. Parameter of wpforms_requirements() call in the addon.
 	 * Settings with a higher priority overwrite lower priority settings.
 	 *
-	 * Minimal required version of WPForms should be specified in the addons.
-	 * Minimal required version of addons should be specified here, in $this->requirements array.
+	 * The minimal-required version of WPForms should be specified in the addons.
+	 * The minimal-required version of addons should be specified here, in the `$this->requirements` array.
 	 *
 	 * We do not plan to restrict the lower addon version so far.
 	 * However, if in the future we may need to do so,
@@ -277,6 +277,9 @@ class Requirements {
 		'wpforms-offline-forms/wpforms-offline-forms.php'               => [],
 		'wpforms-paypal-commerce/wpforms-paypal-commerce.php'           => [],
 		'wpforms-paypal-standard/wpforms-paypal-standard.php'           => [],
+		'wpforms-pdf/wpforms-pdf.php'                                   => [
+			self::LICENSE => self::PRO_AND_TOP,
+		],
 		'wpforms-pipedrive/wpforms-pipedrive.php'                       => [
 			self::LICENSE => self::TOP,
 		],
@@ -480,7 +483,7 @@ class Requirements {
 				return false;
 			}
 
-			// Invoke addon loading function, which checks requirements.
+			// Invoke the addon loading function, which checks requirements.
 			$addon_load_function();
 		}
 
@@ -541,7 +544,7 @@ class Requirements {
 			return false;
 		}
 
-		// Invoke addon loading function, which checks requirements.
+		// Invoke the addon loading function, which checks requirements.
 		$addon_load_function();
 
 		// Addon may get deactivated after this statement.
@@ -562,7 +565,7 @@ class Requirements {
 	private function is_wpforms_addon( string $plugin ): bool {
 
 		if ( strpos( $plugin, 'wpforms-' ) !== 0 ) {
-			// No more actions for general plugin.
+			// No more actions for the general plugin.
 			return false;
 		}
 
@@ -587,7 +590,7 @@ class Requirements {
 	 * @param bool   $markup      Optional. If the returned data should have HTML markup applied.
 	 * @param bool   $translate   Optional. If the returned data should be translated. Default true.
 	 *
-	 * We set markup and translate to false by default, because we need raw values to compare.
+	 * We set markup and translate to false by default because we need raw values to compare.
 	 *
 	 * @return array
 	 * @noinspection PhpSameParameterValueInspection
@@ -606,7 +609,7 @@ class Requirements {
 	}
 
 	/**
-	 * Get addon function hooked on wpforms_load.
+	 * Get the addon function hooked on wpforms_load.
 	 *
 	 * @since 1.8.2.2
 	 *
@@ -1354,7 +1357,7 @@ class Requirements {
 	}
 
 	/**
-	 * Get a version from requirements array in human-readable format.
+	 * Get a version from requirements' array in human-readable format.
 	 *
 	 * @since 1.9.0
 	 *

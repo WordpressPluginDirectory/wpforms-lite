@@ -356,7 +356,7 @@ class LiteConnect implements Education\EducationInterface {
 				'is_enabled' => $this->is_enabled,
 			],
 			true
-		);
+		) . $content;
 	}
 
 	/**

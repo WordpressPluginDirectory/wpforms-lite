@@ -133,6 +133,35 @@ const WPFormsDashboardWidget = window.WPFormsDashboardWidget || ( function( docu
 				return;
 			}
 
+			chart.injectChartScript();
+		},
+
+		/**
+		 * Inject the Chart.js script into the page and trigger initialization.
+		 *
+		 * @since 1.9.7.3
+		 */
+		injectChartScript() {
+			if ( ! wpforms_dashboard_widget.adapter_path ) {
+				return;
+			}
+
+			const script = document.createElement( 'script' );
+			script.src = wpforms_dashboard_widget.adapter_path;
+			script.onload = chart.initializeChart;
+			script.onerror = function( err ) {
+				// eslint-disable-next-line no-console
+				console.log( 'Script injection failed:', err );
+			};
+			document.body.appendChild( script );
+		},
+
+		/**
+		 * Initialize Chart.js with the provided settings.
+		 *
+		 * @since 1.9.7.3
+		 */
+		initializeChart() {
 			const ctx = el.$canvas[ 0 ].getContext( '2d' );
 
 			chart.instance = new Chart( ctx, chart.settings );

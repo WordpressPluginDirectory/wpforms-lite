@@ -186,6 +186,7 @@ class Help {
 			'settings/google_drive'                   => 'google drive',
 			'settings/webhooks'                       => 'webhooks',
 			'settings/entry_automation'               => 'entry automation',
+			'settings/pdf'                            => 'pdf',
 			'providers'                               => '',
 			'providers/aweber'                        => 'aweber',
 			'providers/activecampaign'                => 'activecampaign',
@@ -953,6 +954,7 @@ class Help {
 				'/docs/how-to-create-conditional-form-notifications-in-wpforms/',
 				'/docs/troubleshooting-email-notifications/',
 				'/docs/how-to-fix-wordpress-contact-form-not-sending-email-with-smtp/',
+				'/docs/pdf-addon/',
 			],
 			'notifications'             => [
 				'/docs/setup-form-notification-wpforms/',
@@ -960,6 +962,7 @@ class Help {
 				'/docs/how-to-create-conditional-form-notifications-in-wpforms/',
 				'/docs/troubleshooting-email-notifications/',
 				'/docs/how-to-fix-wordpress-contact-form-not-sending-email-with-smtp/',
+				'/docs/pdf-addon/',
 			],
 			'notification email'        => [
 				'/docs/setup-form-notification-wpforms/',
@@ -967,6 +970,7 @@ class Help {
 				'/docs/how-to-create-conditional-form-notifications-in-wpforms/',
 				'/docs/troubleshooting-email-notifications/',
 				'/docs/how-to-fix-wordpress-contact-form-not-sending-email-with-smtp/',
+				'/docs/pdf-addon/',
 			],
 			'notification emails'       => [
 				'/docs/setup-form-notification-wpforms/',
@@ -974,6 +978,7 @@ class Help {
 				'/docs/how-to-create-conditional-form-notifications-in-wpforms/',
 				'/docs/troubleshooting-email-notifications/',
 				'/docs/how-to-fix-wordpress-contact-form-not-sending-email-with-smtp/',
+				'/docs/pdf-addon/',
 			],
 			'confirmation'              => [
 				'/docs/setup-form-confirmation-wpforms/',
@@ -1256,6 +1261,9 @@ class Help {
 			],
 			'entry automation'          => [
 				'/docs/entry-automation-addon/',
+			],
+			'pdf'                       => [
+				'/docs/pdf-addon/',
 			],
 		];
 	}

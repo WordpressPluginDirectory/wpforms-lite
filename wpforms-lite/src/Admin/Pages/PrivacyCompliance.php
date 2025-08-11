@@ -3,44 +3,42 @@
 namespace WPForms\Admin\Pages;
 
 /**
- * Analytics Sub-page.
+ * Privacy Compliance Subpage.
  *
- * @since 1.5.7
+ * @since 1.9.7.3
  */
-class Analytics {
+class PrivacyCompliance {
 
 	/**
 	 * Admin menu page slug.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 *
 	 * @var string
 	 */
-	const SLUG = 'wpforms-analytics';
+	public const SLUG = 'wpforms-wpconsent';
 
 	/**
 	 * Configuration.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 *
 	 * @var array
 	 */
 	private $config = [
-		'lite_plugin'         => 'google-analytics-for-wordpress/googleanalytics.php',
-		'lite_wporg_url'      => 'https://wordpress.org/plugins/google-analytics-for-wordpress/',
-		'lite_download_url'   => 'https://downloads.wordpress.org/plugin/google-analytics-for-wordpress.zip',
-		'pro_plugin'          => 'google-analytics-premium/googleanalytics-premium.php',
-		'forms_addon'         => 'monsterinsights-forms/monsterinsights-forms.php',
-		'mi_forms_addon_page' => 'https://www.monsterinsights.com/addon/forms/?utm_source=wpformsplugin&utm_medium=link&utm_campaign=analytics-page',
-		'mi_onboarding'       => 'admin.php?page=monsterinsights-onboarding',
-		'mi_addons'           => 'admin.php?page=monsterinsights_settings#/addons',
-		'mi_forms'            => 'admin.php?page=monsterinsights_reports#/forms',
+		'lite_plugin'          => 'wpconsent-cookies-banner-privacy-suite/wpconsent.php',
+		'lite_wporg_url'       => 'https://wordpress.org/plugins/wpconsent-cookies-banner-privacy-suite/',
+		'lite_download_url'    => 'https://downloads.wordpress.org/plugin/wpconsent-cookies-banner-privacy-suite.zip',
+		'pro_plugin'           => 'wpconsent-premium/wpconsent-premium.php',
+		'wpconsent_addon'      => 'wpconsent-premium/wpconsent-premium.php',
+		'wpconsent_addon_page' => 'https://wpconsent.com/?utm_source=wpformsplugin&utm_medium=link&utm_campaign=privacy-compliance-page',
+		'wpconsent_onboarding' => 'admin.php?page=wpconsent',
 	];
 
 	/**
 	 * Runtime data used for generating page HTML.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 *
 	 * @var array
 	 */
@@ -49,7 +47,7 @@ class Analytics {
 	/**
 	 * Constructor.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 */
 	public function __construct() {
 
@@ -63,38 +61,42 @@ class Analytics {
 	/**
 	 * Hooks.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 */
-	public function hooks() {
+	public function hooks(): void {
 
 		if ( wp_doing_ajax() ) {
-			add_action( 'wp_ajax_wpforms_analytics_page_check_plugin_status', [ $this, 'ajax_check_plugin_status' ] );
+			remove_action( 'admin_init', 'wpconsent_maybe_redirect_onboarding', 9999 );
+			add_action( 'wp_ajax_wpforms_privacy_compliance_page_check_plugin_status', [ $this, 'ajax_check_plugin_status' ] );
 		}
 
 		// Check what page we are on.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 
-		// Only load if we are actually on the Analytics page.
+		// Only load if we are actually on the Privacy Compliance page.
 		if ( $page !== self::SLUG ) {
 			return;
 		}
 
-		add_action( 'admin_init', [ $this, 'redirect_to_mi_forms' ] );
 		add_filter( 'wpforms_admin_header', '__return_false' );
 		add_action( 'wpforms_admin_page', [ $this, 'output' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 
-		// Hook for addons.
-		do_action( 'wpforms_admin_pages_analytics_hooks' );
+		/**
+		 * Hook for addons.
+		 *
+		 * @since 1.9.7.3
+		 */
+		do_action( 'wpforms_admin_pages_privacy_compliance_hooks' );
 	}
 
 	/**
 	 * Enqueue JS and CSS files.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 */
-	public function enqueue_assets() {
+	public function enqueue_assets(): void {
 
 		$min = wpforms_get_min_suffix();
 
@@ -114,16 +116,31 @@ class Analytics {
 			true
 		);
 
+		// Custom styles for Lity image size limitation.
+		wp_add_inline_style(
+			'wpforms-lity',
+			'
+			.lity-image .lity-container {
+				max-width: 1040px !important;
+			}
+			.lity-image img {
+				max-width: 1040px !important;
+				width: 100%;
+				height: auto;
+			}
+			'
+		);
+
 		wp_enqueue_script(
-			'wpforms-admin-page-analytics',
-			WPFORMS_PLUGIN_URL . "assets/js/admin/pages/mi-analytics{$min}.js",
+			'wpforms-admin-page-privacy-compliance',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/pages/privacy-compliance{$min}.js",
 			[ 'jquery' ],
 			WPFORMS_VERSION,
 			true
 		);
 
 		wp_localize_script(
-			'wpforms-admin-page-analytics',
+			'wpforms-admin-page-privacy-compliance',
 			'wpforms_pluginlanding',
 			$this->get_js_strings()
 		);
@@ -132,11 +149,12 @@ class Analytics {
 	/**
 	 * JS Strings.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 *
 	 * @return array Array of strings.
+	 * @noinspection HtmlUnknownTarget
 	 */
-	protected function get_js_strings() {
+	protected function get_js_strings(): array {
 
 		$error_could_not_install = sprintf(
 			wp_kses( /* translators: %s - Lite plugin download URL. */
@@ -163,28 +181,29 @@ class Analytics {
 		);
 
 		return [
-			'installing'               => esc_html__( 'Installing...', 'wpforms-lite' ),
-			'activating'               => esc_html__( 'Activating...', 'wpforms-lite' ),
-			'activated'                => esc_html__( 'MonsterInsights Installed & Activated', 'wpforms-lite' ),
-			'install_now'              => esc_html__( 'Install Now', 'wpforms-lite' ),
-			'activate_now'             => esc_html__( 'Activate Now', 'wpforms-lite' ),
-			'download_now'             => esc_html__( 'Download Now', 'wpforms-lite' ),
-			'plugins_page'             => esc_html__( 'Go to Plugins page', 'wpforms-lite' ),
-			'error_could_not_install'  => $error_could_not_install,
-			'error_could_not_activate' => $error_could_not_activate,
-			'mi_manual_install_url'    => $this->config['lite_download_url'],
-			'mi_manual_activate_url'   => admin_url( 'plugins.php' ),
+			'installing'                    => esc_html__( 'Installing...', 'wpforms-lite' ),
+			'activating'                    => esc_html__( 'Activating...', 'wpforms-lite' ),
+			'activated'                     => esc_html__( 'WPConsent Installed & Activated', 'wpforms-lite' ),
+			'activated_pro'                 => esc_html__( 'WPConsent Pro Installed & Activated', 'wpforms-lite' ),
+			'install_now'                   => esc_html__( 'Install Now', 'wpforms-lite' ),
+			'activate_now'                  => esc_html__( 'Activate Now', 'wpforms-lite' ),
+			'download_now'                  => esc_html__( 'Download Now', 'wpforms-lite' ),
+			'plugins_page'                  => esc_html__( 'Go to Plugins page', 'wpforms-lite' ),
+			'error_could_not_install'       => $error_could_not_install,
+			'error_could_not_activate'      => $error_could_not_activate,
+			'wpconsent_manual_install_url'  => $this->config['lite_download_url'],
+			'wpconsent_manual_activate_url' => admin_url( 'plugins.php' ),
 		];
 	}
 
 	/**
 	 * Generate and output page HTML.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 */
-	public function output() {
+	public function output(): void {
 
-		echo '<div id="wpforms-admin-analytics" class="wrap wpforms-admin-wrap wpforms-admin-plugin-landing">';
+		echo '<div id="wpforms-admin-privacy-compliance" class="wrap wpforms-admin-wrap wpforms-admin-plugin-landing">';
 
 		$this->output_section_heading();
 		$this->output_section_screenshot();
@@ -198,37 +217,41 @@ class Analytics {
 	/**
 	 * Generate and output heading section HTML.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	public function output_section_heading() {
+	public function output_section_heading(): void {
 
 		// Heading section.
 		printf(
 			'<section class="top">
-				<img class="img-top" src="%1$s" srcset="%2$s 2x" alt="%3$s"/>
-				<h1>%4$s</h1>
-				<p>%5$s</p>
+				<img class="img-top" src="%1$s" alt="%2$s"/>
+				<h1>%3$s</h1>
+				<p>%4$s %5$s</p>
 			</section>',
-			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/analytics/wpforms-monsterinsights.png' ),
-			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/analytics/wpforms-monsterinsights@2x.png' ),
-			esc_attr__( 'WPForms ♥ MonsterInsights', 'wpforms-lite' ),
-			esc_html__( 'The Best Google Analytics Plugin for WordPress', 'wpforms-lite' ),
-			esc_html__( 'MonsterInsights connects WPForms to Google Analytics, providing a powerful integration with their Forms addon. MonsterInsights is a sister company of WPForms.', 'wpforms-lite' )
+			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/privacy-compliance/wpforms-wpconsent.svg' ),
+			esc_attr__( 'WPForms ♥ WPConsent', 'wpforms-lite' ),
+			esc_html__( 'Make Your Website Privacy-Compliant in Minutes', 'wpforms-lite' ),
+			esc_html__( 'Build trust with clear, compliant privacy practices. WPConsent adds clean, professional banners and handles the technical side for you.', 'wpforms-lite' ),
+			esc_html__( 'Built for transparency. Designed for ease.', 'wpforms-lite' )
 		);
 	}
 
 	/**
-	 * Generate and output heading section HTML.
+	 * Generate and output screenshot section HTML.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	protected function output_section_screenshot() {
+	protected function output_section_screenshot(): void {
 
 		// Screenshot section.
 		printf(
 			'<section class="screenshot">
 				<div class="cont">
-					<img src="%1$s" alt="%2$s"/>
+					<img src="%1$s" alt="%2$s" srcset="%8$s 2x"/>
 					<a href="%3$s" class="hover" data-lity></a>
 				</div>
 				<ul>
@@ -238,22 +261,25 @@ class Analytics {
 					<li>%7$s</li>
 				</ul>
 			</section>',
-			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/analytics/screenshot-tnail.jpg' ),
-			esc_attr__( 'Analytics screenshot', 'wpforms-lite' ),
-			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/analytics/screenshot-full.jpg' ),
-			esc_html__( 'Track form impressions and conversions.', 'wpforms-lite' ),
-			esc_html__( 'View form conversion rates from WordPress.', 'wpforms-lite' ),
-			esc_html__( 'Complete UTM tracking with form entries.', 'wpforms-lite' ),
-			esc_html__( 'Automatic integration with WPForms.', 'wpforms-lite' )
+			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/privacy-compliance/screenshot-tnail.png' ),
+			esc_attr__( 'WPConsent screenshot', 'wpforms-lite' ),
+			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/privacy-compliance/screenshot-full.png' ),
+			esc_html__( 'A professional banner that fits your site.', 'wpforms-lite' ),
+			esc_html__( 'Tools like Google Analytics and Facebook Pixel paused until consent.', 'wpforms-lite' ),
+			esc_html__( 'Peace of mind knowing you’re aligned with global laws.', 'wpforms-lite' ),
+			esc_html__( 'Self-hosted. Your data remains on your site.', 'wpforms-lite' ),
+			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/privacy-compliance/screenshot-tnail@2x.png' )
 		);
 	}
 
 	/**
 	 * Generate and output step 'Install' section HTML.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	protected function output_section_step_install() {
+	protected function output_section_step_install(): void {
 
 		$step = $this->get_data_step_install();
 
@@ -315,9 +341,11 @@ class Analytics {
 	/**
 	 * Generate and output step 'Setup' section HTML.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	protected function output_section_step_setup() {
+	protected function output_section_step_setup(): void {
 
 		$step = $this->get_data_step_setup();
 
@@ -340,10 +368,10 @@ class Analytics {
 			esc_attr( $step['section_class'] ),
 			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/' . $step['icon'] ),
 			esc_attr__( 'Step 2', 'wpforms-lite' ),
-			esc_html__( 'Setup MonsterInsights', 'wpforms-lite' ),
-			esc_html__( 'MonsterInsights has an intuitive setup wizard to guide you through the setup process.', 'wpforms-lite' ),
+			esc_html__( 'Set Up WPConsent', 'wpforms-lite' ),
+			esc_html__( 'WPConsent has an intuitive setup wizard to guide you through the cookie consent configuration process.', 'wpforms-lite' ),
 			esc_attr( $step['button_class'] ),
-			esc_url( admin_url( $this->config['mi_onboarding'] ) ),
+			esc_url( admin_url( $this->config['wpconsent_onboarding'] ) ),
 			esc_html( $step['button_text'] )
 		);
 	}
@@ -351,9 +379,11 @@ class Analytics {
 	/**
 	 * Generate and output step 'Addon' section HTML.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	protected function output_section_step_addon() {
+	protected function output_section_step_addon(): void {
 
 		$step = $this->get_data_step_addon();
 
@@ -374,10 +404,10 @@ class Analytics {
 				</div>
 			</section>',
 			esc_attr( $step['section_class'] ),
-			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/step-3.svg' ),
+			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/' . $step['icon'] ),
 			esc_attr__( 'Step 3', 'wpforms-lite' ),
-			esc_html__( 'Get Form Conversion Tracking', 'wpforms-lite' ),
-			esc_html__( 'With the MonsterInsights Form addon you can easily track your form views, entries, conversion rates, and more.', 'wpforms-lite' ),
+			esc_html__( 'Get Advanced Cookie Consent Features', 'wpforms-lite' ),
+			esc_html__( 'With WPConsent Pro you can access advanced features like geolocation, popup layout, records of consent, multilanguage support, and more.', 'wpforms-lite' ),
 			esc_attr( $step['button_class'] ),
 			esc_url( $step['button_url'] ),
 			esc_html( $step['button_text'] )
@@ -387,15 +417,15 @@ class Analytics {
 	/**
 	 * Step 'Install' data.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 *
 	 * @return array Step data.
 	 */
-	protected function get_data_step_install() {
+	protected function get_data_step_install(): array {
 
 		$step                = [];
-		$step['heading']     = esc_html__( 'Install & Activate MonsterInsights', 'wpforms-lite' );
-		$step['description'] = esc_html__( 'Track form impressions and conversions.', 'wpforms-lite' );
+		$step['heading']     = esc_html__( 'Install & Activate WPConsent', 'wpforms-lite' );
+		$step['description'] = esc_html__( 'Install WPConsent from the WordPress.org plugin repository.', 'wpforms-lite' );
 
 		$this->output_data['all_plugins']          = get_plugins();
 		$this->output_data['plugin_installed']     = array_key_exists( $this->config['lite_plugin'], $this->output_data['all_plugins'] );
@@ -405,21 +435,21 @@ class Analytics {
 
 		if ( ! $this->output_data['plugin_installed'] && ! $this->output_data['pro_plugin_installed'] ) {
 			$step['icon']          = 'step-1.svg';
-			$step['button_text']   = esc_html__( 'Install MonsterInsights', 'wpforms-lite' );
+			$step['button_text']   = esc_html__( 'Install WPConsent', 'wpforms-lite' );
 			$step['button_class']  = 'button-primary';
 			$step['button_action'] = 'install';
 			$step['plugin']        = $this->config['lite_download_url'];
 
 			if ( ! wpforms_can_install( 'plugin' ) ) {
-				$step['heading']     = esc_html__( 'MonsterInsights', 'wpforms-lite' );
+				$step['heading']     = esc_html__( 'WPConsent', 'wpforms-lite' );
 				$step['description'] = '';
-				$step['button_text'] = esc_html__( 'MonsterInsights on WordPress.org', 'wpforms-lite' );
+				$step['button_text'] = esc_html__( 'WPConsent on WordPress.org', 'wpforms-lite' );
 				$step['plugin']      = $this->config['lite_wporg_url'];
 			}
 		} else {
 			$this->output_data['plugin_activated'] = is_plugin_active( $this->config['lite_plugin'] ) || is_plugin_active( $this->config['pro_plugin'] );
 			$step['icon']                          = $this->output_data['plugin_activated'] ? 'step-complete.svg' : 'step-1.svg';
-			$step['button_text']                   = $this->output_data['plugin_activated'] ? esc_html__( 'MonsterInsights Installed & Activated', 'wpforms-lite' ) : esc_html__( 'Activate MonsterInsights', 'wpforms-lite' );
+			$step['button_text']                   = $this->output_data['plugin_activated'] ? esc_html__( 'WPConsent Installed & Activated', 'wpforms-lite' ) : esc_html__( 'Activate WPConsent', 'wpforms-lite' );
 			$step['button_class']                  = $this->output_data['plugin_activated'] ? 'grey disabled' : 'button-primary';
 			$step['button_action']                 = $this->output_data['plugin_activated'] ? '' : 'activate';
 			$step['plugin']                        = $this->output_data['pro_plugin_installed'] ? $this->config['pro_plugin'] : $this->config['lite_plugin'];
@@ -431,19 +461,18 @@ class Analytics {
 	/**
 	 * Step 'Setup' data.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 *
 	 * @return array Step data.
-	 * @noinspection PhpUndefinedFunctionInspection
 	 */
-	protected function get_data_step_setup() {
+	protected function get_data_step_setup(): array {
 
 		$step = [];
 
 		$this->output_data['plugin_setup'] = false;
 
 		if ( $this->output_data['plugin_activated'] ) {
-			$this->output_data['plugin_setup'] = function_exists( 'monsterinsights_get_ua' ) && '' !== (string) monsterinsights_get_ua();
+			$this->output_data['plugin_setup'] = $this->is_wpconsent_configured();
 		}
 
 		$step['icon']          = 'step-2.svg';
@@ -465,12 +494,12 @@ class Analytics {
 	/**
 	 * Step 'Addon' data.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 *
 	 * @return array Step data.
 	 * @noinspection PhpUndefinedFunctionInspection
 	 */
-	protected function get_data_step_addon() {
+	protected function get_data_step_addon(): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		$step = [];
 
@@ -483,27 +512,29 @@ class Analytics {
 		$plugin_license_level = false;
 
 		if ( $this->output_data['plugin_activated'] ) {
-			$mi = MonsterInsights();
-
 			$plugin_license_level = 'lite';
 
-			if ( is_object( $mi->license ) && method_exists( $mi->license, 'license_can' ) ) {
-				$plugin_license_level = $mi->license->license_can( 'plus' ) ? 'lite' : $plugin_license_level;
-				$plugin_license_level = $mi->license->license_can( 'pro' ) || $mi->license->license_can( 'agency' ) ? 'pro' : $plugin_license_level;
+			// Check if premium features are available.
+			if ( function_exists( 'wpconsent' ) ) {
+				$wpconsent = wpconsent();
+
+				if ( isset( $wpconsent->license ) && method_exists( $wpconsent->license, 'is_active' ) ) {
+					$plugin_license_level = $wpconsent->license->is_active() ? 'pro' : 'lite';
+				}
 			}
 		}
 
 		switch ( $plugin_license_level ) {
 			case 'lite':
-				$step['button_url']   = $this->config['mi_forms_addon_page'];
+				$step['button_url']   = $this->config['wpconsent_addon_page'];
 				$step['button_class'] = $this->output_data['plugin_setup'] ? 'button-primary' : 'grey';
 				break;
 
 			case 'pro':
-				$addon_installed      = array_key_exists( $this->config['forms_addon'], $this->output_data['all_plugins'] );
-				$step['button_text']  = $addon_installed ? esc_html__( 'Activate Now', 'wpforms-lite' ) : esc_html__( 'Install Now', 'wpforms-lite' );
-				$step['button_url']   = admin_url( $this->config['mi_addons'] );
-				$step['button_class'] = $this->output_data['plugin_setup'] ? 'button-primary' : 'grey';
+				$addon_installed      = array_key_exists( $this->config['wpconsent_addon'], $this->output_data['all_plugins'] );
+				$step['button_text']  = $addon_installed ? esc_html__( 'WPConsent Pro Installed & Activated', 'wpforms-lite' ) : esc_html__( 'Install Now', 'wpforms-lite' );
+				$step['button_class'] = $this->output_data['plugin_setup'] ? 'grey disabled' : 'button-primary';
+				$step['icon']         = $addon_installed ? 'step-complete.svg' : 'step-3.svg';
 				break;
 		}
 
@@ -512,13 +543,13 @@ class Analytics {
 
 	/**
 	 * Ajax endpoint. Check plugin setup status.
-	 * Used to properly init step 2 section after completing step 1.
+	 * Used to properly init the step 2 section after completing step 1.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
 	 *
 	 * @noinspection PhpUndefinedFunctionInspection
 	 */
-	public function ajax_check_plugin_status() {
+	public function ajax_check_plugin_status(): void {
 
 		// Security checks.
 		if (
@@ -534,7 +565,7 @@ class Analytics {
 
 		$result = [];
 
-		if ( ! function_exists( 'MonsterInsights' ) || ! function_exists( 'monsterinsights_get_ua' ) ) {
+		if ( ! function_exists( 'wpconsent' ) ) {
 			wp_send_json_error(
 				[
 					'error' => esc_html__( 'Plugin unavailable.', 'wpforms-lite' ),
@@ -542,36 +573,66 @@ class Analytics {
 			);
 		}
 
-		$result['setup_status'] = (int) ( '' !== (string) monsterinsights_get_ua() );
-
-		$mi = MonsterInsights();
+		$result['setup_status'] = (int) $this->is_wpconsent_configured();
 
 		$result['license_level']    = 'lite';
-		$result['step3_button_url'] = $this->config['mi_forms_addon_page'];
+		$result['step3_button_url'] = $this->config['wpconsent_addon_page'];
 
-		if ( is_object( $mi->license ) && method_exists( $mi->license, 'license_can' ) ) {
-			$result['license_level']    = $mi->license->license_can( 'pro' ) || $mi->license->license_can( 'agency' ) ? 'pro' : $result['license_level'];
-			$result['step3_button_url'] = admin_url( $this->config['mi_addons'] );
+		$wpconsent = wpconsent();
+
+		if ( isset( $wpconsent->license ) && method_exists( $wpconsent->license, 'is_active' ) && $wpconsent->license->is_active() ) {
+			$result['license_level'] = 'pro';
 		}
 
-		$result['addon_installed'] = (int) array_key_exists( $this->config['forms_addon'], get_plugins() );
+		$result['addon_installed'] = (int) array_key_exists( $this->config['wpconsent_addon'], get_plugins() );
 
 		wp_send_json_success( $result );
 	}
 
 	/**
-	 * Redirect to MI forms reporting page.
-	 * We need this function because `is_plugin_active()` available only after `admin_init` action.
+	 * Whether WPConsent plugin configured or not.
 	 *
-	 * @since 1.5.7
+	 * @since 1.9.7.3
+	 *
+	 * @return bool True if WPConsent is configured properly.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
-	public function redirect_to_mi_forms() {
+	protected function is_wpconsent_configured(): bool {
 
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		// Redirect to MI Forms addon if it is activated.
-		if ( is_plugin_active( $this->config['forms_addon'] ) ) {
-			wp_safe_redirect( admin_url( $this->config['mi_forms'] ) );
-			exit;
+		if ( ! $this->is_wpconsent_activated() ) {
+			return false;
 		}
+
+		// Check if WPConsent has been configured with basic settings.
+		// The plugin is considered configured if the consent banner is enabled.
+		if ( function_exists( 'wpconsent' ) ) {
+			$wpconsent = wpconsent();
+
+			if ( isset( $wpconsent->settings ) ) {
+				$enable_consent_banner = $wpconsent->settings->get_option( 'enable_consent_banner', 0 );
+
+				return ! empty( $enable_consent_banner );
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether WPConsent plugin active or not.
+	 *
+	 * @since 1.9.7.3
+	 *
+	 * @return bool True if WPConsent plugin is active.
+	 */
+	protected function is_wpconsent_activated(): bool {
+
+		return (
+			function_exists( 'wpconsent' ) &&
+			(
+				is_plugin_active( $this->config['lite_plugin'] ) ||
+				is_plugin_active( $this->config['pro_plugin'] )
+			)
+		);
 	}
 }

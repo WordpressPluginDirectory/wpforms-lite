@@ -552,6 +552,24 @@ class WPForms_Settings {
 					'type'    => 'text',
 					'default' => esc_html__( 'Please enter a valid credit card number.', 'wpforms-lite' ),
 				],
+				'validation-min'                  => [
+					'id'      => 'validation-min',
+					'name'    => esc_html__( 'Minimum Value', 'wpforms-lite' ),
+					'type'    => 'text',
+					'default' => sprintf( /* translators: %s - value to compare with. */
+						esc_html__( 'Please enter a value greater than or equal to %s.', 'wpforms-lite' ),
+						'{value}'
+					),
+				],
+				'validation-max'                  => [
+					'id'      => 'validation-max',
+					'name'    => esc_html__( 'Maximum Value', 'wpforms-lite' ),
+					'type'    => 'text',
+					'default' => sprintf( /* translators: %s - value to compare with. */
+						esc_html__( 'Please enter a value less than or equal to %s.', 'wpforms-lite' ),
+						'{value}'
+					),
+				],
 			],
 			// Provider integrations settings tab.
 			'integrations' => [

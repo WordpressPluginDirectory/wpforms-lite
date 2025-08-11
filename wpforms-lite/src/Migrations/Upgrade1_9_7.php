@@ -14,9 +14,11 @@ class Upgrade1_9_7 extends UpgradeBase {
 	 *
 	 * @since 1.9.7
 	 */
-	public function run(): void {
+	public function run(): bool {
 
 		// Force update splash data cache.
 		wpforms()->obj( 'splash_cache' )->update( true );
+
+		return true;
 	}
 }
