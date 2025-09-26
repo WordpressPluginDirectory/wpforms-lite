@@ -213,7 +213,7 @@ class Challenge {
 			wp_enqueue_script(
 				'wpforms-challenge-core',
 				WPFORMS_PLUGIN_URL . "assets/js/admin/challenge/challenge-core{$min}.js",
-				[ 'jquery', 'tooltipster', 'wpforms-challenge-admin' ],
+				[ 'jquery', 'tooltipster', 'wpforms-challenge-admin', 'wpforms-generic-utils' ],
 				WPFORMS_VERSION,
 				true
 			);

@@ -165,7 +165,7 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:after, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:after, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:after {
-  color: #bbbbbb;
+  color: #b0b2b3;
   content: "\f00d";
   font-size: 16px;
   inset-inline-start: 0;
@@ -174,7 +174,7 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:hover:after, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:hover:after, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:hover:after {
-  color: #777777 !important;
+  color: #50575e !important;
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c {
@@ -198,7 +198,7 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c .jconfirm-title, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c .jconfirm-title, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c .jconfirm-title {
-  color: #444444;
+  color: #3c434a;
   display: block;
   line-height: 30px;
 }
@@ -209,7 +209,7 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content {
-  color: #444444;
+  color: #3c434a;
   font-size: 16px;
   line-height: 24px;
   margin-bottom: 0;
@@ -217,7 +217,7 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content.lite-upgrade p, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content.lite-upgrade p, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content.lite-upgrade p {
-  color: #777777;
+  color: #50575e;
   font-size: 18px;
   padding: 0 20px;
 }
@@ -290,7 +290,7 @@
   display: block;
   grid-row: 5;
   grid-column: 1 / -1;
-  color: #bbbbbb;
+  color: #b0b2b3;
   font-size: 14px;
   margin-top: 15px;
   text-decoration: underline;
@@ -298,7 +298,7 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .already-purchased:hover, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .already-purchased:hover, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .already-purchased:hover {
-  color: #777777;
+  color: #50575e;
   text-decoration: underline;
 }
 
@@ -312,7 +312,7 @@
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .discount-note p, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .discount-note p, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .discount-note p {
   background-color: #fcf9e8;
-  color: #777777;
+  color: #50575e;
   font-size: 16px;
   margin: 0 -30px;
   padding: 22px 52px 12px 52px;
@@ -343,7 +343,7 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .discount-note a, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .discount-note a, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .discount-note a {
-  color: #777777;
+  color: #50575e;
   display: block;
   margin-top: 12px;
 }
@@ -370,10 +370,10 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button {
-  background: #f8f8f8;
-  border: 1px solid #cccccc;
+  background: #f6f7f7;
+  border: 1px solid #c3c4c7;
   border-radius: 4px;
-  color: #777777;
+  color: #50575e;
   font-size: 16px;
   font-weight: 600;
   line-height: 20px;
@@ -384,8 +384,8 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button:hover, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button:hover, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button:hover {
-  background: #eeeeee;
-  border-color: #cccccc;
+  background: #e8e9e9;
+  border-color: #c3c4c7;
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button {
@@ -468,12 +468,12 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box.wpforms-builder-keyboard-shortcuts .wpforms-column, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box.wpforms-builder-keyboard-shortcuts .wpforms-column, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box.wpforms-builder-keyboard-shortcuts .wpforms-column {
-  border: 1px solid #cccccc;
+  border: 1px solid #c3c4c7;
   border-radius: 4px;
 }
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box.wpforms-builder-keyboard-shortcuts .wpforms-column li, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box.wpforms-builder-keyboard-shortcuts .wpforms-column li, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box.wpforms-builder-keyboard-shortcuts .wpforms-column li {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
   font-size: 14px;
   line-height: 30px;
   margin: 0;
@@ -530,7 +530,7 @@
 }
 
 .wpforms_page_wpforms-builder .jconfirm.has-video .jconfirm-box-container .already-purchased:hover, .block-editor-page .jconfirm.has-video .jconfirm-box-container .already-purchased:hover, .elementor-editor-active .jconfirm.has-video .jconfirm-box-container .already-purchased:hover {
-  color: #777777;
+  color: #50575e;
 }
 
 .wpforms_page_wpforms-builder .jconfirm.has-video .jconfirm-box-container .discount-note, .block-editor-page .jconfirm.has-video .jconfirm-box-container .discount-note, .elementor-editor-active .jconfirm.has-video .jconfirm-box-container .discount-note {
@@ -773,7 +773,7 @@
 
 .wpforms-admin-empty-state-container.wpforms-admin-no-user-templates p {
   font-size: 14px;
-  color: #777777;
+  color: #50575e;
 }
 
 .wpforms-admin-empty-state-container.wpforms-admin-no-user-templates p.wpforms-admin-no-forms-footer {
@@ -1467,12 +1467,24 @@
   opacity: 0;
 }
 
-.edit-post-visual-editor .wpforms-gutenberg-form-selector .wpforms-form :disabled,
-.edit-widgets-block-editor .wpforms-gutenberg-form-selector .wpforms-form :disabled,
-.editor-styles-wrapper .wpforms-gutenberg-form-selector .wpforms-form :disabled {
+.edit-post-visual-editor .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field:not(.wpforms-field-readonly) :disabled,
+.edit-widgets-block-editor .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field:not(.wpforms-field-readonly) :disabled,
+.editor-styles-wrapper .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field:not(.wpforms-field-readonly) :disabled {
   pointer-events: none;
   cursor: default;
   opacity: 1 !important;
+}
+
+.edit-post-visual-editor .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly :not(fieldset):disabled,
+.edit-post-visual-editor .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly .wp-editor-wrap,
+.edit-post-visual-editor .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly .wpforms-stripe-payment-element-cardnumber-preview,
+.edit-widgets-block-editor .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly :not(fieldset):disabled,
+.edit-widgets-block-editor .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly .wp-editor-wrap,
+.edit-widgets-block-editor .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly .wpforms-stripe-payment-element-cardnumber-preview,
+.editor-styles-wrapper .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly :not(fieldset):disabled,
+.editor-styles-wrapper .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly .wp-editor-wrap,
+.editor-styles-wrapper .wpforms-gutenberg-form-selector .wpforms-form .wpforms-field.wpforms-field-readonly .wpforms-stripe-payment-element-cardnumber-preview {
+  opacity: 0.35 !important;
 }
 
 .edit-post-visual-editor .wpforms-gutenberg-form-selector .wpforms-form .choices[data-type*="select-multiple"] .choices__inner .choices__input,

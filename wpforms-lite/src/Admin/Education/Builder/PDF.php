@@ -80,7 +80,12 @@ class PDF {
 	 */
 	private function is_popup_visible(): bool {
 
-		if ( empty( $this->addon_data ) && ! wpforms()->is_pro() ) {
+		$action = $this->addon_data['action'] ?? 'install';
+
+		if (
+			empty( $this->addon_data ) ||
+			( $action === 'install' && empty( $this->addon_data['url'] ) ) // The install action requires a valid URL.
+		) {
 			return false;
 		}
 

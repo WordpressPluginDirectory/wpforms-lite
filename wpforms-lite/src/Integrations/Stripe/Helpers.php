@@ -488,6 +488,25 @@ class Helpers {
 	}
 
 	/**
+	 * Get the maximum number of cycles for recurring plans.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @return int
+	 */
+	public static function recurring_plan_cycles_max(): int {
+
+		/**
+		 * Filters the maximum number of cycles for recurring plans.
+		 *
+		 * @since 1.9.8
+		 *
+		 * @param int $max Maximum number of cycles.
+		 */
+		return (int) apply_filters( 'wpforms_stripe_recurring_plan_cycles_max', 100 ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+	}
+
+	/**
 	 * Get account country.
 	 *
 	 * @since 1.8.8

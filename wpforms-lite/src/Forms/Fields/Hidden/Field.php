@@ -22,11 +22,12 @@ class Field extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name  = esc_html__( 'Hidden Field', 'wpforms-lite' );
-		$this->type  = 'hidden';
-		$this->icon  = 'fa-eye-slash';
-		$this->order = 210;
-		$this->group = 'fancy';
+		$this->name            = esc_html__( 'Hidden Field', 'wpforms-lite' );
+		$this->type            = 'hidden';
+		$this->icon            = 'fa-eye-slash';
+		$this->order           = 98;
+		$this->group           = 'fancy';
+		$this->allow_read_only = false;
 
 		$this->default_settings = [
 			'label_hide' => '1',
@@ -77,7 +78,7 @@ class Field extends WPForms_Field {
 			]
 		);
 
-		// Set label to disable.
+		// Set the label to disable.
 		$this->field_element(
 			'text',
 			$field,
@@ -130,7 +131,7 @@ class Field extends WPForms_Field {
 	}
 
 	/**
-	 * Get new field CSS class.
+	 * Get a new field CSS class.
 	 *
 	 * @since 1.9.4
 	 *

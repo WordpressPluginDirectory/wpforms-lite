@@ -5,6 +5,11 @@
  * @since 1.8.0
  */
 
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpUndefinedNamespaceInspection */
+/** @noinspection PhpUndefinedClassInspection */
+// phpcs:enable Generic.Commenting.DocComment.MissingShort
+
 use WPForms\Helpers\Templates;
 use WPForms\Vendor\HTMLPurifier;
 use WPForms\Vendor\HTMLPurifier_Config;
@@ -609,13 +614,16 @@ function wpforms_get_html_purifier(): HTMLPurifier {
 	require_once WPFORMS_PLUGIN_DIR . '/vendor_prefixed/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
 	$config    = HTMLPurifier_Config::createDefault();
-	$cache_dir = trailingslashit( File::get_upload_dir() ) . 'htmlpurifier-cache';
+	$cache_dir = trailingslashit( File::get_cache_dir() ) . 'htmlpurifier';
+
+	// Make sure the cache directory exists.
+	File::mkdir( $cache_dir );
 
 	$config->set( 'Cache.SerializerPath', $cache_dir );
-	$config->set( 'Attr', 'AllowedRel', 'noopener,noreferrer,external,follow,nofollow,ugc,sponsored,tag' );
-	$config->set( 'Attr', 'AllowedFrameTargets', [ '_blank', '_self', '_parent', '_top' ] );
-	$config->set( 'HTML', 'TargetNoopener', false );
-	$config->set( 'HTML', 'TargetNoreferrer', false );
+	$config->set( 'Attr.AllowedRel', 'noopener,noreferrer,external,follow,nofollow,ugc,sponsored,tag' );
+	$config->set( 'Attr.AllowedFrameTargets', [ '_blank', '_self', '_parent', '_top' ] );
+	$config->set( 'HTML.TargetNoopener', false );
+	$config->set( 'HTML.TargetNoreferrer', false );
 
 	$purifier = new HTMLPurifier( $config );
 

@@ -3,15 +3,15 @@
 }
 
 #wpforms-panel-field-stripe-custom-metadata .wpforms-panel-content-section-stripe-custom-metadata-table {
-  border: 1px solid #cccccc;
+  border: 1px solid #c3c4c7;
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
 }
 
 #wpforms-panel-field-stripe-custom-metadata .wpforms-panel-content-section-stripe-custom-metadata-table thead {
-  background-color: #f8f8f8;
-  color: #777777;
+  background-color: #f6f7f7;
+  color: #50575e;
   font-size: 14px;
 }
 
@@ -22,7 +22,7 @@
 }
 
 #wpforms-panel-field-stripe-custom-metadata .wpforms-panel-content-section-stripe-custom-metadata-table tbody td {
-  border-top: 1px solid #cccccc;
+  border-top: 1px solid #c3c4c7;
   padding-block: 10px;
   padding-inline-start: 10px;
   padding-inline-end: 0;

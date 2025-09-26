@@ -1,7 +1,8 @@
 <?php
 
-namespace WPForms\Emails;
+namespace WPForms\Emails\Tasks;
 
+use WPForms\Emails\InfoBlocks;
 use WPForms\Tasks\Task;
 
 /**

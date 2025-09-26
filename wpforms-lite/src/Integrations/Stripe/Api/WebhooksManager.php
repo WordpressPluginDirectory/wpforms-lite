@@ -283,4 +283,16 @@ class WebhooksManager {
 
 		update_option( 'wpforms_settings', $settings );
 	}
+
+	/**
+	 * Disconnect webhook endpoints.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @return void
+	 */
+	public function disconnect(): void {
+
+		$this->cleanup();
+	}
 }

@@ -198,10 +198,12 @@ class Templates {
 			/* translators: %1$s - template name, %2$s - addon name(s). */
 			$strings['template_addons_prompt'] = esc_html( sprintf( __( 'The %1$s template requires the %2$s. Would you like to install and activate all the required addons?', 'wpforms-lite' ), '%template%', '%addons%' ) );
 			/* translators: %1$s - template name, %2$s - addon name(s). */
-			$strings['template_addon_activate'] = esc_html( sprintf( __( 'The %1$s template requires the %2$s addon. Would you like to activate it?', 'wpforms-lite' ), '%template%', '%addons%' ) );
+			$strings['template_addon_activate'] = esc_html( sprintf( __( 'The %1$s template requires the %2$s. Would you like to activate it?', 'wpforms-lite' ), '%template%', '%addons%' ) );
 		} else {
 			/* translators: %s - addon name(s). */
-			$strings['template_addon_prompt'] = esc_html( sprintf( __( "To use all of the features in this template, you'll need the %s. Contact your site administrator to install it, then try opening this template again.", 'wpforms-lite' ), '%addons%' ) );
+			$single_form                        = esc_html( sprintf( __( "To use all of the features in this template, you'll need the %s. Contact your site administrator to install it, then try opening this template again.", 'wpforms-lite' ), '%addons%' ) );
+			$strings['template_addon_prompt']   = $single_form;
+			$strings['template_addon_activate'] = $single_form;
 			/* translators: %s - addon name(s). */
 			$strings['template_addons_prompt'] = esc_html( sprintf( __( "To use all of the features in this template, you'll need the %s. Contact your site administrator to install them, then try opening this template again.", 'wpforms-lite' ), '%addons%' ) );
 		}

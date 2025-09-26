@@ -1610,6 +1610,13 @@ class Frontend {
 		$disable_css = (int) wpforms_setting( 'disable-css', '1' );
 
 		if ( $disable_css === 3 ) {
+			wp_enqueue_style(
+				'wpforms-no-styles',
+				WPFORMS_PLUGIN_URL . "assets/css/frontend/wpforms-no-styles{$min}.css",
+				[],
+				WPFORMS_VERSION
+			);
+
 			return;
 		}
 

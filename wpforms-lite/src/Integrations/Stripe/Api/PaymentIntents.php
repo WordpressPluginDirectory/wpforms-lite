@@ -560,6 +560,7 @@ class PaymentIntents extends Common implements ApiInterface {
 			'metadata' => [
 				'form_name' => $args['form_title'],
 				'form_id'   => $args['form_id'],
+				'cycles'    => $args['cycles'] ?? null,
 			],
 			'expand'   => [ 'latest_invoice.payment_intent' ],
 		];

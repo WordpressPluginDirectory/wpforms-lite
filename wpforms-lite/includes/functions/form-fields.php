@@ -586,17 +586,17 @@ function wpforms_get_choices_value( array $field, array $form_data ): string {
 
 	$show_values = ! empty( $form_data['fields'][ $field['id'] ]['show_values'] );
 	$is_dynamic  = ! empty( $field['dynamic'] );
-	$value       = $field['value'];
+	$value       = $field['value'] ?? '';
 
 	if ( $show_values && ! $is_dynamic && ! wpforms_is_empty_string( $field['value_raw'] ?? '' ) ) {
 		$value = $field['value_raw'];
 	}
 
 	if ( $is_dynamic ) {
-		$value = $field['value_raw'] ?? ( $field['value'] ?? '' );
+		$value = $field['value_raw'] ?? $value;
 	}
 
-	return $value;
+	return (string) $value;
 }
 
 /**

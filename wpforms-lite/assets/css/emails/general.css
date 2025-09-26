@@ -629,7 +629,7 @@ a {
   padding-bottom: 0;
 }
 
-.wpforms-layout-table-display-blocks .wpforms-layout-table-row:last-child .field-value, .wpforms-layout-table-display-columns .wpforms-layout-table-row:last-child .field-value {
+.wpforms-layout-table-display-blocks .wpforms-layout-table-row tr:last-child .wpforms-layout-table-cell .field-value, .wpforms-layout-table-display-columns .wpforms-layout-table-row tr:last-child .wpforms-layout-table-cell .field-value {
   padding-bottom: 0;
 }
 

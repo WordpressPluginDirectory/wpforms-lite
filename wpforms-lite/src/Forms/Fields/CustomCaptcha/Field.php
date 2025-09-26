@@ -48,19 +48,20 @@ class Field extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name     = esc_html__( 'Custom Captcha', 'wpforms-lite' );
-		$this->keywords = esc_html__( 'spam, math, maths, question', 'wpforms-lite' );
-		$this->type     = self::TYPE;
-		$this->icon     = 'fa-question-circle';
-		$this->order    = 300;
-		$this->group    = 'fancy';
-		$this->qs       = [
+		$this->name            = esc_html__( 'Custom Captcha', 'wpforms-lite' );
+		$this->keywords        = esc_html__( 'spam, math, maths, question', 'wpforms-lite' );
+		$this->type            = self::TYPE;
+		$this->icon            = 'fa-question-circle';
+		$this->order           = 300;
+		$this->group           = 'fancy';
+		$this->allow_read_only = false;
+		$this->qs              = [
 			1 => [
 				'question' => esc_html__( 'What is 7+4?', 'wpforms-lite' ),
 				'answer'   => esc_html__( '11', 'wpforms-lite' ),
 			],
 		];
-		$this->math     = [
+		$this->math            = [
 			'min' => 1,
 			'max' => 15,
 			'cal' => [ '+', '*' ],

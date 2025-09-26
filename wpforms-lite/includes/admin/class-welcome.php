@@ -1,5 +1,12 @@
 <?php
 
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
+/** @noinspection AutoloadingIssuesInspection */
+/** @noinspection PhpIllegalPsrClassPathInspection */
+// phpcs:enable Generic.Commenting.DocComment.MissingShort
+
+use WPForms\Migrations\Base as MigrationsBase;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -18,14 +25,14 @@ class WPForms_Welcome {
 	 *
 	 * @since 1.5.6
 	 */
-	const SLUG = 'wpforms-getting-started';
+	private const SLUG = 'wpforms-getting-started';
 
 	/**
 	 * Primary class constructor.
 	 *
 	 * @since 1.0.0
 	 */
-	public function __construct() {
+	public function __construct() { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		add_action( 'plugins_loaded', [ $this, 'hooks' ] );
 	}
@@ -35,14 +42,14 @@ class WPForms_Welcome {
 	 *
 	 * @since 1.5.6
 	 */
-	public function hooks() {
+	public function hooks(): void {
 
-		// If user is in admin ajax or doing cron, return.
+		// If the user is in admin ajax or doing cron, return.
 		if ( wp_doing_ajax() || wp_doing_cron() ) {
 			return;
 		}
 
-		// If user cannot manage_options, return.
+		// If the user cannot manage_options, return.
 		if ( ! wpforms_current_user_can() ) {
 			return;
 		}
@@ -55,17 +62,24 @@ class WPForms_Welcome {
 	/**
 	 * Register the pages to be used for the Welcome screen (and tabs).
 	 *
-	 * These pages will be removed from the Dashboard menu, so they will
-	 * not actually show. Sneaky, sneaky.
+	 * These pages will be removed from the Dashboard menu, so they will be not shown.
+	 * Sneaky, sneaky.
 	 *
 	 * @since 1.0.0
 	 */
-	public function register() {
+	public function register(): void {
 
 		// Getting started - shows after installation.
 		add_dashboard_page(
 			esc_html__( 'Welcome to WPForms', 'wpforms-lite' ),
 			esc_html__( 'Welcome to WPForms', 'wpforms-lite' ),
+			/**
+			 * Filter the capability to add the Welcome page.
+			 *
+			 * @since 1.5.6
+			 *
+			 * @param string $capability The capability to manage everything for WPForms.
+			 */
 			apply_filters( 'wpforms_welcome_cap', wpforms_get_capability_manage_options() ),
 			self::SLUG,
 			[ $this, 'output' ]
@@ -75,11 +89,11 @@ class WPForms_Welcome {
 	/**
 	 * Removed the dashboard pages from the admin menu.
 	 *
-	 * This means the pages are still available to us, but hidden.
+	 * This means the pages are still available to us but hidden.
 	 *
 	 * @since 1.0.0
 	 */
-	public function hide_menu() {
+	public function hide_menu(): void {
 
 		remove_submenu_page( 'index.php', self::SLUG );
 	}
@@ -87,12 +101,12 @@ class WPForms_Welcome {
 	/**
 	 * Welcome screen redirect.
 	 *
-	 * This function checks if a new install or update has just occurred. If so,
-	 * then we redirect the user to the appropriate page.
+	 * This function checks if a new installation or update has just occurred.
+	 * If so, then we redirect the user to the appropriate page.
 	 *
 	 * @since 1.0.0
 	 */
-	public function redirect() {
+	public function redirect(): void {
 
 		// Check if we should consider redirection.
 		if ( ! get_transient( 'wpforms_activation_redirect' ) ) {
@@ -102,7 +116,7 @@ class WPForms_Welcome {
 		// If we are redirecting, clear the transient so it only happens once.
 		delete_transient( 'wpforms_activation_redirect' );
 
-		// Check option to disable welcome redirect.
+		// Check an option to disable welcome redirect.
 		if ( get_option( 'wpforms_activation_redirect', false ) ) {
 			return;
 		}
@@ -114,21 +128,22 @@ class WPForms_Welcome {
 		}
 
 		// Check if this is an update or first install.
-		$upgrade = get_option( 'wpforms_version_upgraded_from' );
+		$upgrade = get_option( MigrationsBase::PREVIOUS_CORE_VERSION_OPTION_NAME );
 
 		if ( ! $upgrade ) {
 			// Initial install.
 			wp_safe_redirect( admin_url( 'index.php?page=' . self::SLUG ) );
+
 			exit;
 		}
 	}
 
 	/**
-	 * Getting Started screen. Shows after first install.
+	 * Getting Started screen. Shows after the first installation.
 	 *
 	 * @since 1.0.0
 	 */
-	public function output() {
+	public function output(): void {
 
 		$class = wpforms()->is_pro() ? 'pro' : 'lite';
 		?>
@@ -173,9 +188,16 @@ class WPForms_Welcome {
 					</div>
 
 				</div><!-- /.intro -->
+				<?php
 
-				<?php do_action( 'wpforms_welcome_intro_after' ); ?>
+				/**
+				 * Fires after Welcome Intro.
+				 *
+				 * @since 1.5.6
+				 */
+				do_action( 'wpforms_welcome_intro_after' );
 
+				?>
 				<div class="features">
 
 					<div class="block">

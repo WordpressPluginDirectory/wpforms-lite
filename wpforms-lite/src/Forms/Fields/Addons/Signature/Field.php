@@ -26,7 +26,7 @@ class Field extends WPForms_Field {
 		$this->keywords   = esc_html__( 'user, e-signature', 'wpforms-lite' );
 		$this->type       = 'signature';
 		$this->icon       = 'fa-pencil';
-		$this->order      = 310;
+		$this->order      = 200;
 		$this->group      = 'fancy';
 		$this->addon_slug = 'signatures';
 

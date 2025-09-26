@@ -203,7 +203,15 @@ class UsageTracking implements IntegrationInterface {
 			'wpforms_stats'                  => $this->get_additional_stats(),
 			'wpforms_ai'                     => AIHelpers::is_used(),
 			'wpforms_ai_killswitch'          => AIHelpers::is_disabled(),
+			'wpforms_disabled_entries_count' => count( $this->get_forms_with_disabled_entries( $forms ) ),
 		];
+
+		$wpconsent_source = (string) get_option( 'wpconsent_source', '' );
+		$wpconsent_date   = (int) get_option( 'wpconsent_date', 0 );
+
+		if ( $wpconsent_date && strpos( $wpconsent_source, 'WPForms' ) !== false ) {
+			$data['wpforms_wpconsent_date'] = $wpconsent_date;
+		}
 
 		if ( ! empty( $first_form_date ) ) {
 			$data['wpforms_forms_first_created'] = $first_form_date;
@@ -572,6 +580,26 @@ class UsageTracking implements IntegrationInterface {
 			static function ( $form ) {
 
 				return ! empty( $form->post_content['settings']['ajax_submit'] );
+			}
+		);
+	}
+
+	/**
+	 * Retrieve forms with disabled entries.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @param array $forms List of forms.
+	 *
+	 * @return array.
+	 */
+	private function get_forms_with_disabled_entries( array $forms ): array {
+
+		return array_filter(
+			$forms,
+			static function ( $form ) {
+
+				return ! empty( $form->post_content['settings']['disable_entries'] );
 			}
 		);
 	}

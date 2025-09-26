@@ -36,7 +36,7 @@ class Field extends WPForms_Field {
 		$this->keywords = esc_html__( 'review, emoji, star', 'wpforms-lite' );
 		$this->type     = 'rating';
 		$this->icon     = 'fa-star';
-		$this->order    = 200;
+		$this->order    = 310;
 		$this->group    = 'fancy';
 
 		$this->default_settings = [
@@ -52,7 +52,27 @@ class Field extends WPForms_Field {
 	 *
 	 * @since 1.9.4
 	 */
-	protected function hooks() {
+	protected function hooks(): void {
+
+		add_action( 'wpforms_builder_enqueues', [ $this, 'builder_enqueues' ] );
+	}
+
+	/**
+	 * Builder enqueues.
+	 *
+	 * @since 1.9.8
+	 */
+	public function builder_enqueues(): void {
+
+		$min = wpforms_get_min_suffix();
+
+		wp_enqueue_script(
+			'wpforms-rating-field',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/fields/rating{$min}.js",
+			[ 'wpforms-builder', 'wpforms-utils' ],
+			WPFORMS_VERSION,
+			false
+		);
 	}
 
 	/**
@@ -225,6 +245,8 @@ class Field extends WPForms_Field {
 			]
 		);
 
+		$this->score_labels( $field );
+
 		// Icon color picker.
 		$lbl = $this->field_element(
 			'label',
@@ -280,19 +302,189 @@ class Field extends WPForms_Field {
 	}
 
 	/**
+	 * Score labels.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @param array $field Field settings.
+	 */
+	private function score_labels( array $field ): void {
+
+		// Lowest score label.
+		$lowest_label = $this->field_element(
+			'label',
+			$field,
+			[
+				'slug'    => 'lowest_label',
+				'value'   => esc_html__( 'Lowest Score Label', 'wpforms-lite' ),
+				'tooltip' => esc_html__( 'This label indicates the lowest score on the scale.', 'wpforms-lite' ),
+			],
+			false
+		);
+
+		$lowest_field = $this->field_element(
+			'text',
+			$field,
+			[
+				'slug'  => 'lowest_label',
+				'value' => $field['lowest_label'] ?? '',
+			],
+			false
+		);
+
+		$this->field_element(
+			'row',
+			$field,
+			[
+				'slug'    => 'lowest_label',
+				'content' => $lowest_label . $lowest_field,
+			]
+		);
+
+		// Highest score label.
+		$highest_label = $this->field_element(
+			'label',
+			$field,
+			[
+				'slug'    => 'highest_label',
+				'value'   => esc_html__( 'Highest Score Label', 'wpforms-lite' ),
+				'tooltip' => esc_html__( 'This label indicates the highest score on the scale.', 'wpforms-lite' ),
+			],
+			false
+		);
+
+		$highest_field = $this->field_element(
+			'text',
+			$field,
+			[
+				'slug'  => 'highest_label',
+				'value' => $field['highest_label'] ?? '',
+			],
+			false
+		);
+
+		$this->field_element(
+			'row',
+			$field,
+			[
+				'slug'    => 'highest_label',
+				'content' => $highest_label . $highest_field,
+			]
+		);
+
+		// Label position.
+		$label_position = $this->field_element(
+			'label',
+			$field,
+			[
+				'slug'    => 'label_position',
+				'value'   => esc_html__( 'Label Position', 'wpforms-lite' ),
+				'tooltip' => esc_html__( 'Select the position of the label', 'wpforms-lite' ),
+			],
+			false
+		);
+
+		$select_position = $this->field_element(
+			'select',
+			$field,
+			[
+				'slug'    => 'label_position',
+				'value'   => ! empty( $field['label_position'] ) ? esc_attr( $field['label_position'] ) : 'below',
+				'options' => [
+					'above' => esc_html__( 'Above', 'wpforms-lite' ),
+					'below' => esc_html__( 'Below', 'wpforms-lite' ),
+				],
+			],
+			false
+		);
+
+		$this->field_element(
+			'row',
+			$field,
+			[
+				'slug'    => 'label_position',
+				'content' => $label_position . $select_position,
+			]
+		);
+	}
+
+	/**
 	 * Field preview inside the builder.
 	 *
 	 * @since 1.9.4
 	 *
 	 * @param array $field Field settings.
 	 */
-	public function field_preview( $field ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function field_preview( $field ): void {
+
+		// Label.
+		$this->field_preview_option(
+			'label',
+			$field,
+			[
+				'label_badge' => $this->get_field_preview_badge(),
+			]
+		);
+
+		echo '<div class="wpforms-rating-field">';
+
+		$this->get_field_preview_icons( $field );
+
+		$this->get_field_preview_labels( $field );
+
+		echo '</div>';
+
+		// Description.
+		$this->field_preview_option( 'description', $field );
+	}
+
+	/**
+	 * Get field preview icons.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @param array $field Field settings.
+	 */
+	private function get_field_preview_icons( array $field ): void {
 
 		// Define data.
 		$scale      = ! empty( $field['scale'] ) ? esc_attr( $field['scale'] ) : 5;
 		$icon       = ! empty( $field['icon'] ) ? esc_attr( $field['icon'] ) : 'star';
 		$icon_size  = ! empty( $field['icon_size'] ) ? esc_attr( $field['icon_size'] ) : 'medium';
 		$icon_color = ! empty( $field['icon_color'] ) ? esc_attr( $field['icon_color'] ) : $this->get_default_icon_color();
+		$icon_class = $this->get_preview_icon_class( $icon );
+
+		// Set icon size.
+		$icon_size_css = $this->get_icon_size_css( $icon_size );
+
+		echo '<div class="wpforms-rating-field-icons">';
+
+		// Primary input.
+		for ( $i = 1; $i <= 10; $i++ ) {
+			printf(
+				'<i class="fa %s %s rating-icon" aria-hidden="true" style="color:%s; display:%s; font-size:%dpx;"></i>',
+				esc_attr( $icon_class ),
+				esc_attr( $icon_size ),
+				esc_attr( $icon_color ),
+				$i <= $scale ? 'inline-block' : 'none',
+				esc_attr( $icon_size_css )
+			);
+		}
+
+		echo '</div>';
+	}
+
+	/**
+	 * Get preview icon class based on the selected icon.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @param string $icon Selected icon.
+	 *
+	 * @return string Icon class.
+	 */
+	private function get_preview_icon_class( string $icon ): string {
+
 		$icon_class = '';
 
 		// Set icon class.
@@ -314,32 +506,47 @@ class Field extends WPForms_Field {
 				break;
 		}
 
-		// Set icon size.
-		$icon_size_css = $this->get_icon_size_css( $icon_size );
+		return $icon_class;
+	}
 
-		// Label.
-		$this->field_preview_option(
-			'label',
-			$field,
-			[
-				'label_badge' => $this->get_field_preview_badge(),
-			]
-		);
+	/**
+	 * Get field preview labels.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @param array $field Field settings.
+	 */
+	private function get_field_preview_labels( array $field ): void {
 
-		// Primary input.
-		for ( $i = 1; $i <= 10; $i++ ) {
-			printf(
-				'<i class="fa %s %s rating-icon" aria-hidden="true" style="margin-right:5px; color:%s; display:%s; font-size:%dpx;"></i>',
-				esc_attr( $icon_class ),
-				esc_attr( $icon_size ),
-				esc_attr( $icon_color ),
-				$i <= $scale ? 'inline-block' : 'none',
-				esc_attr( $icon_size_css )
-			);
+		// Lowest score label.
+		$lowest_label = ! empty( $field['lowest_label'] ) ? esc_html( $field['lowest_label'] ) : '';
+
+		// Highest score label.
+		$highest_label = ! empty( $field['highest_label'] ) ? esc_html( $field['highest_label'] ) : '';
+
+		$class = [ 'wpforms-rating-field-labels' ];
+
+		if ( ! empty( $field['label_position'] ) && $field['label_position'] === 'above' ) {
+			$class[] = 'wpforms-rating-field-labels-position-above';
 		}
 
-		// Description.
-		$this->field_preview_option( 'description', $field );
+		if ( empty( $lowest_label ) && empty( $highest_label ) ) {
+			$class[] = 'wpforms-hidden';
+		}
+
+		echo '<div class=" ' . wpforms_sanitize_classes( $class, true ) . ' ">';
+
+		printf(
+			'<span class="wpforms-rating-field-lowest-label wpforms-sub-label">%s</span>',
+			esc_html( $lowest_label )
+		);
+
+		printf(
+			'<span class="wpforms-rating-field-highest-label wpforms-sub-label">%s</span>',
+			esc_html( $highest_label )
+		);
+
+		echo '</div>';
 	}
 
 	/**

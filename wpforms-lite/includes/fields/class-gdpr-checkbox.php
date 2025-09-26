@@ -19,11 +19,12 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name     = esc_html__( 'GDPR Agreement', 'wpforms-lite' );
-		$this->type     = 'gdpr-checkbox';
-		$this->icon     = 'fa-check-square-o';
-		$this->order    = 500;
-		$this->defaults = [
+		$this->name            = esc_html__( 'GDPR Agreement', 'wpforms-lite' );
+		$this->type            = 'gdpr-checkbox';
+		$this->icon            = 'fa-check-square-o';
+		$this->order           = 500;
+		$this->allow_read_only = false;
+		$this->defaults        = [
 			1 => [
 				'label'   => esc_html__( 'I consent to having this website store my submitted information so they can respond to my inquiry.', 'wpforms-lite' ),
 				'value'   => '',

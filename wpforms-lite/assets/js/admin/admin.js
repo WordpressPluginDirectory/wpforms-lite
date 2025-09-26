@@ -1711,7 +1711,7 @@
 					$keyField
 						.prop( 'disabled', true )
 						.addClass( 'wpforms-setting-license-is-valid' )
-						.attr( 'value', $keyField.val() );
+						.attr( 'value', $keyField.val().replace( /./g, '*' ) );
 				} else {
 					icon = 'fa fa-exclamation-circle';
 					color = 'orange';
@@ -1844,7 +1844,6 @@
 				data = {
 					action: 'wpforms_refresh_license',
 					nonce:   wpforms_admin.nonce,
-					license: $input.val(),
 				};
 
 			$.post( wpforms_admin.ajax_url, data, function( res ) {

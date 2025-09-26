@@ -41,10 +41,18 @@ class SplashUpgrader {
 	 *
 	 * @param string|mixed   $previous_version Previous plugin version.
 	 * @param MigrationsBase $migrations_obj   Migrations object.
+	 *
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function update_splash_data_on_migration( $previous_version, MigrationsBase $migrations_obj ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Force update splash data cache.
-		wpforms()->obj( 'splash_cache' )->update( true );
+		$splash_cache_obj = wpforms()->obj( 'splash_cache' );
+
+		if ( ! $splash_cache_obj ) {
+			return;
+		}
+
+		$splash_cache_obj->update( true );
 	}
 }

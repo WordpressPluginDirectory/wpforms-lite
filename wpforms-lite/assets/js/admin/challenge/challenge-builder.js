@@ -115,6 +115,14 @@ WPFormsChallenge.builder = window.WPFormsChallenge.builder || ( function( docume
 			// Step 4 - Notifications.
 			$( document ).on( 'click', '.wpforms-challenge-step4-done', app.showEmbedPopup );
 
+			// Step 5 - Reinit Embed popup.
+			$( document ).on( 'wpformsChallengeCoreBeforeRefreshPage', function( event, originalClickEvent ) {
+				if ( $( originalClickEvent.currentTarget ).hasClass( 'wpforms-challenge-step5-item' ) ) {
+					event.preventDefault();
+					app.showEmbedPopup();
+				}
+			} );
+
 			// Tooltipster ready.
 			$.tooltipster.on( 'ready', app.tooltipsterReady );
 

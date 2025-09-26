@@ -22,12 +22,13 @@ class Field extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name     = esc_html__( 'Section Divider', 'wpforms-lite' );
-		$this->keywords = esc_html__( 'line, hr', 'wpforms-lite' );
-		$this->type     = 'divider';
-		$this->icon     = 'fa-arrows-h';
-		$this->order    = 170;
-		$this->group    = 'fancy';
+		$this->name            = esc_html__( 'Section Divider', 'wpforms-lite' );
+		$this->keywords        = esc_html__( 'line, hr', 'wpforms-lite' );
+		$this->type            = 'divider';
+		$this->icon            = 'fa-arrows-h';
+		$this->order           = 170;
+		$this->group           = 'fancy';
+		$this->allow_read_only = false;
 
 		$this->default_settings = [
 			'label_disable' => '1',
@@ -121,7 +122,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @param array $field Field data.
 	 */
-	private function hide_divider_line_option( array $field ) {
+	private function hide_divider_line_option( array $field ): void {
 
 		$hide_divider_line_value = $field['hide_divider_line'] ?? '0';
 		$hide_divider_line       = $this->field_element(

@@ -255,7 +255,7 @@ class CSSVars {
 		 * @since 1.8.1
 		 *
 		 * @param array $vars CSS variables two-dimensional array.
-		 *                    First level keys is the CSS selector.
+		 *                    The first level keys is the CSS selector.
 		 *                    Second level keys is the variable name without the `--wpforms-` prefix.
 		 */
 		$this->css_vars = apply_filters( 'wpforms_frontend_css_vars_init_vars', $vars );
@@ -440,7 +440,7 @@ class CSSVars {
 			</style>',
 			sanitize_key( $style_id ),
 			$selector, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			esc_html( $custom_css )
+			wp_strip_all_tags( $custom_css ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 	}
 
@@ -559,7 +559,7 @@ class CSSVars {
 				%2$s
 			}',
 			$selector, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			esc_html( $this->get_vars_css( $vars, $form_id ) )
+			wp_strip_all_tags( $this->get_vars_css( $vars, $form_id ) )
 		);
 	}
 
@@ -632,7 +632,7 @@ class CSSVars {
 	 *
 	 * @return array
 	 */
-	public function get_customized_css_vars( $attr ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function get_customized_css_vars( array $attr ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		$root_css_vars = $this->get_vars();
 		$css_vars      = [];

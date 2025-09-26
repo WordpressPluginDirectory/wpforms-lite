@@ -58,6 +58,7 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
 		$type                = ! empty( $args['smarttags']['type'] ) ? esc_attr( $args['smarttags']['type'] ) : 'fields';
 		$fields              = ! empty( $args['smarttags']['fields'] ) ? esc_attr( $args['smarttags']['fields'] ) : '';
 		$is_repeater_allowed = ! empty( $args['smarttags']['allow-repeated-fields'] ) ? esc_attr( $args['smarttags']['allow-repeated-fields'] ) : '';
+		$allowed_smarttags   = ! empty( $args['smarttags']['allowed'] ) ? esc_attr( $args['smarttags']['allowed'] ) : '';
 		$location            = ! empty( $args['location'] ) ? esc_attr( $args['location'] ) : '';
 
 		$args['data'] = [
@@ -65,18 +66,20 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
 			'type'                  => $type,
 			'fields'                => $fields,
 			'allow-repeated-fields' => $is_repeater_allowed,
+			'allowed-smarttags'     => $allowed_smarttags,
 		];
 
 		// BC for old addons that use the old smart tags system.
 		$smarttags_toggle = sprintf(
-			'<a href="#" class="toggle-smart-tag-display toggle-unfoldable-cont" data-location="%5$s" data-type="%1$s" data-fields="%2$s" data-allow-repeated-fields="%3$s">
+			'<a href="#" class="toggle-smart-tag-display toggle-unfoldable-cont" data-location="%5$s" data-type="%1$s" data-fields="%2$s" data-allow-repeated-fields="%3$s" data-allowed-smarttags="%6$s">
 				<i class="fa fa-tags"></i><span>%4$s</span>
 			</a>',
 			esc_attr( $type ),
 			esc_attr( $fields ),
 			esc_attr( $is_repeater_allowed ),
 			esc_html__( 'Show Smart Tags', 'wpforms-lite' ),
-			esc_attr( $location )
+			esc_attr( $location ),
+			esc_attr( $allowed_smarttags )
 		);
 	}
 
@@ -392,6 +395,39 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
 				$data_attr
 			);
 			break;
+
+		/**
+		 * Number input.
+		 *
+		 * @since 1.9.8
+		 */
+		case 'number':
+			if ( isset( $args['min'] ) ) {
+				$data_attr .= sprintf( ' min="%1$d" oninput="validity.valid||(value=\'%1$d\');" ', esc_attr( $args['min'] ) );
+			}
+
+			if ( isset( $args['step'] ) ) {
+				$data_attr .= sprintf( ' step="%1$d" oninput="validity.valid||(value=\'%1$d\');" ', esc_attr( $args['step'] ) );
+			}
+
+			$output = '<div class="wpforms-panel-field-number-wrapper">';
+
+			$output .= sprintf(
+				'<input type="number" id="%s" name="%s" value="%s" placeholder="%s" class="%s" %s>',
+				$input_id,
+				$field_name,
+				esc_attr( $value ),
+				$placeholder,
+				$input_class,
+				$data_attr
+			);
+
+			if ( ! empty( $args['show_unit'] ) ) {
+				$output .= '<span class="wpforms-panel-field-number-unit">' . $args['show_unit'] . '</span>';
+			}
+
+			$output .= '</div>';
+			break;
 	}
 
 	// Put the pieces together.
@@ -460,7 +496,7 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
  *    @type bool   $status        If `true`, control will display the current status next to the toggle.
  *    @type string $status_on     Status `On` text. By default, `On`.
  *    @type string $status_off    Status `Off` text. By default, `Off`.
- *    @type bool   $label_hide    If `true`, then the label will not display.
+ *    @type bool   $label_hide    If `true `, then the label will not display.
  *    @type string $tooltip       Tooltip text.
  *    @type string $input_class   CSS class for the hidden `<input type=checkbox>`.
  *    @type string $control_class CSS class for the wrapper `<span>`.
@@ -709,8 +745,12 @@ function wpforms_panel_fields_group( $inner, $args = [], $do_echo = true ): ?str
  */
 function wpforms_builder_form_settings_confirmation_get_pages( $form_data, $confirmation_id ): array {
 
-	$pre_selected_page_id = empty( $form_data['settings']['confirmations'][ $confirmation_id ]['page'] ) ? 0 : absint( $form_data['settings']['confirmations'][ $confirmation_id ]['page'] );
-	$pages                = wp_list_pluck( wpforms_search_posts(), 'post_title', 'ID' );
+	$pre_selected_page_id = empty( $form_data['settings']['confirmations'][ $confirmation_id ]['page'] )
+		? 0
+		: absint( $form_data['settings']['confirmations'][ $confirmation_id ]['page'] );
+
+	$pages  = [ 'previous_page' => esc_html__( 'Back to Previous Page (Referrer) ', 'wpforms-lite' ) ];
+	$pages += wp_list_pluck( wpforms_search_posts(), 'post_title', 'ID' );
 
 	if ( empty( $pre_selected_page_id ) || isset( $pages[ $pre_selected_page_id ] ) ) {
 		return $pages;

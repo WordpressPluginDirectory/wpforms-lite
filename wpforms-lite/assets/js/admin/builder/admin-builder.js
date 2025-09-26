@@ -32,12 +32,15 @@
  * @param wpforms_builder.error_contact_support
  * @param wpforms_builder.error_number_slider_increment
  * @param wpforms_builder.error_save_form
+ * @param wpforms_builder.error_save_form_forbidden
  * @param wpforms_builder.exit_confirm
  * @param wpforms_builder.field_locked_no_delete_msg
  * @param wpforms_builder.field_locked_no_duplicate_msg
  * @param wpforms_builder.file_upload.preview_hint
  * @param wpforms_builder.file_upload.preview_title_plural
+ * @param wpforms_builder.file_upload.preview_title_plural_camera
  * @param wpforms_builder.file_upload.preview_title_single
+ * @param wpforms_builder.file_upload.preview_title_single_camera
  * @param wpforms_builder.icon_choices.choice_empty_label_tpl
  * @param wpforms_builder.icon_choices.default_color
  * @param wpforms_builder.icon_choices.default_icon
@@ -73,6 +76,7 @@
  * @param wpforms_builder.revision_update_confirm
  * @param wpforms_builder.save_exit
  * @param wpforms_builder.scrollbars_css_url
+ * @param wpforms_builder.select_choice
  * @param wpforms_builder.shortcuts_modal_msg
  * @param wpforms_builder.shortcuts_modal_title
  * @param wpforms_builder.smart_tags_disabled_for_confirmations
@@ -538,6 +542,9 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 			// Date/Time field Date type option.
 			$builder.find( '.wpforms-field-option-row-date .type select' ).trigger( 'change' );
+
+			// Read-Only + Required field options init.
+			$builder.find( '.wpforms-field-option-row-read_only input:checked' ).trigger( 'change' );
 		},
 
 		/**
@@ -1725,12 +1732,16 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * @param {Object} target Changed :input.
 		 */
 		fieldFileUploadPreviewUpdate( target ) {
+			/**
+			 * @type {jQuery}
+			 */
 			const $options = $( target ).parents( '.wpforms-field-option-file-upload' );
 			const fieldId = $options.data( 'field-id' );
 
 			const styleOption = $options.find( '#wpforms-field-option-' + fieldId + '-style' ).val();
 			const $maxFileNumberRow = $options.find( '#wpforms-field-option-row-' + fieldId + '-max_file_number' );
 			const maxFileNumber = parseInt( $maxFileNumberRow.find( 'input' ).val(), 10 );
+			const isCameraEnabled = $options.find( '#wpforms-field-option-' + fieldId + '-camera_enabled' ).is( ':checked' );
 
 			const $preview = $( '#wpforms-field-' + fieldId );
 			const classicPreview = '.wpforms-file-upload-builder-classic';
@@ -1740,20 +1751,27 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				$( classicPreview, $preview ).removeClass( 'wpforms-hide' );
 				$( modernPreview, $preview ).addClass( 'wpforms-hide' );
 				$maxFileNumberRow.addClass( 'wpforms-hidden' );
+				$( $preview ).find( '.wpforms-file-upload-capture-camera-classic' ).toggleClass( 'wpforms-hidden', ! isCameraEnabled );
 			} else {
 				// Change hint and title.
 				if ( maxFileNumber > 1 ) {
+					const titleText = isCameraEnabled
+						? wpforms_builder.file_upload.preview_title_plural_camera
+						: wpforms_builder.file_upload.preview_title_plural;
 					$preview
 						.find( '.modern-title' )
-						.text( wpforms_builder.file_upload.preview_title_plural );
+						.html( titleText );
 					$preview
 						.find( '.modern-hint' )
 						.text( wpforms_builder.file_upload.preview_hint.replace( '{maxFileNumber}', maxFileNumber ) )
 						.removeClass( 'wpforms-hide' );
 				} else {
+					const titleText = isCameraEnabled
+						? wpforms_builder.file_upload.preview_title_single_camera
+						: wpforms_builder.file_upload.preview_title_single;
 					$preview
 						.find( '.modern-title' )
-						.text( wpforms_builder.file_upload.preview_title_single );
+						.html( titleText );
 					$preview
 						.find( '.modern-hint' )
 						.text( wpforms_builder.file_upload.preview_hint.replace( '{maxFileNumber}', 1 ) )
@@ -1794,6 +1812,19 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		updateDisableTodaysDateControls( id, checked ) {
 			$( `#wpforms-field-option-row-${ id }-date_disable_todays_date` )
 				.toggleClass( 'wpforms-hide', ! checked );
+		},
+
+		/**
+		 * Toggles the visibility of the password eye icon.
+		 *
+		 * @since 1.9.8
+		 */
+		togglePasswordEyeIcon() {
+			const $this = $( this );
+			const fieldId = $this.closest( '.wpforms-field-option-row-password-visibility' ).data( 'field-id' );
+			const $fieldPreview = $( `#wpforms-field-${ fieldId }` );
+
+			$fieldPreview.find( '.wpforms-confirm' ).toggleClass( 'wpforms-field-password-visibility-enabled', $this.is( ':checked' ) );
 		},
 
 		/**
@@ -2731,6 +2762,9 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				$( '#wpforms-field-' + id ).toggleClass( 'sublabel_hide' );
 			} );
 
+			// Real-time updates for the "Read-Only" field option.
+			$builder.on( 'change', '.wpforms-field-option-row-read_only input', app.fieldReadOnlyToggleChange );
+
 			// Real-time updates for a Quantity visibility field option.
 			$builder.on( 'change', '.wpforms-field-option-row-enable_quantity input', function() {
 				const id = $( this ).closest( '.wpforms-field-option-row' ).data( 'field-id' ),
@@ -3247,7 +3281,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			$( document ).on( 'input', '.wpforms-field-option-row-icon_color input.wpforms-color-picker', function() {
 				const $this = $( this ),
 					id = $this.closest( '.wpforms-field-option-row' ).data( 'field-id' ),
-					$icons = $( '#wpforms-field-' + id + ' > i.fa' );
+					$icons = $( `#wpforms-field-${ id } .wpforms-rating-field-icons i.fa` );
 
 				$icons.css( 'color', app.getValidColorPickerValue( $this ) );
 			} );
@@ -3277,6 +3311,8 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				}
 			);
 
+			$builder.on( 'change', '.wpforms-field-option-row-password-visibility input', app.togglePasswordEyeIcon );
+
 			$builder.on(
 				'change',
 				'.wpforms-field-option-row-password-strength input',
@@ -3301,7 +3337,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			$builder
 				.on(
 					'change',
-					'.wpforms-field-option-file-upload .wpforms-field-option-row-style select, .wpforms-field-option-file-upload .wpforms-field-option-row-max_file_number input',
+					'.wpforms-field-option-file-upload .wpforms-field-option-row-style select, .wpforms-field-option-file-upload .wpforms-field-option-row-max_file_number input, .wpforms-field-option-file-upload .wpforms-field-option-row-camera input',
 					function( event ) {
 						app.fieldFileUploadPreviewUpdate( event.target );
 					}
@@ -3330,6 +3366,54 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				.on( 'click', '.wpforms-entry-preview-block', app.entryPreviewBlockField );
 
 			app.defaultStateEntryPreviewNotice();
+		},
+
+		/**
+		 * Event handler for the Read-Only toggle.
+		 *
+		 * @since 1.9.8
+		 */
+		fieldReadOnlyToggleChange() {
+			const $input = $( this );
+			const fieldId = Number( $input.closest( '.wpforms-field-option-row' ).data( 'field-id' ) );
+			const isChecked = $input.is( ':checked' );
+			const $dependentToggles = $( `#wpforms-field-option-row-${ fieldId }-required, #wpforms-field-option-row-${ fieldId }-unique_answer` );
+			const $requiredInput = $dependentToggles.filter( '.wpforms-field-option-row-required' ).find( 'input' );
+
+			// Disable/Enable the dependent toggles.
+			app.fieldReadOnlyToggleDependentToggles( $dependentToggles, isChecked );
+
+			// Toggle CSS classes in the field preview container.
+			$( `#wpforms-field-${ fieldId }` )
+				.toggleClass( 'readonly', isChecked )
+				.toggleClass( 'required', $requiredInput.is( ':checked' ) );
+		},
+
+		/**
+		 * Disable/Enable the dependent toggles.
+		 *
+		 * @since 1.9.8
+		 *
+		 * @param {Object}  $toggles jQuery object with toggles to operate.
+		 * @param {boolean} disable  True to disable, false to enable.
+		 */
+		fieldReadOnlyToggleDependentToggles( $toggles, disable = true ) {
+			$toggles.each( function() {
+				const $optionRow = $( this );
+				const $optionInput = $optionRow.find( ':input' );
+				const setDataChecked = disable ? $optionInput.is( ':checked' ) : null;
+				const setChecked = disable ? false : $optionInput.data( 'enabled-state-checked' );
+				const setTitle = disable ? wp.i18n.__( 'Disabled because this field is set to Read-Only in the Advanced tab.', 'wpforms' ) : '';
+
+				$optionRow
+					.toggleClass( 'wpforms-disabled', disable )
+					.find( '.wpforms-toggle-control' )
+					.attr( 'title', setTitle );
+				$optionInput
+					.data( 'enabled-state-checked', setDataChecked )
+					.prop( 'checked', setChecked )
+					.prop( 'disabled', disable );
+			} );
 		},
 
 		/**
@@ -3726,7 +3810,12 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 				const $sectionElement = $panel.find( `.wpforms-panel-sidebar-section[data-section="${ sectionFromUrl }"]` );
 
-				return $sectionElement.length ? $sectionElement : null;
+				// Skip non-existing or non-accessible section.
+				if ( $sectionElement.length === 0 || $sectionElement.hasClass( 'wpforms-panel-sidebar-section-no-access' ) ) {
+					return null;
+				}
+
+				return $sectionElement;
 			};
 
 			// Gets the configured section within a panel to activate, if available.
@@ -6616,6 +6705,10 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				$block.find( '.wpforms-panel-field-confirmations-message_scroll' ).closest( '.wpforms-panel-field' ).show();
 				$block.find( '.wpforms-panel-field-confirmations-message_entry_preview' ).trigger( 'change' ).closest( '.wpforms-panel-field' ).show();
 				$block.find( '.wpforms-panel-field-confirmations-message_order_summary' ).closest( '.wpforms-panel-field' ).toggle( $( '#wpforms-panel-fields .wpforms-field-payment-total' ).length !== 0 );
+			}
+
+			if ( type === 'page' ) {
+				$block.find( '.wpforms-panel-field-confirmations-page-url-parameters' ).closest( '.wpforms-panel-field' ).show();
 			}
 
 			if ( $( '#wpforms-panel-field-settings-ajax_submit' ).is( ':checked' ) ) {

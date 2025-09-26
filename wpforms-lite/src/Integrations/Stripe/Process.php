@@ -4,6 +4,7 @@ namespace WPForms\Integrations\Stripe;
 
 use Stripe\Exception\ApiErrorException;
 use WPForms\Helpers\Transient;
+use WPForms\Vendor\Stripe\SubscriptionSchedule;
 
 /**
  * Stripe payment processing.
@@ -374,6 +375,11 @@ class Process {
 			$subscription->metadata['payment_id']  = $payment_id;
 			$subscription->metadata['payment_url'] = esc_url_raw( $payment_url );
 
+			$this->maybe_set_subscription_schedule( $subscription );
+
+			// Clean up cycles value.
+			$subscription->metadata['cycles'] = null;
+
 			$subscription->update( $subscription->id, $subscription->serializeParameters(), Helpers::get_auth_opts() );
 		}
 
@@ -422,6 +428,11 @@ class Process {
 		foreach ( $this->form_data['payments']['stripe'][ $settings_key ] as $data ) {
 
 			if ( $data['object_type'] !== $type ) {
+				continue;
+			}
+
+			// Skip if either the key or value is empty.
+			if ( ! $data['meta_key'] || ! $data['meta_value'] ) {
 				continue;
 			}
 
@@ -864,6 +875,11 @@ class Process {
 			// Customer custom metadata.
 			$args['customer_metadata'] = $this->get_mapped_custom_metadata( 'customer' );
 
+			// Validate the number of cycle to process.
+			if ( ! empty( $recurring['cycles'] ) && ( $recurring['cycles'] === 'undefined' || ( is_numeric( $recurring['cycles'] ) && $recurring['cycles'] > 0 ) ) ) {
+				$args['cycles'] = sanitize_text_field( $recurring['cycles'] );
+			}
+
 			$this->process_subscription( $args );
 
 			return;
@@ -1302,5 +1318,58 @@ class Process {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Maybe create a subscription schedule if the cycles was set.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @param object $subscription Stripe subscription object.
+	 */
+	private function maybe_set_subscription_schedule( object $subscription ): void {
+
+		if ( empty( $subscription->metadata['cycles'] ) || $subscription->metadata['cycles'] === 'unlimited' || (int) $subscription->metadata['cycles'] < 1 || empty( $subscription->items->data ) ) {
+			return;
+		}
+
+		try {
+			$schedule = SubscriptionSchedule::create(
+				[
+					'from_subscription' => $subscription->id,
+				],
+				Helpers::get_auth_opts()
+			);
+
+			$subscription_item = $subscription->items->data[0];
+
+			$schedule::update(
+				$schedule->id,
+				[
+					'end_behavior' => 'cancel',
+					'phases'       => [
+						[
+							'start_date' => $subscription_item->current_period_start,
+							'items'      => [
+								[
+									'plan' => $subscription_item->plan->id,
+								],
+							],
+							'iterations' => $subscription->metadata['cycles'],
+						],
+					],
+				],
+				Helpers::get_auth_opts()
+			);
+		} catch ( \Exception $e ) {
+
+			wpforms_log(
+				'Stripe: Unable to create Subscription Schedule.',
+				$e->getMessage(),
+				[
+					'type' => [ 'payment', 'error' ],
+				]
+			);
+		}
 	}
 }

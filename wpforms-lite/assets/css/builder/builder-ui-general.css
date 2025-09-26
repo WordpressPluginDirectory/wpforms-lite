@@ -18,7 +18,7 @@
 
 #wpforms-builder .wpforms-toolbar .wpforms-left {
   align-items: center;
-  border-inline-end: 1px solid #dddddd;
+  border-inline-end: 1px solid #dcdcde;
   display: flex;
   height: 100%;
   justify-content: center;
@@ -98,7 +98,7 @@
 }
 
 #wpforms-builder .wpforms-toolbar .wpforms-right .wpforms-btn-toolbar i {
-  color: #a6a6a6;
+  color: #a7aaad;
   margin-inline-end: 8px;
 }
 
@@ -116,7 +116,7 @@
 
 #wpforms-builder .wpforms-toolbar #wpforms-help svg,
 #wpforms-builder .wpforms-toolbar #wpforms-context-menu-container svg {
-  fill: #a6a6a6;
+  fill: #a7aaad;
   margin-top: 13px;
 }
 
@@ -139,8 +139,8 @@
 #wpforms-builder .wpforms-toolbar #wpforms-context-menu-container:hover > svg,
 #wpforms-builder .wpforms-toolbar #wpforms-context-menu-container.wpforms-context-menu-active > i.fa,
 #wpforms-builder .wpforms-toolbar #wpforms-context-menu-container.wpforms-context-menu-active > svg {
-  color: #444444;
-  fill: #444444;
+  color: #3c434a;
+  fill: #3c434a;
 }
 
 #wpforms-builder .wpforms-toolbar #wpforms-preview-btn:not(.wpforms-alone) {
@@ -159,9 +159,9 @@
 }
 
 #wpforms-builder .wpforms-toolbar #wpforms-embed.wpforms-btn-light-grey-disabled:hover {
-  background-color: #f8f8f8;
-  border-color: #cccccc;
-  color: #777777;
+  background-color: #f6f7f7;
+  border-color: #c3c4c7;
+  color: #6a6f76;
 }
 
 #wpforms-builder .wpforms-toolbar #wpforms-embed.wpforms-btn-light-grey-disabled > * {
@@ -176,10 +176,10 @@
   align-items: center;
   background-color: #ffffff;
   border-bottom: none;
-  border-inline-start: 1px solid #dddddd;
+  border-inline-start: 1px solid #dcdcde;
   border-inline-end: none;
   border-top: none;
-  color: #a6a6a6;
+  color: #a7aaad;
   cursor: pointer;
   display: flex;
   font-size: 28px;
@@ -192,8 +192,8 @@
 }
 
 #wpforms-builder .wpforms-toolbar #wpforms-exit:hover {
-  background-color: #f8f8f8;
-  color: #777777;
+  background-color: #e8e9e9;
+  color: #6a6f76;
 }
 
 #wpforms-builder .wpforms-toolbar.empty .wpforms-center {
@@ -210,7 +210,7 @@
 .wpforms-panels-toggle {
   display: flex;
   flex-direction: column;
-  background: #2d2d2d;
+  background: #282e32;
   color: #ffffff;
   min-height: calc( 100vh - 76px - var( --wpforms-admin-bar-height ));
   max-height: calc( 100vh - 76px - var( --wpforms-admin-bar-height ));
@@ -233,7 +233,7 @@
 .wpforms-panels-toggle button {
   background: none;
   border: none;
-  border-bottom: 1px solid #444444;
+  border-bottom: 1px solid #3c434a;
   cursor: pointer;
   display: block;
   margin: 0;
@@ -250,11 +250,11 @@
 }
 
 .wpforms-panels-toggle button:hover {
-  background-color: #444444;
+  background-color: #3c434a;
 }
 
 .wpforms-panels-toggle button .fa {
-  color: #999999;
+  color: #8c8f94;
   display: block;
   font-size: 30px;
   margin: 0 auto 5px auto;
@@ -294,7 +294,7 @@
 
 .wpforms-panel-full-content .wpforms-panel-content-wrap,
 .wpforms-panel-sidebar-content .wpforms-panel-content-wrap {
-  background-color: #6d6d6d;
+  background-color: #6a6f76;
   bottom: 0;
   inset-inline-start: 95px;
   overflow: auto;
@@ -314,6 +314,7 @@
 .wpforms-panel-full-content .wpforms-panel-content,
 .wpforms-panel-sidebar-content .wpforms-panel-content {
   background-color: #ffffff;
+  border-radius: 12px;
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
   min-height: 100%;
   padding: 30px;
@@ -349,7 +350,7 @@
 }
 
 .wpforms-panel-sidebar-content .wpforms-panel-sidebar-toggle-icon:hover {
-  color: #444444;
+  color: #3c434a;
 }
 
 .wpforms-panel-sidebar-content .wpforms-panel-sidebar-toggle-icon:hover i {
@@ -434,7 +435,7 @@
 }
 
 .wpforms-panel-corrupted-data .wpforms-builder-preview-corrupted-data-content .wpforms-builder-corrupted-data-title {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
   padding-bottom: 30px;
   margin: 0 0 15px 0;
 }
@@ -448,7 +449,7 @@
 }
 
 .wpforms-panel-corrupted-data .wpforms-builder-preview-corrupted-data-content p {
-  color: #444444;
+  color: #3c434a;
   font-size: 15px;
   font-weight: 400;
   line-height: 22px;
@@ -509,7 +510,7 @@
 }
 
 .wpforms-panel-field p.note {
-  color: #777777;
+  color: #6a6f76;
   font-size: 12px;
   margin: 5px 0 0 0;
 }
@@ -519,7 +520,7 @@
 }
 
 .wpforms-panel-field .wpforms-panel-field-after {
-  color: #777777;
+  color: #6a6f76;
   margin-left: 10px;
 }
 
@@ -536,7 +537,7 @@
 }
 
 .wpforms-panel-fields-group .wpforms-panel-fields-group-description {
-  color: #777777;
+  color: #6a6f76;
   font-size: 14px;
   line-height: 17px;
   margin-bottom: 20px;
@@ -547,13 +548,13 @@
 }
 
 .wpforms-panel-fields-group .wpforms-panel-fields-group-border-top {
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #dcdcde;
   margin-bottom: 20px;
   margin-top: 20px;
 }
 
 .wpforms-panel-fields-group .wpforms-panel-fields-group-border-bottom {
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #dcdcde;
   margin-bottom: 20px;
   margin-top: 20px;
 }
@@ -584,7 +585,7 @@
 }
 
 .wpforms-panel-fields-group.unfoldable .wpforms-panel-fields-group-title i {
-  color: #bbbbbb;
+  color: #b0b2b3;
   position: absolute;
   right: 0;
   top: calc( 50% - 7px);
@@ -637,7 +638,7 @@
 
 .wpforms-panel-sidebar-section {
   border-bottom: 1px solid #ced7e0;
-  color: #444444;
+  color: #3c434a;
   display: block;
   font-size: 16px;
   height: 75px;
@@ -651,7 +652,7 @@
 
 .wpforms-panel-sidebar-section:hover {
   background-color: #e0e8f0;
-  color: #444444;
+  color: #3c434a;
 }
 
 .wpforms-panel-sidebar-section.icon {
@@ -762,7 +763,7 @@
 }
 
 .wpforms-panel-content-section-title {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
   font-size: 28px;
   font-weight: 600;
   line-height: 28px;
@@ -816,7 +817,7 @@
 }
 
 .wpforms-panel-content-section-description {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -886,7 +887,7 @@
 
 .wpforms-panel-content-section-default h5,
 .wpforms-panel-content-section-info h5 {
-  color: #444444;
+  color: #3c434a;
   font-size: 24px;
   font-weight: 600;
   line-height: normal;
@@ -896,7 +897,7 @@
 
 .wpforms-panel-content-section-default p,
 .wpforms-panel-content-section-info p {
-  color: #777777;
+  color: #6a6f76;
   font-size: 16px;
   margin: 0 auto 20px auto;
   max-width: 600px;
@@ -931,7 +932,7 @@
 
 .toggle-unfoldable-cont:hover,
 .toggle-smart-tag-display:hover {
-  color: #777777;
+  color: #6a6f76;
 }
 
 .toggle-unfoldable-cont:hover span,
@@ -987,7 +988,7 @@
 }
 
 .unfoldable-cont li {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
   list-style: none;
   margin: 0 !important;
   padding: 0 !important;
@@ -1007,14 +1008,14 @@
 }
 
 .unfoldable-cont li a:hover {
-  background-color: #f8f8f8;
+  background-color: #f6f7f7;
   color: #036aab;
   text-decoration: none;
 }
 
 .unfoldable-cont textarea {
   border-radius: 4px;
-  color: #444444;
+  color: #3c434a;
   display: block;
   font-size: 14px;
   height: 85px;
@@ -1034,7 +1035,7 @@
 }
 
 .wpforms-field-map-table h3 {
-  color: #444444;
+  color: #3c434a;
   margin: 0 0 8px 0;
 }
 
@@ -1101,7 +1102,7 @@
   width: 370px;
   background: #ffffff;
   border-radius: 4px;
-  border: 1px solid #777777;
+  border: 1px solid #6a6f76;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15);
   visibility: visible;
   overflow: hidden;
@@ -1114,9 +1115,9 @@
 }
 
 .wpforms-builder-dropdown-list .title {
-  color: #444444;
-  background: #f8f8f8;
-  border-bottom: 1px solid #dddddd;
+  color: #3c434a;
+  background: #f6f7f7;
+  border-bottom: 1px solid #dcdcde;
   padding: 10px 12px;
   font-weight: 500;
   text-decoration: none;
@@ -1140,9 +1141,9 @@
   padding: 10px 12px;
   background: #ffffff;
   margin: 0;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid #e8e9e9;
   cursor: pointer;
-  color: #777777;
+  color: #6a6f76;
 }
 
 .wpforms-builder-dropdown-list ul li:hover {
@@ -1155,13 +1156,13 @@
 }
 
 .wpforms-builder-dropdown-list ul li .grey {
-  color: #777777;
+  color: #6a6f76;
 }
 
 .wpforms-builder-dropdown-list .wpforms-builder-dropdown-list-search-container {
   position: relative;
   padding: 10px;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
 }
 
 .wpforms-builder-dropdown-list .wpforms-builder-dropdown-list-search-container input {
@@ -1180,7 +1181,7 @@
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #bbbbbb;
+  color: #b0b2b3;
   font-size: 16px;
 }
 
@@ -1195,7 +1196,7 @@
 .wpforms-builder-dropdown-list .wpforms-no-results {
   display: none;
   padding: 10px;
-  color: #777777;
+  color: #6a6f76;
 }
 
 .wpforms-field-option-row .wpforms-builder-dropdown-list {
@@ -1205,7 +1206,7 @@
 }
 
 .wpforms-choices-list {
-  border: 1px solid #cccccc;
+  border: 1px solid #c3c4c7;
   border-radius: 4px;
   max-height: 177px;
   overflow-y: auto;
@@ -1227,11 +1228,11 @@
 }
 
 .wpforms-choices-list .checkbox-item:nth-child(odd) {
-  background-color: #f8f8f8;
+  background-color: #f6f7f7;
 }
 
 .wpforms-choices-list .checkbox-item:hover {
-  background-color: #eeeeee;
+  background-color: #e8e9e9;
 }
 
 .wpforms-choices-list .checkbox-item input[type="checkbox"] {
@@ -1273,7 +1274,7 @@
   cursor: pointer;
   display: inline-block;
   line-height: 1.25rem;
-  color: #2d2d2d;
+  color: #1d2327;
   flex-grow: 1;
   margin: unset;
 }
@@ -1284,7 +1285,7 @@
   inset-inline-start: 10px;
   width: 18px;
   height: 18px;
-  border: 1px solid #cccccc;
+  border: 1px solid #c3c4c7;
   border-radius: 4px;
   background-color: #ffffff;
   transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -1333,14 +1334,14 @@
   width: 100%;
   height: 100%;
   padding: 0.5rem;
-  border: 1px solid #cccccc;
+  border: 1px solid #c3c4c7;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
   user-select: none;
   box-sizing: border-box;
   background-color: #ffffff;
-  color: #2d2d2d;
+  color: #1d2327;
   font-size: 0.875rem;
   line-height: 1.2;
   word-break: break-word;
@@ -1391,13 +1392,13 @@
   gap: 15px;
   height: 120px;
   border-radius: 6px;
-  border: 1px solid #cccccc;
+  border: 1px solid #c3c4c7;
   padding: 20px;
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
   text-align: center;
   background-color: #ffffff;
-  color: #999999;
+  color: #a7aaad;
 }
 
 .wpforms-larger-icon-choice label svg {
@@ -1409,13 +1410,13 @@
 }
 
 .wpforms-larger-icon-choice label:hover {
-  color: #777777;
+  color: #6a6f76;
   box-shadow: 0 0 0 1px currentColor;
   border-color: currentColor;
-  background-color: #f8f8f8;
+  background-color: #f6f7f7;
 }
 
 .wpforms-larger-icon-choice label span {
-  color: #444444;
+  color: #3c434a;
   font-weight: 500;
 }

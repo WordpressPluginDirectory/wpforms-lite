@@ -210,8 +210,9 @@ class WPForms_Lite {
 						'default'     => '{admin_email}',
 						'tooltip'     => esc_html__( 'Enter the email address to receive form entry notifications. For multiple notifications, separate email addresses with a comma.', 'wpforms-lite' ),
 						'smarttags'   => [
-							'type'   => 'fields',
-							'fields' => 'email',
+							'type'    => 'all',
+							'fields'  => 'email',
+							'allowed' => 'admin_email,user_email',
 						],
 						'parent'      => 'settings',
 						'subsection'  => $id,
@@ -228,8 +229,9 @@ class WPForms_Lite {
 						esc_html__( 'CC', 'wpforms-lite' ),
 						[
 							'smarttags'   => [
-								'type'   => 'fields',
-								'fields' => 'email',
+								'type'    => 'all',
+								'fields'  => 'email',
+								'allowed' => 'admin_email,user_email',
 							],
 							'parent'      => 'settings',
 							'subsection'  => $id,
@@ -310,8 +312,9 @@ class WPForms_Lite {
 						[
 							'default'     => $from_email,
 							'smarttags'   => [
-								'type'   => 'fields',
-								'fields' => 'email',
+								'type'    => 'all',
+								'fields'  => 'email',
+								'allowed' => 'admin_email,user_email',
 							],
 							'parent'      => 'settings',
 							'subsection'  => $id,
@@ -338,8 +341,9 @@ class WPForms_Lite {
 							)
 						),
 						'smarttags'   => [
-							'type'   => 'fields',
-							'fields' => 'email,name',
+							'type'    => 'all',
+							'fields'  => 'email,name',
+							'allowed' => 'admin_email,user_email',
 						],
 						'parent'      => 'settings',
 						'subsection'  => $id,
@@ -585,6 +589,22 @@ class WPForms_Lite {
 						],
 					]
 				);
+
+				wpforms_panel_field(
+					'text',
+					'confirmations',
+					'page_url_parameters',
+					$settings->form_data,
+					esc_html__( 'URL Parameters', 'wpforms-lite' ),
+					[
+						'input_id'    => 'wpforms-panel-field-confirmations-page-url-parameters-' . $field_id,
+						'input_class' => 'wpforms-panel-field-confirmations-page-url-parameters',
+						'parent'      => 'settings',
+						'subsection'  => $field_id,
+						'tooltip'     => esc_html__( 'Add query string parameters to append to the URL when the form is submitted. Separate multiple parameters with an ampersand (&).', 'wpforms-lite' ),
+					]
+				);
+
 				wpforms_panel_field(
 					'text',
 					'confirmations',

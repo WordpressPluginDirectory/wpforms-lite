@@ -1,9 +1,9 @@
 .wpforms-admin-page .wpforms-alert {
   background-color: #ffffff;
   border: none;
-  border-inline-start: 4px solid #dddddd;
+  border-inline-start: 4px solid #dcdcde;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
-  color: #444444;
+  color: #3c434a;
   font-size: 14px;
   font-weight: 400;
   line-height: 18px;
@@ -39,7 +39,7 @@
 }
 
 .wpforms-admin-page .wpforms-alert-dismissible p {
-  color: #444444;
+  color: #3c434a;
 }
 
 .wpforms-admin-page .wpforms-alert-buttons {
@@ -59,7 +59,7 @@
 }
 
 .wpforms-admin-page .wpforms-alert h4 {
-  color: #444444;
+  color: #3c434a;
   font-size: 14px;
   font-weight: 600;
   line-height: 18px;
@@ -170,7 +170,7 @@
 }
 
 .wpforms-fullscreen-notice img.sullie-icon {
-  background-color: #f1f1f1;
+  background-color: #f0f0f1;
   border: 5px solid #ffffff;
   border-radius: 50%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -278,15 +278,15 @@
 }
 
 .wpforms-fullscreen-notice-light {
-  background: #e8e8e8;
+  background: #e8e9e9;
 }
 
 .wpforms-fullscreen-notice-light h3 {
-  color: #444444;
+  color: #3c434a;
 }
 
 .wpforms-fullscreen-notice-light p {
-  color: #777777;
+  color: #6a6f76;
 }
 
 .wpforms-fullscreen-notice img {

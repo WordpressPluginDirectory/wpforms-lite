@@ -445,6 +445,10 @@ class Loader {
 
 		$this->classes[] = [
 			'name' => 'Forms\Fields\Repeater\Field',
+		];
+
+		$this->classes[] = [
+			'name' => 'Forms\Fields\Camera\Field',
 			'hook' => 'init',
 		];
 

@@ -1,4 +1,4 @@
-/* global wpforms_challenge_admin */
+/* global wpforms_challenge_admin, WPFormsUtils */
 /**
  * WPForms Challenge function.
  *
@@ -831,10 +831,17 @@ WPFormsChallenge.core = window.WPFormsChallenge.core || ( function( document, wi
 		 * Refresh Page in order to re-init current step.
 		 *
 		 * @since 1.6.2
+		 * @since 1.9.8 Added `wpformsChallengeCoreBeforeRefreshPage` event.
 		 *
-		 * @param {object} e Event object.
+		 * @param {Object} e Event object.
 		 */
-		refreshPage: function( e ) {
+		refreshPage( e ) {
+			const customEvent = WPFormsUtils.triggerEvent( $( document ), 'wpformsChallengeCoreBeforeRefreshPage', e );
+
+			// If preventDefault was called, skip reloading.
+			if ( customEvent.isDefaultPrevented() ) {
+				return;
+			}
 
 			window.location.reload( true );
 		},

@@ -138,17 +138,17 @@ body.wpforms-setting-lite-connect-modal .jconfirm .jconfirm-box-container .jconf
   line-height: 42px;
   border-radius: 4px;
   padding: 0 17px;
-  color: #777777;
-  border-color: #f8f8f8;
-  background: #f8f8f8;
+  color: #50575e;
+  border-color: #f6f7f7;
+  background: #f6f7f7;
   text-transform: capitalize;
   min-width: 83px;
   margin: 10px;
 }
 
 body.wpforms-setting-lite-connect-modal .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button:hover {
-  background: #eeeeee;
-  border-color: #eeeeee;
+  background: #e8e9e9;
+  border-color: #e8e9e9;
 }
 
 body.wpforms-setting-lite-connect-modal .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button.btn-default {
@@ -287,7 +287,7 @@ body.wpforms-setting-lite-connect-modal .jconfirm.jconfirm-ai-modal .jconfirm-bo
 }
 
 #wpforms-dash-widget-lite-connect-block .wpforms-toggle-control-status {
-  color: #444444;
+  color: #3c434a;
 }
 
 #wpforms-dash-widget-lite-connect-block .wpforms-education-lite-connect-enabled-info {
@@ -319,7 +319,7 @@ body.wpforms-setting-lite-connect-modal .jconfirm.jconfirm-ai-modal .jconfirm-bo
 }
 
 #wpforms-builder-lite-connect-top-bar {
-  background: #f8f8f8;
+  background: #f6f7f7;
   height: 44px;
   padding: 0;
   position: fixed;
@@ -351,7 +351,7 @@ body.wpforms-setting-lite-connect-modal .jconfirm.jconfirm-ai-modal .jconfirm-bo
   font-weight: 500;
   font-size: 14px;
   line-height: 17px;
-  color: #444444;
+  color: #3c434a;
   vertical-align: 3px;
 }
 
@@ -359,10 +359,10 @@ body.wpforms-setting-lite-connect-modal .jconfirm.jconfirm-ai-modal .jconfirm-bo
   font-weight: normal;
   font-size: 14px;
   line-height: 17px;
-  color: #777777;
+  color: #50575e;
   margin: 0;
   padding-inline-start: 10px;
-  border-inline-start: 1px solid #bbbbbb;
+  border-inline-start: 1px solid #b0b2b3;
 }
 
 #wpforms-builder-lite-connect-top-bar .wpforms-education-lite-connect-enabled-info {
@@ -388,7 +388,7 @@ body.wpforms-setting-lite-connect-modal .jconfirm.jconfirm-ai-modal .jconfirm-bo
 }
 
 #wpforms-builder-lite-connect-top-bar .wpforms-dismiss-button:hover {
-  color: #777777;
+  color: #50575e;
 }
 
 #wpforms-challenge-popup-lite-connect {
@@ -396,7 +396,7 @@ body.wpforms-setting-lite-connect-modal .jconfirm.jconfirm-ai-modal .jconfirm-bo
   font-weight: normal;
   font-size: 14px;
   line-height: 17px;
-  color: #444444;
+  color: #3c434a;
 }
 
 #wpforms-challenge-popup-lite-connect h3 img {
@@ -412,7 +412,7 @@ body.wpforms-setting-lite-connect-modal .jconfirm.jconfirm-ai-modal .jconfirm-bo
   font-weight: normal;
   font-size: 14px;
   line-height: 17px;
-  color: #444444;
+  color: #3c434a;
 }
 
 #wpforms-challenge-popup-lite-connect .wpforms-education-lite-connect-enabled-info img {

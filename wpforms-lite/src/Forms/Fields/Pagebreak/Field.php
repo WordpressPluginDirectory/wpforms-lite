@@ -41,12 +41,13 @@ class Field extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name     = esc_html__( 'Page Break', 'wpforms-lite' );
-		$this->keywords = esc_html__( 'progress bar, multi step, multi part', 'wpforms-lite' );
-		$this->type     = 'pagebreak';
-		$this->icon     = 'fa-files-o';
-		$this->order    = 160;
-		$this->group    = 'fancy';
+		$this->name            = esc_html__( 'Page Break', 'wpforms-lite' );
+		$this->keywords        = esc_html__( 'progress bar, multi step, multi part', 'wpforms-lite' );
+		$this->type            = 'pagebreak';
+		$this->icon            = 'fa-files-o';
+		$this->order           = 160;
+		$this->group           = 'fancy';
+		$this->allow_read_only = false;
 
 		$this->init_pro_field();
 		$this->hooks();
@@ -118,7 +119,7 @@ class Field extends WPForms_Field {
 
 		$this->field_options_basic_top( $field, $position );
 
-		// Page Title, don't display for bottom pagebreaks.
+		// Page Title, don't display for bottom page breaks.
 		if ( $position !== 'bottom' ) {
 			$lbl = $this->field_element(
 				'label',
@@ -183,7 +184,7 @@ class Field extends WPForms_Field {
 			);
 		}
 
-		// Options are not available to top pagebreaks.
+		// Options are not available to top page breaks.
 		if ( $position !== 'top' ) {
 
 			// Previous button toggle.
@@ -290,7 +291,7 @@ class Field extends WPForms_Field {
 			[
 				'slug'    => 'progress_text',
 				'content' => $lbl . $fld,
-				'class'   => $indicator !== 'progress' ? 'wpforms-hidden' : '', // Hide if indicator is not set to progress.
+				'class'   => $indicator !== 'progress' ? 'wpforms-hidden' : '', // Hide if the indicator is not set to progress.
 			]
 		);
 	}
@@ -519,7 +520,7 @@ class Field extends WPForms_Field {
 		$label      = $position === 'normal' && empty( $label ) ? esc_html__( 'Page Break', 'wpforms-lite' ) : $label;
 
 		/**
-		 * Fires before page break is displayed on the preview.
+		 * Fires before the page break is displayed on the preview.
 		 *
 		 * @since 1.7.9
 		 *
@@ -578,7 +579,7 @@ class Field extends WPForms_Field {
 		echo '</div>';
 
 		/**
-		 * Fires after page break is displayed on the preview.
+		 * Fires after a page break is displayed on the preview.
 		 *
 		 * @since 1.7.9
 		 *
@@ -589,7 +590,7 @@ class Field extends WPForms_Field {
 	}
 
 	/**
-	 * Add class to the builder field preview.
+	 * Add a class to the builder field preview.
 	 *
 	 * @since 1.9.4
 	 *

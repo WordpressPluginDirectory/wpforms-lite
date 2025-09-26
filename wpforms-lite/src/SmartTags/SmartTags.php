@@ -126,7 +126,7 @@ class SmartTags {
 			'user_full_name'    => esc_html__( 'User Full Name', 'wpforms-lite' ),
 			'user_first_name'   => esc_html__( 'User First Name', 'wpforms-lite' ),
 			'user_last_name'    => esc_html__( 'User Last Name', 'wpforms-lite' ),
-			'user_email'        => esc_html__( 'User Email', 'wpforms-lite' ),
+			'user_email'        => esc_html__( 'Logged-in User\'s Email', 'wpforms-lite' ),
 			'user_meta'         => esc_html__( 'User Meta', 'wpforms-lite' ),
 			'author_id'         => esc_html__( 'Author ID', 'wpforms-lite' ),
 			'author_display'    => esc_html__( 'Author Name', 'wpforms-lite' ),

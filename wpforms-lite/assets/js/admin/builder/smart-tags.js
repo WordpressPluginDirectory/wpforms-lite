@@ -473,11 +473,18 @@ WPForms.Admin.Builder.SmartTags = WPForms.Admin.Builder.SmartTags || ( function(
 
 			value = value.toString().trim();
 
+			const decode = ( str ) => {
+				return str
+					.replace( /&quot;/g, '"' )
+					.replace( /&#039;/g, '\'' )
+					.replace( /&apos;/g, '\'' );
+			};
+
 			const tagTitle = app.getSmartTagFieldTitle( value ) ||
 				app.getSmartTagWithArgsTitle( value ) ||
 				wpforms_builder.smart_tags[ value ];
 
-			return tagTitle ? tagTitle : value;
+			return tagTitle ? decode( tagTitle ) : value;
 		},
 
 		/**
@@ -864,7 +871,7 @@ WPForms.Admin.Builder.SmartTags = WPForms.Admin.Builder.SmartTags || ( function(
 			const isFieldOption = id ? id.includes( 'wpforms-field-option-' ) : false;
 
 			// Copy the data attributes from the original input to the button.
-			const attributesToCopy = [ 'location', 'type', 'fields', 'allow-repeated-fields' ];
+			const attributesToCopy = [ 'location', 'type', 'fields', 'allow-repeated-fields', 'allowed-smarttags' ];
 
 			attributesToCopy.forEach( ( attr ) => {
 				const dataValue = originalInput.data( attr );
@@ -1149,6 +1156,9 @@ WPForms.Admin.Builder.SmartTags = WPForms.Admin.Builder.SmartTags || ( function(
 				return smartTagListElements;
 			}
 
+			// Allowed Smart Tags patterns.
+			const allowedSmartTags = $el.data( 'allowed-smarttags' )?.split( ',' ).filter( Boolean );
+
 			// Add a heading for the other Smart Tags.
 			smartTagListElements.push( {
 				value: 0,
@@ -1168,6 +1178,11 @@ WPForms.Admin.Builder.SmartTags = WPForms.Admin.Builder.SmartTags || ( function(
 					continue;
 				}
 
+				// Respect allowed Smart Tags patterns, if provided.
+				if ( ! app.isSmartTagAllowed( smartTagKey, allowedSmartTags ) ) {
+					continue;
+				}
+
 				smartTagListElements.push( {
 					value: smartTagKey,
 					type: 'other',
@@ -1176,6 +1191,47 @@ WPForms.Admin.Builder.SmartTags = WPForms.Admin.Builder.SmartTags || ( function(
 			}
 
 			return smartTagListElements;
+		},
+
+		/**
+		 * Check if Smart Tag is allowed.
+		 *
+		 * @since 1.9.8
+		 *
+		 * @param {string}  smartTagKey      Smart Tag key.
+		 * @param {Array|*} allowedSmartTags Allowed Smart Tag patterns.
+		 *
+		 * @return {boolean} True if the Smart Tag is allowed.
+		 */
+		isSmartTagAllowed( smartTagKey, allowedSmartTags ) {
+			if ( ! allowedSmartTags || ! allowedSmartTags.length ) {
+				return true;
+			}
+
+			for ( let i = 0; i < allowedSmartTags.length; i++ ) {
+				const patternRaw = String( allowedSmartTags[ i ] ).trim();
+
+				if ( ! patternRaw ) {
+					continue;
+				}
+
+				// Exact match.
+				if ( patternRaw === smartTagKey ) {
+					return true;
+				}
+
+				// Convert a wildcard pattern to RegExp: '*' => '.*' (match any characters).
+				// The character class [.+?^${}()|[\\]\\] matches all regex-special characters: . + ? ^ $ { } ( ) | [ ] \.
+				// The replacement \\$& means “prefix the matched character with a backslash,” turning it into a literal.
+				const escaped = patternRaw.replace( /[.+?^${}()|[\]\\]/g, '\\$&' ).replace( /\*/g, '.*' );
+				const regex = new RegExp( '^' + escaped + '$' );
+
+				if ( regex.test( smartTagKey ) ) {
+					return true;
+				}
+			}
+
+			return false;
 		},
 
 		/**

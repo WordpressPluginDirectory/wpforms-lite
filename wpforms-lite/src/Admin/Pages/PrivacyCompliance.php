@@ -68,6 +68,7 @@ class PrivacyCompliance {
 		if ( wp_doing_ajax() ) {
 			remove_action( 'admin_init', 'wpconsent_maybe_redirect_onboarding', 9999 );
 			add_action( 'wp_ajax_wpforms_privacy_compliance_page_check_plugin_status', [ $this, 'ajax_check_plugin_status' ] );
+			add_action( 'wpforms_plugin_activated', [ $this, 'privacy_compliance_activated' ] );
 		}
 
 		// Check what page we are on.
@@ -447,12 +448,19 @@ class PrivacyCompliance {
 				$step['plugin']      = $this->config['lite_wporg_url'];
 			}
 		} else {
-			$this->output_data['plugin_activated'] = is_plugin_active( $this->config['lite_plugin'] ) || is_plugin_active( $this->config['pro_plugin'] );
+			$this->output_data['plugin_activated'] =
+				is_plugin_active( $this->config['lite_plugin'] ) || is_plugin_active( $this->config['pro_plugin'] );
 			$step['icon']                          = $this->output_data['plugin_activated'] ? 'step-complete.svg' : 'step-1.svg';
-			$step['button_text']                   = $this->output_data['plugin_activated'] ? esc_html__( 'WPConsent Installed & Activated', 'wpforms-lite' ) : esc_html__( 'Activate WPConsent', 'wpforms-lite' );
-			$step['button_class']                  = $this->output_data['plugin_activated'] ? 'grey disabled' : 'button-primary';
+			$step['button_text']                   =
+				$this->output_data['plugin_activated']
+					? esc_html__( 'WPConsent Installed & Activated', 'wpforms-lite' )
+					: esc_html__( 'Activate WPConsent', 'wpforms-lite' );
+			$step['button_class']                  = $this->output_data['plugin_activated']
+				? 'grey disabled'
+				: 'button-primary';
 			$step['button_action']                 = $this->output_data['plugin_activated'] ? '' : 'activate';
-			$step['plugin']                        = $this->output_data['pro_plugin_installed'] ? $this->config['pro_plugin'] : $this->config['lite_plugin'];
+			$step['plugin']                        =
+				$this->output_data['pro_plugin_installed'] ? $this->config['pro_plugin'] : $this->config['lite_plugin'];
 		}
 
 		return $step;
@@ -532,7 +540,10 @@ class PrivacyCompliance {
 
 			case 'pro':
 				$addon_installed      = array_key_exists( $this->config['wpconsent_addon'], $this->output_data['all_plugins'] );
-				$step['button_text']  = $addon_installed ? esc_html__( 'WPConsent Pro Installed & Activated', 'wpforms-lite' ) : esc_html__( 'Install Now', 'wpforms-lite' );
+				$step['button_text']  =
+					$addon_installed
+						? esc_html__( 'WPConsent Pro Installed & Activated', 'wpforms-lite' )
+						: esc_html__( 'Install Now', 'wpforms-lite' );
 				$step['button_class'] = $this->output_data['plugin_setup'] ? 'grey disabled' : 'button-primary';
 				$step['icon']         = $addon_installed ? 'step-complete.svg' : 'step-3.svg';
 				break;
@@ -557,9 +568,7 @@ class PrivacyCompliance {
 			! wpforms_current_user_can()
 		) {
 			wp_send_json_error(
-				[
-					'error' => esc_html__( 'You do not have permission.', 'wpforms-lite' ),
-				]
+				[ 'error' => esc_html__( 'You do not have permission.', 'wpforms-lite' ) ]
 			);
 		}
 
@@ -567,9 +576,7 @@ class PrivacyCompliance {
 
 		if ( ! function_exists( 'wpconsent' ) ) {
 			wp_send_json_error(
-				[
-					'error' => esc_html__( 'Plugin unavailable.', 'wpforms-lite' ),
-				]
+				[ 'error' => esc_html__( 'Plugin unavailable.', 'wpforms-lite' ) ]
 			);
 		}
 
@@ -580,13 +587,36 @@ class PrivacyCompliance {
 
 		$wpconsent = wpconsent();
 
-		if ( isset( $wpconsent->license ) && method_exists( $wpconsent->license, 'is_active' ) && $wpconsent->license->is_active() ) {
+		if (
+			isset( $wpconsent->license ) &&
+			method_exists( $wpconsent->license, 'is_active' ) &&
+			$wpconsent->license->is_active()
+		) {
 			$result['license_level'] = 'pro';
 		}
 
 		$result['addon_installed'] = (int) array_key_exists( $this->config['wpconsent_addon'], get_plugins() );
 
 		wp_send_json_success( $result );
+	}
+
+	/**
+	 * Set the source of the plugin installation.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @param string $plugin_basename The basename of the plugin.
+	 */
+	public function privacy_compliance_activated( string $plugin_basename ): void {
+
+		if ( $plugin_basename !== $this->config['lite_plugin'] ) {
+			return;
+		}
+
+		$source = wpforms()->is_pro() ? 'WPForms' : 'WPForms Lite';
+
+		update_option( 'wpconsent_source', $source );
+		update_option( 'wpconsent_date', time() );
 	}
 
 	/**

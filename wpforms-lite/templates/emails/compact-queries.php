@@ -63,7 +63,7 @@ $border_color_dark = wpforms_generate_contrasting_color( $email_text_color_dark,
 	}
 
 	.content td {
-		border-bottom: 1px solid <?php echo sanitize_hex_color( $border_color_dark ); ?> !important;
+		border-color: <?php echo sanitize_hex_color( $border_color_dark ); ?> !important;
 	}
 
 	.footer, .footer a {

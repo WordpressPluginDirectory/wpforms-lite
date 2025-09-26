@@ -453,6 +453,28 @@ trait ContentTrait {
 					'yearly'     => esc_html__( 'Yearly', 'wpforms-lite' ),
 				],
 				'tooltip'    => esc_html__( 'How often you would like the charge to recur.', 'wpforms-lite' ),
+				'class'      => 'wpforms-panel-content-section-payment-plan-period',
+			],
+			false
+		);
+
+		$max_cycles   = $this->get_recurring_max_cycles( $plan_id );
+		$range_cycles = range( 1, $max_cycles );
+
+		$content .= wpforms_panel_field(
+			'select',
+			$this->slug,
+			'cycles',
+			$this->form_data,
+			esc_html__( 'Recurring Cycles', 'wpforms-lite' ),
+			[
+				'parent'     => 'payments',
+				'subsection' => 'recurring',
+				'index'      => $plan_id,
+				'default'    => 'unlimited',
+				'options'    => [ 'unlimited' => esc_html__( 'Unlimited', 'wpforms-lite' ) ] + array_combine( $range_cycles, $range_cycles ),
+				'tooltip'    => esc_html__( 'How many times you want the payment to repeat. Stripe supports up to 100 recurrences or a maximum duration of 20 years, whichever comes first.', 'wpforms-lite' ),
+				'class'      => 'wpforms-panel-content-section-payment-plan-cycles',
 			],
 			false
 		);
@@ -749,5 +771,34 @@ trait ContentTrait {
 				'rating',
 			]
 		);
+	}
+
+	/**
+	 * Get recurring max cycles value.
+	 *
+	 * @param string $plan_id Selected plan id.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @return int
+	 */
+	private function get_recurring_max_cycles( string $plan_id ): int {
+
+		// The API limit is 20 years.
+		if ( ! isset( $this->form_data['payments'][ $this->slug ]['recurring'][ $plan_id ]['period'] ) || $this->form_data['payments'][ $this->slug ]['recurring'][ $plan_id ]['period'] === 'yearly' ) {
+			return 20;
+		}
+
+		// 20 years is 40 semi-years.
+		if ( $this->form_data['payments'][ $this->slug ]['recurring'][ $plan_id ]['period'] === 'semiyearly' ) {
+			return 40;
+		}
+
+		// 20 years is 80 quarters.
+		if ( $this->form_data['payments'][ $this->slug ]['recurring'][ $plan_id ]['period'] === 'quarterly' ) {
+			return 80;
+		}
+
+		return Helpers::recurring_plan_cycles_max();
 	}
 }

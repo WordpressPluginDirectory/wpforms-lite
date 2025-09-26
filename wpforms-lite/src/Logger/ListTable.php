@@ -475,7 +475,7 @@ class ListTable extends WP_List_Table {
 			<div class="wpforms-log-popup">
 				<div class="wpforms-log-popup-block">
 					<div class="wpforms-log-popup-label"><?php esc_html_e( 'Log Title', 'wpforms-lite' ); ?></div>
-					<div class="wpforms-log-popup-title">{{ data.title }}</div>
+					<div class="wpforms-log-popup-title">{{{ data.title }}}</div>
 				</div>
 				<div class="wpforms-log-popup-block">
 					<div class="wpforms-log-popup-label"><?php esc_html_e( 'Message', 'wpforms-lite' ); ?></div>

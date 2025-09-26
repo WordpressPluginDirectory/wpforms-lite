@@ -74,7 +74,6 @@ namespace WPForms {
 			self::trigger_error( $name );
 		}
 
-
 		/**
 		 * Inform clients that the class is removed.
 		 *
@@ -247,6 +246,14 @@ namespace {
 	 * @since 1.8.6
 	 */
 	class_alias( '\WPForms\Admin\Forms\ListTable', '\WPForms_Overview_Table' );
+
+	/**
+	 * This alias is a safeguard to those developers who use our internal
+	 * class \WPForms\Emails\FetchInfoBlocksTask, which we deleted.
+	 *
+	 * @since 1.9.8
+	 */
+	class_alias( '\WPForms\Emails\Tasks\FetchInfoBlocksTask', '\WPForms\Emails\FetchInfoBlocksTask' );
 
 	// Pro specific aliases.
 	if ( wpforms()->is_pro() ) {

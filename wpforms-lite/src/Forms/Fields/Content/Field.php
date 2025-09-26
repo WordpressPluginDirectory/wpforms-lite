@@ -24,12 +24,13 @@ class Field extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name     = esc_html__( 'Content', 'wpforms-lite' );
-		$this->keywords = esc_html__( 'image, text, table, list, heading, wysiwyg, visual', 'wpforms-lite' );
-		$this->type     = 'content';
-		$this->icon     = 'fa-file-image-o';
-		$this->order    = 180;
-		$this->group    = 'fancy';
+		$this->name            = esc_html__( 'Content', 'wpforms-lite' );
+		$this->keywords        = esc_html__( 'image, text, table, list, heading, wysiwyg, visual', 'wpforms-lite' );
+		$this->type            = 'content';
+		$this->icon            = 'fa-file-image-o';
+		$this->order           = 180;
+		$this->group           = 'fancy';
+		$this->allow_read_only = false;
 
 		$this->default_settings = [
 			'label_disable' => '1',
@@ -94,7 +95,7 @@ class Field extends WPForms_Field {
 	}
 
 	/**
-	 * Show field preview in the builder right panel.
+	 * Show the field preview in the builder right panel.
 	 *
 	 * @since 1.9.4
 	 *

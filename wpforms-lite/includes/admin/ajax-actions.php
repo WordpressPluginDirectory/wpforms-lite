@@ -82,7 +82,7 @@ function wpforms_save_form() {
 	];
 
 	/**
-	 * Allows filtering ajax response data after form was saved.
+	 * Allows filtering ajax response data after the form was saved.
 	 *
 	 * @since 1.5.1
 	 *
@@ -132,7 +132,7 @@ function wpforms_prepare_form_data( $form_post ): array {
 
 		if ( isset( $matches[3] ) ) {
 			/**
-			 * This array_merge is not slow, because it is new for each loop iteration.
+			 * This array_merge is not slow because it is new for each loop iteration.
 			 *
 			 * @noinspection SlowArrayOperationsInLoopInspection
 			 */
@@ -167,7 +167,7 @@ function wpforms_new_form() { // phpcs:ignore Generic.Metrics.CyclomaticComplexi
 
 	check_ajax_referer( 'wpforms-builder', 'nonce' );
 
-	// Prevent second form creating if a user has no license set.
+	// Prevent the second form creating if a user has no license set.
 	// Redirect will lead to the warning page.
 	if ( wpforms()->is_pro() && empty( wpforms_get_license_type() ) && wp_count_posts( 'wpforms' )->publish >= 1 ) {
 		wp_send_json_success( [ 'redirect' => admin_url( 'admin.php?page=wpforms-builder&view=setup' ) ] );
@@ -337,7 +337,7 @@ function wpforms_update_form_template() { // phpcs:ignore Generic.Metrics.Cyclom
 	$prev_template      = wpforms()->obj( 'builder_templates' )->get_template( $prev_template_slug );
 	$form_title         = isset( $prev_template['name'] ) && $prev_template['name'] === $form_title ? $template_title : $form_title;
 
-	// If the these template titles are empty, use the form title.
+	// If these template titles are empty, use the form title.
 	$form_pages_title          = $template_title ? $template_title : $form_title;
 	$form_conversational_title = ! empty( $template_data['data']['settings']['conversational_forms_title'] ) ? $template_data['data']['settings']['conversational_forms_title'] : $form_title;
 
@@ -491,7 +491,7 @@ function wpforms_builder_dynamic_choices() {
 add_action( 'wp_ajax_wpforms_builder_dynamic_choices', 'wpforms_builder_dynamic_choices' );
 
 /**
- * Form Builder Dynamic Choices Source option toggle.
+ * Form Builder Dynamic Choices Source option toggles.
  *
  * This can be triggered with select/radio/checkbox fields.
  *
@@ -599,7 +599,7 @@ function wpforms_builder_dynamic_source() {
 add_action( 'wp_ajax_wpforms_builder_dynamic_source', 'wpforms_builder_dynamic_source' );
 
 /**
- * Perform test connection to verify that the current web host can successfully
+ * Perform a test connection to verify that the current web host can successfully
  * make outbound SSL connections.
  *
  * @since 1.4.5
@@ -700,7 +700,7 @@ function wpforms_deactivate_addon() {
 		deactivate_plugins( $plugin );
 
 		/**
-		 * Fire after plugin deactivating via the WPForms installer.
+		 * Fire after the plugin deactivating via the WPForms installer.
 		 *
 		 * @since 1.6.3
 		 *
@@ -753,7 +753,7 @@ function wpforms_activate_addon() {
 		$activate = wpforms_activate_plugin( $plugin );
 
 		/**
-		 * Fire after plugin activating via the WPForms installer.
+		 * Fire after the plugin activating via the WPForms installer.
 		 *
 		 * @since 1.6.3.1
 		 *
@@ -797,7 +797,7 @@ function wpforms_install_addon() { // phpcs:ignore Generic.Metrics.CyclomaticCom
 	$error = $type === 'plugin'
 		? esc_html__( 'Could not install the plugin. Please download and install it manually.', 'wpforms-lite' )
 		: sprintf(
-			wp_kses( /* translators: %1$s - addon download URL, %2$s - link to manual installation guide, %3$s - link to contact support. */
+			wp_kses( /* translators: %1$s - addon download URL, %2$s - link to a manual installation guide, %3$s - link to contact support. */
 				__( 'Could not install the addon. Please <a href="%1$s" target="_blank" rel="noopener noreferrer">download it from wpforms.com</a> and <a href="%2$s" target="_blank" rel="noopener noreferrer">install it manually</a>, or <a href="%3$s" target="_blank" rel="noopener noreferrer">contact support</a> for assistance.', 'wpforms-lite' ),
 				[
 					'a' => [
@@ -894,7 +894,7 @@ function wpforms_install_addon() { // phpcs:ignore Generic.Metrics.CyclomaticCom
 	if ( ! is_wp_error( $activated ) ) {
 
 		/**
-		 * Fire after plugin activating via the WPForms installer.
+		 * Fire after the plugin activating via the WPForms installer.
 		 *
 		 * @since 1.7.0
 		 *
@@ -929,9 +929,18 @@ function wpforms_ajax_search_pages_for_dropdown() {
 		wp_send_json_error( esc_html__( 'Incorrect usage of this operation.', 'wpforms-lite' ) );
 	}
 
-	$result_pages = wpforms_search_pages_for_dropdown(
-		sanitize_text_field( wp_unslash( $_GET['search'] ) )
-	);
+	$search              = sanitize_text_field( wp_unslash( $_GET['search'] ) );
+	$result_pages        = [];
+	$previous_page_label = esc_html__( 'Back to Previous Page (Referrer) ', 'wpforms-lite' );
+
+	if ( stripos( strtolower( $previous_page_label ), $search ) !== false ) {
+		$result_pages[] = [
+			'value' => 'previous_page',
+			'label' => $previous_page_label,
+		];
+	}
+
+	$result_pages += wpforms_search_pages_for_dropdown( $search );
 
 	if ( empty( $result_pages ) ) {
 		wp_send_json_success( [] );

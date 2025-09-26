@@ -870,6 +870,7 @@ abstract class FormSelector implements IntegrationInterface {
 
 		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_var_export
 		$content .= sprintf(
+			// language=JavaScript
 			'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onLoad="
 				window.top.dispatchEvent(
 					new CustomEvent(
@@ -1018,7 +1019,7 @@ abstract class FormSelector implements IntegrationInterface {
 				%2$s
 			</style>',
 			sanitize_key( $style_id ),
- 			esc_html( $custom_css )
+			wp_strip_all_tags( $custom_css ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 	}
 

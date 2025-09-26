@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.9.7.3\n"
+"Project-Id-Version: WPForms Lite 1.9.8.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-11T09:35:18+00:00\n"
+"POT-Creation-Date: 2025-09-25T10:55:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpforms-lite\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: includes/admin/class-menu.php:63
 #: includes/admin/class-menu.php:82
 #: includes/admin/class-menu.php:168
-#: includes/class-form.php:149
+#: includes/class-form.php:154
 #: includes/integrations.php:41
 #: src/Emails/Templates/General.php:94
 #: src/Integrations/Divi/WPFormsSelector.php:35
@@ -43,20 +43,20 @@ msgstr ""
 
 #: includes/admin/admin.php:171
 #: includes/admin/admin.php:307
-#: includes/fields/class-base.php:3584
+#: includes/fields/class-base.php:3644
 #: src/Admin/Forms/Tags.php:179
 msgid "Loading..."
 msgstr ""
 
 #: includes/admin/admin.php:172
 #: includes/admin/builder/class-builder.php:896
-#: includes/fields/class-base.php:3585
+#: includes/fields/class-base.php:3645
 #: src/Admin/Forms/Tags.php:180
 msgid "No results found"
 msgstr ""
 
 #: includes/admin/admin.php:173
-#: includes/fields/class-base.php:3586
+#: includes/fields/class-base.php:3646
 msgid "No choices to choose from"
 msgstr ""
 
@@ -98,6 +98,7 @@ msgid "Install Addon"
 msgstr ""
 
 #. translators: %1$s - addon download URL, %2$s - link to manual installation guide, %3$s - link to contact support.
+#. translators: %1$s - addon download URL, %2$s - link to a manual installation guide, %3$s - link to contact support.
 #: includes/admin/admin.php:195
 #: includes/admin/ajax-actions.php:801
 #, php-format
@@ -277,6 +278,8 @@ msgstr ""
 
 #: includes/admin/admin.php:251
 #: includes/admin/builder/class-builder.php:776
+#: src/Admin/Builder/Settings/Themes.php:256
+#: src/Forms/Fields/Camera/Field.php:100
 msgid "OK"
 msgstr ""
 
@@ -434,7 +437,7 @@ msgstr ""
 
 #: includes/admin/ajax-actions.php:23
 #: includes/admin/ajax-actions.php:925
-#: includes/fields/class-base.php:3020
+#: includes/fields/class-base.php:3078
 #: src/Admin/FormEmbedWizard.php:448
 #: src/Integrations/AI/Admin/Ajax/Choices.php:57
 #: src/Integrations/AI/Admin/Ajax/Forms.php:84
@@ -446,7 +449,7 @@ msgstr ""
 
 #: includes/admin/ajax-actions.php:28
 #: includes/admin/ajax-actions.php:286
-#: includes/fields/class-base.php:3025
+#: includes/fields/class-base.php:3083
 #: src/Admin/Builder/Ajax/PanelLoader.php:134
 #: src/Admin/FormEmbedWizard.php:279
 #: src/Admin/FormEmbedWizard.php:455
@@ -490,12 +493,12 @@ msgid "Error Updating Template"
 msgstr ""
 
 #: includes/admin/ajax-actions.php:525
-#: includes/fields/class-base.php:1560
+#: includes/fields/class-base.php:1614
 msgid "post type"
 msgstr ""
 
 #: includes/admin/ajax-actions.php:556
-#: includes/fields/class-base.php:1567
+#: includes/fields/class-base.php:1621
 msgid "taxonomy"
 msgstr ""
 
@@ -588,6 +591,11 @@ msgstr ""
 msgid "Incorrect usage of this operation."
 msgstr ""
 
+#: includes/admin/ajax-actions.php:934
+#: includes/admin/builder/functions.php:752
+msgid "Back to Previous Page (Referrer) "
+msgstr ""
+
 #: includes/admin/builder/class-builder.php:134
 #: includes/admin/builder/class-builder.php:159
 #: src/Integrations/AI/Admin/Ajax/Forms.php:303
@@ -616,7 +624,7 @@ msgid "Add New Choices"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:747
-#: includes/fields/class-base.php:1465
+#: includes/fields/class-base.php:1519
 msgid "Bulk Add"
 msgstr ""
 
@@ -654,19 +662,20 @@ msgid "The %1$s %2$s contains over %3$s items (%4$s). This may make the field di
 msgstr ""
 
 #. translators: %1$s - data source name (e.g. Categories, Posts), %2$s - data source type (e.g. post type, taxonomy).
+#. translators: %1$s - data source name (e.g., Categories, Posts), %2$s - data source type (e.g., post type, taxonomy).
 #: includes/admin/builder/class-builder.php:766
-#: includes/fields/class-base.php:3793
+#: includes/fields/class-base.php:3853
 #, php-format
 msgid "This field will not be displayed in your form since there are no %2$s belonging to %1$s."
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:771
-#: includes/fields/class-base.php:3779
+#: includes/fields/class-base.php:3839
 msgid "posts"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:772
-#: includes/fields/class-base.php:3784
+#: includes/fields/class-base.php:3844
 msgid "terms"
 msgstr ""
 
@@ -749,7 +758,7 @@ msgid "You must provide a confirmation name"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:801
-#: lite/wpforms-lite.php:501
+#: lite/wpforms-lite.php:505
 msgid "Default Confirmation"
 msgstr ""
 
@@ -775,7 +784,7 @@ msgid "Save and Embed"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:808
-#: includes/fields/class-base.php:2145
+#: includes/fields/class-base.php:2203
 msgid "Show Layouts"
 msgstr ""
 
@@ -833,9 +842,9 @@ msgid "Are you sure you want to duplicate this field?"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:828
-#: includes/class-form.php:878
-#: includes/class-form.php:906
-#: includes/class-form.php:998
+#: includes/class-form.php:900
+#: includes/class-form.php:928
+#: includes/class-form.php:1020
 msgid "(copy)"
 msgstr ""
 
@@ -848,8 +857,8 @@ msgid "This item must contain at least one choice."
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:831
-#: includes/admin/builder/functions.php:484
-#: includes/fields/class-base.php:2299
+#: includes/admin/builder/functions.php:520
+#: includes/fields/class-base.php:2357
 #: src/Admin/Tools/Views/Logs.php:110
 #: src/Integrations/Divi/WPFormsSelector.php:78
 #: src/Integrations/Divi/WPFormsSelector.php:88
@@ -857,7 +866,7 @@ msgid "Off"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:832
-#: includes/admin/builder/functions.php:483
+#: includes/admin/builder/functions.php:519
 #: src/Admin/Tools/Views/Logs.php:110
 #: src/Integrations/Divi/WPFormsSelector.php:79
 #: src/Integrations/Divi/WPFormsSelector.php:89
@@ -930,7 +939,7 @@ msgid "Entry Storage Required"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:851
-#: src/Forms/Fields/Pagebreak/Field.php:512
+#: src/Forms/Fields/Pagebreak/Field.php:513
 msgid "Previous"
 msgstr ""
 
@@ -967,11 +976,11 @@ msgid "--- Select Choice ---"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:864
-#: includes/admin/builder/functions.php:879
+#: includes/admin/builder/functions.php:919
 #: includes/admin/settings-api.php:532
-#: includes/fields/class-base.php:1518
-#: includes/fields/class-base.php:1679
-#: src/Admin/Builder/Settings/Themes.php:1105
+#: includes/fields/class-base.php:1572
+#: includes/fields/class-base.php:1733
+#: src/Admin/Builder/Settings/Themes.php:1162
 #: src/Integrations/Gutenberg/FormSelector.php:460
 msgid "Remove Image"
 msgstr ""
@@ -1005,7 +1014,7 @@ msgstr ""
 #: src/Forms/Fields/PaymentCheckbox/Field.php:412
 #: src/Forms/Fields/PaymentMultiple/Field.php:386
 #: src/Forms/Fields/PaymentSelect/Field.php:439
-#: src/Forms/Fields/PaymentTotal/Field.php:690
+#: src/Forms/Fields/PaymentTotal/Field.php:691
 #: src/SmartTags/SmartTag/OrderSummary.php:209
 #: src/SmartTags/SmartTag/OrderSummary.php:284
 #, php-format
@@ -1034,15 +1043,15 @@ msgid "This field cannot be moved."
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:888
-#: includes/fields/class-base.php:2673
+#: includes/fields/class-base.php:2731
 msgid "Empty Label"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:889
-#: includes/admin/builder/panels/class-fields.php:198
+#: includes/admin/builder/panels/class-fields.php:242
 #: includes/admin/builder/panels/class-settings.php:206
-#: includes/class-form.php:595
-#: includes/class-form.php:693
+#: includes/class-form.php:616
+#: includes/class-form.php:708
 #: includes/templates/class-simple-contact-form.php:59
 #: src/Admin/Tools/Importers/ContactForm7.php:135
 #: src/Admin/Tools/Importers/NinjaForms.php:143
@@ -1053,7 +1062,7 @@ msgid "Submit"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:891
-#: includes/admin/builder/functions.php:811
+#: includes/admin/builder/functions.php:851
 #: src/Forms/Fields/Richtext/Field.php:129
 msgid "Full"
 msgstr ""
@@ -1156,7 +1165,7 @@ msgid "Days"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:1210
-#: includes/admin/class-welcome.php:143
+#: includes/admin/class-welcome.php:158
 #: lite/templates/education/builder/lite-connect/ai-modal.php:15
 #: lite/templates/education/lite-connect-modal.php:17
 #: src/Lite/Admin/DashboardWidget.php:261
@@ -1214,25 +1223,25 @@ msgstr ""
 msgid "Exit Ctrl+Q"
 msgstr ""
 
-#: includes/admin/builder/functions.php:78
+#: includes/admin/builder/functions.php:80
 msgid "Show Smart Tags"
 msgstr ""
 
 #. translators: %d - field ID.
 #. translators: %d - Field ID.
-#: includes/admin/builder/functions.php:305
+#: includes/admin/builder/functions.php:308
 #: src/Integrations/Square/Process.php:762
 #: src/Integrations/Stripe/Fields/PaymentElementCreditCard.php:145
 #, php-format
 msgid "Field #%d"
 msgstr ""
 
-#: includes/admin/builder/functions.php:812
-#: includes/fields/class-base.php:2028
+#: includes/admin/builder/functions.php:852
+#: includes/fields/class-base.php:2086
 #: src/Admin/Builder/Settings/Themes.php:104
-#: src/Admin/Builder/Settings/Themes.php:909
+#: src/Admin/Builder/Settings/Themes.php:966
 #: src/Admin/Settings/Email.php:369
-#: src/Forms/Fields/Rating/Field.php:213
+#: src/Forms/Fields/Rating/Field.php:233
 #: src/Forms/IconChoices.php:133
 #: src/Integrations/Elementor/WidgetModern.php:78
 #: src/Integrations/Elementor/WidgetModern.php:532
@@ -1241,13 +1250,13 @@ msgstr ""
 msgid "Large"
 msgstr ""
 
-#: includes/admin/builder/functions.php:813
-#: includes/fields/class-base.php:2027
+#: includes/admin/builder/functions.php:853
+#: includes/fields/class-base.php:2085
 #: src/Admin/Builder/Settings/Themes.php:103
-#: src/Admin/Builder/Settings/Themes.php:908
+#: src/Admin/Builder/Settings/Themes.php:965
 #: src/Admin/Settings/Email.php:368
 #: src/Forms/Fields/Password/Field.php:132
-#: src/Forms/Fields/Rating/Field.php:212
+#: src/Forms/Fields/Rating/Field.php:232
 #: src/Forms/IconChoices.php:137
 #: src/Integrations/Elementor/WidgetModern.php:77
 #: src/Integrations/Elementor/WidgetModern.php:531
@@ -1256,12 +1265,12 @@ msgstr ""
 msgid "Medium"
 msgstr ""
 
-#: includes/admin/builder/functions.php:814
-#: includes/fields/class-base.php:2026
+#: includes/admin/builder/functions.php:854
+#: includes/fields/class-base.php:2084
 #: src/Admin/Builder/Settings/Themes.php:102
-#: src/Admin/Builder/Settings/Themes.php:907
+#: src/Admin/Builder/Settings/Themes.php:964
 #: src/Admin/Settings/Email.php:367
-#: src/Forms/Fields/Rating/Field.php:211
+#: src/Forms/Fields/Rating/Field.php:231
 #: src/Forms/IconChoices.php:141
 #: src/Integrations/Elementor/WidgetModern.php:76
 #: src/Integrations/Elementor/WidgetModern.php:530
@@ -1270,34 +1279,34 @@ msgstr ""
 msgid "Small"
 msgstr ""
 
-#: includes/admin/builder/functions.php:819
-#: src/Forms/Fields/Pagebreak/Field.php:448
+#: includes/admin/builder/functions.php:859
+#: src/Forms/Fields/Pagebreak/Field.php:449
 msgid "Left"
 msgstr ""
 
-#: includes/admin/builder/functions.php:820
-#: src/Forms/Fields/Pagebreak/Field.php:450
+#: includes/admin/builder/functions.php:860
+#: src/Forms/Fields/Pagebreak/Field.php:451
 msgid "Center"
 msgstr ""
 
-#: includes/admin/builder/functions.php:821
-#: src/Forms/Fields/Pagebreak/Field.php:449
+#: includes/admin/builder/functions.php:861
+#: src/Forms/Fields/Pagebreak/Field.php:450
 msgid "Right"
 msgstr ""
 
-#: includes/admin/builder/functions.php:839
+#: includes/admin/builder/functions.php:879
 msgid "Preview of selected image"
 msgstr ""
 
-#: includes/admin/builder/functions.php:839
+#: includes/admin/builder/functions.php:879
 msgid "No image selected"
 msgstr ""
 
-#: includes/admin/builder/functions.php:845
-#: src/Admin/Builder/Settings/Themes.php:474
-#: src/Admin/Builder/Settings/Themes.php:605
-#: src/Admin/Builder/Settings/Themes.php:686
-#: src/Admin/Builder/Settings/Themes.php:1022
+#: includes/admin/builder/functions.php:885
+#: src/Admin/Builder/Settings/Themes.php:531
+#: src/Admin/Builder/Settings/Themes.php:662
+#: src/Admin/Builder/Settings/Themes.php:743
+#: src/Admin/Builder/Settings/Themes.php:1079
 #: src/Integrations/Elementor/WidgetModern.php:233
 #: src/Integrations/Elementor/WidgetModern.php:333
 #: src/Integrations/Elementor/WidgetModern.php:392
@@ -1306,25 +1315,25 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: includes/admin/builder/functions.php:858
-#: src/Admin/Builder/Settings/Themes.php:976
+#: includes/admin/builder/functions.php:898
+#: src/Admin/Builder/Settings/Themes.php:1033
 #: src/Integrations/Elementor/WidgetModern.php:585
 #: src/Integrations/Gutenberg/FormSelector.php:461
 msgid "Position"
 msgstr ""
 
-#: includes/admin/builder/functions.php:872
+#: includes/admin/builder/functions.php:912
 msgid "Upload an image"
 msgstr ""
 
-#: includes/admin/builder/functions.php:873
+#: includes/admin/builder/functions.php:913
 #: includes/admin/settings-api.php:535
-#: includes/fields/class-base.php:1528
-#: includes/fields/class-base.php:1689
+#: includes/fields/class-base.php:1582
+#: includes/fields/class-base.php:1743
 msgid "Upload Image"
 msgstr ""
 
-#: includes/admin/builder/functions.php:878
+#: includes/admin/builder/functions.php:918
 msgid "Remove the selected image"
 msgstr ""
 
@@ -1356,67 +1365,67 @@ msgstr ""
 msgid "If the issue persists, <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">please contact support</a>."
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:22
+#: includes/admin/builder/panels/class-fields.php:25
 msgid "Fields"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:84
+#: includes/admin/builder/panels/class-fields.php:101
 msgid "Add Fields"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:90
+#: includes/admin/builder/panels/class-fields.php:107
 msgid "Field Options"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:117
+#: includes/admin/builder/panels/class-fields.php:152
 msgid "You need to <a href=\"#\" class=\"wpforms-panel-switch\" data-panel=\"setup\">setup your form</a> before you can manage the fields."
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:191
+#: includes/admin/builder/panels/class-fields.php:235
 msgid "Enabled"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:410
-#: includes/fields/class-base.php:3109
+#: includes/admin/builder/panels/class-fields.php:473
+#: includes/fields/class-base.php:3168
 msgid "Duplicate Field"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:416
-#: includes/fields/class-base.php:3112
+#: includes/admin/builder/panels/class-fields.php:479
+#: includes/fields/class-base.php:3171
 msgid "Delete Field"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:428
-#: includes/fields/class-base.php:3123
+#: includes/admin/builder/panels/class-fields.php:491
+#: includes/fields/class-base.php:3182
 msgid "Click to Edit"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:429
-#: includes/fields/class-base.php:3124
+#: includes/admin/builder/panels/class-fields.php:492
+#: includes/fields/class-base.php:3183
 msgid "Drag to Reorder"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:430
-#: includes/fields/class-base.php:3125
+#: includes/admin/builder/panels/class-fields.php:493
+#: includes/fields/class-base.php:3184
 msgid "Hide Helper"
 msgstr ""
 
 #. translators: %s - unavailable field name.
-#: includes/admin/builder/panels/class-fields.php:507
+#: includes/admin/builder/panels/class-fields.php:572
 #, php-format
 msgid "Unfortunately, the %s field is not available and will be ignored on the front end."
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:528
+#: includes/admin/builder/panels/class-fields.php:593
 #: includes/admin/class-settings.php:128
 #: includes/fields/class-internal-information.php:302
 #: includes/fields/class-internal-information.php:456
 #: includes/fields/class-internal-information.php:684
 #: lite/templates/education/builder/did-you-know.php:27
-#: src/Admin/Notifications/EventDriven.php:566
-#: src/Admin/Notifications/EventDriven.php:632
-#: src/Admin/Notifications/EventDriven.php:685
-#: src/Admin/Pages/PrivacyCompliance.php:508
+#: src/Admin/Notifications/EventDriven.php:590
+#: src/Admin/Notifications/EventDriven.php:656
+#: src/Admin/Notifications/EventDriven.php:709
+#: src/Admin/Pages/PrivacyCompliance.php:516
 #: src/Admin/Splash/SplashTrait.php:130
 #: src/Integrations/UncannyAutomator/UncannyAutomator.php:172
 #: src/Lite/Admin/DashboardWidget.php:272
@@ -1426,37 +1435,37 @@ msgstr ""
 msgid "Learn More"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:529
+#: includes/admin/builder/panels/class-fields.php:594
 msgid "Dismiss this message. The field will be deleted as well."
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:548
+#: includes/admin/builder/panels/class-fields.php:613
 msgid "You don't have any fields yet."
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:564
+#: includes/admin/builder/panels/class-fields.php:629
 msgid "You don't have any fields yet. Add some!"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:565
+#: includes/admin/builder/panels/class-fields.php:630
 msgid "Take your pick from our wide variety of fields and start building out your form!"
 msgstr ""
 
-#. translators: %s - total amount of choices.
-#: includes/admin/builder/panels/class-fields.php:667
+#. translators: %s - total number of choices.
+#: includes/admin/builder/panels/class-fields.php:732
 #, php-format
 msgid "Showing the first 20 choices.<br> All %s choices will be displayed when viewing the form."
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:707
+#: includes/admin/builder/panels/class-fields.php:772
 msgid "Search fields:"
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:708
+#: includes/admin/builder/panels/class-fields.php:773
 msgid "Search fields..."
 msgstr ""
 
-#: includes/admin/builder/panels/class-fields.php:720
+#: includes/admin/builder/panels/class-fields.php:785
 msgid "Sorry, we didn't find any fields that match your criteria."
 msgstr ""
 
@@ -1475,7 +1484,7 @@ msgstr ""
 
 #: includes/admin/builder/panels/class-payments.php:41
 #: includes/admin/builder/panels/class-providers.php:81
-#: includes/fields/class-base.php:1951
+#: includes/fields/class-base.php:2009
 msgid "Default"
 msgstr ""
 
@@ -1596,9 +1605,9 @@ msgstr ""
 #: includes/admin/builder/panels/class-settings.php:155
 #: includes/admin/class-settings.php:302
 #: includes/admin/class-settings.php:379
-#: includes/fields/class-base.php:1228
+#: includes/fields/class-base.php:1282
 #: src/Admin/AdminBarMenu.php:209
-#: src/Admin/Builder/Settings/Themes.php:349
+#: src/Admin/Builder/Settings/Themes.php:406
 msgid "General"
 msgstr ""
 
@@ -1609,8 +1618,8 @@ msgid "Spam Protection and Security"
 msgstr ""
 
 #: includes/admin/builder/panels/class-settings.php:60
-#: src/Admin/Builder/Settings/Themes.php:199
-#: src/Admin/Builder/Settings/Themes.php:388
+#: src/Admin/Builder/Settings/Themes.php:251
+#: src/Admin/Builder/Settings/Themes.php:445
 #: src/Integrations/Elementor/Elementor.php:249
 #: src/Integrations/Elementor/WidgetModern.php:138
 #: src/Integrations/Gutenberg/FormSelector.php:439
@@ -1625,7 +1634,7 @@ msgid "Notifications"
 msgstr ""
 
 #: includes/admin/builder/panels/class-settings.php:62
-#: lite/wpforms-lite.php:489
+#: lite/wpforms-lite.php:493
 msgid "Confirmations"
 msgstr ""
 
@@ -1715,8 +1724,8 @@ msgid "Enables form submission without page reload."
 msgstr ""
 
 #: includes/admin/builder/panels/class-settings.php:379
-#: includes/fields/class-base.php:2086
-#: src/Admin/Builder/Settings/Themes.php:351
+#: includes/fields/class-base.php:2144
+#: src/Admin/Builder/Settings/Themes.php:408
 #: src/Integrations/Elementor/WidgetModern.php:744
 #: src/Integrations/Gutenberg/FormSelector.php:481
 #: src/Lite/Admin/Education/Builder/Notifications.php:130
@@ -1850,7 +1859,7 @@ msgid "How to Display Forms on Your Site"
 msgstr ""
 
 #: includes/admin/class-about.php:504
-#: lite/wpforms-lite.php:699
+#: lite/wpforms-lite.php:719
 msgid "Get WPForms Pro and Unlock all the Powerful Features"
 msgstr ""
 
@@ -1866,63 +1875,63 @@ msgstr ""
 
 #. translators: %s - number of templates.
 #: includes/admin/class-about.php:546
-#: lite/wpforms-lite.php:723
+#: lite/wpforms-lite.php:743
 #, php-format
 msgid "%s customizable form templates"
 msgstr ""
 
 #: includes/admin/class-about.php:553
-#: lite/wpforms-lite.php:728
+#: lite/wpforms-lite.php:748
 msgid "Store and manage form entries in WordPress"
 msgstr ""
 
 #: includes/admin/class-about.php:557
-#: lite/wpforms-lite.php:729
+#: lite/wpforms-lite.php:749
 msgid "Unlock all fields & features, including smart conditional logic"
 msgstr ""
 
 #: includes/admin/class-about.php:561
-#: lite/wpforms-lite.php:730
+#: lite/wpforms-lite.php:750
 msgid "Create powerful custom calculation forms"
 msgstr ""
 
 #: includes/admin/class-about.php:565
-#: lite/wpforms-lite.php:731
+#: lite/wpforms-lite.php:751
 msgid "Make surveys and generate reports"
 msgstr ""
 
 #: includes/admin/class-about.php:569
-#: lite/wpforms-lite.php:732
+#: lite/wpforms-lite.php:752
 msgid "Accept user-submitted content with the Post Submissions addon"
 msgstr ""
 
 #: includes/admin/class-about.php:577
-#: lite/wpforms-lite.php:735
+#: lite/wpforms-lite.php:755
 msgid "7000+ integrations with marketing and payment services"
 msgstr ""
 
 #: includes/admin/class-about.php:581
-#: lite/wpforms-lite.php:736
+#: lite/wpforms-lite.php:756
 msgid "Let users save & resume submissions to prevent abandonment"
 msgstr ""
 
 #: includes/admin/class-about.php:585
-#: lite/wpforms-lite.php:737
+#: lite/wpforms-lite.php:757
 msgid "Take payments with Stripe, PayPal, Square, & Authorize.Net"
 msgstr ""
 
 #: includes/admin/class-about.php:589
-#: lite/wpforms-lite.php:738
+#: lite/wpforms-lite.php:758
 msgid "Export entries to Google Sheets, Excel, and CSV"
 msgstr ""
 
 #: includes/admin/class-about.php:593
-#: lite/wpforms-lite.php:739
+#: lite/wpforms-lite.php:759
 msgid "Collect signatures, geolocation data, and file uploads"
 msgstr ""
 
 #: includes/admin/class-about.php:597
-#: lite/wpforms-lite.php:740
+#: lite/wpforms-lite.php:760
 msgid "Create user registration and login forms"
 msgstr ""
 
@@ -2449,13 +2458,13 @@ msgstr ""
 
 #: includes/admin/class-about.php:1740
 #: includes/admin/class-menu.php:139
-#: includes/admin/class-welcome.php:196
+#: includes/admin/class-welcome.php:218
 #: src/Admin/Pages/Templates.php:114
 msgid "Form Templates"
 msgstr ""
 
 #: includes/admin/class-about.php:1742
-#: includes/admin/class-welcome.php:208
+#: includes/admin/class-welcome.php:230
 #: src/Integrations/Square/Admin/Builder/Settings.php:278
 #: src/Integrations/Stripe/Admin/Builder/Settings.php:301
 #: src/Lite/Admin/Education/Builder/Fields.php:81
@@ -2463,19 +2472,19 @@ msgid "Smart Conditional Logic"
 msgstr ""
 
 #: includes/admin/class-about.php:1743
-#: includes/admin/class-welcome.php:279
+#: includes/admin/class-welcome.php:301
 #: src/Admin/Builder/Help.php:107
 msgid "Marketing Integrations"
 msgstr ""
 
 #: includes/admin/class-about.php:1744
-#: includes/admin/class-welcome.php:270
+#: includes/admin/class-welcome.php:292
 #: src/Admin/Builder/Help.php:108
 msgid "Payment Forms"
 msgstr ""
 
 #: includes/admin/class-about.php:1745
-#: includes/admin/class-welcome.php:271
+#: includes/admin/class-welcome.php:293
 msgid "Surveys & Polls"
 msgstr ""
 
@@ -2605,10 +2614,10 @@ msgstr ""
 #: includes/admin/class-menu.php:227
 #: includes/admin/class-menu.php:228
 #: lite/templates/education/builder/did-you-know.php:30
-#: lite/wpforms-lite.php:1000
+#: lite/wpforms-lite.php:1020
 #: src/Admin/Builder/AntiSpam.php:350
-#: src/Admin/Builder/Templates.php:1035
-#: src/Admin/Education/Builder/PDF.php:219
+#: src/Admin/Builder/Templates.php:1037
+#: src/Admin/Education/Builder/PDF.php:224
 #: src/Forms/Fields/Traits/ProField.php:287
 #: src/Integrations/AI/Admin/Builder/Forms.php:217
 #: src/Integrations/Elementor/Elementor.php:251
@@ -2616,7 +2625,7 @@ msgid "Upgrade to Pro"
 msgstr ""
 
 #: includes/admin/class-menu.php:382
-#: includes/admin/class-welcome.php:338
+#: includes/admin/class-welcome.php:360
 #: includes/functions/education.php:78
 #: src/Admin/FlyoutMenu.php:112
 #: src/Admin/Payments/Views/Coupons/Education.php:143
@@ -2722,7 +2731,7 @@ msgid "Integrations"
 msgstr ""
 
 #: includes/admin/class-settings.php:317
-#: includes/admin/class-welcome.php:276
+#: includes/admin/class-welcome.php:298
 #: src/Admin/AdminBarMenu.php:233
 #: src/Admin/Education/Admin/Settings/Geolocation.php:141
 msgid "Geolocation"
@@ -2800,20 +2809,20 @@ msgid "Validation Messages"
 msgstr ""
 
 #: includes/admin/class-settings.php:462
-#: includes/fields/class-base.php:1331
+#: includes/fields/class-base.php:1385
 msgid "Required"
 msgstr ""
 
 #: includes/admin/class-settings.php:464
-#: includes/functions/escape-sanitize.php:451
-#: src/Frontend/Frontend.php:1841
+#: includes/functions/escape-sanitize.php:456
+#: src/Frontend/Frontend.php:1848
 msgid "This field is required."
 msgstr ""
 
 #: includes/admin/class-settings.php:468
 #: includes/fields/class-email.php:50
 #: includes/fields/class-email.php:144
-#: includes/fields/class-email.php:485
+#: includes/fields/class-email.php:505
 #: includes/templates/class-simple-contact-form.php:43
 #: src/Admin/AdminBarMenu.php:213
 #: src/Admin/Settings/Email.php:177
@@ -2828,7 +2837,7 @@ msgid "Email"
 msgstr ""
 
 #: includes/admin/class-settings.php:470
-#: src/Frontend/Frontend.php:1842
+#: src/Frontend/Frontend.php:1849
 msgid "Please enter a valid email address."
 msgstr ""
 
@@ -2838,7 +2847,7 @@ msgstr ""
 
 #. translators: %s - suggested email address.
 #: includes/admin/class-settings.php:477
-#: src/Frontend/Frontend.php:1846
+#: src/Frontend/Frontend.php:1853
 #, php-format
 msgid "Did you mean %s?"
 msgstr ""
@@ -2848,9 +2857,9 @@ msgid "Email Restricted"
 msgstr ""
 
 #: includes/admin/class-settings.php:485
-#: includes/fields/class-email.php:652
-#: includes/fields/class-email.php:660
-#: src/Frontend/Frontend.php:1851
+#: includes/fields/class-email.php:683
+#: includes/fields/class-email.php:691
+#: src/Frontend/Frontend.php:1858
 msgid "This email address is not allowed."
 msgstr ""
 
@@ -2860,7 +2869,7 @@ msgstr ""
 
 #: includes/admin/class-settings.php:491
 #: includes/fields/class-number.php:226
-#: src/Frontend/Frontend.php:1852
+#: src/Frontend/Frontend.php:1859
 msgid "Please enter a valid number."
 msgstr ""
 
@@ -2869,7 +2878,7 @@ msgid "Number Positive"
 msgstr ""
 
 #: includes/admin/class-settings.php:497
-#: src/Frontend/Frontend.php:1853
+#: src/Frontend/Frontend.php:1860
 msgid "Please enter a valid positive number."
 msgstr ""
 
@@ -2879,7 +2888,7 @@ msgid "Minimum Price"
 msgstr ""
 
 #: includes/admin/class-settings.php:503
-#: src/Frontend/Frontend.php:1854
+#: src/Frontend/Frontend.php:1861
 msgid "Amount entered is less than the required minimum."
 msgstr ""
 
@@ -2888,7 +2897,7 @@ msgid "Confirm Value"
 msgstr ""
 
 #: includes/admin/class-settings.php:509
-#: src/Frontend/Frontend.php:1855
+#: src/Frontend/Frontend.php:1862
 msgid "Field values do not match."
 msgstr ""
 
@@ -2897,7 +2906,7 @@ msgid "Input Mask Incomplete"
 msgstr ""
 
 #: includes/admin/class-settings.php:515
-#: src/Frontend/Frontend.php:1877
+#: src/Frontend/Frontend.php:1884
 msgid "Please fill out the field in required format."
 msgstr ""
 
@@ -2906,8 +2915,8 @@ msgid "Checkbox Selection Limit"
 msgstr ""
 
 #: includes/admin/class-settings.php:521
-#: includes/fields/class-base.php:4033
-#: src/Frontend/Frontend.php:1856
+#: includes/fields/class-base.php:4094
+#: src/Frontend/Frontend.php:1863
 msgid "You have exceeded the number of allowed selections: {#}."
 msgstr ""
 
@@ -2936,8 +2945,8 @@ msgid "Payment Required"
 msgstr ""
 
 #: includes/admin/class-settings.php:547
-#: src/Forms/Fields/PaymentTotal/Field.php:386
-#: src/Frontend/Frontend.php:1977
+#: src/Forms/Fields/PaymentTotal/Field.php:387
+#: src/Frontend/Frontend.php:1984
 msgid "Payment is required."
 msgstr ""
 
@@ -2947,7 +2956,7 @@ msgid "Credit Card"
 msgstr ""
 
 #: includes/admin/class-settings.php:553
-#: src/Frontend/Frontend.php:1978
+#: src/Frontend/Frontend.php:1985
 msgid "Please enter a valid credit card number."
 msgstr ""
 
@@ -3037,182 +3046,182 @@ msgstr ""
 msgid "All forms, entries, and uploaded files will be unrecoverable."
 msgstr ""
 
-#: includes/admin/class-welcome.php:67
-#: includes/admin/class-welcome.php:68
-#: includes/admin/class-welcome.php:147
+#: includes/admin/class-welcome.php:74
+#: includes/admin/class-welcome.php:75
+#: includes/admin/class-welcome.php:162
 msgid "Welcome to WPForms"
 msgstr ""
 
-#: includes/admin/class-welcome.php:148
+#: includes/admin/class-welcome.php:163
 msgid "Thank you for choosing WPForms - the most powerful drag & drop WordPress form builder in the market."
 msgstr ""
 
-#: includes/admin/class-welcome.php:151
-#: includes/admin/class-welcome.php:152
+#: includes/admin/class-welcome.php:166
+#: includes/admin/class-welcome.php:167
 msgid "Watch how to create your first form"
 msgstr ""
 
-#: includes/admin/class-welcome.php:157
+#: includes/admin/class-welcome.php:172
 msgid "WPForms makes it easy to create forms in WordPress. You can watch the video tutorial or read our guide on how to create your first form."
 msgstr ""
 
-#: includes/admin/class-welcome.php:162
-#: includes/admin/class-welcome.php:331
+#: includes/admin/class-welcome.php:177
+#: includes/admin/class-welcome.php:353
 msgid "Create Your First Form"
 msgstr ""
 
-#: includes/admin/class-welcome.php:168
+#: includes/admin/class-welcome.php:183
 msgid "Read the Full Guide"
 msgstr ""
 
-#: includes/admin/class-welcome.php:183
+#: includes/admin/class-welcome.php:205
 msgid "WPForms Features &amp; Addons"
 msgstr ""
 
-#: includes/admin/class-welcome.php:184
+#: includes/admin/class-welcome.php:206
 msgid "WPForms is both easy to use and extremely powerful. We have tons of helpful features that allow us to give you everything you need from a form builder."
 msgstr ""
 
-#: includes/admin/class-welcome.php:190
+#: includes/admin/class-welcome.php:212
 msgid "Drag &amp; Drop Form Builder"
 msgstr ""
 
-#: includes/admin/class-welcome.php:191
+#: includes/admin/class-welcome.php:213
 msgid "Easily create an amazing form in just a few minutes without writing any code."
 msgstr ""
 
-#: includes/admin/class-welcome.php:197
+#: includes/admin/class-welcome.php:219
 msgid "Start with pre-built form templates to save even more time."
 msgstr ""
 
-#: includes/admin/class-welcome.php:202
+#: includes/admin/class-welcome.php:224
 msgid "Responsive Mobile Friendly"
 msgstr ""
 
-#: includes/admin/class-welcome.php:203
+#: includes/admin/class-welcome.php:225
 msgid "WPForms is 100% responsive meaning it works on mobile, tablets & desktop."
 msgstr ""
 
-#: includes/admin/class-welcome.php:209
+#: includes/admin/class-welcome.php:231
 msgid "Easily create high performance forms with our smart conditional logic."
 msgstr ""
 
-#: includes/admin/class-welcome.php:214
+#: includes/admin/class-welcome.php:236
 msgid "Instant Notifications"
 msgstr ""
 
-#: includes/admin/class-welcome.php:215
+#: includes/admin/class-welcome.php:237
 msgid "Respond to leads quickly with our instant form notification feature for your team."
 msgstr ""
 
-#: includes/admin/class-welcome.php:220
-#: includes/admin/class-welcome.php:274
+#: includes/admin/class-welcome.php:242
+#: includes/admin/class-welcome.php:296
 #: src/Admin/Builder/Help.php:105
 msgid "Entry Management"
 msgstr ""
 
-#: includes/admin/class-welcome.php:221
+#: includes/admin/class-welcome.php:243
 msgid "View all your leads in one place to streamline your workflow."
 msgstr ""
 
-#: includes/admin/class-welcome.php:226
+#: includes/admin/class-welcome.php:248
 msgid "Payments Made Easy"
 msgstr ""
 
-#: includes/admin/class-welcome.php:227
+#: includes/admin/class-welcome.php:249
 msgid "Easily collect payments, donations, and online orders without hiring a developer."
 msgstr ""
 
-#: includes/admin/class-welcome.php:232
+#: includes/admin/class-welcome.php:254
 msgid "Marketing &amp; Subscriptions"
 msgstr ""
 
-#: includes/admin/class-welcome.php:233
+#: includes/admin/class-welcome.php:255
 msgid "Create subscription forms and connect with your email marketing service."
 msgstr ""
 
-#: includes/admin/class-welcome.php:238
+#: includes/admin/class-welcome.php:260
 msgid "Easy to Embed"
 msgstr ""
 
-#: includes/admin/class-welcome.php:239
+#: includes/admin/class-welcome.php:261
 msgid "Easily embed your forms in blog posts, pages, sidebar widgets, footer, etc."
 msgstr ""
 
-#: includes/admin/class-welcome.php:244
+#: includes/admin/class-welcome.php:266
 msgid "Spam Protection"
 msgstr ""
 
-#: includes/admin/class-welcome.php:245
+#: includes/admin/class-welcome.php:267
 msgid "Our smart captcha and spam protection automatically prevents spam submissions."
 msgstr ""
 
-#: includes/admin/class-welcome.php:253
+#: includes/admin/class-welcome.php:275
 msgid "See All Features"
 msgstr ""
 
-#: includes/admin/class-welcome.php:266
+#: includes/admin/class-welcome.php:288
 msgid "Upgrade to PRO"
 msgstr ""
 
-#: includes/admin/class-welcome.php:268
+#: includes/admin/class-welcome.php:290
 msgid "Advanced Fields"
 msgstr ""
 
-#: includes/admin/class-welcome.php:269
+#: includes/admin/class-welcome.php:291
 #: src/Logger/Log.php:102
 msgid "Conditional Logic"
 msgstr ""
 
-#: includes/admin/class-welcome.php:272
+#: includes/admin/class-welcome.php:294
 msgid "Signatures"
 msgstr ""
 
-#: includes/admin/class-welcome.php:273
+#: includes/admin/class-welcome.php:295
 msgid "Form Abandonment"
 msgstr ""
 
-#: includes/admin/class-welcome.php:275
+#: includes/admin/class-welcome.php:297
 msgid "File Uploads"
 msgstr ""
 
-#: includes/admin/class-welcome.php:277
+#: includes/admin/class-welcome.php:299
 msgid "Conversational Forms"
 msgstr ""
 
-#: includes/admin/class-welcome.php:278
+#: includes/admin/class-welcome.php:300
 msgid "User Registration"
 msgstr ""
 
-#: includes/admin/class-welcome.php:287
+#: includes/admin/class-welcome.php:309
 msgid "per year"
 msgstr ""
 
-#: includes/admin/class-welcome.php:291
+#: includes/admin/class-welcome.php:313
 #: lite/templates/admin/addons.php:89
-#: src/Admin/Notifications/EventDriven.php:601
-#: src/Admin/Notifications/EventDriven.php:608
-#: src/Admin/Notifications/EventDriven.php:615
-#: src/Admin/Notifications/EventDriven.php:654
-#: src/Admin/Notifications/EventDriven.php:661
-#: src/Admin/Notifications/EventDriven.php:668
-#: src/Admin/Notifications/EventDriven.php:721
-#: src/Admin/Notifications/EventDriven.php:728
-#: src/Admin/Notifications/EventDriven.php:735
+#: src/Admin/Notifications/EventDriven.php:625
+#: src/Admin/Notifications/EventDriven.php:632
+#: src/Admin/Notifications/EventDriven.php:639
+#: src/Admin/Notifications/EventDriven.php:678
+#: src/Admin/Notifications/EventDriven.php:685
+#: src/Admin/Notifications/EventDriven.php:692
+#: src/Admin/Notifications/EventDriven.php:745
+#: src/Admin/Notifications/EventDriven.php:752
+#: src/Admin/Notifications/EventDriven.php:759
 #: src/Admin/Tools/Views/Importer.php:363
 #: src/Lite/Admin/Pages/Addons.php:95
 msgid "Upgrade Now"
 msgstr ""
 
-#: includes/admin/class-welcome.php:303
+#: includes/admin/class-welcome.php:325
 msgid "Testimonials"
 msgstr ""
 
-#: includes/admin/class-welcome.php:307
+#: includes/admin/class-welcome.php:329
 msgid "WPForms is by far the easiest form plugin to use. My clients love it – it’s one of the few plugins they can use without any training. As a developer I appreciate how fast, modern, clean and extensible it is."
 msgstr ""
 
-#: includes/admin/class-welcome.php:314
+#: includes/admin/class-welcome.php:336
 msgid "As a business owner, time is my most valuable asset. WPForms allow me to create smart online forms with just a few clicks. With their pre-built form templates and the drag & drop builder, I can create a new form that works in less than 2 minutes without writing a single line of code. Well worth the investment."
 msgstr ""
 
@@ -3262,15 +3271,15 @@ msgstr ""
 msgid "Copy webhook URL"
 msgstr ""
 
-#: includes/class-form.php:596
+#: includes/class-form.php:617
 #: includes/templates/class-blank.php:62
 #: includes/templates/class-simple-contact-form.php:60
 msgid "Sending..."
 msgstr ""
 
 #. translators: %s - form name.
-#: includes/class-form.php:602
-#: lite/wpforms-lite.php:248
+#: includes/class-form.php:623
+#: lite/wpforms-lite.php:250
 #: src/Admin/Tools/Importers/ContactForm7.php:144
 #: src/Admin/Tools/Importers/ContactForm7.php:455
 #: src/Admin/Tools/Importers/NinjaForms.php:152
@@ -3281,113 +3290,113 @@ msgstr ""
 msgid "New Entry: %s"
 msgstr ""
 
-#: includes/class-form.php:613
-#: includes/class-process.php:1399
+#: includes/class-form.php:634
+#: includes/class-process.php:1417
 #: includes/templates/class-simple-contact-form.php:73
-#: lite/wpforms-lite.php:481
-#: lite/wpforms-lite.php:543
+#: lite/wpforms-lite.php:485
+#: lite/wpforms-lite.php:547
 #: src/Admin/Tools/Importers/ContactForm7.php:156
 #: src/Admin/Tools/Importers/NinjaForms.php:164
 #: src/Admin/Tools/Importers/PirateForms.php:480
 msgid "Thanks for contacting us! We will be in touch with you shortly."
 msgstr ""
 
-#: includes/class-form.php:1125
+#: includes/class-form.php:1149
 msgid "Zaps Have Been Disabled"
 msgstr ""
 
 #. translators: %s - URL the to list of Zaps.
-#: includes/class-form.php:1128
+#: includes/class-form.php:1152
 #, php-format
 msgid "Head over to the Zapier settings in the Marketing tab or visit your <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Zapier account</a> to restore them."
 msgstr ""
 
-#: includes/class-process.php:228
+#: includes/class-process.php:227
 msgid "Invalid form."
 msgstr ""
 
-#: includes/class-process.php:253
+#: includes/class-process.php:252
 msgid "Attempt to submit corrupted post data."
 msgstr ""
 
 #. translators: %s - error unique ID.
-#: includes/class-process.php:280
+#: includes/class-process.php:288
 #, php-format
 msgid "Missing form data on form submission process %s"
 msgstr ""
 
-#: includes/class-process.php:281
+#: includes/class-process.php:289
 msgid "Form data is not an array in `\\WPForms_Process::process()`. It might be caused by incorrect data returned by `wpforms_process_before_form_data` filter. Verify whether you have a custom code using this filter and debug value it is returning."
 msgstr ""
 
-#: includes/class-process.php:288
+#: includes/class-process.php:296
 msgid "Your form has not been submitted because data is missing from the entry."
 msgstr ""
 
 #. translators: %s - URL to the WForms Logs admin page.
-#: includes/class-process.php:293
+#: includes/class-process.php:301
 #, php-format
 msgid "Check the WPForms &raquo; Tools &raquo; <a href=\"%s\">Logs</a> for more details."
 msgstr ""
 
 #. translators: %s - error unique ID.
-#: includes/class-process.php:308
+#: includes/class-process.php:316
 #, php-format
 msgid "Error ID: %s."
 msgstr ""
 
-#: includes/class-process.php:432
-#: includes/class-process.php:594
-#: includes/class-process.php:1594
+#: includes/class-process.php:440
+#: includes/class-process.php:602
+#: includes/class-process.php:1707
 msgid "Form has not been submitted, please see the errors below."
 msgstr ""
 
-#: includes/class-process.php:456
+#: includes/class-process.php:464
 msgid "The form could not be submitted due to a security issue."
 msgstr ""
 
-#: includes/class-process.php:707
+#: includes/class-process.php:725
 msgid "Anti-spam Honeypot V2 verification was failed, please try again later."
 msgstr ""
 
-#: includes/class-process.php:765
+#: includes/class-process.php:783
 msgid "Direct POST requests are not allowed when the AJAX submission is enabled."
 msgstr ""
 
-#: includes/class-process.php:767
+#: includes/class-process.php:785
 msgid "Direct POST request"
 msgstr ""
 
-#: includes/class-process.php:955
+#: includes/class-process.php:973
 msgid "Please wait a little longer before submitting. We’re running a quick security check."
 msgstr ""
 
-#: includes/class-process.php:1024
+#: includes/class-process.php:1042
 msgid "Akismet"
 msgstr ""
 
 #. translators: %s - The CAPTCHA provider name.
-#: includes/class-process.php:1087
+#: includes/class-process.php:1105
 #, php-format
 msgid "%s verification failed, please try again later."
 msgstr ""
 
-#: includes/class-process.php:1297
+#: includes/class-process.php:1315
 msgid "Uploaded files combined size exceeds allowed maximum."
 msgstr ""
 
-#: includes/class-process.php:1460
+#: includes/class-process.php:1478
 msgid "Redirecting…"
 msgstr ""
 
 #. translators: %1$.3f - total size of the selected files in megabytes, %2$.3f - allowed file upload limit in megabytes.
-#: includes/class-process.php:1596
+#: includes/class-process.php:1709
 #, php-format
 msgid "The total size of the selected files %1$.3f MB exceeds the allowed limit %2$.3f MB."
 msgstr ""
 
 #. translators: %s - form name.
-#: includes/class-process.php:1708
+#: includes/class-process.php:1821
 #: lite/wpforms-lite.php:123
 #, php-format
 msgid "New %s Entry"
@@ -3438,10 +3447,10 @@ msgid "You cannot send emails with WPForms_WP_Emails() until init/admin_init has
 msgstr ""
 
 #: includes/emails/class-emails.php:606
-#: src/Admin/Education/Fields.php:101
+#: src/Admin/Education/Fields.php:109
 #: src/Emails/Notifications.php:1015
 #: src/Forms/Fields/Pagebreak/Field.php:44
-#: src/Forms/Fields/Pagebreak/Field.php:519
+#: src/Forms/Fields/Pagebreak/Field.php:520
 #: src/Integrations/Elementor/WidgetModern.php:723
 #: src/Integrations/Gutenberg/FormSelector.php:539
 msgid "Page Break"
@@ -3449,16 +3458,16 @@ msgstr ""
 
 #: includes/emails/class-emails.php:610
 #: src/Emails/Notifications.php:1020
-#: src/Forms/Fields/Html/Field.php:191
+#: src/Forms/Fields/Html/Field.php:194
 msgid "HTML / Code Block"
 msgstr ""
 
 #: includes/emails/class-emails.php:614
 #: includes/integrations.php:44
-#: src/Admin/Education/Fields.php:125
+#: src/Admin/Education/Fields.php:133
 #: src/Emails/Notifications.php:1025
 #: src/Forms/Fields/Content/Field.php:27
-#: src/Forms/Fields/Content/Field.php:107
+#: src/Forms/Fields/Content/Field.php:108
 #: src/Integrations/AI/API/Forms.php:290
 msgid "Content"
 msgstr ""
@@ -3492,132 +3501,132 @@ msgstr ""
 
 #. translators: %d - choice number.
 #. translators: %d - Choice ID.
-#: includes/fields/class-base.php:588
-#: includes/fields/class-base.php:626
-#: includes/fields/class-base.php:3838
+#: includes/fields/class-base.php:593
+#: includes/fields/class-base.php:631
+#: includes/fields/class-base.php:3898
 #: src/Integrations/Square/Process.php:803
 #, php-format
 msgid "Choice %d"
 msgstr ""
 
-#: includes/fields/class-base.php:1244
+#: includes/fields/class-base.php:1298
 msgid "Enter text for the form field label. Field labels are recommended and can be hidden in the Advanced Settings."
 msgstr ""
 
-#: includes/fields/class-base.php:1251
-#: src/Admin/Builder/Settings/Themes.php:624
-#: src/Forms/Fields/Html/Field.php:73
+#: includes/fields/class-base.php:1305
+#: src/Admin/Builder/Settings/Themes.php:681
+#: src/Forms/Fields/Html/Field.php:74
 #: src/Integrations/Elementor/WidgetModern.php:343
 #: src/Integrations/Gutenberg/FormSelector.php:521
 msgid "Label"
 msgstr ""
 
-#: includes/fields/class-base.php:1283
+#: includes/fields/class-base.php:1337
 msgid "Enter text for the form field description."
 msgstr ""
 
-#: includes/fields/class-base.php:1290
+#: includes/fields/class-base.php:1344
 msgid "Description"
 msgstr ""
 
-#: includes/fields/class-base.php:1323
+#: includes/fields/class-base.php:1377
 msgid "Check this option to mark the field required. A form will not submit unless all required fields are provided."
 msgstr ""
 
-#: includes/fields/class-base.php:1354
+#: includes/fields/class-base.php:1408
 #: src/Admin/Payments/Views/Overview/Table.php:92
 #: src/Admin/Payments/Views/Single.php:358
 #: src/Admin/Settings/Captcha/ReCaptcha.php:58
 #: src/Admin/Settings/Captcha/Turnstile.php:95
-#: src/Forms/Fields/CustomCaptcha/Field.php:129
+#: src/Forms/Fields/CustomCaptcha/Field.php:130
 #: src/Forms/Fields/DateTime/Field.php:234
 #: templates/admin/payments/single/payment-history.php:31
 #: templates/admin/payments/single/payment-history.php:50
 msgid "Type"
 msgstr ""
 
-#: includes/fields/class-base.php:1378
+#: includes/fields/class-base.php:1432
 msgid "Enter code for the form field."
 msgstr ""
 
-#: includes/fields/class-base.php:1385
+#: includes/fields/class-base.php:1439
 msgid "Code"
 msgstr ""
 
-#: includes/fields/class-base.php:1417
+#: includes/fields/class-base.php:1471
 msgid "Choices"
 msgstr ""
 
-#: includes/fields/class-base.php:1462
-#: includes/fields/class-base.php:1629
+#: includes/fields/class-base.php:1516
+#: includes/fields/class-base.php:1683
 msgid "Add choices for the form field."
 msgstr ""
 
-#: includes/fields/class-base.php:1580
+#: includes/fields/class-base.php:1634
 msgid "Dynamic Choices Active"
 msgstr ""
 
 #. translators: %1$s - source name, %2$s - type name.
-#: includes/fields/class-base.php:1584
+#: includes/fields/class-base.php:1638
 #, php-format
 msgid "Choices are dynamically populated from the %1$s %2$s. Go to the Advanced tab to change this."
 msgstr ""
 
-#: includes/fields/class-base.php:1628
+#: includes/fields/class-base.php:1682
 msgid "Items"
 msgstr ""
 
-#: includes/fields/class-base.php:1737
+#: includes/fields/class-base.php:1791
 msgid "<h4>Images are not cropped or resized.</h4><p>For best results, they should be the same size and 250x250 pixels or smaller.</p>"
 msgstr ""
 
-#: includes/fields/class-base.php:1752
+#: includes/fields/class-base.php:1806
 msgid "Use image choices"
 msgstr ""
 
-#: includes/fields/class-base.php:1753
+#: includes/fields/class-base.php:1807
 msgid "Check this option to enable using images with the choices."
 msgstr ""
 
-#: includes/fields/class-base.php:1781
+#: includes/fields/class-base.php:1835
 msgid "Image Choice Style"
 msgstr ""
 
-#: includes/fields/class-base.php:1782
+#: includes/fields/class-base.php:1836
 msgid "Select the style for the image choices."
 msgstr ""
 
-#: includes/fields/class-base.php:1795
-#: includes/fields/class-base.php:1952
-#: includes/fields/class-select.php:323
+#: includes/fields/class-base.php:1849
+#: includes/fields/class-base.php:2010
+#: includes/fields/class-select.php:329
 #: src/Emails/Notifications.php:1319
 #: src/Forms/Fields/Addons/LikertScale/Field.php:247
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:123
-#: src/Forms/Fields/FileUpload/Field.php:263
+#: src/Forms/Fields/FileUpload/Field.php:258
 #: src/Forms/Fields/PaymentSelect/Field.php:302
 msgid "Modern"
 msgstr ""
 
-#: includes/fields/class-base.php:1796
-#: includes/fields/class-base.php:1953
-#: includes/fields/class-select.php:322
+#: includes/fields/class-base.php:1850
+#: includes/fields/class-base.php:2011
+#: includes/fields/class-select.php:328
 #: src/Emails/Notifications.php:1309
 #: src/Forms/Fields/Addons/LikertScale/Field.php:248
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:124
-#: src/Forms/Fields/FileUpload/Field.php:264
+#: src/Forms/Fields/FileUpload/Field.php:259
 #: src/Forms/Fields/PaymentSelect/Field.php:301
 msgid "Classic"
 msgstr ""
 
-#: includes/fields/class-base.php:1797
-#: includes/fields/class-base.php:1954
+#: includes/fields/class-base.php:1851
+#: includes/fields/class-base.php:2012
 #: includes/fields/class-email.php:395
 #: src/Admin/Builder/Settings/Themes.php:108
-#: src/Admin/Builder/Settings/Themes.php:906
 #: src/Admin/Builder/Settings/Themes.php:963
+#: src/Admin/Builder/Settings/Themes.php:1020
 #: src/Admin/Settings/Captcha/Page.php:158
-#: src/Forms/Fields/FileUpload/Field.php:432
-#: src/Forms/Fields/Pagebreak/Field.php:318
+#: src/Forms/Fields/Pagebreak/Field.php:319
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:144
 #: src/Integrations/Elementor/WidgetModern.php:82
 #: src/Integrations/Elementor/WidgetModern.php:529
 #: src/Integrations/Elementor/WidgetModern.php:574
@@ -3625,45 +3634,45 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: includes/fields/class-base.php:1827
+#: includes/fields/class-base.php:1881
 msgid "Use icon choices"
 msgstr ""
 
-#: includes/fields/class-base.php:1828
+#: includes/fields/class-base.php:1882
 msgid "Enable this option to use icons with the choices."
 msgstr ""
 
-#: includes/fields/class-base.php:1853
-#: src/Forms/Fields/Rating/Field.php:234
+#: includes/fields/class-base.php:1907
+#: src/Forms/Fields/Rating/Field.php:256
 msgid "Icon Color"
 msgstr ""
 
-#: includes/fields/class-base.php:1854
+#: includes/fields/class-base.php:1908
 msgid "Select an accent color for the icon choices."
 msgstr ""
 
-#: includes/fields/class-base.php:1893
-#: src/Forms/Fields/Rating/Field.php:199
+#: includes/fields/class-base.php:1947
+#: src/Forms/Fields/Rating/Field.php:219
 msgid "Icon Size"
 msgstr ""
 
-#: includes/fields/class-base.php:1894
+#: includes/fields/class-base.php:1948
 msgid "Select icon size."
 msgstr ""
 
-#: includes/fields/class-base.php:1937
+#: includes/fields/class-base.php:1995
 msgid "Icon Choice Style"
 msgstr ""
 
-#: includes/fields/class-base.php:1938
+#: includes/fields/class-base.php:1996
 msgid "Select the style for the icon choices."
 msgstr ""
 
-#: includes/fields/class-base.php:1981
+#: includes/fields/class-base.php:2039
 msgid "Enter text for the default form field value."
 msgstr ""
 
-#: includes/fields/class-base.php:1987
+#: includes/fields/class-base.php:2045
 #: includes/fields/class-name.php:333
 #: includes/fields/class-name.php:359
 #: includes/fields/class-name.php:385
@@ -3678,177 +3687,177 @@ msgstr ""
 msgid "Default Value"
 msgstr ""
 
-#: includes/fields/class-base.php:2024
+#: includes/fields/class-base.php:2082
 msgid "Select the default form field size."
 msgstr ""
 
-#: includes/fields/class-base.php:2040
+#: includes/fields/class-base.php:2098
 #: templates/builder/field-context-menu.php:76
 msgid "Field Size"
 msgstr ""
 
-#: includes/fields/class-base.php:2101
+#: includes/fields/class-base.php:2159
 msgid "Enter text for the form field placeholder."
 msgstr ""
 
-#: includes/fields/class-base.php:2108
+#: includes/fields/class-base.php:2166
 msgid "Placeholder Text"
 msgstr ""
 
-#: includes/fields/class-base.php:2142
+#: includes/fields/class-base.php:2200
 msgid "Enter CSS class names for the form field container. Class names should be separated with spaces."
 msgstr ""
 
-#: includes/fields/class-base.php:2154
+#: includes/fields/class-base.php:2212
 msgid "CSS Classes"
 msgstr ""
 
-#: includes/fields/class-base.php:2187
+#: includes/fields/class-base.php:2245
 msgid "Check this option to hide the form field label."
 msgstr ""
 
-#: includes/fields/class-base.php:2196
+#: includes/fields/class-base.php:2254
 #: templates/builder/field-context-menu.php:66
 msgid "Hide Label"
 msgstr ""
 
-#: includes/fields/class-base.php:2219
+#: includes/fields/class-base.php:2277
 msgid "Check this option to hide the form field sublabel."
 msgstr ""
 
-#: includes/fields/class-base.php:2228
+#: includes/fields/class-base.php:2286
 msgid "Hide Sublabels"
 msgstr ""
 
-#: includes/fields/class-base.php:2251
+#: includes/fields/class-base.php:2309
 msgid "Select the layout for displaying field choices."
 msgstr ""
 
-#: includes/fields/class-base.php:2253
+#: includes/fields/class-base.php:2311
 msgid "One Column"
 msgstr ""
 
-#: includes/fields/class-base.php:2254
+#: includes/fields/class-base.php:2312
 msgid "Two Columns"
 msgstr ""
 
-#: includes/fields/class-base.php:2255
+#: includes/fields/class-base.php:2313
 msgid "Three Columns"
 msgstr ""
 
-#: includes/fields/class-base.php:2256
+#: includes/fields/class-base.php:2314
 msgid "Inline"
 msgstr ""
 
-#: includes/fields/class-base.php:2264
+#: includes/fields/class-base.php:2322
 msgid "Choice Layout"
 msgstr ""
 
-#: includes/fields/class-base.php:2297
+#: includes/fields/class-base.php:2355
 msgid "Select auto-populate method to use."
 msgstr ""
 
-#: includes/fields/class-base.php:2300
-#: includes/fields/class-base.php:2350
+#: includes/fields/class-base.php:2358
+#: includes/fields/class-base.php:2408
 msgid "Post Type"
 msgstr ""
 
-#: includes/fields/class-base.php:2301
-#: includes/fields/class-base.php:2360
+#: includes/fields/class-base.php:2359
+#: includes/fields/class-base.php:2418
 msgid "Taxonomy"
 msgstr ""
 
-#: includes/fields/class-base.php:2309
+#: includes/fields/class-base.php:2367
 msgid "Dynamic Choices"
 msgstr ""
 
 #. translators: %s - dynamic source type name.
-#: includes/fields/class-base.php:2373
+#: includes/fields/class-base.php:2431
 #, php-format
 msgid "Select %s to use for auto-populating field choices."
 msgstr ""
 
 #. translators: %s - dynamic source type name.
-#: includes/fields/class-base.php:2376
+#: includes/fields/class-base.php:2434
 #, php-format
 msgid "Dynamic %s Source"
 msgstr ""
 
-#: includes/fields/class-base.php:2437
+#: includes/fields/class-base.php:2495
 msgid "Enable quantity for this product to allow customers to purchase more than one."
 msgstr ""
 
-#: includes/fields/class-base.php:2438
+#: includes/fields/class-base.php:2496
 msgid "Set the minimum and maximum quantity for this product."
 msgstr ""
 
-#: includes/fields/class-base.php:2444
+#: includes/fields/class-base.php:2502
 msgid "Enable Quantity"
 msgstr ""
 
-#: includes/fields/class-base.php:2478
+#: includes/fields/class-base.php:2536
 #: src/Forms/Fields/Traits/NumberField.php:169
 msgid "Range"
 msgstr ""
 
-#: includes/fields/class-base.php:2492
+#: includes/fields/class-base.php:2550
 #: src/Forms/Fields/Traits/NumberField.php:223
 msgid "Minimum"
 msgstr ""
 
-#: includes/fields/class-base.php:2511
+#: includes/fields/class-base.php:2569
 #: src/Forms/Fields/Traits/NumberField.php:226
 msgid "Maximum"
 msgstr ""
 
-#: includes/fields/class-base.php:2628
+#: includes/fields/class-base.php:2686
 msgid "Choice Limit"
 msgstr ""
 
-#: includes/fields/class-base.php:2629
+#: includes/fields/class-base.php:2687
 msgid "Limit the number of checkboxes a user can select. Leave empty for unlimited."
 msgstr ""
 
-#: includes/fields/class-base.php:2674
+#: includes/fields/class-base.php:2732
 msgid "Label Hidden"
 msgstr ""
 
-#: includes/fields/class-base.php:2675
+#: includes/fields/class-base.php:2733
 msgid "To ensure your form is accessible, every field should have a descriptive label. If you'd like to hide the label, you can do so by enabling Hide Label in the Advanced Field Options tab."
 msgstr ""
 
 #. translators: %s - total number of choices.
-#: includes/fields/class-base.php:2973
+#: includes/fields/class-base.php:3031
 #, php-format
 msgid "Showing the first %1$s choices.<br> All %2$s choices will be displayed when viewing the form."
 msgstr ""
 
-#: includes/fields/class-base.php:3030
+#: includes/fields/class-base.php:3088
 msgid "No form ID found"
 msgstr ""
 
-#: includes/fields/class-base.php:3035
+#: includes/fields/class-base.php:3093
 msgid "No field type found"
 msgstr ""
 
-#: includes/fields/class-base.php:3587
+#: includes/fields/class-base.php:3647
 msgid "Only unique values can be added"
 msgstr ""
 
-#: includes/fields/class-base.php:3588
+#: includes/fields/class-base.php:3648
 msgid "Only values matching specific conditions can be added"
 msgstr ""
 
-#: includes/fields/class-base.php:3773
+#: includes/fields/class-base.php:3833
 msgid "Dynamic choices"
 msgstr ""
 
-#: includes/fields/class-base.php:3774
+#: includes/fields/class-base.php:3834
 msgid "items"
 msgstr ""
 
 #. translators: %d - choice number.
-#: includes/fields/class-base.php:3838
+#: includes/fields/class-base.php:3898
 #, php-format
 msgid "Item %d"
 msgstr ""
@@ -3859,13 +3868,13 @@ msgid "Checkboxes"
 msgstr ""
 
 #: includes/fields/class-checkbox.php:23
-#: includes/fields/class-select.php:48
+#: includes/fields/class-select.php:53
 msgid "choice"
 msgstr ""
 
 #: includes/fields/class-checkbox.php:29
 #: includes/fields/class-radio.php:29
-#: includes/fields/class-select.php:54
+#: includes/fields/class-select.php:59
 #: src/Integrations/AI/Admin/Builder/Enqueues.php:270
 #: templates/builder/themes/preview.php:47
 #: templates/builder/themes/preview.php:48
@@ -3876,7 +3885,7 @@ msgstr ""
 
 #: includes/fields/class-checkbox.php:37
 #: includes/fields/class-radio.php:37
-#: includes/fields/class-select.php:59
+#: includes/fields/class-select.php:64
 #: src/Integrations/AI/Admin/Builder/Enqueues.php:271
 #: templates/builder/themes/preview.php:51
 #: templates/builder/themes/preview.php:52
@@ -3887,7 +3896,7 @@ msgstr ""
 
 #: includes/fields/class-checkbox.php:45
 #: includes/fields/class-radio.php:45
-#: includes/fields/class-select.php:64
+#: includes/fields/class-select.php:69
 #: src/Integrations/AI/Admin/Builder/Enqueues.php:272
 #: templates/builder/themes/preview.php:55
 #: templates/builder/themes/preview.php:56
@@ -3903,7 +3912,7 @@ msgstr ""
 
 #: includes/fields/class-checkbox.php:246
 #: includes/fields/class-radio.php:218
-#: includes/fields/class-select.php:211
+#: includes/fields/class-select.php:216
 #: src/Integrations/AI/Admin/Builder/Enqueues.php:206
 msgid "Generate Choices"
 msgstr ""
@@ -3920,13 +3929,13 @@ msgstr ""
 
 #: includes/fields/class-checkbox.php:331
 #: includes/fields/class-radio.php:303
-#: includes/fields/class-select.php:253
+#: includes/fields/class-select.php:258
 msgid "Show Values"
 msgstr ""
 
 #: includes/fields/class-checkbox.php:332
 #: includes/fields/class-radio.php:304
-#: includes/fields/class-select.php:254
+#: includes/fields/class-select.php:259
 msgid "Check this option to manually set form field values."
 msgstr ""
 
@@ -3944,7 +3953,7 @@ msgid "user"
 msgstr ""
 
 #: includes/fields/class-email.php:168
-#: includes/fields/class-email.php:490
+#: includes/fields/class-email.php:510
 msgid "Confirm Email"
 msgstr ""
 
@@ -3957,12 +3966,12 @@ msgid "Check this option to ask users to provide an email address twice."
 msgstr ""
 
 #: includes/fields/class-email.php:351
-#: src/Forms/Fields/Password/Field.php:178
+#: src/Forms/Fields/Password/Field.php:196
 msgid "Confirmation Placeholder Text"
 msgstr ""
 
 #: includes/fields/class-email.php:352
-#: src/Forms/Fields/Password/Field.php:179
+#: src/Forms/Fields/Password/Field.php:197
 msgid "Enter text for the confirmation field placeholder."
 msgstr ""
 
@@ -3982,22 +3991,30 @@ msgstr ""
 msgid "Denylist"
 msgstr ""
 
-#: includes/fields/class-email.php:580
-#: includes/fields/class-email.php:630
-#: includes/fields/class-email.php:640
-#: includes/fields/class-email.php:1088
+#: includes/fields/class-email.php:467
+msgid "Disable Suggestions"
+msgstr ""
+
+#: includes/fields/class-email.php:468
+msgid "Prevent email suggestions for common typos. Enable this if you find the suggestions distracting."
+msgstr ""
+
+#: includes/fields/class-email.php:611
+#: includes/fields/class-email.php:661
+#: includes/fields/class-email.php:671
+#: includes/fields/class-email.php:1119
 msgid "The provided email is not valid."
 msgstr ""
 
-#: includes/fields/class-email.php:646
+#: includes/fields/class-email.php:677
 msgid "The provided emails do not match."
 msgstr ""
 
-#: includes/fields/class-email.php:1080
+#: includes/fields/class-email.php:1111
 msgid "We’ve detected the same text in your allowlist and denylist. To prevent a conflict, we’ve removed the following text from the list you’re currently viewing:"
 msgstr ""
 
-#: includes/fields/class-email.php:1084
+#: includes/fields/class-email.php:1115
 msgid "At least one of the emails in your list contained an error and has been removed."
 msgstr ""
 
@@ -4005,11 +4022,11 @@ msgstr ""
 msgid "GDPR Agreement"
 msgstr ""
 
-#: includes/fields/class-gdpr-checkbox.php:28
+#: includes/fields/class-gdpr-checkbox.php:29
 msgid "I consent to having this website store my submitted information so they can respond to my inquiry."
 msgstr ""
 
-#: includes/fields/class-gdpr-checkbox.php:190
+#: includes/fields/class-gdpr-checkbox.php:191
 msgid "Agreement"
 msgstr ""
 
@@ -4092,6 +4109,7 @@ msgstr ""
 #: src/Forms/Fields/DateTime/Field.php:280
 #: src/Forms/Fields/DateTime/Field.php:382
 #: src/Forms/Fields/Phone/Field.php:87
+#: src/Forms/Fields/Traits/CameraTrait.php:80
 msgid "Format"
 msgstr ""
 
@@ -4219,34 +4237,35 @@ msgstr ""
 msgid "radio"
 msgstr ""
 
-#: includes/fields/class-select.php:47
+#: includes/fields/class-select.php:52
 msgid "Dropdown"
 msgstr ""
 
-#: includes/fields/class-select.php:275
+#: includes/fields/class-select.php:281
 msgid "Multiple Options Selection"
 msgstr ""
 
-#: includes/fields/class-select.php:276
+#: includes/fields/class-select.php:282
 msgid "Allow users to select multiple choices in this field."
 msgstr ""
 
 #. translators: %s - URL to WPForms.com doc article.
-#: includes/fields/class-select.php:279
+#: includes/fields/class-select.php:285
 #, php-format
 msgid "For details, including how this looks and works for your site's visitors, please check out <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">our doc</a>."
 msgstr ""
 
-#: includes/fields/class-select.php:309
+#: includes/fields/class-select.php:315
 #: src/Forms/Fields/Addons/LikertScale/Field.php:235
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:111
-#: src/Forms/Fields/EntryPreview/Field.php:142
-#: src/Forms/Fields/FileUpload/Field.php:250
+#: src/Forms/Fields/Camera/Field.php:317
+#: src/Forms/Fields/EntryPreview/Field.php:143
+#: src/Forms/Fields/FileUpload/Field.php:245
 #: src/Forms/Fields/PaymentSelect/Field.php:288
 msgid "Style"
 msgstr ""
 
-#: includes/fields/class-select.php:310
+#: includes/fields/class-select.php:316
 #: src/Forms/Fields/PaymentSelect/Field.php:289
 msgid "Classic style is the default one generated by your browser. Modern has a fresh look and displays all selected options in a single row."
 msgstr ""
@@ -6380,123 +6399,131 @@ msgstr ""
 msgid "Enter the email address to receive form entry notifications. For multiple notifications, separate email addresses with a comma."
 msgstr ""
 
-#: lite/wpforms-lite.php:228
+#: lite/wpforms-lite.php:229
 msgid "CC"
 msgstr ""
 
-#: lite/wpforms-lite.php:245
+#: lite/wpforms-lite.php:247
 msgid "Email Subject Line"
 msgstr ""
 
-#: lite/wpforms-lite.php:264
+#: lite/wpforms-lite.php:266
 msgid "From Name"
 msgstr ""
 
-#: lite/wpforms-lite.php:297
+#: lite/wpforms-lite.php:299
 msgid "From Email"
 msgstr ""
 
-#: lite/wpforms-lite.php:330
+#: lite/wpforms-lite.php:333
 msgid "Reply-To"
 msgstr ""
 
 #. translators: %s - <email@example.com>.
-#: lite/wpforms-lite.php:334
+#: lite/wpforms-lite.php:337
 #, php-format
 msgid "Enter the email address or email address with recipient's name in \"First Last %s\" format."
 msgstr ""
 
-#: lite/wpforms-lite.php:354
+#: lite/wpforms-lite.php:358
 msgid "Email Message"
 msgstr ""
 
 #. translators: %s - {all_fields} Smart Tag.
-#: lite/wpforms-lite.php:368
+#: lite/wpforms-lite.php:372
 #, php-format
 msgid "To display all form fields, use the %s Smart Tag."
 msgstr ""
 
-#: lite/wpforms-lite.php:492
+#: lite/wpforms-lite.php:496
 msgid "Multiple confirmations"
 msgstr ""
 
-#: lite/wpforms-lite.php:493
+#: lite/wpforms-lite.php:497
 msgid "Add New Confirmation"
 msgstr ""
 
-#: lite/wpforms-lite.php:522
+#: lite/wpforms-lite.php:526
 msgid "Confirmation Type"
 msgstr ""
 
-#: lite/wpforms-lite.php:526
+#: lite/wpforms-lite.php:530
 #: src/Logger/ListTable.php:291
 #: src/Logger/ListTable.php:481
 #: templates/builder/themes/preview.php:39
 msgid "Message"
 msgstr ""
 
-#: lite/wpforms-lite.php:527
+#: lite/wpforms-lite.php:531
 msgid "Show Page"
 msgstr ""
 
-#: lite/wpforms-lite.php:528
+#: lite/wpforms-lite.php:532
 msgid "Go to URL (Redirect)"
 msgstr ""
 
-#: lite/wpforms-lite.php:541
+#: lite/wpforms-lite.php:545
 msgid "Confirmation Message"
 msgstr ""
 
-#: lite/wpforms-lite.php:562
+#: lite/wpforms-lite.php:566
 msgid "Automatically scroll to the confirmation message"
 msgstr ""
 
-#: lite/wpforms-lite.php:575
+#: lite/wpforms-lite.php:579
 msgid "Confirmation Page"
 msgstr ""
 
-#: lite/wpforms-lite.php:593
+#: lite/wpforms-lite.php:598
+msgid "URL Parameters"
+msgstr ""
+
+#: lite/wpforms-lite.php:604
+msgid "Add query string parameters to append to the URL when the form is submitted. Separate multiple parameters with an ampersand (&)."
+msgstr ""
+
+#: lite/wpforms-lite.php:613
 msgid "Confirmation Redirect URL"
 msgstr ""
 
-#: lite/wpforms-lite.php:606
+#: lite/wpforms-lite.php:626
 msgid "Open confirmation in new tab"
 msgstr ""
 
 #. translators: %s - WPForms.com docs page URL.
-#: lite/wpforms-lite.php:662
+#: lite/wpforms-lite.php:682
 #, php-format
 msgid "You've just turned off notification emails for this form. Since entries are not stored in WPForms Lite, notification emails are recommended for collecting entry details. For setup steps, <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">please see our notification tutorial</a>."
 msgstr ""
 
-#: lite/wpforms-lite.php:698
+#: lite/wpforms-lite.php:718
 #: templates/admin/notifications.php:27
 msgid "Dismiss this message"
 msgstr ""
 
-#: lite/wpforms-lite.php:700
+#: lite/wpforms-lite.php:720
 msgid "Thanks for being a loyal WPForms Lite user. Upgrade to WPForms Pro to unlock all the awesome features and experience why WPForms is consistently rated the best WordPress form builder."
 msgstr ""
 
 #. translators: %s - star icons.
-#: lite/wpforms-lite.php:705
+#: lite/wpforms-lite.php:725
 #, php-format
 msgid "We know that you will truly love WPForms. It has over 13,000+ five star ratings (%s) and is active on over 6 million websites."
 msgstr ""
 
-#: lite/wpforms-lite.php:717
+#: lite/wpforms-lite.php:737
 msgid "Pro Features:"
 msgstr ""
 
-#: lite/wpforms-lite.php:746
+#: lite/wpforms-lite.php:766
 msgid "Get WPForms Pro Today and Unlock all the Powerful Features »"
 msgstr ""
 
-#: lite/wpforms-lite.php:752
+#: lite/wpforms-lite.php:772
 msgid "<strong>Bonus:</strong> WPForms Lite users get <span class=\"green\">50% off regular price</span>, automatically applied at checkout."
 msgstr ""
 
-#: lite/wpforms-lite.php:786
+#: lite/wpforms-lite.php:806
 #: src/Admin/Forms/BulkActions.php:345
 msgid "Security check failed. Please try again."
 msgstr ""
@@ -6739,7 +6766,7 @@ msgid "Block form entries that contain specific words or phrases that you define
 msgstr ""
 
 #: src/Admin/Builder/AntiSpam.php:376
-#: src/Admin/Education/Fields.php:165
+#: src/Admin/Education/Fields.php:173
 #: src/Forms/Fields/CustomCaptcha/Field.php:51
 msgid "Custom Captcha"
 msgstr ""
@@ -6822,164 +6849,172 @@ msgstr ""
 msgid "Dotted"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:180
+#: src/Admin/Builder/Settings/Themes.php:232
 #: src/Admin/Builder/Templates.php:184
 #: src/Integrations/Gutenberg/FormSelector.php:541
 msgid "Heads Up!"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:181
+#: src/Admin/Builder/Settings/Themes.php:233
 #: src/Integrations/Elementor/Elementor.php:250
 msgid "Error loading themes. Please try again later."
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:182
+#: src/Admin/Builder/Settings/Themes.php:234
 #: src/Integrations/Elementor/Elementor.php:236
 #: src/Integrations/Gutenberg/FormSelector.php:455
 msgid "Button Background"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:183
+#: src/Admin/Builder/Settings/Themes.php:235
 #: src/Forms/Fields/Addons/Coupon/Field.php:154
 #: src/Integrations/Elementor/Elementor.php:237
 #: src/Integrations/Gutenberg/FormSelector.php:456
 msgid "Button Text"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:184
+#: src/Admin/Builder/Settings/Themes.php:236
 #: src/Integrations/Elementor/Elementor.php:235
 #: src/Integrations/Gutenberg/FormSelector.php:530
 msgid "There was an error parsing your JSON code. Please check your code and try again."
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:185
+#: src/Admin/Builder/Settings/Themes.php:237
 #: src/Integrations/Elementor/Elementor.php:238
 #: src/Integrations/Gutenberg/FormSelector.php:451
 msgid "Field Label"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:186
+#: src/Admin/Builder/Settings/Themes.php:238
 #: src/Integrations/Elementor/Elementor.php:239
 #: src/Integrations/Gutenberg/FormSelector.php:452
 msgid "Field Sublabel"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:187
+#: src/Admin/Builder/Settings/Themes.php:239
 #: src/Integrations/Elementor/Elementor.php:240
 #: src/Integrations/Gutenberg/FormSelector.php:453
 msgid "Field Border"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:188
+#: src/Admin/Builder/Settings/Themes.php:240
 #: src/Integrations/Elementor/Elementor.php:241
 #: src/Integrations/Gutenberg/FormSelector.php:442
 msgid "Delete Form Theme"
 msgstr ""
 
 #. Translators: %1$s: Theme name.
-#: src/Admin/Builder/Settings/Themes.php:190
+#: src/Admin/Builder/Settings/Themes.php:242
 #: src/Integrations/Elementor/Elementor.php:243
 #: src/Integrations/Gutenberg/FormSelector.php:444
 #, php-format
 msgid "Are you sure you want to delete the %1$s theme?"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:191
+#: src/Admin/Builder/Settings/Themes.php:243
 #: src/Integrations/Elementor/Elementor.php:244
 #: src/Integrations/Gutenberg/FormSelector.php:445
 msgid "This cannot be undone."
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:192
+#: src/Admin/Builder/Settings/Themes.php:244
 #: src/Admin/Builder/Templates.php:190
 #: src/Integrations/Elementor/Elementor.php:245
 #: src/Integrations/Gutenberg/FormSelector.php:446
 msgid "Yes, Delete"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:193
+#: src/Admin/Builder/Settings/Themes.php:245
 #: src/Integrations/Elementor/Elementor.php:246
 #: src/Integrations/Gutenberg/FormSelector.php:447
 msgid "Copy"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:194
+#: src/Admin/Builder/Settings/Themes.php:246
 #: src/Integrations/Elementor/Elementor.php:247
 #: src/Integrations/Gutenberg/FormSelector.php:448
 msgid "Custom Theme"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:195
+#: src/Admin/Builder/Settings/Themes.php:247
 #: src/Integrations/Elementor/Elementor.php:248
 #: src/Integrations/Gutenberg/FormSelector.php:449
 msgid "Noname Theme"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:197
-#: src/Admin/Builder/Settings/Themes.php:933
+#: src/Admin/Builder/Settings/Themes.php:249
+#: src/Admin/Builder/Settings/Themes.php:990
 #: src/Integrations/Elementor/Elementor.php:256
 #: src/Integrations/Elementor/WidgetModern.php:563
 #: src/Integrations/Gutenberg/FormSelector.php:459
 msgid "Background Styles"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:198
-#: src/Admin/Builder/Settings/Themes.php:806
+#: src/Admin/Builder/Settings/Themes.php:250
+#: src/Admin/Builder/Settings/Themes.php:863
 #: src/Integrations/Elementor/Elementor.php:257
 #: src/Integrations/Elementor/WidgetModern.php:475
 #: src/Integrations/Gutenberg/FormSelector.php:458
 msgid "Container Styles"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:264
+#: src/Admin/Builder/Settings/Themes.php:254
+msgid "Insufficient Permissions"
+msgstr ""
+
+#: src/Admin/Builder/Settings/Themes.php:255
+msgid "Sorry, your user role doesn't have permission to access this feature."
+msgstr ""
+
+#: src/Admin/Builder/Settings/Themes.php:321
 msgid "Form Themes"
 msgstr ""
 
 #. translators: %s - URL to the documentation.
-#: src/Admin/Builder/Settings/Themes.php:273
+#: src/Admin/Builder/Settings/Themes.php:330
 #, php-format
 msgid "Customize the look and feel of your form with premade themes or simple style settings that allow you to use your own colors to match your brand. Themes and style settings are also available in the Block Editor and Elementor, where you can see a realtime preview. <a href=\"%s\" target=\"_blank\">Learn more about styling your forms</a>."
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:282
+#: src/Admin/Builder/Settings/Themes.php:339
 msgid "Preview only"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:285
+#: src/Admin/Builder/Settings/Themes.php:342
 msgid "The fields shown below are for demo purposes and do not reflect the fields in your actual form."
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:346
+#: src/Admin/Builder/Settings/Themes.php:403
 msgid "Back to Settings"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:399
+#: src/Admin/Builder/Settings/Themes.php:456
 msgid "Theme"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:433
+#: src/Admin/Builder/Settings/Themes.php:490
 #: src/Integrations/Elementor/WidgetModern.php:186
 #: src/Integrations/Gutenberg/FormSelector.php:440
 msgid "Theme Name"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:444
+#: src/Admin/Builder/Settings/Themes.php:501
 #: src/Integrations/Gutenberg/FormSelector.php:441
 msgid "Delete Theme"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:462
+#: src/Admin/Builder/Settings/Themes.php:519
 #: src/Integrations/Elementor/WidgetModern.php:225
 #: src/Integrations/Gutenberg/FormSelector.php:450
 msgid "Field Styles"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:487
-#: src/Admin/Builder/Settings/Themes.php:555
-#: src/Admin/Builder/Settings/Themes.php:699
-#: src/Admin/Builder/Settings/Themes.php:768
-#: src/Admin/Builder/Settings/Themes.php:834
-#: src/Admin/Builder/Settings/Themes.php:890
+#: src/Admin/Builder/Settings/Themes.php:544
+#: src/Admin/Builder/Settings/Themes.php:612
+#: src/Admin/Builder/Settings/Themes.php:756
+#: src/Admin/Builder/Settings/Themes.php:825
+#: src/Admin/Builder/Settings/Themes.php:891
+#: src/Admin/Builder/Settings/Themes.php:947
 #: src/Integrations/Elementor/WidgetModern.php:243
 #: src/Integrations/Elementor/WidgetModern.php:285
 #: src/Integrations/Elementor/WidgetModern.php:402
@@ -6991,23 +7026,23 @@ msgstr ""
 msgid "Border"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:505
-#: src/Admin/Builder/Settings/Themes.php:718
-#: src/Admin/Builder/Settings/Themes.php:852
+#: src/Admin/Builder/Settings/Themes.php:562
+#: src/Admin/Builder/Settings/Themes.php:775
+#: src/Admin/Builder/Settings/Themes.php:909
 #: src/Integrations/Gutenberg/FormSelector.php:510
 #: src/Integrations/Gutenberg/FormSelector.php:518
 msgid "Border Size"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:521
-#: src/Admin/Builder/Settings/Themes.php:734
-#: src/Admin/Builder/Settings/Themes.php:868
+#: src/Admin/Builder/Settings/Themes.php:578
+#: src/Admin/Builder/Settings/Themes.php:791
+#: src/Admin/Builder/Settings/Themes.php:925
 #: src/Integrations/Gutenberg/FormSelector.php:509
 msgid "Border Radius"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:543
-#: src/Admin/Builder/Settings/Themes.php:756
+#: src/Admin/Builder/Settings/Themes.php:600
+#: src/Admin/Builder/Settings/Themes.php:813
 #: src/Admin/Settings/Email.php:520
 #: src/Integrations/Elementor/WidgetModern.php:276
 #: src/Integrations/Elementor/WidgetModern.php:435
@@ -7016,8 +7051,8 @@ msgstr ""
 msgid "Background"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:567
-#: src/Admin/Builder/Settings/Themes.php:780
+#: src/Admin/Builder/Settings/Themes.php:624
+#: src/Admin/Builder/Settings/Themes.php:837
 #: src/Admin/Settings/Email.php:522
 #: src/Forms/Fields/Richtext/Field.php:176
 #: src/Forms/Fields/Traits/ContentInput.php:316
@@ -7027,17 +7062,17 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:593
+#: src/Admin/Builder/Settings/Themes.php:650
 #: src/Integrations/Elementor/WidgetModern.php:325
 #: src/Integrations/Gutenberg/FormSelector.php:454
 msgid "Label Styles"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:636
+#: src/Admin/Builder/Settings/Themes.php:693
 msgid "Sublabel"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:648
+#: src/Admin/Builder/Settings/Themes.php:705
 #: src/Admin/Tools/Views/Import.php:305
 #: src/Admin/Tools/Views/Import.php:323
 #: src/Integrations/AI/Admin/Builder/Forms.php:202
@@ -7046,178 +7081,178 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:674
+#: src/Admin/Builder/Settings/Themes.php:731
 #: src/Integrations/Elementor/WidgetModern.php:384
 #: src/Integrations/Gutenberg/FormSelector.php:457
 msgid "Button Styles"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:818
+#: src/Admin/Builder/Settings/Themes.php:875
 #: src/Integrations/Gutenberg/FormSelector.php:500
 msgid "Padding"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:902
+#: src/Admin/Builder/Settings/Themes.php:959
 #: src/Integrations/Elementor/WidgetModern.php:526
 #: src/Integrations/Gutenberg/FormSelector.php:517
 msgid "Shadow"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:942
+#: src/Admin/Builder/Settings/Themes.php:999
 msgid "Color"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:959
+#: src/Admin/Builder/Settings/Themes.php:1016
 #: src/Integrations/Elementor/WidgetModern.php:571
 #: src/Integrations/Gutenberg/FormSelector.php:505
 msgid "Image"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:964
+#: src/Admin/Builder/Settings/Themes.php:1021
 #: src/Integrations/Elementor/WidgetModern.php:575
 #: src/Integrations/Gutenberg/FormSelector.php:506
 msgid "Media Library"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:965
+#: src/Admin/Builder/Settings/Themes.php:1022
 #: src/Integrations/Elementor/WidgetModern.php:576
 #: src/Integrations/Gutenberg/FormSelector.php:508
 msgid "Stock Photo"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:980
+#: src/Admin/Builder/Settings/Themes.php:1037
 #: src/Integrations/Elementor/WidgetModern.php:588
 #: src/Integrations/Gutenberg/FormSelector.php:462
 msgid "Top Left"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:981
+#: src/Admin/Builder/Settings/Themes.php:1038
 #: src/Integrations/Elementor/WidgetModern.php:589
 #: src/Integrations/Gutenberg/FormSelector.php:463
 msgid "Top Center"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:982
+#: src/Admin/Builder/Settings/Themes.php:1039
 #: src/Integrations/Elementor/WidgetModern.php:590
 #: src/Integrations/Gutenberg/FormSelector.php:464
 msgid "Top Right"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:983
+#: src/Admin/Builder/Settings/Themes.php:1040
 #: src/Integrations/Elementor/WidgetModern.php:591
 #: src/Integrations/Gutenberg/FormSelector.php:465
 msgid "Center Left"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:984
+#: src/Admin/Builder/Settings/Themes.php:1041
 #: src/Integrations/Elementor/WidgetModern.php:592
 #: src/Integrations/Gutenberg/FormSelector.php:466
 msgid "Center Center"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:985
+#: src/Admin/Builder/Settings/Themes.php:1042
 #: src/Integrations/Elementor/WidgetModern.php:593
 #: src/Integrations/Gutenberg/FormSelector.php:467
 msgid "Center Right"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:986
+#: src/Admin/Builder/Settings/Themes.php:1043
 #: src/Integrations/Elementor/WidgetModern.php:594
 #: src/Integrations/Gutenberg/FormSelector.php:468
 msgid "Bottom Left"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:987
+#: src/Admin/Builder/Settings/Themes.php:1044
 #: src/Integrations/Elementor/WidgetModern.php:595
 #: src/Integrations/Gutenberg/FormSelector.php:469
 msgid "Bottom Center"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:988
+#: src/Admin/Builder/Settings/Themes.php:1045
 #: src/Integrations/Elementor/WidgetModern.php:596
 #: src/Integrations/Gutenberg/FormSelector.php:470
 msgid "Bottom Right"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1004
+#: src/Admin/Builder/Settings/Themes.php:1061
 #: src/Integrations/Elementor/WidgetModern.php:608
 #: src/Integrations/Gutenberg/FormSelector.php:471
 msgid "Repeat"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1008
+#: src/Admin/Builder/Settings/Themes.php:1065
 #: src/Integrations/Elementor/WidgetModern.php:611
 #: src/Integrations/Gutenberg/FormSelector.php:472
 msgid "No Repeat"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1009
+#: src/Admin/Builder/Settings/Themes.php:1066
 #: src/Integrations/Elementor/WidgetModern.php:612
 #: src/Integrations/Gutenberg/FormSelector.php:475
 msgid "Tile"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1010
+#: src/Admin/Builder/Settings/Themes.php:1067
 #: src/Integrations/Elementor/WidgetModern.php:613
 msgid "Repeat X"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1011
+#: src/Admin/Builder/Settings/Themes.php:1068
 #: src/Integrations/Elementor/WidgetModern.php:614
 msgid "Repeat Y"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1026
+#: src/Admin/Builder/Settings/Themes.php:1083
 #: src/Integrations/Elementor/WidgetModern.php:629
 #: src/Integrations/Gutenberg/FormSelector.php:477
 msgid "Dimensions"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1027
+#: src/Admin/Builder/Settings/Themes.php:1084
 #: src/Integrations/Elementor/WidgetModern.php:630
 #: src/Integrations/Gutenberg/FormSelector.php:476
 msgid "Cover"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1056
+#: src/Admin/Builder/Settings/Themes.php:1113
 #: src/Integrations/Gutenberg/FormSelector.php:478
 msgid "Width"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1072
+#: src/Admin/Builder/Settings/Themes.php:1129
 #: src/Integrations/Gutenberg/FormSelector.php:479
 msgid "Height"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1103
+#: src/Admin/Builder/Settings/Themes.php:1160
 #: src/Integrations/Elementor/WidgetModern.php:678
 #: src/Integrations/Gutenberg/FormSelector.php:507
 msgid "Choose Image"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1124
+#: src/Admin/Builder/Settings/Themes.php:1181
 #: src/Integrations/Elementor/WidgetModern.php:715
 #: src/Integrations/Gutenberg/FormSelector.php:538
 msgid "Other Styles"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1176
+#: src/Admin/Builder/Settings/Themes.php:1233
 #: src/Integrations/Gutenberg/FormSelector.php:532
 msgid "Custom CSS"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1180
+#: src/Admin/Builder/Settings/Themes.php:1237
 #: src/Integrations/Gutenberg/FormSelector.php:533
 msgid "Further customize the look of this form without having to edit theme files."
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1189
+#: src/Admin/Builder/Settings/Themes.php:1246
 #: src/Integrations/Elementor/WidgetModern.php:772
 #: src/Integrations/Gutenberg/FormSelector.php:529
 msgid "Copy / Paste Style Settings"
 msgstr ""
 
-#: src/Admin/Builder/Settings/Themes.php:1193
+#: src/Admin/Builder/Settings/Themes.php:1250
 #: src/Integrations/Elementor/WidgetModern.php:774
 #: src/Integrations/Gutenberg/FormSelector.php:531
 msgid "If you've copied style settings from another form, you can paste them here to add the same styling to this form. Any current style settings will be overwritten."
@@ -7300,7 +7335,7 @@ msgstr ""
 #. translators: %1$s - template name, %2$s - addon name(s).
 #: src/Admin/Builder/Templates.php:201
 #, php-format
-msgid "The %1$s template requires the %2$s addon. Would you like to activate it?"
+msgid "The %1$s template requires the %2$s. Would you like to activate it?"
 msgstr ""
 
 #. translators: %s - addon name(s).
@@ -7310,97 +7345,97 @@ msgid "To use all of the features in this template, you'll need the %s. Contact 
 msgstr ""
 
 #. translators: %s - addon name(s).
-#: src/Admin/Builder/Templates.php:206
+#: src/Admin/Builder/Templates.php:208
 #, php-format
 msgid "To use all of the features in this template, you'll need the %s. Contact your site administrator to install them, then try opening this template again."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:852
+#: src/Admin/Builder/Templates.php:854
 #: src/Integrations/Elementor/Widget.php:221
 msgid "New form"
 msgstr ""
 
 #. translators: %d - templates count.
-#: src/Admin/Builder/Templates.php:1056
+#: src/Admin/Builder/Templates.php:1058
 #, php-format
 msgid "Get Access to Our Complete Library of %d+ Form Templates"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1059
+#: src/Admin/Builder/Templates.php:1061
 msgid "Save time and reduce effort with our pre-built form templates covering popular use-cases in business operations, customer service, feedback, marketing, registrations, event planning, non-profit, healthcare, and education."
 msgstr ""
 
 #. translators: %d - templates count.
-#: src/Admin/Builder/Templates.php:1077
+#: src/Admin/Builder/Templates.php:1079
 #, php-format
 msgid "Get Access to Our Library of %d+ Pre-Made Form Templates"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1080
+#: src/Admin/Builder/Templates.php:1082
 msgid "Never start from scratch again! While WPForms Lite allows you to create any type of form, you can save even more time with WPForms Pro. Upgrade to access hundreds more form templates and advanced form fields."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1127
+#: src/Admin/Builder/Templates.php:1129
 msgid "User Registration Form"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1133
+#: src/Admin/Builder/Templates.php:1135
 msgid "Create customized WordPress user registration forms and add them anywhere on your website."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1136
+#: src/Admin/Builder/Templates.php:1138
 msgid "User Login Form"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1142
+#: src/Admin/Builder/Templates.php:1144
 msgid "Allow your users to easily log in to your site with their username and password."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1145
+#: src/Admin/Builder/Templates.php:1147
 msgid "User Password Reset Form"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1151
+#: src/Admin/Builder/Templates.php:1153
 msgid "Allow your users to easily reset their password."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1171
+#: src/Admin/Builder/Templates.php:1173
 msgid "Blog Post Submission Form"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1177
+#: src/Admin/Builder/Templates.php:1179
 msgid "User-submitted content made easy. Allow your users to submit guest blog posts in WordPress. You can add and remove fields as needed."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1197
+#: src/Admin/Builder/Templates.php:1199
 msgid "Survey Form"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1203
+#: src/Admin/Builder/Templates.php:1205
 msgid "Collect customer feedback, then generate survey reports to determine satisfaction and spot trends."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1206
+#: src/Admin/Builder/Templates.php:1208
 msgid "Poll Form"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1212
+#: src/Admin/Builder/Templates.php:1214
 msgid "Ask visitors a question and display the results after they provide an answer."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1215
+#: src/Admin/Builder/Templates.php:1217
 msgid "NPS Survey Simple Form"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1221
+#: src/Admin/Builder/Templates.php:1223
 msgid "Find out if your clients or customers would recommend you to someone else with this basic Net Promoter Score survey template."
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1224
+#: src/Admin/Builder/Templates.php:1226
 msgid "NPS Survey Enhanced Form"
 msgstr ""
 
-#: src/Admin/Builder/Templates.php:1230
+#: src/Admin/Builder/Templates.php:1232
 msgid "Measure customer loyalty and find out exactly what they are thinking with this enhanced Net Promoter Score survey template."
 msgstr ""
 
@@ -7578,7 +7613,7 @@ msgid "Powerful Automation Features"
 msgstr ""
 
 #: src/Admin/Education/Builder/Calculations.php:113
-#: src/Admin/Education/Builder/PDF.php:149
+#: src/Admin/Education/Builder/PDF.php:154
 msgid "NEW FEATURE"
 msgstr ""
 
@@ -7618,7 +7653,7 @@ msgid "No form ID found."
 msgstr ""
 
 #: src/Admin/Education/Builder/Captcha.php:68
-#: src/Admin/Pages/PrivacyCompliance.php:561
+#: src/Admin/Pages/PrivacyCompliance.php:571
 #: src/Admin/Pages/SMTP.php:466
 #: src/Lite/Admin/Education/LiteConnect.php:410
 #: src/Logger/Log.php:200
@@ -7690,15 +7725,15 @@ msgstr ""
 msgid "Enable Address Autocomplete"
 msgstr ""
 
-#: src/Admin/Education/Builder/PDF.php:150
+#: src/Admin/Education/Builder/PDF.php:155
 msgid "PDF Addon"
 msgstr ""
 
-#: src/Admin/Education/Builder/PDF.php:220
+#: src/Admin/Education/Builder/PDF.php:225
 msgid "Try it Out"
 msgstr ""
 
-#: src/Admin/Education/Builder/PDF.php:235
+#: src/Admin/Education/Builder/PDF.php:240
 msgid "WPForms PDF Addon"
 msgstr ""
 
@@ -7729,119 +7764,115 @@ msgid "Website / URL"
 msgstr ""
 
 #: src/Admin/Education/Fields.php:69
-#: src/Forms/Fields/FileUpload/Field.php:70
+#: src/Forms/Fields/FileUpload/Field.php:65
 msgid "File Upload"
 msgstr ""
 
 #: src/Admin/Education/Fields.php:77
-#: src/Forms/Fields/FileUpload/Field.php:718
-#: src/Forms/Fields/Password/Field.php:25
-#: src/Forms/Fields/Password/Field.php:247
-msgid "Password"
+#: src/Forms/Fields/Camera/Field.php:34
+msgid "Camera"
 msgstr ""
 
 #: src/Admin/Education/Fields.php:85
-msgid "Layout"
+#: src/Forms/Fields/Password/Field.php:25
+#: src/Forms/Fields/Password/Field.php:304
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:430
+msgid "Password"
 msgstr ""
 
 #: src/Admin/Education/Fields.php:93
+msgid "Layout"
+msgstr ""
+
+#: src/Admin/Education/Fields.php:101
 msgid "Repeater"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:109
+#: src/Admin/Education/Fields.php:117
 #: src/Forms/Fields/Divider/Field.php:25
 msgid "Section Divider"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:117
+#: src/Admin/Education/Fields.php:125
 #: src/Forms/Fields/Richtext/Field.php:25
 msgid "Rich Text"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:133
+#: src/Admin/Education/Fields.php:141
 #: src/Forms/Fields/Html/Field.php:25
 msgid "HTML"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:141
+#: src/Admin/Education/Fields.php:149
 #: src/Forms/Fields/EntryPreview/Field.php:25
-#: src/Forms/Fields/EntryPreview/Field.php:178
+#: src/Forms/Fields/EntryPreview/Field.php:179
 msgid "Entry Preview"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:149
+#: src/Admin/Education/Fields.php:157
 #: src/Forms/Fields/Rating/Field.php:35
 #: src/Integrations/Gutenberg/FormSelector.php:540
 msgid "Rating"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:157
+#: src/Admin/Education/Fields.php:165
 #: src/Forms/Fields/Hidden/Field.php:25
 msgid "Hidden Field"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:166
+#: src/Admin/Education/Fields.php:174
 #: src/Forms/Fields/CustomCaptcha/Field.php:52
 msgid "spam, math, maths, question"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:175
+#: src/Admin/Education/Fields.php:183
 #: src/Forms/Fields/Addons/Signature/Field.php:25
 msgid "Signature"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:176
+#: src/Admin/Education/Fields.php:184
 #: src/Forms/Fields/Addons/Signature/Field.php:26
 msgid "user, e-signature"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:185
+#: src/Admin/Education/Fields.php:193
 #: src/Forms/Fields/Addons/LikertScale/Field.php:25
 msgid "Likert Scale"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:186
+#: src/Admin/Education/Fields.php:194
 #: src/Forms/Fields/Addons/LikertScale/Field.php:26
 msgid "survey, rating scale"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:195
+#: src/Admin/Education/Fields.php:203
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:25
 msgid "Net Promoter Score"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:196
+#: src/Admin/Education/Fields.php:204
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:26
 msgid "survey, nps"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:205
+#: src/Admin/Education/Fields.php:213
 #: src/Db/Payments/ValueValidator.php:70
 #: src/Forms/Fields/Helpers/RequirementsAlerts.php:175
 msgid "PayPal Commerce"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:206
-#: src/Admin/Education/Fields.php:216
-#: src/Admin/Education/Fields.php:226
+#: src/Admin/Education/Fields.php:214
+#: src/Admin/Education/Fields.php:224
 #: src/Integrations/Square/Fields/Square.php:25
 #: src/Integrations/Stripe/Fields/Traits/CreditCard.php:23
 msgid "store, ecommerce, credit card, pay, payment, debit card"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:215
-#: src/Db/Payments/ValueValidator.php:72
-#: src/Forms/Fields/Helpers/RequirementsAlerts.php:183
-#: src/Integrations/Square/Admin/Settings.php:252
-#: src/Integrations/Square/Fields/Square.php:24
-msgid "Square"
-msgstr ""
-
-#: src/Admin/Education/Fields.php:225
+#: src/Admin/Education/Fields.php:223
 msgid "Authorize.Net"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:235
+#: src/Admin/Education/Fields.php:233
 #: src/Admin/Payments/Views/Overview/Table.php:96
 #: src/Admin/Payments/Views/Single.php:373
 #: src/Admin/Payments/Views/Single.php:764
@@ -7849,12 +7880,12 @@ msgstr ""
 msgid "Coupon"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:236
+#: src/Admin/Education/Fields.php:234
 #: src/Forms/Fields/Addons/Coupon/Field.php:35
 msgid "discount, sale"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:296
+#: src/Admin/Education/Fields.php:294
 msgid "captcha, spam, antispam"
 msgstr ""
 
@@ -7866,12 +7897,12 @@ msgstr ""
 msgid "Featured"
 msgstr ""
 
-#: src/Admin/Education/Pointers/Payment.php:125
+#: src/Admin/Education/Pointers/Payment.php:128
 msgid "Payment and Donation Forms are here!"
 msgstr ""
 
 #. translators: %1$s - Payments page URL.
-#: src/Admin/Education/Pointers/Payment.php:127
+#: src/Admin/Education/Pointers/Payment.php:130
 #, php-format
 msgid "Now available for you: create forms that accept credit cards, Apple Pay, and Google Pay payments. Visit our new <a href=\"%1$s\" id=\"wpforms-education-pointers-payments\">Payments area</a> to get started."
 msgstr ""
@@ -8434,94 +8465,95 @@ msgstr ""
 
 #: src/Admin/Helpers/Datepicker.php:421
 #: src/Admin/Traits/FormTemplates.php:382
+#: src/Forms/Fields/Traits/CameraTrait.php:140
 msgid "Custom"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:522
+#: src/Admin/Notifications/EventDriven.php:546
 msgid "Welcome to WPForms!"
 msgstr ""
 
 #. translators: %s - number of templates.
-#: src/Admin/Notifications/EventDriven.php:524
+#: src/Admin/Notifications/EventDriven.php:548
 #, php-format
 msgid "We’re grateful that you chose WPForms for your website! Now that you’ve installed the plugin, you’re less than 5 minutes away from publishing your first form. To make it easy, we’ve got %s form templates to get you started!"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:530
+#: src/Admin/Notifications/EventDriven.php:554
 msgid "Start Building"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:537
+#: src/Admin/Notifications/EventDriven.php:561
 msgid "Read the Guide"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:554
+#: src/Admin/Notifications/EventDriven.php:578
 msgid "Don’t Miss Your Form Notification Emails!"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:555
+#: src/Admin/Notifications/EventDriven.php:579
 msgid "Did you know that many WordPress sites are not properly configured to send emails? With the free WP Mail SMTP plugin, you can easily optimize your site to send emails, avoid the spam folder, and make sure your emails land in the recipient’s inbox every time."
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:559
-#: src/Admin/Notifications/EventDriven.php:619
-#: src/Admin/Notifications/EventDriven.php:623
-#: src/Admin/Notifications/EventDriven.php:672
-#: src/Admin/Notifications/EventDriven.php:676
-#: src/Admin/Notifications/EventDriven.php:739
-#: src/Admin/Notifications/EventDriven.php:743
-#: src/Admin/Pages/PrivacyCompliance.php:188
-#: src/Admin/Pages/PrivacyCompliance.php:535
+#: src/Admin/Notifications/EventDriven.php:583
+#: src/Admin/Notifications/EventDriven.php:643
+#: src/Admin/Notifications/EventDriven.php:647
+#: src/Admin/Notifications/EventDriven.php:696
+#: src/Admin/Notifications/EventDriven.php:700
+#: src/Admin/Notifications/EventDriven.php:763
+#: src/Admin/Notifications/EventDriven.php:767
+#: src/Admin/Pages/PrivacyCompliance.php:189
+#: src/Admin/Pages/PrivacyCompliance.php:546
 #: src/Admin/Pages/SMTP.php:186
 #: src/Integrations/UncannyAutomator/UncannyAutomator.php:116
 msgid "Install Now"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:575
+#: src/Admin/Notifications/EventDriven.php:599
 msgid "Want to Be a VIP? Join Now!"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:576
+#: src/Admin/Notifications/EventDriven.php:600
 msgid "Running a WordPress site can be challenging. But help is just around the corner! Our Facebook group contains tons of tips and help to get your business growing! When you join our VIP Circle, you’ll get instant access to tips, tricks, and answers from a community of loyal WPForms users. Best of all, membership is 100% free!"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:580
+#: src/Admin/Notifications/EventDriven.php:604
 msgid "Join Now"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:588
+#: src/Admin/Notifications/EventDriven.php:612
 msgid "Want to Know What Your Customers Really Think?"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:589
+#: src/Admin/Notifications/EventDriven.php:613
 msgid "Nothing beats real feedback from your customers and visitors. That’s why many small businesses love our awesome Surveys and Polls addon. Instantly unlock full survey reporting right in your WordPress dashboard. And don’t forget: building a survey is easy with our pre-made templates, so you could get started within a few minutes!"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:641
+#: src/Admin/Notifications/EventDriven.php:665
 msgid "Get More Leads From Your Forms!"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:642
+#: src/Admin/Notifications/EventDriven.php:666
 msgid "Are your forms converting fewer visitors than you hoped? Often, visitors quit forms partway through. That can prevent you from getting all the leads you deserve to capture. With our Form Abandonment addon, you can capture partial entries even if your visitor didn’t hit Submit! From there, it’s easy to follow up with leads and turn them into loyal customers."
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:694
+#: src/Admin/Notifications/EventDriven.php:718
 msgid "What’s Your Dream WPForms Feature?"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:695
+#: src/Admin/Notifications/EventDriven.php:719
 msgid "If you could add just one feature to WPForms, what would it be? We want to know! Our team is busy surveying valued customers like you as we plan the year ahead. We’d love to know which features would take your business to the next level! Do you have a second to share your idea with us?"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:699
+#: src/Admin/Notifications/EventDriven.php:723
 msgid "Share Your Idea"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:708
+#: src/Admin/Notifications/EventDriven.php:732
 msgid "Congratulations! You Just Got Your 100th Form Entry!"
 msgstr ""
 
-#: src/Admin/Notifications/EventDriven.php:709
+#: src/Admin/Notifications/EventDriven.php:733
 msgid "You just hit 100 entries&hellip; and this is just the beginning! Now it’s time to dig into the data and figure out what makes your visitors tick. The User Journey addon shows you what your visitors looked at before submitting your form. Now you can easily find which areas of your site are triggering form conversions."
 msgstr ""
 
@@ -8594,156 +8626,156 @@ msgid "Do you have an idea or suggestion for WPForms? If you have thoughts on fe
 msgstr ""
 
 #. translators: %s - Lite plugin download URL.
-#: src/Admin/Pages/PrivacyCompliance.php:161
+#: src/Admin/Pages/PrivacyCompliance.php:162
 #: src/Admin/Pages/SMTP.php:160
 #, php-format
 msgid "Could not install the plugin automatically. Please <a href=\"%s\">download</a> it and install it manually."
 msgstr ""
 
 #. translators: %s - Lite plugin download URL.
-#: src/Admin/Pages/PrivacyCompliance.php:173
+#: src/Admin/Pages/PrivacyCompliance.php:174
 #: src/Admin/Pages/SMTP.php:172
 #, php-format
 msgid "Could not activate the plugin. Please activate it on the <a href=\"%s\">Plugins page</a>."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:184
+#: src/Admin/Pages/PrivacyCompliance.php:185
 #: src/Admin/Pages/SMTP.php:183
 #: src/Integrations/AI/Admin/Builder/Forms.php:193
 msgid "Installing..."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:185
+#: src/Admin/Pages/PrivacyCompliance.php:186
 #: src/Admin/Pages/SMTP.php:184
 #: src/Integrations/AI/Admin/Builder/Forms.php:194
 msgid "Activating..."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:186
-#: src/Admin/Pages/PrivacyCompliance.php:452
+#: src/Admin/Pages/PrivacyCompliance.php:187
+#: src/Admin/Pages/PrivacyCompliance.php:456
 msgid "WPConsent Installed & Activated"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:187
-#: src/Admin/Pages/PrivacyCompliance.php:535
+#: src/Admin/Pages/PrivacyCompliance.php:188
+#: src/Admin/Pages/PrivacyCompliance.php:545
 msgid "WPConsent Pro Installed & Activated"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:189
+#: src/Admin/Pages/PrivacyCompliance.php:190
 #: src/Admin/Pages/SMTP.php:187
 #: src/Integrations/UncannyAutomator/UncannyAutomator.php:116
 msgid "Activate Now"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:190
+#: src/Admin/Pages/PrivacyCompliance.php:191
 #: src/Admin/Pages/SMTP.php:188
 msgid "Download Now"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:191
+#: src/Admin/Pages/PrivacyCompliance.php:192
 #: src/Admin/Pages/SMTP.php:189
 msgid "Go to Plugins page"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:234
+#: src/Admin/Pages/PrivacyCompliance.php:235
 msgid "WPForms ♥ WPConsent"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:235
+#: src/Admin/Pages/PrivacyCompliance.php:236
 msgid "Make Your Website Privacy-Compliant in Minutes"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:236
+#: src/Admin/Pages/PrivacyCompliance.php:237
 msgid "Build trust with clear, compliant privacy practices. WPConsent adds clean, professional banners and handles the technical side for you."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:237
+#: src/Admin/Pages/PrivacyCompliance.php:238
 msgid "Built for transparency. Designed for ease."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:265
+#: src/Admin/Pages/PrivacyCompliance.php:266
 msgid "WPConsent screenshot"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:267
+#: src/Admin/Pages/PrivacyCompliance.php:268
 msgid "A professional banner that fits your site."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:268
+#: src/Admin/Pages/PrivacyCompliance.php:269
 msgid "Tools like Google Analytics and Facebook Pixel paused until consent."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:269
+#: src/Admin/Pages/PrivacyCompliance.php:270
 msgid "Peace of mind knowing you’re aligned with global laws."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:270
+#: src/Admin/Pages/PrivacyCompliance.php:271
 msgid "Self-hosted. Your data remains on your site."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:334
+#: src/Admin/Pages/PrivacyCompliance.php:335
 #: src/Admin/Pages/SMTP.php:331
 msgid "Step 1"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:370
+#: src/Admin/Pages/PrivacyCompliance.php:371
 #: src/Admin/Pages/SMTP.php:365
 msgid "Step 2"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:371
+#: src/Admin/Pages/PrivacyCompliance.php:372
 msgid "Set Up WPConsent"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:372
+#: src/Admin/Pages/PrivacyCompliance.php:373
 msgid "WPConsent has an intuitive setup wizard to guide you through the cookie consent configuration process."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:408
+#: src/Admin/Pages/PrivacyCompliance.php:409
 msgid "Step 3"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:409
+#: src/Admin/Pages/PrivacyCompliance.php:410
 msgid "Get Advanced Cookie Consent Features"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:410
+#: src/Admin/Pages/PrivacyCompliance.php:411
 msgid "With WPConsent Pro you can access advanced features like geolocation, popup layout, records of consent, multilanguage support, and more."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:427
+#: src/Admin/Pages/PrivacyCompliance.php:428
 msgid "Install & Activate WPConsent"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:428
+#: src/Admin/Pages/PrivacyCompliance.php:429
 msgid "Install WPConsent from the WordPress.org plugin repository."
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:438
+#: src/Admin/Pages/PrivacyCompliance.php:439
 msgid "Install WPConsent"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:444
+#: src/Admin/Pages/PrivacyCompliance.php:445
 msgid "WPConsent"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:446
+#: src/Admin/Pages/PrivacyCompliance.php:447
 msgid "WPConsent on WordPress.org"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:452
+#: src/Admin/Pages/PrivacyCompliance.php:457
 msgid "Activate WPConsent"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:480
+#: src/Admin/Pages/PrivacyCompliance.php:488
 msgid "Run Setup Wizard"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:486
+#: src/Admin/Pages/PrivacyCompliance.php:494
 msgid "Setup Complete"
 msgstr ""
 
-#: src/Admin/Pages/PrivacyCompliance.php:571
+#: src/Admin/Pages/PrivacyCompliance.php:579
 #: src/Admin/Pages/SMTP.php:476
 msgid "Plugin unavailable."
 msgstr ""
@@ -9050,8 +9082,8 @@ msgstr ""
 #: src/Admin/Payments/Views/Overview/Table.php:99
 #: src/Admin/Payments/Views/Single.php:350
 #: src/Forms/Fields/PaymentTotal/Field.php:24
-#: src/Forms/Fields/PaymentTotal/Field.php:555
-#: src/Forms/Fields/PaymentTotal/Field.php:616
+#: src/Forms/Fields/PaymentTotal/Field.php:556
+#: src/Forms/Fields/PaymentTotal/Field.php:617
 #: src/SmartTags/SmartTag/OrderSummary.php:172
 #: templates/admin/payments/single/payment-history.php:32
 #: templates/admin/payments/single/payment-history.php:53
@@ -9130,7 +9162,7 @@ msgstr ""
 #: src/Admin/Payments/Views/Overview/Table.php:644
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:172
 #: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:390
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:467
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:489
 msgid "Customer Email"
 msgstr ""
 
@@ -9386,7 +9418,7 @@ msgid "reCAPTCHA v3"
 msgstr ""
 
 #: src/Admin/Settings/Captcha/ReCaptcha.php:83
-#: src/Frontend/Frontend.php:1875
+#: src/Frontend/Frontend.php:1882
 msgid "Google reCAPTCHA verification failed, please try again later."
 msgstr ""
 
@@ -9403,7 +9435,7 @@ msgid "0.4"
 msgstr ""
 
 #: src/Admin/Settings/Captcha/Turnstile.php:91
-#: src/Frontend/Frontend.php:1876
+#: src/Frontend/Frontend.php:1883
 msgid "Cloudflare Turnstile verification failed, please try again later."
 msgstr ""
 
@@ -9890,7 +9922,7 @@ msgid "Select the types of events you want to log. Everything is logged by defau
 msgstr ""
 
 #: src/Admin/Tools/Views/Logs.php:187
-#: src/Forms/Fields/FileUpload/Field.php:481
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:193
 msgid "User Roles"
 msgstr ""
 
@@ -9899,7 +9931,7 @@ msgid "Select the user roles you want to log. All roles are logged by default."
 msgstr ""
 
 #: src/Admin/Tools/Views/Logs.php:227
-#: src/Forms/Fields/FileUpload/Field.php:569
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:281
 msgid "Users"
 msgstr ""
 
@@ -10009,6 +10041,13 @@ msgstr ""
 msgid "Stripe"
 msgstr ""
 
+#: src/Db/Payments/ValueValidator.php:72
+#: src/Forms/Fields/Helpers/RequirementsAlerts.php:183
+#: src/Integrations/Square/Admin/Settings.php:252
+#: src/Integrations/Square/Fields/Square.php:24
+msgid "Square"
+msgstr ""
+
 #: src/Db/Payments/ValueValidator.php:73
 msgid "Authorize.net"
 msgstr ""
@@ -10115,7 +10154,7 @@ msgid "Field ID #%1$s"
 msgstr ""
 
 #: src/Emails/Notifications.php:1314
-#: src/Forms/Fields/EntryPreview/Field.php:265
+#: src/Forms/Fields/EntryPreview/Field.php:266
 msgid "Compact"
 msgstr ""
 
@@ -10131,24 +10170,24 @@ msgstr ""
 msgid "Plain Text"
 msgstr ""
 
-#: src/Emails/Summaries.php:118
+#: src/Emails/Summaries.php:119
 msgid "Disable Email Summaries weekly delivery."
 msgstr ""
 
-#: src/Emails/Summaries.php:121
+#: src/Emails/Summaries.php:122
 msgid "View Email Summary Example"
 msgstr ""
 
-#: src/Emails/Summaries.php:133
+#: src/Emails/Summaries.php:134
 msgid "Disable Email Summaries"
 msgstr ""
 
-#: src/Emails/Summaries.php:263
+#: src/Emails/Summaries.php:264
 msgid "Weekly WPForms Email Summaries"
 msgstr ""
 
 #. translators: %s - site domain.
-#: src/Emails/Summaries.php:321
+#: src/Emails/Summaries.php:322
 #, php-format
 msgid "Your Weekly WPForms Summary for %s"
 msgstr ""
@@ -10258,6 +10297,7 @@ msgid "Select the style for the net promoter score."
 msgstr ""
 
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:148
+#: src/Forms/Fields/Rating/Field.php:319
 msgid "Lowest Score Label"
 msgstr ""
 
@@ -10267,6 +10307,7 @@ msgid "Not at all Likely"
 msgstr ""
 
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:178
+#: src/Forms/Fields/Rating/Field.php:350
 msgid "Highest Score Label"
 msgstr ""
 
@@ -10358,6 +10399,78 @@ msgstr ""
 msgid "--- Select %s ---"
 msgstr ""
 
+#: src/Forms/Fields/Camera/Field.php:35
+msgid "photo, image, capture, webcam"
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:94
+#: src/Forms/Fields/Camera/Field.php:365
+msgid "Button Link Text"
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:95
+#: src/Forms/Fields/Camera/Field.php:365
+msgid "Link Text"
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:96
+#: src/Forms/Fields/Camera/Field.php:366
+msgid "Enter the text for the button link."
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:97
+#: src/Forms/Fields/Camera/Field.php:366
+msgid "Enter the text for the link."
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:98
+msgid "Camera field with Link style cannot have empty Link Text. Please enter text or change style to Button."
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:99
+msgid "Missing Link Text"
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:168
+#: src/Forms/Fields/FileUpload/Field.php:284
+msgid "Store Files in WordPress Media Library"
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:169
+#: src/Forms/Fields/FileUpload/Field.php:285
+msgid "Check this option to store the final uploaded file in the WordPress Media Library"
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:215
+#: src/Forms/Fields/Camera/Field.php:376
+#: src/Forms/Fields/FileUpload/Field.php:358
+msgid "Capture With Your Camera"
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:267
+#: src/Forms/Fields/FileUpload/Field.php:153
+msgid "Max File Size"
+msgstr ""
+
+#. translators: %s - max upload size.
+#: src/Forms/Fields/Camera/Field.php:269
+#: src/Forms/Fields/FileUpload/Field.php:155
+#, php-format
+msgid "Enter the max size of each file, in megabytes, to allow. If left blank, the value defaults to the maximum size the server allows which is %s."
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:318
+msgid "Choose the style of the camera button."
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:330
+msgid "Button"
+msgstr ""
+
+#: src/Forms/Fields/Camera/Field.php:331
+msgid "Link"
+msgstr ""
+
 #: src/Forms/Fields/Content/Field.php:28
 #: src/Forms/Fields/Richtext/Field.php:26
 msgid "image, text, table, list, heading, wysiwyg, visual"
@@ -10399,39 +10512,39 @@ msgstr ""
 msgid "Expiration"
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:59
+#: src/Forms/Fields/CustomCaptcha/Field.php:60
 msgid "What is 7+4?"
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:60
+#: src/Forms/Fields/CustomCaptcha/Field.php:61
 msgid "11"
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:130
+#: src/Forms/Fields/CustomCaptcha/Field.php:131
 msgid "Select type of captcha to use."
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:141
+#: src/Forms/Fields/CustomCaptcha/Field.php:142
 msgid "Math"
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:142
+#: src/Forms/Fields/CustomCaptcha/Field.php:143
 msgid "Question and Answer"
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:163
+#: src/Forms/Fields/CustomCaptcha/Field.php:164
 msgid "Questions and Answers"
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:164
+#: src/Forms/Fields/CustomCaptcha/Field.php:165
 msgid "Add questions to ask the user. Questions are randomly selected."
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:182
+#: src/Forms/Fields/CustomCaptcha/Field.php:183
 msgid "Question"
 msgstr ""
 
-#: src/Forms/Fields/CustomCaptcha/Field.php:190
+#: src/Forms/Fields/CustomCaptcha/Field.php:191
 msgid "Answer"
 msgstr ""
 
@@ -10553,11 +10666,11 @@ msgstr ""
 msgid "line, hr"
 msgstr ""
 
-#: src/Forms/Fields/Divider/Field.php:133
+#: src/Forms/Fields/Divider/Field.php:134
 msgid "Hide Divider Line"
 msgstr ""
 
-#: src/Forms/Fields/Divider/Field.php:134
+#: src/Forms/Fields/Divider/Field.php:135
 msgid "Do not show the horizontal divider line."
 msgstr ""
 
@@ -10565,213 +10678,161 @@ msgstr ""
 msgid "confirm"
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:73
+#: src/Forms/Fields/EntryPreview/Field.php:74
 msgid "Entry Preview must be displayed on its own page, without other fields. HTML fields are allowed."
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:91
+#: src/Forms/Fields/EntryPreview/Field.php:92
 msgid "Display Preview Notice"
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:92
+#: src/Forms/Fields/EntryPreview/Field.php:93
 msgid "Check this option to show a message above the entry preview."
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:110
+#: src/Forms/Fields/EntryPreview/Field.php:111
 msgid "Preview Notice"
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:111
+#: src/Forms/Fields/EntryPreview/Field.php:112
 msgid "Fill in the message to show above the entry preview."
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:143
+#: src/Forms/Fields/EntryPreview/Field.php:144
 msgid "Choose the entry preview display style."
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:198
+#: src/Forms/Fields/EntryPreview/Field.php:199
 msgid "Entry preview will be displayed here and will contain all fields found on the previous page."
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:231
+#: src/Forms/Fields/EntryPreview/Field.php:232
 msgid "Page breaks are required for entry previews to work. If you'd like to remove page breaks, you'll have to first remove the entry preview field."
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:233
+#: src/Forms/Fields/EntryPreview/Field.php:234
 msgid "You can't hide the previous button because it is required for the entry preview field on this page."
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:249
+#: src/Forms/Fields/EntryPreview/Field.php:250
 msgid "This is a preview of your submission. It has not been submitted yet!"
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:250
+#: src/Forms/Fields/EntryPreview/Field.php:251
 msgid "Please take a moment to verify your information. You can also go back to make changes."
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:264
+#: src/Forms/Fields/EntryPreview/Field.php:265
 #: src/Forms/Fields/Richtext/Field.php:130
 msgid "Basic"
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:266
+#: src/Forms/Fields/EntryPreview/Field.php:267
 msgid "Table"
 msgstr ""
 
-#: src/Forms/Fields/EntryPreview/Field.php:267
+#: src/Forms/Fields/EntryPreview/Field.php:268
 msgid "Table, Compact"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:122
+#: src/Forms/Fields/FileUpload/Field.php:117
 msgid "Allowed File Extensions"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:123
+#: src/Forms/Fields/FileUpload/Field.php:118
 msgid "Enter the extensions you would like to allow, comma separated."
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:127
+#: src/Forms/Fields/FileUpload/Field.php:122
 msgid "See More Details"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:158
-msgid "Max File Size"
-msgstr ""
-
-#. translators: %s - max upload size.
-#: src/Forms/Fields/FileUpload/Field.php:160
-#, php-format
-msgid "Enter the max size of each file, in megabytes, to allow. If left blank, the value defaults to the maximum size the server allows which is %s."
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:198
+#: src/Forms/Fields/FileUpload/Field.php:193
 msgid "Max File Uploads"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:199
+#: src/Forms/Fields/FileUpload/Field.php:194
 msgid "Enter the max number of files to allow. If left blank, the value defaults to 1."
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:251
+#: src/Forms/Fields/FileUpload/Field.php:246
 msgid "Modern Style supports multiple file uploads, displays a drag-and-drop upload box, and uses AJAX. Classic Style supports single file upload and displays a traditional upload button."
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:289
-msgid "Store Files in WordPress Media Library"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:290
-msgid "Check this option to store the final uploaded file in the WordPress Media Library"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:336
-msgid "Enable File Access Restrictions"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:337
-msgid "Choose who can access the uploaded files."
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:420
-msgid "User Restriction"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:433
-msgid "Logged-in Users"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:482
-msgid "Select the user roles that can access the uploaded files."
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:493
-msgid "All users with selected roles will be able to access the uploaded files."
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:570
-msgid "Select the users that can access the uploaded files."
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:686
-msgid "Password Protection"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:687
-msgid "Check this option to password protect the uploaded files."
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:719
-msgid "Set a password to protect the uploaded files."
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:805
-msgid "Enter Password"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:841
-#: src/Forms/Fields/Password/Field.php:252
-msgid "Confirm Password"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:853
-msgid "Passwords do not match"
-msgstr ""
-
-#: src/Forms/Fields/FileUpload/Field.php:958
-#: templates/fields/file-upload/file-upload-backend.php:22
-msgid "Click or drag a file to this area to upload."
-msgid_plural "Click or drag files to this area to upload."
+#. translators: %1$s: Choose File to Upload opening tag, %2$s: Choose File to Upload closing tag.
+#: src/Forms/Fields/FileUpload/Field.php:391
+#: templates/fields/file-upload/file-upload-backend.php:23
+#, php-format
+msgid "Drag & Drop File or %1$sChoose File to Upload%2$s"
+msgid_plural "Drag & Drop Files or %1$sChoose Files to Upload%2$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Forms/Fields/FileUpload/Field.php:959
-msgid "Click or drag files to this area to upload."
+#. translators: %1$s: Choose Files to Upload opening tag, %2$s: Choose Files to Upload closing tag.
+#: src/Forms/Fields/FileUpload/Field.php:397
+#, php-format
+msgid "Drag & Drop Files or %1$sChoose Files to Upload%2$s"
+msgstr ""
+
+#. translators: %1$s: Choose File to Upload opening tag, %2$s: Closing tag, %3$s: Capture With Camera opening tag.
+#: src/Forms/Fields/FileUpload/Field.php:403
+#: templates/fields/file-upload/file-upload-backend.php:19
+#, php-format
+msgid "Drag & Drop File, %1$sChoose File to Upload%2$s, or %3$sCapture With Camera%2$s"
+msgid_plural "Drag & Drop Files, %1$sChoose Files to Upload%2$s, or %3$sCapture With Camera%2$s"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %1$s: Choose Files to Upload opening tag, %2$s: Closing tag, %3$s: Capture With Camera opening tag.
+#: src/Forms/Fields/FileUpload/Field.php:410
+#, php-format
+msgid "Drag & Drop Files, %1$sChoose Files to Upload%2$s, or %3$sCapture With Camera%2$s"
 msgstr ""
 
 #. translators: % - max number of files as a template string (not a number), replaced by a number later.
-#: src/Forms/Fields/FileUpload/Field.php:961
+#: src/Forms/Fields/FileUpload/Field.php:416
 #, php-format
 msgid "You can upload up to %s files."
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:964
+#: src/Forms/Fields/FileUpload/Field.php:419
 msgid "Passwords Do Not Match"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:965
+#: src/Forms/Fields/FileUpload/Field.php:420
 msgid "Please check the password for the following fields: {fields}"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:966
+#: src/Forms/Fields/FileUpload/Field.php:421
 msgid "Passwords Are Empty"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:967
+#: src/Forms/Fields/FileUpload/Field.php:422
 msgid "Please enter a password for the following fields: {fields}"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:968
+#: src/Forms/Fields/FileUpload/Field.php:423
 msgid "Cannot Enable Restrictions"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:969
+#: src/Forms/Fields/FileUpload/Field.php:424
 msgid "This field is attached to Notifications. In order to enable restrictions, please first remove it from File Upload Attachments in Notifications."
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:970
+#: src/Forms/Fields/FileUpload/Field.php:425
 msgid "Cannot Enable Attachments"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:971
+#: src/Forms/Fields/FileUpload/Field.php:426
 msgid "The following fields ({fields}) cannot be attached to notifications because restrictions are enabled for them."
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:972
+#: src/Forms/Fields/FileUpload/Field.php:427
 msgid "All User Roles already selected"
 msgstr ""
 
-#: src/Forms/Fields/FileUpload/Field.php:973
-msgid "File Upload Restrictions can’t be enabled because the current version of the Post Submissions addon is incompatible."
+#: src/Forms/Fields/FileUpload/Field.php:428
+msgid "File Upload Restrictions can't be enabled because the current version of the Post Submissions addon is incompatible."
 msgstr ""
 
 #. translators: %1$s - addons list.
@@ -10798,7 +10859,7 @@ msgstr ""
 msgid "Update Required"
 msgstr ""
 
-#: src/Forms/Fields/Hidden/Field.php:76
+#: src/Forms/Fields/Hidden/Field.php:77
 msgid "Enter text for the form field label. Never displayed on the front-end."
 msgstr ""
 
@@ -10806,11 +10867,11 @@ msgstr ""
 msgid "code"
 msgstr ""
 
-#: src/Forms/Fields/Html/Field.php:74
+#: src/Forms/Fields/Html/Field.php:75
 msgid "Enter text for the form field label. It will help identify your HTML blocks inside the form builder, but will not be displayed in the form."
 msgstr ""
 
-#: src/Forms/Fields/Html/Field.php:195
+#: src/Forms/Fields/Html/Field.php:198
 msgid "Contents of this field are not displayed in the form builder preview."
 msgstr ""
 
@@ -10818,104 +10879,104 @@ msgstr ""
 msgid "progress bar, multi step, multi part"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:128
+#: src/Forms/Fields/Pagebreak/Field.php:129
 msgid "Page Title"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:129
+#: src/Forms/Fields/Pagebreak/Field.php:130
 msgid "Enter text for the page title."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:161
+#: src/Forms/Fields/Pagebreak/Field.php:162
 msgid "Next Label"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:162
+#: src/Forms/Fields/Pagebreak/Field.php:163
 msgid "Enter text for Next page navigation button."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:171
-#: src/Forms/Fields/Pagebreak/Field.php:514
+#: src/Forms/Fields/Pagebreak/Field.php:172
+#: src/Forms/Fields/Pagebreak/Field.php:515
 msgid "Next"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:197
+#: src/Forms/Fields/Pagebreak/Field.php:198
 msgid "Display Previous"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:198
+#: src/Forms/Fields/Pagebreak/Field.php:199
 msgid "Toggle displaying the Previous page navigation button."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:218
+#: src/Forms/Fields/Pagebreak/Field.php:219
 msgid "Previous Label"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:219
+#: src/Forms/Fields/Pagebreak/Field.php:220
 msgid "Enter text for Previous page navigation button."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:268
+#: src/Forms/Fields/Pagebreak/Field.php:269
 msgid "Progress Text"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:269
+#: src/Forms/Fields/Pagebreak/Field.php:270
 msgid "Enter text for the progress indicator."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:280
+#: src/Forms/Fields/Pagebreak/Field.php:281
 msgid "Enter text to show the user's progress. You can use {current_page} and {last_page} to indicate the current and last steps."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:315
+#: src/Forms/Fields/Pagebreak/Field.php:316
 msgid "Progress Bar"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:316
+#: src/Forms/Fields/Pagebreak/Field.php:317
 msgid "Circles"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:317
+#: src/Forms/Fields/Pagebreak/Field.php:318
 msgid "Connector"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:334
+#: src/Forms/Fields/Pagebreak/Field.php:335
 msgid "Progress Indicator"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:335
+#: src/Forms/Fields/Pagebreak/Field.php:336
 msgid "Select theme for Page Indicator which is displayed at the top of the form."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:366
+#: src/Forms/Fields/Pagebreak/Field.php:367
 msgid "Page Indicator Color"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:367
+#: src/Forms/Fields/Pagebreak/Field.php:368
 msgid "Select the primary color for the Page Indicator theme."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:436
+#: src/Forms/Fields/Pagebreak/Field.php:437
 msgid "Page Navigation Alignment"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:437
+#: src/Forms/Fields/Pagebreak/Field.php:438
 msgid "Select the alignment for the Next/Previous page navigation buttons"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:451
+#: src/Forms/Fields/Pagebreak/Field.php:452
 msgid "Split"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:473
+#: src/Forms/Fields/Pagebreak/Field.php:474
 msgid "Disable Scroll Animation"
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:474
+#: src/Forms/Fields/Pagebreak/Field.php:475
 msgid "By default, a user's view is pulled to the top of each form page. Set to ON to disable this animation."
 msgstr ""
 
-#: src/Forms/Fields/Pagebreak/Field.php:518
+#: src/Forms/Fields/Pagebreak/Field.php:519
 msgid "First Page / Progress Indicator"
 msgstr ""
 
@@ -10949,6 +11010,19 @@ msgstr ""
 
 #: src/Forms/Fields/Password/Field.php:133
 msgid "Strong"
+msgstr ""
+
+#: src/Forms/Fields/Password/Field.php:154
+msgid "Enable Password Visibility"
+msgstr ""
+
+#: src/Forms/Fields/Password/Field.php:155
+msgid "Check this option to add a toggle for showing and hiding the password."
+msgstr ""
+
+#: src/Forms/Fields/Password/Field.php:325
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:553
+msgid "Confirm Password"
 msgstr ""
 
 #: src/Forms/Fields/PaymentCheckbox/Field.php:22
@@ -11104,31 +11178,31 @@ msgstr ""
 msgid "store, ecommerce, pay, payment, sum"
 msgstr ""
 
-#: src/Forms/Fields/PaymentTotal/Field.php:430
+#: src/Forms/Fields/PaymentTotal/Field.php:431
 msgid "Enable Summary"
 msgstr ""
 
-#: src/Forms/Fields/PaymentTotal/Field.php:431
+#: src/Forms/Fields/PaymentTotal/Field.php:432
 msgid "Enable order summary for this field."
 msgstr ""
 
-#: src/Forms/Fields/PaymentTotal/Field.php:477
+#: src/Forms/Fields/PaymentTotal/Field.php:478
 msgid "Example data is shown in the form editor. Actual products and totals will be displayed when you preview or embed your form."
 msgstr ""
 
-#: src/Forms/Fields/PaymentTotal/Field.php:512
+#: src/Forms/Fields/PaymentTotal/Field.php:513
 msgid "Example Product 1"
 msgstr ""
 
-#: src/Forms/Fields/PaymentTotal/Field.php:518
+#: src/Forms/Fields/PaymentTotal/Field.php:519
 msgid "Example Product 2"
 msgstr ""
 
-#: src/Forms/Fields/PaymentTotal/Field.php:524
+#: src/Forms/Fields/PaymentTotal/Field.php:525
 msgid "Example Product 3"
 msgstr ""
 
-#: src/Forms/Fields/PaymentTotal/Field.php:809
+#: src/Forms/Fields/PaymentTotal/Field.php:810
 msgid "Show order summary after confirmation message"
 msgstr ""
 
@@ -11148,44 +11222,69 @@ msgstr ""
 msgid "review, emoji, star"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:95
+#: src/Forms/Fields/Rating/Field.php:115
 msgid "Scale"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:96
+#: src/Forms/Fields/Rating/Field.php:116
 msgid "Select rating scale"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:162
+#: src/Forms/Fields/Rating/Field.php:182
 msgid "Icon"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:163
+#: src/Forms/Fields/Rating/Field.php:183
 msgid "Select icon to display"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:175
+#: src/Forms/Fields/Rating/Field.php:195
 msgid "Star"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:176
+#: src/Forms/Fields/Rating/Field.php:196
 msgid "Heart"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:177
+#: src/Forms/Fields/Rating/Field.php:197
 msgid "Thumb"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:178
+#: src/Forms/Fields/Rating/Field.php:198
 msgid "Smiley Face"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:200
+#: src/Forms/Fields/Rating/Field.php:220
 msgid "Select the size of the rating icon"
 msgstr ""
 
-#: src/Forms/Fields/Rating/Field.php:235
+#: src/Forms/Fields/Rating/Field.php:257
 msgid "Select the color for the rating icon"
+msgstr ""
+
+#: src/Forms/Fields/Rating/Field.php:320
+msgid "This label indicates the lowest score on the scale."
+msgstr ""
+
+#: src/Forms/Fields/Rating/Field.php:351
+msgid "This label indicates the highest score on the scale."
+msgstr ""
+
+#: src/Forms/Fields/Rating/Field.php:381
+msgid "Label Position"
+msgstr ""
+
+#: src/Forms/Fields/Rating/Field.php:382
+msgid "Select the position of the label"
+msgstr ""
+
+#: src/Forms/Fields/Rating/Field.php:394
+#: src/Integrations/Stripe/Fields/PaymentElementCreditCard.php:108
+msgid "Above"
+msgstr ""
+
+#: src/Forms/Fields/Rating/Field.php:395
+msgid "Below"
 msgstr ""
 
 #: src/Forms/Fields/Richtext/Field.php:77
@@ -11213,6 +11312,146 @@ msgstr ""
 msgid "Visual"
 msgstr ""
 
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:36
+msgid "Enable File Access Restrictions"
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:37
+msgid "Choose who can access the uploaded files."
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:132
+msgid "User Restriction"
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:145
+msgid "Logged-in Users"
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:194
+msgid "Select the user roles that can access the uploaded files."
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:205
+msgid "All users with selected roles will be able to access the uploaded files."
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:282
+msgid "Select the users that can access the uploaded files."
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:398
+msgid "Password Protection"
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:399
+msgid "Check this option to password protect the uploaded files."
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:431
+msgid "Set a password to protect the uploaded files."
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:517
+msgid "Enter Password"
+msgstr ""
+
+#: src/Forms/Fields/Traits/AccessRestrictionsTrait.php:565
+msgid "Passwords do not match"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:41
+msgid "Enable Camera"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:42
+msgid "Check this option to enable the camera field."
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:81
+msgid "Select the camera format."
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:94
+msgid "Photo"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:95
+msgid "Video"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:130
+msgid "Aspect Ratio"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:131
+msgid "Select the camera aspect ratio."
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:139
+msgid "Original"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:141
+msgid "Freeform"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:143
+msgid "Landscape orientation"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:144
+msgid "16:9"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:145
+msgid "5:4"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:146
+msgid "3:2"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:149
+msgid "Portrait orientation"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:150
+msgid "9:16"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:151
+msgid "4:5"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:152
+msgid "2:3"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:215
+msgid "Ratio Width"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:233
+msgid "Ratio Height"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:264
+msgid "Time Limit"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:265
+msgid "Set the time limit for camera recording."
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:283
+msgid "Minutes"
+msgstr ""
+
+#: src/Forms/Fields/Traits/CameraTrait.php:302
+msgid "Seconds"
+msgstr ""
+
 #: src/Forms/Fields/Traits/ContentInput.php:176
 msgid "Uploaded to this form"
 msgstr ""
@@ -11235,6 +11474,12 @@ msgstr ""
 
 #: src/Forms/Fields/Traits/ContentInput.php:361
 msgid "Update Preview"
+msgstr ""
+
+#. translators: %s - link to the Media Library.
+#: src/Forms/Fields/Traits/FileEntriesEditTrait.php:105
+#, php-format
+msgid "Please use the default <a href=\"%s\">WordPress Media</a> interface to remove this file."
 msgstr ""
 
 #: src/Forms/Fields/Traits/NumberField.php:170
@@ -11297,6 +11542,14 @@ msgstr ""
 
 #: src/Forms/Fields/Traits/ProField.php:367
 msgid "Update required"
+msgstr ""
+
+#: src/Forms/Fields/Traits/ReadOnlyField.php:53
+msgid "Check this option to show the field’s value without allowing changes. It will still be submitted."
+msgstr ""
+
+#: src/Forms/Fields/Traits/ReadOnlyField.php:61
+msgid "Read-Only"
 msgstr ""
 
 #: src/Forms/Fields/Url/Field.php:26
@@ -11491,41 +11744,41 @@ msgstr ""
 msgid "Please enable JavaScript in your browser to complete this form."
 msgstr ""
 
-#: src/Frontend/Frontend.php:1850
+#: src/Frontend/Frontend.php:1857
 msgid "Click to accept this suggestion."
 msgstr ""
 
 #. translators: %1$s - character count, %2$s - character limit.
-#: src/Frontend/Frontend.php:1860
+#: src/Frontend/Frontend.php:1867
 #, php-format
 msgid "%1$s of %2$s max characters."
 msgstr ""
 
 #. translators: %1$s - word count, %2$s - word limit.
-#: src/Frontend/Frontend.php:1868
+#: src/Frontend/Frontend.php:1875
 #, php-format
 msgid "%1$s of %2$s max words."
 msgstr ""
 
-#: src/Frontend/Frontend.php:1873
+#: src/Frontend/Frontend.php:1880
 msgid "Please enter a value greater than or equal to {0}."
 msgstr ""
 
-#: src/Frontend/Frontend.php:1874
+#: src/Frontend/Frontend.php:1881
 msgid "Please enter a value less than or equal to {0}."
 msgstr ""
 
-#: src/Frontend/Frontend.php:1893
+#: src/Frontend/Frontend.php:1900
 msgid "Country list"
 msgstr ""
 
 #. translators: %s - URL to the troubleshooting guide.
-#: src/Frontend/Frontend.php:2172
+#: src/Frontend/Frontend.php:2179
 #, php-format
 msgid "Heads up! WPForms has detected an issue with JavaScript on this page. JavaScript is required for this form to work properly, so this form may not work as expected. See our <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">troubleshooting guide</a> to learn more or contact support."
 msgstr ""
 
-#: src/Frontend/Frontend.php:2185
+#: src/Frontend/Frontend.php:2192
 msgid "This message is only displayed to site administrators."
 msgstr ""
 
@@ -12466,22 +12719,22 @@ msgstr ""
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:179
 #: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:379
 #: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:394
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:474
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:496
 msgid "--- Select Email ---"
 msgstr ""
 
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:180
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:475
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:497
 msgid "Select the field that contains the customer's email address. This field is required."
 msgstr ""
 
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:192
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:547
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:569
 msgid "Customer Name"
 msgstr ""
 
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:199
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:533
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:555
 msgid "--- Select Name ---"
 msgstr ""
 
@@ -12536,8 +12789,8 @@ msgstr ""
 
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:361
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:382
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:583
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:598
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:605
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:620
 msgid "Customer Address"
 msgstr ""
 
@@ -12546,7 +12799,7 @@ msgid "Select the field that contains the customer's Address. This field is opti
 msgstr ""
 
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:373
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:567
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:589
 msgid "--- Select Address ---"
 msgstr ""
 
@@ -12604,7 +12857,7 @@ msgstr ""
 #. translators: %s - the WPForms Payments settings page URL.
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:464
 #, php-format
-msgid "Tokens must be refreshed. First, please refresh them on the <a href='%2$s'>WPForms Settings</a> page."
+msgid "Tokens must be refreshed. Please refresh them on the <a href='%2$s'>WPForms Settings</a> page."
 msgstr ""
 
 #: src/Integrations/Square/Admin/Builder/Traits/Content.php:528
@@ -13228,6 +13481,11 @@ msgstr ""
 msgid "Please go to the <a href=\"#\" class=\"wpforms-stripe-settings-redirect\">Stripe payment settings</a> and select a Customer Email."
 msgstr ""
 
+#: src/Integrations/Stripe/Admin/Builder/Enqueues.php:114
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:475
+msgid "Unlimited"
+msgstr ""
+
 #: src/Integrations/Stripe/Admin/Builder/Notifications.php:55
 msgid "Enable for Stripe completed payments"
 msgstr ""
@@ -13298,41 +13556,49 @@ msgstr ""
 msgid "Recurring Period"
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:499
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:469
+msgid "Recurring Cycles"
+msgstr ""
+
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:476
+msgid "How many times you want the payment to repeat. Stripe supports up to 100 recurrences or a maximum duration of 20 years, whichever comes first."
+msgstr ""
+
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:521
 msgid "Connect WPForms to Stripe."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:515
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:537
 msgid "Learn more about our Stripe integration."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:534
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:556
 msgid "Select the field that contains the customer's name. This is optional but recommended."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:590
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:612
 msgid "Select the field that contains the customer's address. This is optional but required for some regions."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:608
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:618
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:630
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:640
 msgid "Shipping Address"
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:610
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:632
 msgid "Select the field that contains the shipping address. This is optional but required for some regions."
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:640
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:662
 msgid "--- Select Phone ---"
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:654
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:669
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:676
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:691
 msgid "Customer Phone"
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:661
+#: src/Integrations/Stripe/Admin/Builder/Traits/ContentTrait.php:683
 msgid "Select the field that contains the customer's phone. This is optional but recommended."
 msgstr ""
 
@@ -13423,29 +13689,35 @@ msgid "Easily collect credit card payments with Stripe. For getting started and 
 msgstr ""
 
 #. translators: %1$s - Stripe account name connected, %2$s - Stripe mode connected (live or test).
-#: src/Integrations/Stripe/Admin/Settings.php:342
+#: src/Integrations/Stripe/Admin/Settings.php:344
 #, php-format
 msgid "Connected to Stripe as <em>%1$s</em> in <strong>%2$s Mode</strong>."
 msgstr ""
 
 #. translators: %s - Stripe connect URL.
-#: src/Integrations/Stripe/Admin/Settings.php:356
+#: src/Integrations/Stripe/Admin/Settings.php:357
 #, php-format
-msgid "<a href=\"%s\">Switch Accounts</a>"
+msgid "<a href=\"%s\" class=\"wpforms-btn wpforms-btn-md wpforms-btn-light-grey\" style=\"margin-right: 10px;\">Switch Accounts</a>"
+msgstr ""
+
+#. translators: %s - Stripe disconnect URL.
+#: src/Integrations/Stripe/Admin/Settings.php:370
+#, php-format
+msgid "<a href=\"%s\" class=\"wpforms-btn wpforms-btn-md wpforms-btn-light-grey\">Disconnect</a>"
 msgstr ""
 
 #. translators: %s - WPForms.com Stripe documentation article URL.
-#: src/Integrations/Stripe/Admin/Settings.php:383
+#: src/Integrations/Stripe/Admin/Settings.php:398
 #, php-format
 msgid "Securely connect to Stripe with just a few clicks to begin accepting payments! <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"wpforms-learn-more\">Learn More</a>"
 msgstr ""
 
-#: src/Integrations/Stripe/Admin/Settings.php:399
+#: src/Integrations/Stripe/Admin/Settings.php:414
 msgid "Connect with Stripe"
 msgstr ""
 
 #. translators: %s - WPForms.com Stripe documentation article URL.
-#: src/Integrations/Stripe/Admin/Settings.php:415
+#: src/Integrations/Stripe/Admin/Settings.php:430
 #, php-format
 msgid "Please see <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">our documentation on Stripe Credit Card field modes for full details</a>."
 msgstr ""
@@ -13548,11 +13820,11 @@ msgstr ""
 msgid "Stripe subscription stopped, missing PaymentMethod id."
 msgstr ""
 
-#: src/Integrations/Stripe/Api/PaymentIntents.php:595
+#: src/Integrations/Stripe/Api/PaymentIntents.php:596
 msgid "Stripe subscription stopped. invalid PaymentIntent status."
 msgstr ""
 
-#: src/Integrations/Stripe/Api/PaymentIntents.php:632
+#: src/Integrations/Stripe/Api/PaymentIntents.php:633
 msgid "Stripe subscription was not confirmed. Please check your Stripe dashboard."
 msgstr ""
 
@@ -13581,10 +13853,6 @@ msgstr ""
 
 #: src/Integrations/Stripe/Fields/PaymentElementCreditCard.php:96
 msgid "Sublabel Position"
-msgstr ""
-
-#: src/Integrations/Stripe/Fields/PaymentElementCreditCard.php:108
-msgid "Above"
 msgstr ""
 
 #: src/Integrations/Stripe/Fields/PaymentElementCreditCard.php:109
@@ -13627,57 +13895,57 @@ msgstr ""
 msgid "The security token has expired. Please resubmit the form."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:219
+#: src/Integrations/Stripe/Process.php:220
 msgid "Unable to process payment, please try again later."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:648
+#: src/Integrations/Stripe/Process.php:659
 msgid "Stripe payment stopped, missing keys."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:654
+#: src/Integrations/Stripe/Process.php:665
 msgid "Stripe payment stopped, missing payment fields."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:659
+#: src/Integrations/Stripe/Process.php:670
 msgid "Stripe payment stopped, invalid/empty amount."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:663
+#: src/Integrations/Stripe/Process.php:674
 msgid "Stripe payment stopped, amount less than minimum charge required."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:879
+#: src/Integrations/Stripe/Process.php:895
 msgid "Stripe Subscription payment stopped validation error."
 msgstr ""
 
 #. translators: %s - error message.
-#: src/Integrations/Stripe/Process.php:1011
+#: src/Integrations/Stripe/Process.php:1027
 #, php-format
 msgid "Payment Error: %s"
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:1018
+#: src/Integrations/Stripe/Process.php:1034
 msgid "Stripe subscription payment stopped by error"
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:1020
+#: src/Integrations/Stripe/Process.php:1036
 msgid "Stripe payment stopped by error"
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:1137
+#: src/Integrations/Stripe/Process.php:1153
 msgid "Stripe subscription payment stopped, missing form settings."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:1142
+#: src/Integrations/Stripe/Process.php:1158
 msgid "Stripe subscription payment stopped, customer email not found."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:1260
+#: src/Integrations/Stripe/Process.php:1276
 msgid "Secondary form submission was declined."
 msgstr ""
 
-#: src/Integrations/Stripe/Process.php:1278
+#: src/Integrations/Stripe/Process.php:1294
 msgid "Irregular activity detected. Your submission has been declined and payment refunded."
 msgstr ""
 
@@ -14252,45 +14520,45 @@ msgid "Missing required data in payload."
 msgstr ""
 
 #. translators: %1$s - requirements message.
-#: src/Requirements/Requirements.php:1007
+#: src/Requirements/Requirements.php:1010
 #, php-format
 msgid "It requires %1$s."
 msgstr ""
 
-#: src/Requirements/Requirements.php:1042
+#: src/Requirements/Requirements.php:1045
 msgid "WPForms plugin"
 msgstr ""
 
 #. translators: %1$s - WPForms addon name.
-#: src/Requirements/Requirements.php:1046
+#: src/Requirements/Requirements.php:1049
 #, php-format
 msgid "%1$s addon"
 msgstr ""
 
 #. translators: %1$s - WPForms plugin or addon name, %2$d - requirements message.
-#: src/Requirements/Requirements.php:1053
+#: src/Requirements/Requirements.php:1056
 #, php-format
 msgid "The %1$s requires %2$s."
 msgstr ""
 
 #. translators: %1$s - Read More link.
-#: src/Requirements/Requirements.php:1089
+#: src/Requirements/Requirements.php:1092
 #, php-format
 msgid "%1$s for additional information on PHP version."
 msgstr ""
 
 #. translators: %1$s - Read More link.
-#: src/Requirements/Requirements.php:1095
+#: src/Requirements/Requirements.php:1098
 #, php-format
 msgid "%1$s for additional information on PHP extensions."
 msgstr ""
 
-#: src/Requirements/Requirements.php:1122
+#: src/Requirements/Requirements.php:1125
 msgid "Read more"
 msgstr ""
 
 #. translators: %s - PHP extension name(s).
-#: src/Requirements/Requirements.php:1196
+#: src/Requirements/Requirements.php:1199
 #, php-format
 msgid "%s PHP extension"
 msgid_plural "%s PHP extensions"
@@ -14298,31 +14566,31 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s - license name(s).
-#: src/Requirements/Requirements.php:1267
+#: src/Requirements/Requirements.php:1270
 #, php-format
 msgid "%s license"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1376
+#: src/Requirements/Requirements.php:1379
 #, php-format
 msgid "%1$s %2$s or above"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1378
+#: src/Requirements/Requirements.php:1381
 #, php-format
 msgid "%1$s %2$s or below"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1381
+#: src/Requirements/Requirements.php:1384
 #, php-format
 msgid "a newer version of %1$s than %2$s"
 msgstr ""
 
 #. translators: %1$s - What is being checked (PHP, WPForms, etc.), %2$s - required version. This is used as the completion of the sentence "The {addon name} addon requires {here goes this string}".
-#: src/Requirements/Requirements.php:1383
+#: src/Requirements/Requirements.php:1386
 #, php-format
 msgid "an older version of %1$s than %2$s"
 msgstr ""
@@ -14390,7 +14658,7 @@ msgid "User Last Name"
 msgstr ""
 
 #: src/SmartTags/SmartTags.php:129
-msgid "User Email"
+msgid "Logged-in User's Email"
 msgstr ""
 
 #: src/SmartTags/SmartTags.php:130
@@ -15417,16 +15685,16 @@ msgstr ""
 msgid "This email was auto-generated and sent from %s."
 msgstr ""
 
-#. translators: %s - link to the documentation.
+#. translators: %1$s - link to Settings -> Misc tab in plugin, %2$s - link to the documentation.
 #: templates/emails/summary-footer-plain.php:23
 #, php-format
-msgid "Learn how to disable: %s."
+msgid "If you want to disable these weekly emails, open %1$s, or read the guide %2$s."
 msgstr ""
 
-#. translators: %1$s - site URL, %2$s - link to the documentation.
+#. translators: %1$s - site URL, %2$s - link to Settings -> Misc tab in plugin, %3$s - link to the documentation.
 #: templates/emails/summary-footer.php:23
 #, php-format
-msgid "This email was auto-generated and sent from %1$s. Learn <a href=\"%2$s\">how to disable</a>"
+msgid "This email was auto-generated and sent from %1$s. <br> If you want to disable these weekly emails, click <a href=\"%2$s\">here</a>, or read the guide <a href=\"%3$s\">here</a>."
 msgstr ""
 
 #: templates/fields/total/summary-preview.php:80

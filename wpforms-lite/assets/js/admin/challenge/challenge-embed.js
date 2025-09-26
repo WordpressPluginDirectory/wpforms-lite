@@ -56,8 +56,7 @@ WPFormsChallenge.embed = window.WPFormsChallenge.embed || ( function( document, 
 		 *
 		 * @since 1.5.0
 		 */
-		load: function() {
-
+		load() {
 			// If the page is Add new page.
 			if ( window.location.href.indexOf( 'post-new.php' ) > -1 ) {
 				app.lastStep();
@@ -67,13 +66,16 @@ WPFormsChallenge.embed = window.WPFormsChallenge.embed || ( function( document, 
 			}
 
 			if ( WPFormsChallenge.core.isGutenberg() ) {
-				WPFormsChallenge.core.initTooltips( 5, '.block-editor .edit-post-header', { side: 'bottom' } );
-				app.updateTooltipVisibility();
+				// Wait for the Gutenberg header to be present before initializing tooltips.
+				app.onElementReady( '.block-editor .edit-post-header', function() {
+					WPFormsChallenge.core.initTooltips( 5, '.block-editor .edit-post-header', { side: 'bottom' } );
+					app.updateTooltipVisibility();
+					WPFormsChallenge.core.updateTooltipUI();
+				} );
 			} else {
 				WPFormsChallenge.core.initTooltips( 5, '.wpforms-insert-form-button', { side: 'right' } );
+				WPFormsChallenge.core.updateTooltipUI();
 			}
-
-			WPFormsChallenge.core.updateTooltipUI();
 		},
 
 		/**
@@ -311,6 +313,33 @@ WPFormsChallenge.embed = window.WPFormsChallenge.embed || ( function( document, 
 
 				$( '.wpforms-challenge-tooltip-step5' ).toggleClass( 'wpforms-challenge-tooltip-step5-hide' );
 			} );
+		},
+
+		/**
+		 * Wait until a DOM element matching selector exists, then run callback.
+		 * Uses MutationObserver for Gutenberg, which mounts after a window load.
+		 *
+		 * @since 1.9.8
+		 *
+		 * @param {string}   selector CSS selector to wait for.
+		 * @param {Function} callback Callback receiving the found element.
+		 */
+		onElementReady( selector, callback ) {
+			const node = document.querySelector( selector );
+			if ( node ) {
+				callback( node );
+				return;
+			}
+
+			const observer = new MutationObserver( function() {
+				const el = document.querySelector( selector );
+				if ( el ) {
+					observer.disconnect();
+					callback( el );
+				}
+			} );
+
+			observer.observe( document.documentElement || document.body, { childList: true, subtree: true } );
 		},
 	};
 

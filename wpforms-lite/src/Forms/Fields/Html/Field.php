@@ -22,12 +22,13 @@ class Field extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name     = esc_html__( 'HTML', 'wpforms-lite' );
-		$this->keywords = esc_html__( 'code', 'wpforms-lite' );
-		$this->type     = 'html';
-		$this->icon     = 'fa-code';
-		$this->order    = 185;
-		$this->group    = 'fancy';
+		$this->name            = esc_html__( 'HTML', 'wpforms-lite' );
+		$this->keywords        = esc_html__( 'code', 'wpforms-lite' );
+		$this->type            = 'html';
+		$this->icon            = 'fa-code';
+		$this->order           = 185;
+		$this->group           = 'fancy';
+		$this->allow_read_only = false;
 
 		$this->default_settings = [
 			'name' => '',
@@ -131,7 +132,7 @@ class Field extends WPForms_Field {
 		// Code.
 		$this->field_option( 'code', $field );
 
-		// Set label to disable.
+		// Set the label to disable.
 		$args = [
 			'type'  => 'hidden',
 			'slug'  => 'label_disable',
@@ -182,10 +183,12 @@ class Field extends WPForms_Field {
 
 		$label_badge = empty( $label ) ? '' : $this->get_field_preview_badge();
 		$code_badge  = empty( $label ) ? $this->get_field_preview_badge() : '';
-		?>
 
+		?>
 		<label class="label-title">
-			<div class="text"><?php echo esc_html( $label ) . $label_badge; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+			<div class="text">
+				<?php echo esc_html( $label ) . $label_badge; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</div>
 			<div class="grey">
 				<i class="fa fa-code"></i>
 				<?php esc_html_e( 'HTML / Code Block', 'wpforms-lite' ); ?>
@@ -193,7 +196,6 @@ class Field extends WPForms_Field {
 			</div>
 		</label>
 		<div class="description"><?php esc_html_e( 'Contents of this field are not displayed in the form builder preview.', 'wpforms-lite' ); ?></div>
-
 		<?php
 	}
 

@@ -274,6 +274,9 @@ class Requirements {
 		'wpforms-mailpoet/wpforms-mailpoet.php'                         => [
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
 		],
+		'wpforms-n8n/wpforms-n8n.php'                                   => [
+			self::LICENSE => self::PRO_AND_TOP,
+		],
 		'wpforms-offline-forms/wpforms-offline-forms.php'               => [],
 		'wpforms-paypal-commerce/wpforms-paypal-commerce.php'           => [],
 		'wpforms-paypal-standard/wpforms-paypal-standard.php'           => [],

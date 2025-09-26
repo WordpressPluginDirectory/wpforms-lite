@@ -461,7 +461,7 @@ trait Content {
 				__( 'Heads up! Square account connection is expired.', 'wpforms-lite' ),
 				sprintf(
 					wp_kses( /* translators: %s - the WPForms Payments settings page URL. */
-						__( "Tokens must be refreshed. First, please refresh them on the <a href='%2\$s'>WPForms Settings</a> page.", 'wpforms-lite' ),
+						__( "Tokens must be refreshed. Please refresh them on the <a href='%2\$s'>WPForms Settings</a> page.", 'wpforms-lite' ),
 						[
 							'a' => [
 								'href' => [],

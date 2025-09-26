@@ -1,5 +1,10 @@
 <?php
 
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
+/** @noinspection AutoloadingIssuesInspection */
+/** @noinspection PhpIllegalPsrClassPathInspection */
+// phpcs:enable Generic.Commenting.DocComment.MissingShort
+
 /**
  * All the form goodness and basics.
  *
@@ -14,14 +19,14 @@ class WPForms_Form_Handler {
 	 *
 	 * @since 1.7.5
 	 */
-	const TAGS_TAXONOMY = 'wpforms_form_tag';
+	public const TAGS_TAXONOMY = 'wpforms_form_tag';
 
 	/**
 	 * Allowed post types.
 	 *
 	 * @since 1.8.8
 	 */
-	const POST_TYPES = [
+	public const POST_TYPES = [
 		'wpforms',
 		'wpforms-template',
 	];
@@ -52,13 +57,13 @@ class WPForms_Form_Handler {
 	 *
 	 * @since 1.7.5
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		// Register wpforms custom post type and taxonomy.
 		add_action( 'init', [ $this, 'register_taxonomy' ] );
 		add_action( 'init', [ $this, 'register_cpt' ] );
 
-		// Add wpforms to new-content admin bar menu.
+		// Add wpforms to a new-content admin bar menu.
 		add_action( 'admin_bar_menu', [ $this, 'admin_bar' ], 99 );
 		add_action( 'wpforms_create_form', [ $this, 'track_first_form' ], 10, 3 );
 
@@ -71,7 +76,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @since 1.0.0
 	 */
-	public function register_cpt() {
+	public function register_cpt(): void {
 
 		// phpcs:disable WPForms.PHP.ValidateHooks.InvalidHookName
 
@@ -110,7 +115,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @since 1.7.5
 	 */
-	public function register_taxonomy() {
+	public function register_taxonomy(): void {
 
 		/**
 		 * Filters Tags taxonomy arguments.
@@ -138,7 +143,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
 	 */
-	public function admin_bar( $wp_admin_bar ) {
+	public function admin_bar( $wp_admin_bar ): void {
 
 		if ( ! is_admin_bar_showing() || ! wpforms_current_user_can( 'create_forms' ) ) {
 			return;
@@ -160,10 +165,13 @@ class WPForms_Form_Handler {
 	 * @since 1.6.7.1
 	 *
 	 * @param int   $form_id Newly created form ID.
-	 * @param array $form    Array past to create a new form in wp_posts table.
+	 * @param array $form    Array past to create a new form in the wp_posts table.
 	 * @param array $data    Additional form data.
+	 *
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function track_first_form( $form_id, $form, $data ) {
+	public function track_first_form( $form_id, $form, $data ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Do we have the value already?
 		$time = get_option( 'wpforms_forms_first_created' );
@@ -230,7 +238,7 @@ class WPForms_Form_Handler {
 			'post_status' => 'publish',
 		];
 
-		$args = (array) wp_parse_args( $args, $defaults );
+		$args = wp_parse_args( $args, $defaults );
 
 		$forms = empty( $id ) ? $this->get_multiple( $args ) : $this->get_single( $id, $args );
 
@@ -256,14 +264,20 @@ class WPForms_Form_Handler {
 		 *
 		 * @since 1.5.8
 		 *
-		 * @param array      $args Arguments array, same as for `get_post()` function.
+		 * @param array      $args Arguments' array, same as for `get_post()` function.
 		 * @param string|int $id   Form ID.
 		 */
 		$args = apply_filters( 'wpforms_get_single_form_args', $args, $id );
 
 		// phpcs:enable WPForms.PHP.ValidateHooks.InvalidHookName
 
-		if ( ! isset( $args['cap'] ) && wpforms()->obj( 'access' )->init_allowed() ) {
+		$access_obj = wpforms()->obj( 'access' );
+
+		if ( ! $access_obj ) {
+			return false;
+		}
+
+		if ( ! isset( $args['cap'] ) && $access_obj->init_allowed() ) {
 			$args['cap'] = 'view_form_single';
 		}
 
@@ -316,7 +330,7 @@ class WPForms_Form_Handler {
 		 *
 		 * @since 1.5.8
 		 *
-		 * @param array $args Arguments array. Almost the same as for `get_posts()` function.
+		 * @param array $args Arguments' array. Almost the same as for the `get_posts ()` function.
 		 *                    Additional element:
 		 *                    ['search']['term'] - search the form title or description by term.
 		 */
@@ -355,7 +369,7 @@ class WPForms_Form_Handler {
 		$forms = get_posts( $args );
 
 		/**
-		 * Allow developers to execute some code right after get_posts() call inside \WPForms_Form_Handler::get_multiple().
+		 * Allow developers to execute some code right after the get_posts () call inside \WPForms_Form_Handler::get_multiple().
 		 *
 		 * @since 1.7.2
 		 *
@@ -384,7 +398,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @return bool
 	 */
-	public function update_status( $form_id, $status ) {
+	public function update_status( $form_id, $status ): bool {
 
 		// Status updates are used only in trash and restore actions,
 		// which are actually part of the deletion operation.
@@ -463,7 +477,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @return bool
 	 */
-	public function delete( $ids = [] ) {
+	public function delete( $ids = [] ): bool {
 
 		if ( ! is_array( $ids ) ) {
 			$ids = [ $ids ];
@@ -478,10 +492,14 @@ class WPForms_Form_Handler {
 				return false;
 			}
 
-			if ( class_exists( 'WPForms_Entry_Handler', false ) ) {
-				wpforms()->obj( 'entry' )->delete_by( 'form_id', $id );
-				wpforms()->obj( 'entry_meta' )->delete_by( 'form_id', $id );
-				wpforms()->obj( 'entry_fields' )->delete_by( 'form_id', $id );
+			$entry_obj        = wpforms()->obj( 'entry' );
+			$entry_meta_obj   = wpforms()->obj( 'entry_meta' );
+			$entry_fields_obj = wpforms()->obj( 'entry_fields' );
+
+			if ( $entry_obj && $entry_meta_obj && $entry_fields_obj ) {
+				$entry_obj->delete_by( 'form_id', $id );
+				$entry_meta_obj->delete_by( 'form_id', $id );
+				$entry_fields_obj->delete_by( 'form_id', $id );
 			}
 
 			$form = wp_delete_post( $id, true );
@@ -491,13 +509,20 @@ class WPForms_Form_Handler {
 			}
 		}
 
-		do_action( 'wpforms_delete_form', $ids );
+		/**
+		 * Fires when forms are deleted.
+		 *
+		 * @since 1.5.1
+		 *
+		 * @param array $ids Array of form IDs.
+		 */
+		do_action( 'wpforms_delete_form', $ids ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		return true;
 	}
 
 	/**
-	 * Add new form.
+	 * Add a new form.
 	 *
 	 * @since 1.0.0
 	 *
@@ -505,9 +530,9 @@ class WPForms_Form_Handler {
 	 * @param array  $args  Additional arguments.
 	 * @param array  $data  Form data.
 	 *
-	 * @return mixed
+	 * @return false|int|WP_Error
 	 */
-	public function add( $title = '', $args = [], $data = [] ) {
+	public function add( $title = '', $args = [], $data = [] ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Must have a title.
 		if ( empty( $title ) ) {
@@ -519,11 +544,7 @@ class WPForms_Form_Handler {
 			return false;
 		}
 
-		// This filter breaks forms if they contain HTML.
-		remove_filter( 'content_save_pre', 'balanceTags', 50 );
-
-		// Add filter of the link rel attr to avoid JSON damage.
-		add_filter( 'wp_targeted_link_rel', '__return_empty_string', 50, 1 );
+		$this->remove_form_content_filters();
 
 		// phpcs:disable WPForms.PHP.ValidateHooks.InvalidHookName
 
@@ -554,7 +575,7 @@ class WPForms_Form_Handler {
 		$args_form_data = isset( $args['post_content'] ) ? json_decode( wp_unslash( $args['post_content'] ), true ) : null;
 
 		// Prevent $args['post_content'] from overwriting predefined $form_content.
-		// Typically, it happens if the form was created with a form template and a user was not redirected to a form editing screen afterwards.
+		// Typically, it happens if the form was created with a form template and a user was not redirected to a form editing screen afterward.
 		// This is only possible if a user has 'wpforms_create_forms' and no 'wpforms_edit_own_forms' capability.
 		if ( is_array( $args_form_data ) ) {
 			$args['post_content'] = wpforms_encode( array_replace_recursive( $form_content, $args_form_data ) );
@@ -582,7 +603,7 @@ class WPForms_Form_Handler {
 			);
 		}
 
-		// If user has no editing permissions the form considered to be created out of the WPForms form builder's context.
+		// If a user has no editing permissions, the form considered to be created out of the WPForms form builder's context.
 		if ( ! wpforms_current_user_can( 'edit_form_single', $form_id ) ) {
 			$data['builder'] = false;
 		}
@@ -665,19 +686,13 @@ class WPForms_Form_Handler {
 			return false;
 		}
 
-		// This filter breaks forms if they contain HTML.
-		remove_filter( 'content_save_pre', 'balanceTags', 50 );
-
-		// Add filter of the link rel attr to avoid JSON damage.
-		add_filter( 'wp_targeted_link_rel', '__return_empty_string', 50, 1 );
+		$this->remove_form_content_filters();
 
 		if ( $this->is_form_data_slashing_enabled ) {
 			// Even though we are not going to unslash some data,
 			// columns-json and calculation_code fields must be unslashed.
 			$data = $this->unslash_field_keys( $data, [ 'columns-json', 'calculation_code' ] );
 		} else {
-			// phpcs:ignore Generic.Commenting.DocComment.MissingShort
-			/** @noinspection CallableParameterUseCaseInTypeContextInspection */
 			$data = (array) wp_unslash( $data );
 		}
 
@@ -686,14 +701,25 @@ class WPForms_Form_Handler {
 
 		$data['field_id'] = ! empty( $data['field_id'] ) ? wpforms_validate_field_id( $data['field_id'] ) : '0';
 
-		// Preserve explicit "Do not store spam entries" state.
+		// Preserve the explicit "Do not store spam entries" state.
 		$data['settings']['store_spam_entries'] = $data['settings']['store_spam_entries'] ?? '0';
 
-		// Use default submit button text if not provided.
+		// Use the default 'submit' button text if not provided.
 		$data['settings']['submit_text'] = ! empty( $data['settings']['submit_text'] ) ? $data['settings']['submit_text'] : esc_html__( 'Submit', 'wpforms-lite' );
 
 		// Preserve form meta.
 		$meta = $this->get_meta( $form_id );
+
+		/**
+		 * Filters the form meta before saving.
+		 *
+		 * @since 1.9.8
+		 *
+		 * @param array $meta    Form meta.
+		 * @param int   $form_id Form ID.
+		 * @param array $data    Form data.
+		 */
+		$meta = apply_filters( 'wpforms_form_handler_update_meta', $meta, $form_id, $data );
 
 		if ( $meta ) {
 			$data['meta'] = $meta;
@@ -784,7 +810,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @return array
 	 */
-	protected function update__preserve_fields_meta( $fields, $form_id ) {
+	protected function update__preserve_fields_meta( $fields, $form_id ): array {
 
 		foreach ( $fields as $i => $field_data ) {
 			if ( isset( $field_data['id'] ) ) {
@@ -808,9 +834,9 @@ class WPForms_Form_Handler {
 	 *
 	 * @return array
 	 */
-	protected function update__sanitize_notifications_names( $notifications ) {
+	protected function update__sanitize_notifications_names( $notifications ): array {
 
-		foreach ( $notifications as $id => &$notification ) {
+		foreach ( $notifications as &$notification ) {
 			if ( ! empty( $notification['notification_name'] ) ) {
 				$notification['notification_name'] = sanitize_text_field( $notification['notification_name'] );
 			}
@@ -829,18 +855,14 @@ class WPForms_Form_Handler {
 	 *
 	 * @return bool|array Array of new form IDs or false.
 	 */
-	public function duplicate( $ids ) { // phpcs:disable WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function duplicate( $ids ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Check for permissions.
 		if ( ! wpforms_current_user_can( 'create_forms' ) ) {
 			return false;
 		}
 
-		// Add filter of the link rel attr to avoid JSON damage.
-		add_filter( 'wp_targeted_link_rel', '__return_empty_string', 50, 1 );
-
-		// This filter breaks forms if they contain HTML.
-		remove_filter( 'content_save_pre', 'balanceTags', 50 );
+		$this->remove_form_content_filters();
 
 		if ( ! is_array( $ids ) ) {
 			$ids = [ $ids ];
@@ -852,7 +874,7 @@ class WPForms_Form_Handler {
 
 		foreach ( $ids as $id ) {
 
-			// Get original entry.
+			// Get the original entry.
 			$form = get_post( $id );
 
 			if ( ! wpforms_current_user_can( 'view_form_single', $id ) ) {
@@ -871,7 +893,7 @@ class WPForms_Form_Handler {
 				$new_form_data = (array) wp_slash( $new_form_data );
 			}
 
-			// Remove form ID from title if present.
+			// Remove form ID from the title if present.
 			$new_form_data['settings']['form_title'] = str_replace( '(ID #' . absint( $id ) . ')', '', $new_form_data['settings']['form_title'] );
 
 			// Remove '(copy)' from the form template title if present.
@@ -880,7 +902,7 @@ class WPForms_Form_Handler {
 			// Remove trailing spaces.
 			$new_form_data['settings']['form_title'] = rtrim( $new_form_data['settings']['form_title'] );
 
-			// Remove `-template` suffix and all after it from the post name.
+			// Remove the `-template ` suffix and all after it from the post name.
 			$post_name = preg_replace( '/-template(-\d+)?/', '', $form->post_name );
 
 			// Add some notice messages before form preview area.
@@ -901,15 +923,15 @@ class WPForms_Form_Handler {
 				return false;
 			}
 
-			// Set new form name.
+			// Set a new form name.
 			$new_form_data['settings']['form_title'] .= $form->post_type === 'wpforms-template' ?
 				' ' . __( '(copy)', 'wpforms-lite' ) :
 				' (ID #' . absint( $new_form_id ) . ')';
 
-			// Set new form ID.
+			// Set a new form ID.
 			$new_form_data['id'] = absint( $new_form_id );
 
-			// Update new duplicate form.
+			// Update a new duplicate form.
 			$new_form_id = $this->update( $new_form_id, $new_form_data, [ 'cap' => 'create_forms' ] );
 
 			if ( ! $new_form_id ) {
@@ -987,11 +1009,11 @@ class WPForms_Form_Handler {
 		// Set default post type.
 		$post_type = 'wpforms';
 
-		// Remove numeric suffix from the post name.
+		// Remove the numeric suffix from the post name.
 		// Duplication always adds `-{numeric}` suffix.
 		$post_name = preg_replace( '/-\d+$/', '', $form->post_name );
 
-		// Remove `-template` suffix and all after it from the post name.
+		// Remove the `-template ` suffix and all after it from the post name.
 		$post_name = preg_replace( '/-template(-\d+)?/', '', $post_name );
 
 		// Remove (copy) from the form title, if present.
@@ -1009,7 +1031,7 @@ class WPForms_Form_Handler {
 			// Remove (ID #<Form ID>) from the form title, if present.
 			$form_data['settings']['form_title'] = preg_replace( '/\(ID #\d+\)/', '', $form_data['settings']['form_title'] );
 
-			// Set empty template description.
+			// Set an empty template description.
 			$form_data['settings']['template_description'] = '';
 
 			// Remove traces of any other template that may have been used to create the original form by setting itself as a template.
@@ -1042,7 +1064,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @return array
 	 */
-	private function add_notices( array $new_form_data, int $form_id ): array {
+	private function add_notices( array $new_form_data, int $form_id ): array { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		/**
 		 * Add custom notices to be displayed in the preview area of the Form Builder
@@ -1085,14 +1107,14 @@ class WPForms_Form_Handler {
 			// Do not add notice with empty body.
 			if ( empty( $warning[ $next_field_id ]['description'] ) ) {
 				unset( $warning[ $next_field_id ] );
-				--$next_field_id; // Reset next field ID to the previous value.
+				--$next_field_id; // Reset the next field ID to the previous value.
 			}
 		}
 
 		if ( ! empty( $warning ) ) {
 			$new_form_data['fields'] = $warning + $new_form_data['fields'];
 
-			// Update next field ID to be used for future created fields. Otherwise, IIF field would be overwritten.
+			// Update the next field ID to be used for future created fields. Otherwise, the IIF field would be overwritten.
 			$new_form_data['field_id'] = $next_field_id + 1;
 		}
 
@@ -1100,21 +1122,23 @@ class WPForms_Form_Handler {
 	}
 
 	/**
-	 * Add a notice about Zapier zaps disconnected after form being duplicated or converted to/from template.
+	 * Add a notice about Zapier zaps disconnected after the form being duplicated or converted to/from the template.
 	 *
 	 * @WPFormsBackCompat Support Zapier v1.5.0 and earlier.
 	 *
-	 * @since 1.8.8
+	 * @since             1.8.8
 	 *
 	 * @param array $notices       Array of notices.
 	 * @param array $new_form_data Form data.
 	 * @param int   $form_id       Original form ID.
 	 *
 	 * @return array
+	 * @noinspection      HtmlUnknownTarget
+	 * @noinspection      PhpUnusedParameterInspection
 	 */
 	public function _zapier_disconnected_on_duplication( $notices, array $new_form_data, int $form_id ): array { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
-		// Check if original form had any Zaps connected.
+		// Check if the original form had any Zaps connected.
 		$is_zapier_connected = get_post_meta( $form_id, 'wpforms_zapier', true );
 
 		if ( ! $is_zapier_connected ) {
@@ -1143,7 +1167,7 @@ class WPForms_Form_Handler {
 	 *
 	 * @return mixed int or false
 	 */
-	public function next_field_id( $form_id, $args = [] ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	public function next_field_id( $form_id, $args = [] ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		if ( empty( $form_id ) ) {
 			return false;
@@ -1188,7 +1212,7 @@ class WPForms_Form_Handler {
 		$this->update( $form_id, $form );
 
 		// Restore the initial revisions state.
-		add_action( 'post_updated', 'wp_save_post_revision', 10, 1 );
+		add_action( 'post_updated', 'wp_save_post_revision' );
 
 		return $field_id;
 	}
@@ -1228,11 +1252,7 @@ class WPForms_Form_Handler {
 			return $data['meta'];
 		}
 
-		if ( isset( $data['meta'][ $field ] ) ) {
-			return $data['meta'][ $field ];
-		}
-
-		return false;
+		return $data['meta'][ $field ] ?? false;
 	}
 
 	/**
@@ -1247,17 +1267,13 @@ class WPForms_Form_Handler {
 	 *
 	 * @return false|int|WP_Error
 	 */
-	public function update_meta( $form_id, $meta_key, $meta_value, $args = [] ) {
+	public function update_meta( $form_id, $meta_key, $meta_value, $args = [] ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		if ( empty( $form_id ) || empty( $meta_key ) ) {
 			return false;
 		}
 
-		// Add filter of the link rel attr to avoid JSON damage.
-		add_filter( 'wp_targeted_link_rel', '__return_empty_string', 50, 1 );
-
-		// This filter breaks forms if they contain HTML.
-		remove_filter( 'content_save_pre', 'balanceTags', 50 );
+		$this->remove_form_content_filters();
 
 		if ( ! isset( $args['cap'] ) ) {
 			$args['cap'] = 'edit_form_single';
@@ -1269,7 +1285,7 @@ class WPForms_Form_Handler {
 			return false;
 		}
 
-		$data     = wpforms_decode( $form->post_content );
+		$data     = (array) wpforms_decode( $form->post_content );
 		$meta_key = wpforms_sanitize_key( $meta_key );
 
 		$data['meta'][ $meta_key ] = $meta_value;
@@ -1284,22 +1300,36 @@ class WPForms_Form_Handler {
 		 *
 		 * @since 1.4.0
 		 *
-		 * @param WP_Post $form Form post object.
-		 * @param array   $data Form data.
+		 * @param array $form Form.
+		 * @param array $data Form data.
 		 */
-		$form = apply_filters( 'wpforms_update_form_meta_args', $form, $data ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+		$form = (array) apply_filters( 'wpforms_update_form_meta_args', $form, $data ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		if ( ! empty( $args['skip_revision'] ) ) {
 			remove_action( 'post_updated', 'wp_save_post_revision' );
 		}
 
-		$form_id = wp_update_post( $form );
+		$result = wp_update_post( $form );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
 
 		if ( ! empty( $args['skip_revision'] ) ) {
 			add_action( 'post_updated', 'wp_save_post_revision' );
 		}
 
-		do_action( 'wpforms_update_form_meta', $form_id, $form, $meta_key, $meta_value );
+		/**
+		 * Fires when form meta is updated.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param string|int $form_id    Form ID.
+		 * @param array      $form       Form.
+		 * @param string     $meta_key   Meta key.
+		 * @param mixed      $meta_value Meta value.
+		 */
+		do_action( 'wpforms_update_form_meta', $form_id, $form, $meta_key, $meta_value ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		return $form_id;
 	}
@@ -1315,17 +1345,13 @@ class WPForms_Form_Handler {
 	 *
 	 * @return false|int|WP_Error
 	 */
-	public function delete_meta( $form_id, $meta_key, $args = [] ) {
+	public function delete_meta( $form_id, $meta_key, $args = [] ) { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		if ( empty( $form_id ) || empty( $meta_key ) ) {
 			return false;
 		}
 
-		// Add filter of the link rel attr to avoid JSON damage.
-		add_filter( 'wp_targeted_link_rel', '__return_empty_string', 50, 1 );
-
-		// This filter breaks forms if they contain HTML.
-		remove_filter( 'content_save_pre', 'balanceTags', 50 );
+		$this->remove_form_content_filters();
 
 		if ( ! isset( $args['cap'] ) ) {
 			$args['cap'] = 'edit_form_single';
@@ -1337,19 +1363,41 @@ class WPForms_Form_Handler {
 			return false;
 		}
 
-		$data     = wpforms_decode( $form->post_content );
+		$data     = (array) wpforms_decode( $form->post_content );
 		$meta_key = wpforms_sanitize_key( $meta_key );
 
 		unset( $data['meta'][ $meta_key ] );
 
-		$form    = [
+		$form = [
 			'ID'           => $form_id,
 			'post_content' => wpforms_encode( $data ),
 		];
-		$form    = apply_filters( 'wpforms_delete_form_meta_args', $form, $data );
-		$form_id = wp_update_post( $form );
 
-		do_action( 'wpforms_delete_form_meta', $form_id, $form, $meta_key );
+		/**
+		 * Filters form which meta to be deleted.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param array $form Form.
+		 * @param array $data Form data.
+		 */
+		$form   = (array) apply_filters( 'wpforms_delete_form_meta_args', $form, $data ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+		$result = wp_update_post( $form );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		/**
+		 * Fires when form meta is deleted.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param string|int $form_id  Form ID.
+		 * @param array      $form     Form.
+		 * @param string     $meta_key Meta key.
+		 */
+		do_action( 'wpforms_delete_form_meta', $form_id, $form, $meta_key ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		return $form_id;
 	}
@@ -1381,7 +1429,7 @@ class WPForms_Form_Handler {
 
 		$data = $this->get( $form_id, $defaults );
 
-		return isset( $data['fields'][ $field_id ] ) ? $data['fields'][ $field_id ] : false;
+		return $data['fields'][ $field_id ] ?? false;
 	}
 
 	/**
@@ -1403,7 +1451,7 @@ class WPForms_Form_Handler {
 			return false;
 		}
 
-		return isset( $field['meta'] ) ? $field['meta'] : false;
+		return $field['meta'] ?? false;
 	}
 
 	/**
@@ -1430,7 +1478,7 @@ class WPForms_Form_Handler {
 	}
 
 	/**
-	 * Get forms count per page.
+	 * Get the forms' count per page.
 	 *
 	 * @since 1.8.8
 	 *
@@ -1440,7 +1488,7 @@ class WPForms_Form_Handler {
 
 		// phpcs:disable WPForms.PHP.ValidateHooks.InvalidHookName
 		/**
-		 * Give developers an ability to modify number of forms per page.
+		 * Allow developers to modify the number of forms per page.
 		 *
 		 * @since 1.8.8
 		 *
@@ -1459,6 +1507,7 @@ class WPForms_Form_Handler {
 	 * @param array $keys Field keys.
 	 *
 	 * @return array
+	 * @noinspection PhpSameParameterValueInspection
 	 */
 	private function unslash_field_keys( array $data, array $keys ): array {
 
@@ -1469,7 +1518,7 @@ class WPForms_Form_Handler {
 		/**
 		 * Filter field keys to be unslashed before saving.
 		 *
-		 * Works used with filter wpforms_enable_form_data_slashing set to true.
+		 * Works used with the filter wpforms_enable_form_data_slashing set to true.
 		 *
 		 * @since 1.9.0
 		 *
@@ -1492,5 +1541,26 @@ class WPForms_Form_Handler {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Removes content filters that may break forms with HTML and adds a filter to prevent JSON damage.
+	 *
+	 * Specifically, it removes filters that sanitize content in a way that disrupts form functionality:
+	 * - `balanceTags` to prevent unintended tag balancing.
+	 * - `wp_filter_post_kses` to bypass permission-based sanitization (`unfiltered_html` capability).
+	 *
+	 * Additionally, adds a filter to clear `link rel` attributes to avoid unintended JSON issues.
+	 *
+	 * @since 1.9.8
+	 */
+	private function remove_form_content_filters(): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+		// This filter breaks forms if they contain HTML.
+		remove_filter( 'content_save_pre', 'balanceTags', 50 );
+		// This filter breaks forms if the current user doesn't have "unfiltered_html" capability.
+		remove_filter( 'content_save_pre', 'wp_filter_post_kses' );
+
+		// Add a filter of the link rel attr to avoid JSON damage.
+		add_filter( 'wp_targeted_link_rel', '__return_empty_string', 50, 1 );
 	}
 }

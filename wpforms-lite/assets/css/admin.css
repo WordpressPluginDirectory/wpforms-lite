@@ -1005,7 +1005,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon {
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:after {
-  color: #bbbbbb;
+  color: #b0b2b3;
   content: "\f00d";
   font-size: 16px;
   left: 0;
@@ -1014,7 +1014,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:afte
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon:hover:after {
-  color: #777777 !important;
+  color: #50575e !important;
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c {
@@ -1037,7 +1037,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c .jconf
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-title-c .jconfirm-title {
-  color: #444444;
+  color: #3c434a;
   display: block;
   line-height: 30px;
 }
@@ -1048,7 +1048,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane {
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content {
-  color: #444444;
+  color: #3c434a;
   font-size: 16px;
   line-height: 24px;
   margin-bottom: 0;
@@ -1056,7 +1056,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .jconfirm-content.lite-upgrade p {
-  color: #777777;
+  color: #50575e;
   font-size: 18px;
   padding: 0 20px;
 }
@@ -1096,7 +1096,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .already-purchased {
   display: block;
   grid-row: 5;
   grid-column: 1 / -1;
-  color: #bbbbbb;
+  color: #b0b2b3;
   font-size: 14px;
   margin-top: 15px;
   text-decoration: underline;
@@ -1104,7 +1104,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .already-purchased {
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .already-purchased:hover {
-  color: #777777;
+  color: #50575e;
   text-decoration: underline;
 }
 
@@ -1117,7 +1117,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .discount-note {
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .discount-note p {
   background-color: #fcf9e8;
-  color: #777777;
+  color: #50575e;
   font-size: 16px;
   margin: 0 -30px;
   padding: 22px 52px 12px 52px;
@@ -1148,7 +1148,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .discount-note span {
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .discount-note a {
-  color: #777777;
+  color: #50575e;
   display: block;
   margin-top: 12px;
 }
@@ -1187,10 +1187,10 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons {
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button {
   min-width: 83px;
-  background: #f8f8f8;
-  border: 1px solid #cccccc;
+  background: #f6f7f7;
+  border: 1px solid #c3c4c7;
   border-radius: 4px;
-  color: #777777;
+  color: #50575e;
   font-size: 16px;
   font-weight: 600;
   line-height: 20px;
@@ -1204,8 +1204,8 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button:hover {
-  background: #eeeeee;
-  border-color: #cccccc;
+  background: #e8e9e9;
+  border-color: #c3c4c7;
 }
 
 body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-buttons button[disabled] {
@@ -1291,7 +1291,7 @@ body .jconfirm.has-video div.jconfirm-box-container .already-purchased {
 }
 
 body .jconfirm.has-video div.jconfirm-box-container .already-purchased:hover {
-  color: #777777;
+  color: #50575e;
 }
 
 body .jconfirm.has-video div.jconfirm-box-container .discount-note {
@@ -1917,10 +1917,11 @@ body .jconfirm.upgrade-modal .jconfirm-box-container div.jconfirm-box .jconfirm-
 
 #wpforms-header .wpforms-links {
   gap: 30px;
+  border-top: 0;
 }
 
 #wpforms-header.wpforms-header-show-screen-options .wpforms-links {
-  padding-top: 38px;
+  padding-top: 45px;
 }
 
 @media (max-width: 782px) {
@@ -1944,7 +1945,7 @@ body .jconfirm.upgrade-modal .jconfirm-box-container div.jconfirm-box .jconfirm-
 
 #wpforms-payments h1.page-title .wpforms-payments-overview-help a {
   align-items: center;
-  color: #999999;
+  color: #999c9e;
   display: flex;
   gap: 6px;
   text-decoration: none;
@@ -1952,7 +1953,7 @@ body .jconfirm.upgrade-modal .jconfirm-box-container div.jconfirm-box .jconfirm-
 
 #wpforms-payments h1.page-title .wpforms-payments-overview-help a:is(:active, :focus, :hover) {
   box-shadow: none;
-  color: #777777;
+  color: #50575e;
   outline: none;
 }
 
@@ -2038,7 +2039,7 @@ body.wpforms-admin-page #wpfooter .wpforms-footer-promotion {
   font-weight: 400;
   font-size: 13px;
   line-height: normal;
-  color: #646970;
+  color: #6a6f76;
   padding: 30px 0;
   margin-bottom: 20px;
 }
@@ -2056,7 +2057,7 @@ body.wpforms-admin-page #wpfooter .wpforms-footer-promotion-social {
 
 body.wpforms-admin-page #wpfooter .wpforms-footer-promotion-links {
   margin: 10px 0;
-  color: #646970;
+  color: #6a6f76;
 }
 
 body.wpforms-admin-page #wpfooter .wpforms-footer-promotion-links a {
@@ -2082,7 +2083,7 @@ body.wpforms-admin-page #wpfooter .wpforms-footer-promotion-social li {
 }
 
 body.wpforms-admin-page #wpfooter .wpforms-footer-promotion-social li path {
-  color: #646970;
+  color: #6a6f76;
 }
 
 body.wpforms-admin-page #wpfooter .wpforms-footer-promotion-social li:hover path {
@@ -2166,7 +2167,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 
 .wpforms-payments-wrap .wpforms-payments-overview-help a {
   align-items: center;
-  color: #999999;
+  color: #999c9e;
   display: flex;
   gap: 6px;
   text-decoration: none;
@@ -2174,7 +2175,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 
 .wpforms-payments-wrap .wpforms-payments-overview-help a:is(:active, :focus, :hover) {
   box-shadow: none;
-  color: #777777;
+  color: #50575e;
   outline: none;
 }
 
@@ -2608,7 +2609,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 
 .wpforms-admin-empty-state-container.wpforms-admin-no-user-templates p {
   font-size: 14px;
-  color: #777777;
+  color: #50575e;
 }
 
 .wpforms-admin-empty-state-container.wpforms-admin-no-user-templates p.wpforms-admin-no-forms-footer {
@@ -2674,11 +2675,11 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 .wpforms-toggle-control input[type=checkbox]:hover + label.wpforms-toggle-control-icon {
-  background-color: #646970;
+  background-color: #6a6f76;
 }
 
 .wpforms-toggle-control input[type=checkbox]:focus + label.wpforms-toggle-control-icon {
-  background-color: #646970;
+  background-color: #6a6f76;
   box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px #8c8f94;
 }
 
@@ -2813,7 +2814,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  color: #444444;
+  color: #3c434a;
   margin-top: 0;
 }
 
@@ -2845,7 +2846,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: #777777;
+  color: #50575e;
   margin-top: 10px;
 }
 
@@ -3132,7 +3133,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  color: #646970;
+  color: #6a6f76;
   margin-top: 5px;
 }
 
@@ -3213,9 +3214,10 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 .wpforms-links {
   display: flex;
   padding: 13px;
+  padding-top: 45px;
   align-items: center;
   gap: 18px;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid #e8e9e9;
 }
 
 .wpforms-links .wpforms-link {
@@ -3226,13 +3228,13 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 
 .wpforms-links .wpforms-link {
   text-decoration: none;
-  color: #646970;
+  color: #6a6f76;
   line-height: normal;
 }
 
 .wpforms-links .wpforms-link svg {
   width: auto;
-  fill: #646970;
+  fill: #6a6f76;
   transition: fill 0.05s ease-in-out;
 }
 
@@ -3246,6 +3248,10 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 
 .wpforms-links .wpforms-link:hover svg {
   fill: #2c3338;
+}
+
+.wpforms-dash-widget .wpforms-links {
+  padding-top: 13px;
 }
 
 .wpforms-datepicker-popover-content .wpforms-datepicker-choices [type="radio"], .wpforms-datepicker-popover-content .wpforms-datepicker-calendar .form-control {
@@ -3766,7 +3772,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 
 .wpforms-overview-chart-heading {
   background-color: #f6f6f6;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid #e8e9e9;
   color: #3c434a;
   font-size: 14px;
   font-weight: 600;
@@ -3978,7 +3984,7 @@ body.wpforms-admin-page #wpfooter #footer-left strong {
 }
 
 .wpforms-admin-wrap .tablenav {
-  color: #444444;
+  color: #3c434a;
   padding-top: 3px;
 }
 
@@ -4764,7 +4770,7 @@ table.action-scheduler .check-column .label-covers-full-cell:hover + input[type=
 }
 
 .wpforms-addons-list-item-header-meta-excerpt {
-  color: #646970;
+  color: #6a6f76;
   font-size: 14px;
   font-weight: 400;
   line-height: 18px;
@@ -4804,7 +4810,7 @@ table.action-scheduler .check-column .label-covers-full-cell:hover + input[type=
 
 .wpforms-addons-list-item-footer-error {
   width: 100%;
-  color: #646970;
+  color: #6a6f76;
 }
 
 .wpforms-addons-list-item-footer-error p {
@@ -5457,7 +5463,7 @@ table.action-scheduler .check-column .label-covers-full-cell:hover + input[type=
 }
 
 #wpforms-entries-list .form-details .form-details-title span {
-  color: #646970;
+  color: #6a6f76;
   margin-inline-start: 8px;
 }
 
@@ -7287,34 +7293,41 @@ tr:hover .wpforms-column-tags-links .wpforms-column-tags-edit,
   color: #999;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload p.file-entry {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload p.file-entry,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera p.file-entry {
   padding-left: 12px;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .wpforms-help-tooltip {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .wpforms-help-tooltip,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera .wpforms-help-tooltip {
   line-height: 16px;
   font-size: 14px;
   margin-left: 10px;
   color: #a6a6a6;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .wpforms-help-tooltip:hover {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .wpforms-help-tooltip:hover,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera .wpforms-help-tooltip:hover {
   color: #444;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .file-icon {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .file-icon,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera .file-icon {
   padding-right: 10px;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .file-icon img {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .file-icon img,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera .file-icon img {
   vertical-align: middle;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .button-link-delete {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .button-link-delete,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera .button-link-delete {
   text-decoration: none;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .wpforms-trash-icon {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .wpforms-trash-icon,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera .wpforms-trash-icon {
   width: 16px;
   height: 16px;
   font-size: 16px;
@@ -7322,15 +7335,18 @@ tr:hover .wpforms-column-tags-links .wpforms-column-tags-edit,
   margin-left: 8px;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .wpforms-trash-icon:hover {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload .wpforms-trash-icon:hover,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera .wpforms-trash-icon:hover {
   color: #dc3232;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload a {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload a,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera a {
   cursor: pointer;
 }
 
-#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload a.disabled {
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-file-upload a.disabled,
+#wpforms-payments.wpforms-payments-wrap-payment #wpforms-payment-entry-fields .inside .wpforms-field-camera a.disabled {
   opacity: 0.5;
 }
 
@@ -9055,7 +9071,7 @@ body.rtl .wpforms-tablenav-filters {
 }
 
 .wpforms-admin-settings .wpforms-setting-row.wpforms-setting-row-license p.type {
-  color: #646970;
+  color: #6a6f76;
 }
 
 .wpforms-admin-settings .wpforms-setting-row.wpforms-setting-row-license p.type strong {
@@ -9423,7 +9439,7 @@ body.rtl .wpforms-tablenav-filters {
 }
 
 .wpforms-admin-settings .wpforms-setting-row p.desc {
-  color: #646970;
+  color: #6a6f76;
   line-height: 20px;
 }
 
@@ -9433,7 +9449,7 @@ body.rtl .wpforms-tablenav-filters {
 
 .wpforms-admin-settings .wpforms-setting-row p.discount-note {
   font-style: italic;
-  color: #646970;
+  color: #6a6f76;
 }
 
 .wpforms-admin-settings .wpforms-setting-row p.discount-note strong {
@@ -9636,7 +9652,7 @@ body.rtl .wpforms-tablenav-filters {
 
 .wpforms-admin-settings .wpforms-settings-row-system-information {
   padding-bottom: 30px;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
   margin-bottom: 30px;
 }
 
@@ -10307,7 +10323,7 @@ body.rtl .wpforms-tablenav-filters {
 
 #wpforms-tools.wpforms-tools-tab-import .wpforms-settings-row-divider, #wpforms-tools.wpforms-tools-tab-export .wpforms-settings-row-divider {
   padding-bottom: 30px;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
   margin-bottom: 30px;
 }
 
@@ -10923,7 +10939,7 @@ body.rtl .wpforms-tablenav-filters {
 }
 
 .wpforms-admin-settings-email .wpforms-setting-row-color_scheme .wpforms-setting-field label {
-  color: #646970;
+  color: #6a6f76;
 }
 
 @media (min-width: 601px) {
@@ -11575,7 +11591,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .
 }
 
 .wpforms-wpcode .wpforms-wpcode-popup .wpforms-wpcode-popup-link {
-  color: #646970;
+  color: #6a6f76;
   text-align: center;
   font-size: 14px;
   font-weight: 400;
@@ -11692,7 +11708,7 @@ body div.jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-content-pane .
 }
 
 .wpforms-wpcode #wpforms-wpcode-snippets-list .list .wpforms-wpcode-snippet .wpforms-wpcode-snippet-note {
-  color: #646970;
+  color: #6a6f76;
   font-size: 14px;
   font-weight: 400;
   line-height: 18px;

@@ -419,7 +419,7 @@
 
 #wpforms-list-table-ext-edit-columns-select-container .wpforms-multiselect-checkbox-wrapper .wpforms-multiselect-checkbox-list .wpforms-multiselect-checkbox-items .wpforms-multiselect-checkbox-no-results {
   margin: 0 15px 5px 15px;
-  color: #646970;
+  color: #6a6f76;
   font-size: 14px;
   line-height: 16.7px;
 }
@@ -460,7 +460,7 @@
 }
 
 #wpforms-list-table-ext-edit-columns-cog:hover:not(.active) {
-  color: #646970;
+  color: #6a6f76;
 }
 
 .wpforms-no-scroll {

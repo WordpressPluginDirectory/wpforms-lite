@@ -452,6 +452,26 @@ class WPForms_Field_Email extends WPForms_Field {
 		// Hide sublabels.
 		$this->field_option( 'sublabel_hide', $field );
 
+		// Disable email suggestions.
+		$this->field_element(
+			'row',
+			$field,
+			[
+				'slug'    => 'disable_suggestions',
+				'content' => $this->field_element(
+					'toggle',
+					$field,
+					[
+						'slug'    => 'disable_suggestions',
+						'value'   => isset( $field['disable_suggestions'] ) ? '1' : '0',
+						'desc'    => esc_html__( 'Disable Suggestions', 'wpforms-lite' ),
+						'tooltip' => esc_html__( 'Prevent email suggestions for common typos. Enable this if you find the suggestions distracting.', 'wpforms-lite' ),
+					],
+					false
+				),
+			]
+		);
+
 		// Options close markup.
 		$args = [
 			'markup' => 'close',
@@ -501,20 +521,31 @@ class WPForms_Field_Email extends WPForms_Field {
 	 * Field display on the form front-end.
 	 *
 	 * @since 1.0.0
-	 * @param array $field
-	 * @param array $deprecated
-	 * @param array $form_data
+	 *
+	 * @param array $field      Field data and settings.
+	 * @param array $deprecated Deprecated field attributes. Use field properties.
+	 * @param array $form_data  Form data and settings.
 	 */
 	public function field_display( $field, $deprecated, $form_data ) {
 
 		// Define data.
-		$form_id      = absint( $form_data['id'] );
-		$confirmation = ! empty( $field['confirmation'] );
-		$primary      = $field['properties']['inputs']['primary'];
-		$secondary    = ! empty( $field['properties']['inputs']['secondary'] ) ? $field['properties']['inputs']['secondary'] : '';
+		$primary   = $field['properties']['inputs']['primary'];
+		$secondary = ! empty( $field['properties']['inputs']['secondary'] ) ? $field['properties']['inputs']['secondary'] : [];
+
+		$is_confirmation_enabled = ! empty( $field['confirmation'] );
+		$is_suggestions_disabled = ! empty( $field['disable_suggestions'] );
+
+		// Set data attributes if suggestions are disabled.
+		if ( $is_suggestions_disabled ) {
+			$primary['data']['disable-suggestions'] = true;
+
+			if ( ! empty( $secondary ) ) {
+				$secondary['data']['disable-suggestions'] = true;
+			}
+		}
 
 		// Standard email field.
-		if ( ! $confirmation ) {
+		if ( ! $is_confirmation_enabled ) {
 
 			// Primary field.
 			printf(
@@ -556,7 +587,7 @@ class WPForms_Field_Email extends WPForms_Field {
 
 			echo '</div>';
 
-		} // End if().
+		}
 	}
 
 	/**

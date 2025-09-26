@@ -36,7 +36,7 @@ const wpFormsAIDock = ( function( $ ) {
 
 		$modal.addClass( 'pinned' );
 
-		if ( $( '#wpadminbar' ).length ) {
+		if ( $( '#wpadminbar' ).is( ':visible' ) ) {
 			$modal.addClass( 'with-wpadminbar' );
 		}
 

@@ -125,8 +125,7 @@ WPFormsForms.Overview = WPFormsForms.Overview || ( function( document, window, $
 				.on( 'resize', _.debounce( app.adjustBulkEditTagsForm, 200 ) );
 
 			$( document )
-				.on( 'change', '.wpforms-manage-tags-items input', app.manageTagsItemChange )
-				.on( 'htmx:afterSwap', app.initTableNav );
+				.on( 'change', '.wpforms-manage-tags-items input', app.manageTagsItemChange );
 		},
 
 		/**

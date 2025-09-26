@@ -21,12 +21,13 @@ class Field extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name     = esc_html__( 'Total', 'wpforms-lite' );
-		$this->keywords = esc_html__( 'store, ecommerce, pay, payment, sum', 'wpforms-lite' );
-		$this->type     = 'payment-total';
-		$this->icon     = 'fa-money';
-		$this->order    = 110;
-		$this->group    = 'payment';
+		$this->name            = esc_html__( 'Total', 'wpforms-lite' );
+		$this->keywords        = esc_html__( 'store, ecommerce, pay, payment, sum', 'wpforms-lite' );
+		$this->type            = 'payment-total';
+		$this->icon            = 'fa-money';
+		$this->order           = 110;
+		$this->group           = 'payment';
+		$this->allow_read_only = false;
 
 		$this->hooks();
 	}
@@ -36,7 +37,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @since 1.8.2
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		// Define additional field properties.
 		add_filter( "wpforms_field_properties_{$this->type}", [ $this, 'field_properties' ], 5, 3 );
@@ -74,7 +75,7 @@ class Field extends WPForms_Field {
 		// Input Primary: add class for targeting calculations.
 		$properties['inputs']['primary']['class'][] = 'wpforms-payment-total';
 
-		// Input Primary: add data attribute if total is required.
+		// Input Primary: add a data attribute if total is required.
 		if ( ! empty( $field['required'] ) ) {
 			$properties['inputs']['primary']['data']['rule-required-payment'] = true;
 		}
@@ -321,7 +322,7 @@ class Field extends WPForms_Field {
 
 		if ( $is_summary_enabled ) {
 			/**
-			 * Allow to filter form data before displaying the order summary table.
+			 * Allow filtering form data before displaying the order summary table.
 			 *
 			 * @since 1.9.3
 			 *
@@ -352,7 +353,7 @@ class Field extends WPForms_Field {
 			$amount    = $foot_item['amount'] ?? 0;
 		}
 
-		// Always print total to cover a case when field is embedded into Layout column with 25% width.
+		// Always print total to cover a case when a field is embedded into a Layout column with 25% width.
 		$hidden_style = $is_summary_enabled ? 'display:none' : '';
 
 		// This displays the total the user sees.
@@ -381,7 +382,7 @@ class Field extends WPForms_Field {
 	 */
 	public function validate( $field_id, $field_submit, $form_data ) {
 
-		// Basic required check - If field is marked as required, check for entry data.
+		// Basic required check - If a field is marked as required, check for entry data.
 		if ( ! empty( $form_data['fields'][ $field_id ]['required'] ) && ( empty( $field_submit ) || wpforms_sanitize_amount( $field_submit ) <= 0 ) ) {
 			wpforms()->obj( 'process' )->errors[ $form_data['id'] ][ $field_id ] = esc_html__( 'Payment is required.', 'wpforms-lite' );
 		}
@@ -420,7 +421,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @param array $field Field data and settings.
 	 */
-	private function summary_option( array $field ) {
+	private function summary_option( array $field ): void {
 
 		$is_allowed = RequirementsAlerts::is_order_summary_allowed();
 
@@ -472,7 +473,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @param array $field Field data and settings.
 	 */
-	private function summary_option_notice( array $field ) {
+	private function summary_option_notice( array $field ): void {
 
 		$notice           = __( 'Example data is shown in the form editor. Actual products and totals will be displayed when you preview or embed your form.', 'wpforms-lite' );
 		$is_notice_hidden = ! $this->is_summary_enabled( $field ) ? 'wpforms-hidden' : '';
@@ -724,7 +725,7 @@ class Field extends WPForms_Field {
 	}
 
 	/**
-	 * Get classic dropdown default choice key.
+	 * Get the classic dropdown default choice key.
 	 *
 	 * @since 1.8.7
 	 *
@@ -769,7 +770,7 @@ class Field extends WPForms_Field {
 	}
 
 	/**
-	 * Add class to the builder field preview.
+	 * Add a class to the builder field preview.
 	 *
 	 * @since 1.8.7
 	 *
@@ -792,14 +793,14 @@ class Field extends WPForms_Field {
 	}
 
 	/**
-	 * Add order summary to the confirmation settings.
+	 * Add an order summary to the confirmation settings.
 	 *
 	 * @since 1.8.7
 	 *
 	 * @param WPForms_Builder_Panel_Settings $settings Settings.
 	 * @param int                            $field_id Field ID.
 	 */
-	public function add_confirmation_setting( $settings, int $field_id ) {
+	public function add_confirmation_setting( $settings, int $field_id ): void {
 
 		wpforms_panel_field(
 			'toggle',
@@ -817,7 +818,7 @@ class Field extends WPForms_Field {
 	}
 
 	/**
-	 * Show order summary on the confirmation page.
+	 * Show the order summary on the confirmation page.
 	 *
 	 * @since 1.8.7
 	 *
@@ -826,7 +827,7 @@ class Field extends WPForms_Field {
 	 * @param array $fields       Sanitized field data.
 	 * @param int   $entry_id     Entry id.
 	 */
-	public function order_summary_confirmation( array $confirmation, array $form_data, array $fields, int $entry_id ) {
+	public function order_summary_confirmation( array $confirmation, array $form_data, array $fields, int $entry_id ): void {
 
 		if ( empty( $confirmation['message_order_summary'] ) ) {
 			return;

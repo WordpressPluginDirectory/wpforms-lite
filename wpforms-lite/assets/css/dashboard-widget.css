@@ -1,9 +1,10 @@
 .wpforms-links {
   display: flex;
   padding: 13px;
+  padding-top: 45px;
   align-items: center;
   gap: 18px;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid #e8e9e9;
 }
 
 .wpforms-links .wpforms-link {
@@ -14,13 +15,13 @@
 
 .wpforms-links .wpforms-link {
   text-decoration: none;
-  color: #646970;
+  color: #6a6f76;
   line-height: normal;
 }
 
 .wpforms-links .wpforms-link svg {
   width: auto;
-  fill: #646970;
+  fill: #6a6f76;
   transition: fill 0.05s ease-in-out;
 }
 
@@ -34,6 +35,10 @@
 
 .wpforms-links .wpforms-link:hover svg {
   fill: #2c3338;
+}
+
+.wpforms-dash-widget .wpforms-links {
+  padding-top: 13px;
 }
 
 #wpforms_reports_widget_lite .inside,

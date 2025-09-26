@@ -53,7 +53,7 @@
 #wpforms-panel-ai-form .wpforms-btn-back-to-templates {
   background-color: transparent;
   border: none;
-  color: #444444;
+  color: #3c434a;
   width: auto;
   text-align: left;
   padding: 15px 15px 15px 43px;
@@ -110,7 +110,7 @@
 }
 
 #wpforms-panel-ai-form .wpforms-panel-content .wpforms-panel-empty-state h4 {
-  color: #444444;
+  color: #3c434a;
   font-size: 24px;
   font-weight: 600;
   line-height: 29px;
@@ -118,7 +118,7 @@
 }
 
 #wpforms-panel-ai-form .wpforms-panel-content .wpforms-panel-empty-state p {
-  color: #777777;
+  color: #6a6f76;
   font-size: 16px;
   font-weight: 400;
   line-height: 19px;
@@ -132,7 +132,7 @@
   line-height: 28px;
   padding: 15px 0 30px 0;
   margin: 0 15px 15px 15px;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dcdcde;
 }
 
 #wpforms-panel-ai-form .wpforms-panel-content .wpforms-ai-form-generator-preview-field {
@@ -234,7 +234,7 @@
 #wpforms-panel-ai-form .wpforms-panel-content .wpforms-ai-form-generator-preview-submit {
   width: fit-content;
   pointer-events: none;
-  background: #999999;
+  background: #999c9e;
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -253,7 +253,7 @@
 }
 
 #wpforms-panel-ai-form .wpforms-panel-content .wpforms-ai-form-generator-preview-addons-notice .wpforms-alert-message a {
-  color: #444444;
+  color: #3c434a;
   font-weight: 600;
   text-decoration: underline;
 }
@@ -396,7 +396,7 @@ wpforms-ai-chat[mode="forms"] .wpforms-ai-chat-welcome-screen-sample-prompts i.w
 
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-ai-chat-message-item .wpforms-ai-chat-header .wpforms-ai-chat-header-description {
   font-size: 16px;
-  color: #444444;
+  color: #3c434a;
   line-height: 24px;
 }
 
@@ -414,12 +414,12 @@ wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat
 }
 
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat-item-spinner {
-  background: #dfe8f2;
+  background: #dfe7ef;
 }
 
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat-item-answer .wpforms-chat-item-content,
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat-item-warning .wpforms-chat-item-content {
-  background: #dfe8f2;
+  background: #dfe7ef;
   border: 2px solid transparent;
   cursor: pointer;
   transition-property: border-color;
@@ -495,11 +495,11 @@ wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat
 }
 
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat-item-error .wpforms-chat-item-content span a {
-  color: #444444;
+  color: #3c434a;
 }
 
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat-item-error .wpforms-chat-item-content span a:hover {
-  color: #777777;
+  color: #6a6f76;
 }
 
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat-item-answer-waiting .wpforms-chat-item-spinner {
@@ -508,7 +508,7 @@ wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-list .wpforms-chat
 
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-input {
   border-top: 1px solid #ced7e0;
-  background: #dfe8f2;
+  background: #dfe7ef;
 }
 
 wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-message-input textarea {
@@ -563,7 +563,7 @@ wpforms-ai-chat.wpforms-ai-chat-blue .wpforms-ai-chat-welcome-screen-sample-prom
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box.wpforms-ai-forms-install-addons-modal .jconfirm-checkbox {
   grid-column: 1 / -1;
   margin: 5px 0 10px 0;
-  color: #777777;
+  color: #6a6f76;
   vertical-align: center;
 }
 

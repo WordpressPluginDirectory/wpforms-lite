@@ -474,6 +474,12 @@ tr:not(.smart-tag) > .field-value span {
   vertical-align: middle;
 }
 
+/* Camera */
+.field-camera .field-value .file-icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* RichText, Content */
 .field-richtext .field-value:only-child, .field-content .field-value:only-child {
   display: inline-block;
@@ -774,8 +780,8 @@ a {
   border-bottom: 1px solid #d9d9d9;
 }
 
-.wpforms-layout-table-display-blocks table:not(:first-child) .field-repeater-name {
-  padding-top: 0;
+.wpforms-layout-table-display-blocks .wpforms-layout-table-row td.field-value, .wpforms-layout-table-display-columns .wpforms-layout-table-row td.field-value {
+  padding-bottom: 0;
 }
 
 .wpforms-layout-table > td {
@@ -810,7 +816,7 @@ a {
   padding-bottom: 0;
 }
 
-.wpforms-layout-table-display-blocks .wpforms-layout-table-row:last-child .field-value, .wpforms-layout-table-display-columns .wpforms-layout-table-row:last-child .field-value {
+.wpforms-layout-table-display-blocks .wpforms-layout-table-row tr:last-child .wpforms-layout-table-cell .field-value, .wpforms-layout-table-display-columns .wpforms-layout-table-row tr:last-child .wpforms-layout-table-cell .field-value {
   padding-bottom: 0;
 }
 

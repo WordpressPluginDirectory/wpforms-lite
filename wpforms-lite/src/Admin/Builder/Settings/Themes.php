@@ -121,6 +121,14 @@ class Themes {
 	 */
 	protected function hooks(): void {
 
+		// If the current user can't add posts, he can't save themes either. Enqueue no-access assets.
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			add_action( 'admin_enqueue_scripts', [ $this, 'enqueues_no_access' ] );
+			add_filter( 'wpforms_builder_panel_sidebar_section_classes', [ $this, 'add_pro_class' ], 10, 3 );
+
+			return;
+		}
+
 		add_action( 'wpforms_form_settings_panel_content', [ $this, 'panel_content' ] );
 		add_action( 'wpforms_builder_panel_sidebar_after', [ $this, 'sidebar_content' ], 10, 2 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueues' ] );
@@ -157,6 +165,50 @@ class Themes {
 		);
 
 		wp_add_inline_style( 'wpforms-full', $this->css_vars_obj->get_root_vars_css() );
+	}
+
+	/**
+	 * Enqueue assets for the builder themes for the users who don't have access to the theme settings.
+	 *
+	 * @since 1.9.8
+	 */
+	public function enqueues_no_access(): void {
+
+		$min = wpforms_get_min_suffix();
+
+		wp_enqueue_script(
+			'wpforms-builder-themes-no-access',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/themes/builder-themes-no-access{$min}.js",
+			[ 'wpforms-builder', 'wp-api-fetch' ],
+			WPFORMS_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			'wpforms-builder-themes-no-access',
+			'wpforms_builder_themes_no_access',
+			$this->get_localize_data()
+		);
+	}
+
+	/**
+	 * Add a class to the themes section if the user doesn't have access to it.
+	 *
+	 * @since 1.9.8
+	 *
+	 * @param array  $classes Sidebar section classes.
+	 * @param string $name    Sidebar section name.
+	 * @param string $slug    Sidebar section slug.
+	 *
+	 * @return array
+	 */
+	public function add_pro_class( array $classes, string $name, string $slug ): array {
+
+		if ( $slug !== 'themes' ) {
+			return $classes;
+		}
+
+		return array_merge( $classes, [ 'wpforms-panel-sidebar-section-no-access' ] );
 	}
 
 	/**
@@ -197,6 +249,11 @@ class Themes {
 					'background' => esc_html__( 'Background Styles', 'wpforms-lite' ),
 					'container'  => esc_html__( 'Container Styles', 'wpforms-lite' ),
 					'themes'     => esc_html__( 'Themes', 'wpforms-lite' ),
+				],
+				'permission_modal'         => [
+					'title'   => esc_html__( 'Insufficient Permissions', 'wpforms-lite' ),
+					'content' => esc_html__( 'Sorry, your user role doesn\'t have permission to access this feature.', 'wpforms-lite' ),
+					'confirm' => esc_html__( 'OK', 'wpforms-lite' ),
 				],
 			],
 			'isAdmin'         => $this->is_admin,
