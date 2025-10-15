@@ -184,6 +184,7 @@ class Help {
 			'settings/google_sheets'                  => 'google sheets',
 			'settings/dropbox'                        => 'dropbox',
 			'settings/google_calendar'                => 'google calendar',
+			'settings/airtable'                       => 'airtable',
 			'settings/google_drive'                   => 'google drive',
 			'settings/webhooks'                       => 'webhooks',
 			'settings/entry_automation'               => 'entry automation',
@@ -1275,6 +1276,9 @@ class Help {
 			],
 			'n8n'                       => [
 				'/docs/n8n-addon/',
+			],
+			'airtable'                  => [
+				'/docs/airtable-addon/',
 			],
 		];
 	}

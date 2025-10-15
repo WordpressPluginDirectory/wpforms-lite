@@ -200,6 +200,9 @@ class Requirements {
 			self::EXT     => 'curl',
 			self::LICENSE => self::TOP,
 		],
+		'wpforms-airtable/wpforms-airtable.php'                         => [
+			self::LICENSE => self::TOP,
+		],
 		'wpforms-aweber/wpforms-aweber.php'                             => [
 			self::EXT     => 'curl',
 			self::LICENSE => self::PLUS_PRO_AND_TOP,

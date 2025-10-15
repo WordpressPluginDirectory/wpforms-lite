@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'awesomemotive/wpforms',
-        'pretty_version' => 'dev-develop',
-        'version' => 'dev-develop',
-        'reference' => '8f98661243102181a838961e288da4ae6f310ef0',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '173541a06f7cd9b1499ebf4516bb151603b10ff8',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -47,9 +47,9 @@
             'dev_requirement' => false,
         ),
         'awesomemotive/wpforms' => array(
-            'pretty_version' => 'dev-develop',
-            'version' => 'dev-develop',
-            'reference' => '8f98661243102181a838961e288da4ae6f310ef0',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '173541a06f7cd9b1499ebf4516bb151603b10ff8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -103,7 +103,7 @@
         'roave/security-advisories' => array(
             'pretty_version' => 'dev-latest',
             'version' => 'dev-latest',
-            'reference' => '684ef27cdce62b6562f77a92dc76bdfb46542a2d',
+            'reference' => 'c13df7193990b8a3ec1a661acfba729cd650da97',
             'type' => 'metapackage',
             'install_path' => null,
             'aliases' => array(

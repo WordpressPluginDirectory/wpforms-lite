@@ -1,41 +1,62 @@
 /* global wpforms_builder, Choices, wpf */
 
 /**
+ * @param wpforms_builder.no_pages_found
+ */
+
+// noinspection ES6ConvertVarToLetConst
+/**
  * WPForms ChoicesJS utility methods for the Admin Builder.
  *
  * @since 1.7.9
  */
-
-'use strict';
-
-var WPForms = window.WPForms || {};
+var WPForms = window.WPForms || {}; // eslint-disable-line no-var
 
 WPForms.Admin = WPForms.Admin || {};
 WPForms.Admin.Builder = WPForms.Admin.Builder || {};
 
 WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS || ( function( document, window, $ ) {
-
 	/**
 	 * Public functions and properties.
 	 *
 	 * @since 1.7.9
 	 *
-	 * @type {object}
+	 * @type {Object}
 	 */
 	const app = {
 
 		/**
-		 * Setup the Select Page ChoicesJS instance.
+		 * Set up the Select Page ChoicesJS instance.
 		 *
 		 * @since 1.7.9
 		 *
-		 * @param {object}  element       DOM Element where to init ChoicesJS.
-		 * @param {object}  choicesJSArgs ChoicesJS init options.
-		 * @param {object}  ajaxArgs      Object containing `action` and `nonce` to perform AJAX search.
+		 * @param {Object} element       DOM Element where to init ChoicesJS.
+		 * @param {Object} choicesJSArgs ChoicesJS init options.
+		 * @param {Object} ajaxArgs      Object containing `action` and `nonce` to perform AJAX search.
 		 *
-		 * @returns {Choices} ChoicesJS instance.
+		 * @return {Choices} ChoicesJS instance.
 		 */
-		setup: function( element, choicesJSArgs, ajaxArgs ) {
+		setup( element, choicesJSArgs, ajaxArgs ) {
+			let $element = $( element );
+			let choicesJS = $element.data( 'choicesjs' );
+
+			// Destroy existing choicesJS instance.
+			if ( choicesJS ) {
+				choicesJS.destroy();
+			}
+
+			// Remove choicesJS elements from the DOM for cloned instances.
+			if ( $element.hasClass( 'choices__input' ) ) {
+				const $choices = $element.closest( '.choices' );
+				const $select = $element.detach()
+					.removeClass( 'choices__input' )
+					.data( 'choice', null )
+					.attr( 'data-choice', null );
+
+				$choices.replaceWith( $select );
+				$element = $choices.prevObject;
+				element = $element[ 0 ];
+			}
 
 			choicesJSArgs.searchEnabled = true;
 			choicesJSArgs.allowHTML = false; // TODO: Remove after next Choices.js release.
@@ -44,40 +65,31 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 			choicesJSArgs.noChoicesText = choicesJSArgs.noChoicesText || wpforms_builder.no_pages_found;
 			choicesJSArgs.noResultsText = choicesJSArgs.noResultsText || wpforms_builder.no_pages_found;
 
-			const choicesJS = new Choices( element, choicesJSArgs );
+			choicesJS = new Choices( element, choicesJSArgs );
 
 			if ( ajaxArgs.nonce === null ) {
 				return choicesJS;
 			}
 
-			$( element ).data( 'choicesjs', choicesJS );
+			$element.data( 'choicesjs', choicesJS );
+			app.setupEvents( $element, choicesJS, ajaxArgs );
 
-			/*
-			 * ChoicesJS doesn't handle empty string search with it's `search` event handler,
-			 * so we work around it by detecting empty string search with `keyup` event.
-			 */
-			choicesJS.input.element.addEventListener( 'keyup', function( ev ) {
+			return choicesJS;
+		},
 
-				// Only capture backspace and delete keypress that results to empty string.
-				if (
-					( ev.which !== 8 && ev.which !== 46 ) ||
-					ev.target.value.length > 0
-				) {
-					return;
-				}
+		/**
+		 * Setup ChoicesJS events.
+		 *
+		 * @since 1.9.8.2
+		 *
+		 * @param {Object} $element  jQuery element where to init ChoicesJS.
+		 * @param {Object} choicesJS ChoicesJS instance.
+		 * @param {Object} ajaxArgs  Object containing `action` and `nonce` to perform AJAX search.
+		 */
+		setupEvents( $element, choicesJS, ajaxArgs ) {
+			const containerOuter = choicesJS.containerOuter?.element || $element.closest( '.choices' )[ 0 ];
 
-				app.performSearch( choicesJS, '', ajaxArgs );
-			} );
-
-			choicesJS.passedElement.element.addEventListener( 'search', _.debounce( function( ev ) {
-
-				// Make sure that the search term is actually changed.
-				if ( choicesJS.input.element.value.length === 0 ) {
-					return;
-				}
-
-				app.performSearch( choicesJS, ev.detail.value, ajaxArgs );
-			}, 800 ) );
+			app.setupSearchEvents( $element, choicesJS, ajaxArgs );
 
 			choicesJS.passedElement.element.addEventListener( 'change', function() {
 				const select = $( this ),
@@ -100,8 +112,8 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 				$hidden.val( JSON.stringify( selected ) );
 			} );
 
-			// Add ability to close the drop-down menu.
-			choicesJS.containerOuter.element.addEventListener( 'click', function() {
+			// Add the ability to close the drop-down menu.
+			containerOuter?.addEventListener( 'click', function() {
 				if ( $( this ).hasClass( 'is-open' ) ) {
 					choicesJS.hideDropdown();
 				}
@@ -110,32 +122,68 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 			// Show more button for choices after the group is toggled.
 			$( document )
 				.on( 'wpformsFieldOptionGroupToggled', function() {
-					wpf.showMoreButtonForChoices( choicesJS.containerOuter.element );
+					wpf.showMoreButtonForChoices( containerOuter );
 				} )
 				.on( 'wpformsBeforeFieldDuplicate', function( event, id ) {
-					if ( $( element ).data( 'field-id' ) !== id ) {
+					if ( $element.data( 'field-id' ) !== id ) {
 						return;
 					}
 
 					const choices = choicesJS.getValue( true );
 
-					$( element ).data( 'choicesjs' ).destroy();
+					$element.data( 'choicesjs' ).destroy();
 
-					$( element ).find( 'option' ).each( function( index, option ) {
+					$element.find( 'option' ).each( function( index, option ) {
 						if ( choices.includes( $( option ).val() ) ) {
 							$( option ).prop( 'selected', true );
 						}
 					} );
 				} )
 				.on( 'wpformsFieldDuplicated', function( event, id ) {
-					if ( $( element ).data( 'field-id' ) !== id ) {
+					if ( $element.data( 'field-id' ) !== id ) {
 						return;
 					}
 
-					$( element ).data( 'choicesjs' ).init();
+					$element.data( 'choicesjs' ).init();
 				} );
+		},
 
-			return choicesJS;
+		/**
+		 * Setup ChoicesJS search events.
+		 *
+		 * @since 1.9.8.2
+		 *
+		 * @param {Object} $element  jQuery element where to init ChoicesJS.
+		 * @param {Object} choicesJS ChoicesJS instance.
+		 * @param {Object} ajaxArgs  Object containing `action` and `nonce` to perform AJAX search.
+		 */
+		setupSearchEvents( $element, choicesJS, ajaxArgs ) {
+			const searchInput = choicesJS.input?.element || $element.nextAll( '.choices__input ' )[ 0 ];
+
+			/*
+			 * ChoicesJS doesn't handle empty string search with it's `search` event handler,
+			 * so we work around it by detecting empty string search with the ` keyup ` event.
+			 */
+			searchInput?.addEventListener( 'keyup', function( ev ) {
+				// Only capture backspace and delete keypress that results to empty string.
+				if (
+					( ev.which !== 8 && ev.which !== 46 ) ||
+					ev.target.value.length > 0
+				) {
+					return;
+				}
+
+				app.performSearch( choicesJS, '', ajaxArgs );
+			} );
+
+			choicesJS.passedElement?.element.addEventListener( 'search', _.debounce( function( ev ) {
+				// Make sure that the search term is actually changed.
+				if ( choicesJS.input.element.value.length === 0 ) {
+					return;
+				}
+
+				app.performSearch( choicesJS, ev.detail.value, ajaxArgs );
+			}, 800 ) );
 		},
 
 		/**
@@ -162,7 +210,7 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 		},
 
 		/**
-		 * Display "Loading" in ChoicesJS instance.
+		 * Display "Loading" in the ChoicesJS instance.
 		 *
 		 * @since 1.7.9
 		 *
@@ -223,7 +271,7 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 				args
 			).fail(
 				function( err ) {
-					console.error( err );
+					console.error( err ); // eslint-disable-line no-console
 				}
 			);
 		},
@@ -231,5 +279,4 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 
 	// Provide access to public functions/properties.
 	return app;
-
 }( document, window, jQuery ) );

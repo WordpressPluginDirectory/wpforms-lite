@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.9.8.2 =
+- Fixed: Form Builder preview container height with empty state.
+
 = 1.9.8.1 =
 - Added: Ability to disconnect Stripe accounts through the Settings > Payments admin page.
 - Added: Ability to set how many times a Stripe recurring payment will be repeated.

@@ -4110,20 +4110,14 @@ table.wpforms-order-summary-preview .wpforms-order-summary-preview-coupon-total 
     display: block;
     border: 1px solid #ccc !important;
   }
-  form.wpforms-form .wpforms-field-likert_scale table tbody tr:nth-child(odd) td {
-    background-color: transparent !important;
-  }
   form.wpforms-form .wpforms-field-likert_scale table tbody tr th {
-    background-color: rgba(0, 0, 0, 0.03) !important;
     display: block;
-    font-weight: bold !important;
   }
   form.wpforms-form .wpforms-field-likert_scale table tbody tr td {
     display: block;
     border: none !important;
     border-bottom: 1px solid #eee !important;
     padding: 10px 20px !important;
-    font-size: 14px;
   }
   form.wpforms-form .wpforms-field-likert_scale table tbody tr td:last-child {
     border-radius: 0 !important;

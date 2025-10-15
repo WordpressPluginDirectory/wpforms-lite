@@ -196,7 +196,7 @@
 
 .wpforms-panel-fields .no-fields-preview {
   align-content: center;
-  min-height: calc( 100vh - 260px - var( --wpforms-admin-bar-height ));
+  min-height: calc( 100vh - 294px - var( --wpforms-admin-bar-height ));
   padding-bottom: 40px;
   padding-top: 40px;
   position: relative;
