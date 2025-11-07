@@ -644,7 +644,7 @@ class Locator {
 		// Escaped above.
 		return sprintf(
 			'<span class="wpforms-locations-list-item">%s</span>',
-			$location_edit_link . $location_link
+			$location_edit_link . wp_kses_post( urldecode( $location_link ) )
 		);
 	}
 

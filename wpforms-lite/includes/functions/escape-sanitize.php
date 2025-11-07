@@ -492,6 +492,8 @@ function wpforms_esc_unselected_choices( $formatted_field ) {
 		'type'     => [],
 		'disabled' => [],
 		'checked'  => [],
+		'class'    => [],
+		'value'    => [],
 	];
 	$allowed_html['label'] = [];
 

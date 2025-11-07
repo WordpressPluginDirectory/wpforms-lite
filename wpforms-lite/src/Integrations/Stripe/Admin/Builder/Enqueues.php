@@ -44,10 +44,15 @@ class Enqueues {
 	 */
 	public function javascript_strings( $strings, $form = [] ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
-		$strings['stripe_recurring_heading']  = esc_html__( 'Missing Required Fields', 'wpforms-lite' );
-		$strings['stripe_recurring_email']    = esc_html__( 'When recurring subscription payments are enabled, the Customer Email is required.', 'wpforms-lite' );
-		$strings['stripe_recurring_settings'] = wp_kses(
-			__( 'Please go to the <a href="#" class="wpforms-stripe-settings-redirect">Stripe payment settings</a> and select a Customer Email.', 'wpforms-lite' ),
+		$strings = (array) $strings;
+
+		$strings['stripe_recurring_heading']         = esc_html__( 'Missing Required Fields', 'wpforms-lite' );
+		$strings['stripe_recurring_email']           = esc_html__( 'When recurring subscription payments are enabled, the Customer Email is required.', 'wpforms-lite' );
+		$strings['stripe_required_one_time_fields']  = esc_html__( 'In order to complete your form\'s Stripe One-Time Payments, please check that all required (*) fields have been filled out.', 'wpforms-lite' );
+		$strings['stripe_required_recurring_fields'] = esc_html__( 'In order to complete your form\'s Stripe Recurring Subscription Payments, please check that all required (*) fields have been filled out.', 'wpforms-lite' );
+		$strings['stripe_required_both_fields']      = esc_html__( 'In order to complete your form\'s Stripe One-Time Payments and Recurring Subscription Payments, please check that all required (*) fields have been filled out.', 'wpforms-lite' );
+		$strings['stripe_recurring_settings']        = wp_kses(
+			__( 'Please go to the <a href="#" class="wpforms-stripe-settings-redirect">Stripe payment settings</a> and fill out the required field(s).', 'wpforms-lite' ),
 			[
 				'a' => [
 					'href'  => [],

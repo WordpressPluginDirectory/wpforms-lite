@@ -332,6 +332,7 @@
 
 .wpforms-panel-fields .wpforms-field .label-title .text {
   display: inline-block;
+  vertical-align: top;
   margin-inline-end: 15px;
   white-space: nowrap;
   overflow: hidden;
@@ -358,8 +359,8 @@
 
 .wpforms-panel-fields .wpforms-field.label_empty > .label-title .empty_text {
   display: inline;
+  vertical-align: top;
   color: #ffb900;
-  line-height: 1;
   padding-right: 5px;
 }
 
@@ -400,6 +401,10 @@
 
 .wpforms-panel-fields .wpforms-field.required .label-title .text:has(~ .required ~ .wpforms-badge) {
   max-width: calc( 100% - 90px);
+}
+
+.wpforms-panel-fields .wpforms-field.wpforms-field-radio .wpforms-other-input {
+  margin-top: 10px;
 }
 
 .wpforms-panel-fields .wpforms-field .wpforms-sub-label {
@@ -561,7 +566,6 @@
 .wpforms-panel-fields .wpforms-field .wpforms-field-delete {
   color: #d63638;
   inset-inline-end: 15px;
-  font-size: 18px;
 }
 
 .wpforms-panel-fields .wpforms-field .wpforms-field-delete:hover i {
@@ -756,12 +760,8 @@
   width: 50%;
 }
 
-#wpforms-panel-fields .wpforms-tabs li:last-of-type {
-  border-inline-start: 1px solid #ced7e0;
-}
-
 #wpforms-panel-fields .wpforms-tabs a {
-  color: #3c434a;
+  color: #86919e;
   display: block;
   font-size: 16px;
   font-weight: 400;
@@ -775,8 +775,12 @@
 }
 
 #wpforms-panel-fields .wpforms-tabs a:hover {
-  color: #6a6f76;
+  color: #3c434a;
   text-decoration: none;
+}
+
+#wpforms-panel-fields .wpforms-tabs a:hover i {
+  color: #3c434a;
 }
 
 #wpforms-panel-fields .wpforms-tabs a:focus {
@@ -787,7 +791,8 @@
 #wpforms-panel-fields .wpforms-tabs a i {
   color: #86919e;
   font-size: 16px;
-  margin-inline-end: 10px;
+  margin-inline-end: 8px;
+  transition: color 0.05s ease-in-out;
 }
 
 #wpforms-panel-fields .wpforms-tabs a.active {
@@ -796,7 +801,6 @@
 
 #wpforms-panel-fields .wpforms-tabs a.active, #wpforms-panel-fields .wpforms-tabs a.active:hover {
   color: #3c434a;
-  font-weight: 600;
   text-decoration: none;
 }
 
@@ -870,8 +874,6 @@
 .wpforms-add-fields-group a i {
   color: #86919e;
   float: right;
-  font-size: 20px;
-  margin: -2px 0 0 0;
   transition-property: transform;
   transition-duration: 0.4s;
   transition-timing-function: ease-out;
@@ -899,8 +901,8 @@
   width: calc( 50% - 8px);
   overflow: hidden;
   padding-block: 12px;
-  padding-inline-start: 14px;
-  padding-inline-end: 5px;
+  padding-inline-start: 12px;
+  padding-inline-end: 10px;
   text-align: start;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -922,8 +924,9 @@
 
 .wpforms-add-fields-group button i {
   color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
   display: inline-block;
-  margin-inline-end: 7px;
+  margin-inline-end: 5px;
 }
 
 .rtl .wpforms-add-fields-group a i {
@@ -1003,6 +1006,7 @@
 
 .wpforms-panel .wpforms-search-fields-wrapper .wpforms-search-fields-input-wrapper .wpforms-search-fields-input-close.active {
   display: block;
+  width: auto;
 }
 
 .wpforms-panel .wpforms-search-fields-wrapper .wpforms-search-fields-input-wrapper .wpforms-search-fields-input-close:hover {
@@ -1093,8 +1097,9 @@
 }
 
 .wpforms-show-smart-tags i {
+  margin-top: 1px;
   pointer-events: none;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .wpforms-show-smart-tags:hover, .wpforms-show-smart-tags.active {
@@ -1161,14 +1166,14 @@
 .wpforms-smart-tags-widget .tag i {
   display: inline-block;
   position: absolute;
-  top: 4px;
+  top: 4.5px;
   inset-inline-end: 7px;
-  opacity: 0.5;
+  opacity: 0.4;
   height: 12px;
   width: 12px;
-  color: white;
+  color: #ffffff;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .wpforms-smart-tags-widget .tag i:hover {
@@ -1845,7 +1850,7 @@
 }
 
 .wpforms-toggle-control .wpforms-help-tooltip {
-  margin: 0 !important;
+  margin: 1px 0 0 0 !important;
   /* Override default margin set with ID in general.scss */
 }
 

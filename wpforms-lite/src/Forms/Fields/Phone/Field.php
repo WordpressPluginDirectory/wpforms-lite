@@ -19,7 +19,7 @@ class Field extends WPForms_Field {
 	 *
 	 * @since 1.9.4
 	 */
-	public const INTL_VERSION = '25.3.1';
+	public const INTL_VERSION = '25.11.3';
 
 	/**
 	 * Primary class constructor.

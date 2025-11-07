@@ -66,7 +66,7 @@ class HTMLPurifier_URIFilter_Munge extends HTMLPurifier_URIFilter
         if (!$scheme_obj->browsable) {
             return \true;
         }
-        // ignore non-browseable schemes, since we can't munge those in a reasonable way
+        // ignore non-browsable schemes, since we can't munge those in a reasonable way
         if ($uri->isBenign($config, $context)) {
             return \true;
         }

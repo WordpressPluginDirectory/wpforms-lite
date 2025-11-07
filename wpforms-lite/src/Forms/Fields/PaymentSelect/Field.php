@@ -248,7 +248,7 @@ class Field extends WPForms_Field {
 			[
 				'slug'    => 'show_price_after_labels',
 				'value'   => isset( $field['show_price_after_labels'] ) ? '1' : '0',
-				'desc'    => esc_html__( 'Show price after item labels', 'wpforms-lite' ),
+				'desc'    => esc_html__( 'Show Price After Item Labels', 'wpforms-lite' ),
 				'tooltip' => esc_html__( 'Check this option to show price of the item after the label.', 'wpforms-lite' ),
 			],
 			false

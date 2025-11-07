@@ -489,7 +489,15 @@ class WPForms_Builder {
 		 */
 		wp_enqueue_style(
 			'wpforms-font-awesome',
-			WPFORMS_PLUGIN_URL . 'assets/lib/font-awesome/font-awesome.min.css',
+			WPFORMS_PLUGIN_URL . 'assets/lib/font-awesome/css/all.min.css',
+			null,
+			'7.0.1'
+		);
+
+		// FontAwesome v4 compatibility shims.
+		wp_enqueue_style(
+			'wpforms-font-awesome-v4-shim',
+			WPFORMS_PLUGIN_URL . 'assets/lib/font-awesome/css/v4-shims.min.css',
 			null,
 			'4.7.0'
 		);
@@ -588,7 +596,7 @@ class WPForms_Builder {
 			'dom-purify',
 			WPFORMS_PLUGIN_URL . 'assets/lib/purify.min.js',
 			[],
-			'3.2.6',
+			'3.2.7',
 			false
 		);
 
@@ -753,6 +761,7 @@ class WPForms_Builder {
 			'bulk_add_presets_hide'                   => esc_html__( 'Hide presets', 'wpforms-lite' ),
 			'date_select_day'                         => 'DD',
 			'date_select_month'                       => 'MM',
+			'date_select_year'                        => 'YYYY',
 			'debug'                                   => wpforms_debug(),
 			'dynamic_choices'                         => [
 				'limit_message' => sprintf( /* translators: %1$s - data source name (e.g. Categories, Posts), %2$s - data source type (e.g. post type, taxonomy), %3$s - display limit, %4$s - total number of items. */

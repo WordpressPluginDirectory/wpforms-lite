@@ -346,6 +346,19 @@ li {
   left: 0;
 }
 
+#wpforms-builder .fa-copy {
+  font-weight: 400;
+}
+
+#wpforms-builder .fa-check,
+#wpforms-builder .fa-times {
+  -webkit-text-stroke: 1px currentColor;
+}
+
+#wpforms-builder .fa-usd {
+  -webkit-text-stroke: 0.5px currentColor;
+}
+
 #wpforms-builder .wpforms-clear:before {
   content: "";
   display: table;
@@ -442,8 +455,8 @@ li {
 
 #wpforms-builder .wpforms-help-tooltip:not(button) {
   color: #b0b2b3;
-  font-size: 15px;
-  margin: 0 0 0 10px;
+  font-size: 14px;
+  margin: 1px 0 0 10px;
 }
 
 #wpforms-builder .wpforms-help-tooltip:not(button):hover {
@@ -736,6 +749,7 @@ input[type=checkbox]:checked::before {
   height: 21px;
   margin-top: -3px;
   margin-inline-start: -4px;
+  margin-inline-end: -4px;
   width: 21px;
 }
 
@@ -1211,7 +1225,7 @@ textarea.wpforms-error:focus,
 .wpforms-context-menu-list-item-has-child:after {
   content: '\f105';
   color: rgba(255, 255, 255, 0.5);
-  font-family: FontAwesome;
+  font-family: "FontAwesome", sans-serif;
   font-size: 14px;
   font-weight: 400;
   position: absolute;

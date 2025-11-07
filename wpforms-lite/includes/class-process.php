@@ -673,7 +673,7 @@ class WPForms_Process {
 			/**
 			 * Fires in the case the entry was marked as spam during the form submission.
 			 *
-			 * @since 1.9.8.2
+			 * @since 1.9.8.1
 			 *
 			 * @param int $entry_id Entry ID.
 			 * @param int $form_id  Form ID.

@@ -580,6 +580,11 @@ body.rtl .choices[data-type*="select-multiple"] .choices__button, body.rtl .choi
 }
 
 .wpforms-panel-fields .choices-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
   border-bottom: 1px solid #ced7e0;
   margin: 0;
   padding: 10px 0;
@@ -599,33 +604,34 @@ body.rtl .choices[data-type*="select-multiple"] .choices__button, body.rtl .choi
   font-size: 16px;
   margin-block: 0;
   margin-inline-end: 0;
-  margin-inline-start: 10px;
 }
 
 .wpforms-panel-fields .choices-list li input[type=text] {
   display: inline-block;
   margin-block: 0;
   margin-inline-end: 0;
-  margin-inline-start: 10px;
-  width: calc(100% - 102px);
+  width: calc(100% - 119px);
 }
 
 .wpforms-panel-fields .choices-list li input[type=text].value {
   display: none;
-  margin-inline-end: 48px;
-  margin-inline-start: 54px;
-  margin-top: 10px;
+  margin-inline-start: 59px;
+}
+
+.wpforms-panel-fields .choices-list li input[type=checkbox],
+.wpforms-panel-fields .choices-list li input[type=radio] {
+  margin: 0;
 }
 
 .wpforms-panel-fields .choices-list .move i {
   color: #86919e;
-  font-size: 20px;
+  font-size: 18px;
   position: relative;
   top: 1px;
 }
 
 .wpforms-panel-fields .choices-list .move:hover {
-  cursor: pointer;
+  cursor: grab;
 }
 
 .wpforms-panel-fields .choices-list .add:hover {
@@ -651,7 +657,7 @@ body.rtl .choices[data-type*="select-multiple"] .choices__button, body.rtl .choi
 .wpforms-panel-fields .wpforms-field-option-payment-multiple li input[type=text],
 .wpforms-panel-fields .wpforms-field-option-payment-checkbox li input[type=text],
 .wpforms-panel-fields .wpforms-field-option-payment-select li input[type=text] {
-  width: calc(100% - 185px);
+  width: calc(100% - 202px);
 }
 
 .wpforms-panel-fields .wpforms-field-option-payment-multiple li input[type=text].value,
@@ -660,7 +666,7 @@ body.rtl .choices[data-type*="select-multiple"] .choices__button, body.rtl .choi
   display: inline-block;
   margin-block: 0;
   margin-inline-end: 0;
-  margin-inline-start: 10px;
+  margin-inline-start: 0;
   width: 73px;
 }
 
@@ -848,7 +854,8 @@ div.wpforms-container.wpforms-edit-entry-container .wpforms-form .choices .choic
 }
 
 .wpforms-panel-fields .wpforms-panel-sidebar .wpforms-field-option-row-choices .wpforms-image-upload {
-  margin: 10px 48px 0 54px;
+  margin-inline-start: 59px;
+  width: calc(100% - 119px);
 }
 
 .wpforms-panel-fields .wpforms-panel-sidebar .wpforms-field-option-row-choices .wpforms-image-upload .preview {
@@ -1114,7 +1121,8 @@ div.wpforms-container.wpforms-edit-entry-container .wpforms-form .choices .choic
   gap: 10px;
   align-items: center;
   position: relative;
-  margin: 10px 48px 0 54px;
+  margin-inline-start: 59px;
+  width: calc(100% - 119px);
   padding: 10px;
   border-radius: 4px;
   background: #ffffff;
@@ -4110,14 +4118,20 @@ table.wpforms-order-summary-preview .wpforms-order-summary-preview-coupon-total 
     display: block;
     border: 1px solid #ccc !important;
   }
+  form.wpforms-form .wpforms-field-likert_scale table tbody tr:nth-child(odd) td {
+    background-color: transparent !important;
+  }
   form.wpforms-form .wpforms-field-likert_scale table tbody tr th {
+    background-color: rgba(0, 0, 0, 0.03) !important;
     display: block;
+    font-weight: bold !important;
   }
   form.wpforms-form .wpforms-field-likert_scale table tbody tr td {
     display: block;
     border: none !important;
     border-bottom: 1px solid #eee !important;
     padding: 10px 20px !important;
+    font-size: 14px;
   }
   form.wpforms-form .wpforms-field-likert_scale table tbody tr td:last-child {
     border-radius: 0 !important;
@@ -4334,7 +4348,6 @@ table.wpforms-order-summary-preview .wpforms-order-summary-preview-coupon-total 
   display: inline-block;
   margin-block: 0;
   margin-inline-end: 0;
-  margin-inline-start: 10px;
 }
 
 .wpforms-panel-fields .wpforms-field-option-likert_scale .wpforms-field-option-row-columns .choices-list li .move:hover,
@@ -4348,15 +4361,10 @@ table.wpforms-order-summary-preview .wpforms-order-summary-preview-coupon-total 
   font-size: 20px;
 }
 
-.wpforms-panel-fields .wpforms-field-option-likert_scale .wpforms-field-option-row-columns .choices-list li .add i,
-.wpforms-panel-fields .wpforms-field-option-likert_scale .wpforms-field-option-row-rows .choices-list li .add i {
-  margin-inline-start: 10px;
-}
-
 .wpforms-panel-fields .wpforms-field-option-likert_scale .wpforms-field-option-row-columns .choices-list li input[type=text],
 .wpforms-panel-fields .wpforms-field-option-likert_scale .wpforms-field-option-row-rows .choices-list li input[type=text] {
   display: inline-block;
-  width: calc( 100% - 75px);
+  width: calc( 100% - 95px);
 }
 
 .wpforms-panel-fields .wpforms-field-likert_scale table {

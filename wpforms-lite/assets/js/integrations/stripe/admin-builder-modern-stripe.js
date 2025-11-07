@@ -107,6 +107,9 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 					// Re-enable "delete" button.
 					$clone.find( '.wpforms-panel-content-section-stripe-custom-metadata-delete' ).removeClass( 'hidden' );
 
+					// Remove error classes.
+					$clone.find( '.wpforms-required-field-error' ).removeClass( 'wpforms-required-field-error' );
+
 					// Put it back to the table.
 					$table.find( 'tbody' ).append( $clone.get( 0 ) );
 				} )
@@ -133,6 +136,10 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 				.on( 'wpformsPaymentsPlanCreated', app.toggleMultiplePlansWarning )
 				.on( 'wpformsPaymentsPlanCreated', app.bindPlanUIActions )
 				.on( 'wpformsPaymentsPlanDeleted', app.toggleMultiplePlansWarning );
+
+			el.$panelContent
+				.find( '.wpforms-panel-content-section-payment-one-time' )
+				.on( 'change', '.wpforms-panel-field-stripe-custom-metadata-meta-key', app.resetCustomMetaKeyErrorClass );
 		},
 
 		/**
@@ -142,6 +149,7 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 */
 		bindPlanUIActions() {
 			el.$panelContent.find( '.wpforms-panel-content-section-payment-plan-body .wpforms-panel-field-select select[name*="email"]' ).on( 'change', app.resetEmailAlertErrorClass );
+			el.$panelContent.find( '.wpforms-panel-content-section-payment-plan-body .wpforms-panel-field-stripe-custom-metadata-meta-key' ).on( 'change', app.resetCustomMetaKeyErrorClass );
 			el.$panelContent.find( '.wpforms-panel-content-section-payment-plan-period select' ).on( 'change', app.resetCyclesValues );
 		},
 
@@ -151,29 +159,155 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		 * @since 1.8.4
 		 */
 		requiredFieldsCheck() {
-			if ( ! $( '#wpforms-panel-field-stripe-enable_recurring' ).is( ':checked' ) || el.$panelContent.hasClass( 'wpforms-hidden' ) ) {
+			const validationState = app.validateFields();
+
+			if ( ! validationState?.invalid ) {
 				return;
 			}
 
-			let showAlert = false;
+			app.openAlert(
+				app.getAlertMessage( validationState.type ),
+				() => validationState.invalid.$element.focus()
+			);
+		},
+
+		/**
+		 * Validates form fields based on their visibility and specific conditions.
+		 *
+		 * @since 1.9.8.3
+		 *
+		 * @return {Object|boolean} Returns an object representing the validation state or `true` if the panel content is hidden.
+		 */
+		validateFields() {
+			if ( el.$panelContent.hasClass( 'wpforms-hidden' ) ) {
+				return true;
+			}
+
+			// We want to determine which fields are not filled to display an appropriate error message.
+			// Also, it contains the type of the payment: one-time or recurring.
+			const validationState = {};
+
+			if ( $( '#wpforms-panel-field-stripe-enable_one_time' ).is( ':checked' ) ) {
+				app.validateOneTimeFields( validationState );
+			}
+
+			if ( $( '#wpforms-panel-field-stripe-enable_recurring' ).is( ':checked' ) ) {
+				app.validateRecurringFields( validationState );
+			}
+
+			return validationState;
+		},
+
+		/**
+		 * Validates the one-time payment fields within the form's panel content.
+		 *
+		 * @since 1.9.8.3
+		 *
+		 * @param {Object} validationState The current validation state object.
+		 */
+		validateOneTimeFields( validationState ) {
+			const $oneTimeScope = el.$panelContent.find( '.wpforms-panel-content-section-payment-one-time' );
+
+			validationState.type = 'one-time';
+			app.validateCustomMetaTable( $oneTimeScope, validationState );
+		},
+
+		/**
+		 * Validates recurring fields within the payment plan section of the panel content.
+		 *
+		 * @since 1.9.8.3
+		 *
+		 * @param {Object} validationState An object representing the current state of validation.
+		 */
+		validateRecurringFields( validationState ) {
+			validationState.type = validationState.type ? 'both' : 'recurring';
 
 			el.$panelContent.find( '.wpforms-panel-content-section-payment-plan' ).each( function() {
-				const $plan = $( this ),
-					planId = $plan.data( 'plan-id' ),
-					$emailField = $( `#wpforms-panel-field-stripe-recurring-${ planId }-email` );
+				const $plan = $( this );
 
-				if ( ! $emailField.val() ) {
-					$emailField.addClass( 'wpforms-required-field-error' );
-
-					showAlert = true;
-				}
+				app.validateEmailField( $plan, validationState );
+				app.validateCustomMetaTable( $plan, validationState );
 			} );
+		},
 
-			if ( ! showAlert ) {
+		/**
+		 * Validates the email field for a given plan and updates the validation state if the field is empty.
+		 *
+		 * @since 1.9.8.3
+		 *
+		 * @param {Object} $plan           jQuery object representing the plan element.
+		 * @param {Object} validationState Object representing the validation state that will be updated.
+		 */
+		validateEmailField( $plan, validationState ) {
+			const planId = $plan.data( 'plan-id' );
+			const $emailField = $( `#wpforms-panel-field-stripe-recurring-${ planId }-email` );
+
+			if ( $emailField.val() ) {
 				return;
 			}
 
-			app.recurringEmailAlert();
+			$emailField.addClass( 'wpforms-required-field-error' );
+			validationState.invalid = validationState.invalid ?? {};
+			validationState.invalid.email = true;
+
+			if ( ! validationState.invalid.$element ) {
+				validationState.invalid.$element = $emailField;
+			}
+		},
+
+		/**
+		 * Validates the custom metadata table rows within the specified scope.
+		 *
+		 * @since 1.9.8.3
+		 *
+		 * @param {Object} $scope          The jQuery object representing the current scope containing the custom metadata table.
+		 * @param {Object} validationState The object used to store the validation state for the custom metadata rows.
+		 *
+		 * @return {boolean|void} Returns `true` if no rows are present for validation, otherwise no return value.
+		 */
+		validateCustomMetaTable( $scope, validationState ) {
+			const $customMetaRows = $scope.find( '.wpforms-panel-content-section-stripe-custom-metadata-table tr[data-key]' );
+
+			if ( ! $customMetaRows.length ) {
+				return true;
+			}
+
+			$customMetaRows.each( function() {
+				const $row = $( this );
+
+				if ( app.isValidCustomMetaRow( $row ) ) {
+					return;
+				}
+
+				validationState.invalid = validationState.invalid ?? {};
+				validationState.invalid.customMeta = true;
+
+				if ( ! validationState.invalid.$element ) {
+					validationState.invalid.$element = $row.find( '.wpforms-panel-field-stripe-custom-metadata-meta-key' );
+				}
+			} );
+		},
+
+		/**
+		 * Validates if a custom metadata row in the form is properly filled.
+		 *
+		 * @since 1.9.8.3
+		 *
+		 * @param {Object} $row jQuery object representing the custom metadata row to validate.
+		 *
+		 * @return {boolean} True if the custom metadata row is valid, otherwise false.
+		 */
+		isValidCustomMetaRow( $row ) {
+			const $metaKey = $row.find( '.wpforms-panel-field-stripe-custom-metadata-meta-key' );
+			const isValid = (
+				! $row.find( '.wpforms-panel-field-stripe-custom-metadata-object-type' ).val() ||
+				! $row.find( '.wpforms-panel-field-stripe-custom-metadata-meta-value' ).val() ||
+				$metaKey.val()
+			);
+
+			$metaKey.toggleClass( 'wpforms-required-field-error', ! isValid );
+
+			return isValid;
 		},
 
 		/**
@@ -186,17 +320,38 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 		},
 
 		/**
+		 * Resets the error class for a custom meta key row.
+		 *
+		 * @since 1.9.8.3
+		 */
+		resetCustomMetaKeyErrorClass() {
+			const $row = $( this ).closest( 'tr[data-key]' );
+
+			app.isValidCustomMetaRow( $row );
+		},
+
+		/**
 		 * Show alert for required recurring email field.
 		 *
 		 * @since 1.8.4
+		 * @deprecated 1.9.8.3
 		 */
 		recurringEmailAlert() {
-			let alertMessage = wpforms_builder.stripe_recurring_email;
+			// eslint-disable-next-line no-console
+			console.warn( 'WARNING! Function "WPFormsStripeModernBuilder.recurringEmailAlert()" has been deprecated, please use the "WPFormsStripeModernBuilder.openAlert()" function instead!' );
 
-			if ( ! $( '.wpforms-panel-content-section-stripe' ).is( ':visible' ) ) {
-				alertMessage += ' ' + wpforms_builder.stripe_recurring_settings;
-			}
+			app.openAlert( wpforms_builder.stripe_recurring_email );
+		},
 
+		/**
+		 * Opens an alert dialog with a customized message and optional callback action.
+		 *
+		 * @since 1.9.8.3
+		 *
+		 * @param {string}   alertMessage The message to be displayed in the alert dialog.
+		 * @param {Function} onClose      Optional callback function to execute when the alert is closed.
+		 */
+		openAlert( alertMessage, onClose = () => {} ) {
 			$.alert( {
 				title: wpforms_builder.stripe_recurring_heading,
 				content: alertMessage,
@@ -207,12 +362,36 @@ var WPFormsStripeModernBuilder = window.WPFormsStripeModernBuilder || ( function
 						text: wpforms_builder.ok,
 						btnClass: 'btn-confirm',
 						keys: [ 'enter' ],
+						action: onClose,
 					},
 				},
 				onOpen() {
 					$( '.wpforms-stripe-settings-redirect' ).on( 'click', app.settingsRedirect );
 				},
 			} );
+		},
+
+		/**
+		 * Returns an alert message based on the specified payment type and Stripe visibility settings.
+		 *
+		 * @since 1.9.8.3
+		 *
+		 * @param {string} paymentType The payment type (e.g., 'one-time', 'recurring', or 'both') used to determine the alert message.
+		 *
+		 * @return {string} The appropriate alert message for the specified payment type.
+		 */
+		getAlertMessage( paymentType ) {
+			if ( ! $( '.wpforms-panel-content-section-stripe' ).is( ':visible' ) ) {
+				return wpforms_builder.stripe_recurring_settings;
+			}
+
+			const typesMap = {
+				'one-time': 'stripe_required_one_time_fields',
+				recurring: 'stripe_required_recurring_fields',
+				both: 'stripe_required_both_fields',
+			};
+
+			return wpforms_builder[ typesMap[ paymentType ] ?? typesMap.recurring ];
 		},
 
 		/**

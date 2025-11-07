@@ -234,21 +234,6 @@ class Field extends WPForms_Field {
 						esc_html__( 'Type', 'wpforms-lite' )
 					);
 				echo '</div>';
-				echo '<div class="placeholder wpforms-field-options-column">';
-					printf(
-						'<input type="text" class="placeholder" id="wpforms-field-option-%d-date_placeholder" name="fields[%d][date_placeholder]" value="%s">',
-						esc_attr( $field['id'] ),
-						esc_attr( $field['id'] ),
-						esc_attr( $date_placeholder )
-					);
-					printf(
-						'<label for="wpforms-field-option-%d-date_placeholder" class="sub-label">%s</label>',
-						esc_attr( $field['id'] ),
-						esc_html__( 'Placeholder', 'wpforms-lite' )
-					);
-				echo '</div>';
-			echo '</div>';
-			echo '<div class="wpforms-field-options-columns-2 wpforms-field-options-columns">';
 				echo '<div class="format wpforms-field-options-column">';
 					printf(
 						'<select id="wpforms-field-option-%d-date_format" name="fields[%d][date_format]">',
@@ -256,7 +241,7 @@ class Field extends WPForms_Field {
 						esc_attr( $field['id'] )
 					);
 					foreach ( $date_formats as $key => $value ) {
-						if ( in_array( $key, [ self::DEFAULTS['date_format'], self::ALT_DATE_FORMAT ], true ) ) {
+						if ( in_array( $key, $this->get_regular_date_formats(), true ) ) {
 							printf(
 								'<option value="%s" %s>%s (%s)</option>',
 								esc_attr( $key ),
@@ -280,6 +265,19 @@ class Field extends WPForms_Field {
 						esc_html__( 'Format', 'wpforms-lite' )
 					);
 				echo '</div>';
+			echo '</div>';
+			echo '<div class="placeholder wpforms-field-option-row">';
+				printf(
+					'<input type="text" class="placeholder" id="wpforms-field-option-%d-date_placeholder" name="fields[%d][date_placeholder]" value="%s">',
+					esc_attr( $field['id'] ),
+					esc_attr( $field['id'] ),
+					esc_attr( $date_placeholder )
+				);
+				printf(
+					'<label for="wpforms-field-option-%d-date_placeholder" class="sub-label">%s</label>',
+					esc_attr( $field['id'] ),
+					esc_html__( 'Placeholder', 'wpforms-lite' )
+				);
 			echo '</div>';
 
 			// Limit Days options.
@@ -346,42 +344,41 @@ class Field extends WPForms_Field {
 						esc_html__( 'Interval', 'wpforms-lite' )
 					);
 				echo '</div>';
-				echo '<div class="placeholder wpforms-field-options-column">';
-					printf(
-						'<input type="text"" class="placeholder" id="wpforms-field-option-%d-time_placeholder" name="fields[%d][time_placeholder]" value="%s">',
-						esc_attr( $field['id'] ),
-						esc_attr( $field['id'] ),
-						esc_attr( $time_placeholder )
-					);
-					printf(
-						'<label for="wpforms-field-option-%d-time_placeholder" class="sub-label">%s</label>',
-						esc_attr( $field['id'] ),
-						esc_html__( 'Placeholder', 'wpforms-lite' )
-					);
-				echo '</div>';
-			echo '</div>';
-			echo '<div class="wpforms-field-options-columns-2 wpforms-field-options-columns">';
+
 				echo '<div class="format wpforms-field-options-column">';
-						printf(
-							'<select id="wpforms-field-option-%d-time_format" name="fields[%d][time_format]">',
-							esc_attr( $field['id'] ),
-							esc_attr( $field['id'] )
-						);
-							foreach ( $time_formats as $key => $value ) {
-								printf(
-									'<option value="%s" %s>%s</option>',
-									esc_attr( $key ),
-									selected( $time_format, $key, false ),
-									esc_html( $value )
-								);
-							}
-						echo '</select>';
+					printf(
+						'<select id="wpforms-field-option-%d-time_format" name="fields[%d][time_format]">',
+						esc_attr( $field['id'] ),
+						esc_attr( $field['id'] )
+					);
+						foreach ( $time_formats as $key => $value ) {
+							printf(
+								'<option value="%s" %s>%s</option>',
+								esc_attr( $key ),
+								selected( $time_format, $key, false ),
+								esc_html( $value )
+							);
+						}
+					echo '</select>';
 					printf(
 						'<label for="wpforms-field-option-%d-time_format" class="sub-label">%s</label>',
 						esc_attr( $field['id'] ),
 						esc_html__( 'Format', 'wpforms-lite' )
 					);
 				echo '</div>';
+			echo '</div>';
+			echo '<div class="placeholder wpforms-field-option-row">';
+				printf(
+					'<input type="text" class="placeholder" id="wpforms-field-option-%d-time_placeholder" name="fields[%d][time_placeholder]" value="%s">',
+					esc_attr( $field['id'] ),
+					esc_attr( $field['id'] ),
+					esc_attr( $time_placeholder )
+				);
+				printf(
+					'<label for="wpforms-field-option-%d-time_placeholder" class="sub-label">%s</label>',
+					esc_attr( $field['id'] ),
+					esc_html__( 'Placeholder', 'wpforms-lite' )
+				);
 			echo '</div>';
 
 			// Limit Hours options.
@@ -410,6 +407,25 @@ class Field extends WPForms_Field {
 				'markup' => 'close',
 			]
 		);
+	}
+
+	/**
+	 * Get regular date formats.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @return array
+	 */
+	private function get_regular_date_formats(): array {
+
+		return [
+			self::DEFAULTS['date_format'],
+			self::ALT_DATE_FORMAT,
+			'Y/m/d',
+			'm.d.Y',
+			'd.m.Y',
+			'Y.m.d',
+		];
 	}
 
 	/**
@@ -615,12 +631,18 @@ class Field extends WPForms_Field {
 		$date_type        = ! empty( $field['date_type'] ) ? $field['date_type'] : 'datepicker';
 		$date_format      = ! empty( $field['date_format'] ) ? $field['date_format'] : self::DEFAULTS['date_format'];
 
-		if ( $date_format === 'mm/dd/yyyy' || $date_format === self::DEFAULTS['date_format'] ) {
+		if ( in_array( $date_format, $this->get_month_day_formats(), true ) ) {
 			$date_first_select  = 'MM';
 			$date_second_select = 'DD';
-		} else {
+			$date_third_select  = 'YYYY';
+		} elseif ( in_array( $date_format, $this->get_day_month_formats(), true ) ) {
 			$date_first_select  = 'DD';
 			$date_second_select = 'MM';
+			$date_third_select  = 'YYYY';
+		} else {
+			$date_first_select  = 'YYYY';
+			$date_second_select = 'MM';
+			$date_third_select  = 'DD';
 		}
 
 		// Label.
@@ -649,7 +671,7 @@ class Field extends WPForms_Field {
 				echo '<div class="wpforms-date-dropdown">';
 					printf( '<select readonly class="first"><option>%s</option></select>', esc_html( $date_first_select ) );
 					printf( '<select readonly class="second"><option>%s</option></select>', esc_html( $date_second_select ) );
-					echo '<select readonly><option>YYYY</option></select>';
+					printf( '<select readonly class="third"><option>%s</option></select>', esc_html( $date_third_select ) );
 					printf( '<label class="wpforms-sub-label">%s</label>', esc_html__( 'Date', 'wpforms-lite' ) );
 				echo '</div>';
 			echo '</div>';
@@ -663,6 +685,30 @@ class Field extends WPForms_Field {
 
 		// Description.
 		$this->field_preview_option( 'description', $field );
+	}
+
+	/**
+	 * Get month-day date formats.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @return array
+	 */
+	private function get_month_day_formats(): array {
+
+		return [ 'mm/dd/yyyy', self::DEFAULTS['date_format'], 'm.d.Y' ];
+	}
+
+	/**
+	 * Get day-month date formats.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @return array
+	 */
+	private function get_day_month_formats(): array {
+
+		return [ 'dd/mm/yyyy', self::ALT_DATE_FORMAT, 'd.m.Y' ];
 	}
 
 	/**

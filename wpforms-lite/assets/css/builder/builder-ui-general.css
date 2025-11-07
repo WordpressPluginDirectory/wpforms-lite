@@ -97,6 +97,10 @@
   text-transform: capitalize;
 }
 
+#wpforms-builder .wpforms-toolbar .wpforms-right .wpforms-btn-toolbar#wpforms-help {
+  margin-inline-end: 18px;
+}
+
 #wpforms-builder .wpforms-toolbar .wpforms-right .wpforms-btn-toolbar i {
   color: #a7aaad;
   margin-inline-end: 8px;
@@ -182,7 +186,7 @@
   color: #a7aaad;
   cursor: pointer;
   display: flex;
-  font-size: 28px;
+  font-size: 26px;
   height: 76px;
   justify-content: center;
   inset-inline-end: 0;
@@ -237,7 +241,7 @@
   cursor: pointer;
   display: block;
   margin: 0;
-  padding: 11px;
+  padding: 14px 10px;
   width: 100%;
 }
 
@@ -256,20 +260,24 @@
 .wpforms-panels-toggle button .fa {
   color: #8c8f94;
   display: block;
-  font-size: 30px;
-  margin: 0 auto 5px auto;
+  font-size: 26px;
+  margin: 0 auto 8px;
   text-align: center !important;
 }
 
+.wpforms-panels-toggle button.wpforms-panel-fields-button .fa, .wpforms-panels-toggle button.wpforms-panel-payments-button .fa {
+  font-size: 28px;
+}
+
 .wpforms-panels-toggle button .wpforms-loading-spinner {
-  background-size: 26px 26px;
+  background-size: 24px 24px;
   background-position: 0;
   background-repeat: no-repeat;
-  height: 26px;
-  width: 26px;
-  line-height: 26px;
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
   vertical-align: 0;
-  margin: 2px auto 7px auto;
+  margin: 2px auto 8px auto;
   display: block;
 }
 
@@ -354,7 +362,7 @@
 }
 
 .wpforms-panel-sidebar-content .wpforms-panel-sidebar-toggle-icon:hover i {
-  inset-inline-start: -3px;
+  inset-inline-start: -6px;
 }
 
 .rtl .wpforms-panel-sidebar-content .wpforms-panel-sidebar-toggle-icon {
@@ -362,8 +370,9 @@
 }
 
 .wpforms-panel-sidebar-content .wpforms-panel-sidebar-toggle-icon i {
-  inset-inline-start: 0;
+  inset-inline-start: -4px;
   position: relative;
+  font-size: 16px;
   transition-property: transform, inset-inline-start;
   transition-duration: 0.15s;
   transition-timing-function: ease-in-out;
@@ -406,6 +415,7 @@
 }
 
 #wpforms-panel-fields .wpforms-panel-sidebar-content.wpforms-panel-sidebar-closed .wpforms-panel-sidebar-toggle-icon i {
+  inset-inline-start: -1.5px;
   transform: rotate(180deg);
 }
 
@@ -424,10 +434,6 @@
 
 #wpforms-panel-fields .wpforms-panel-sidebar-content.wpforms-panel-sidebar-closed .wpforms-panel-sidebar-toggle:hover .wpforms-panel-sidebar-toggle-icon {
   width: 18px;
-}
-
-#wpforms-panel-fields .wpforms-panel-sidebar-content.wpforms-panel-sidebar-closed .wpforms-panel-sidebar-toggle:hover .wpforms-panel-sidebar-toggle-icon i {
-  inset-inline-start: 0;
 }
 
 .wpforms-panel-corrupted-data .wpforms-panel-content-wrap {
@@ -594,6 +600,10 @@
   transition-timing-function: ease-in;
 }
 
+.wpforms-panel-fields-group.unfoldable .wpforms-panel-fields-group-title i::before {
+  content: "\f105";
+}
+
 .wpforms-panel-fields-group.unfoldable.opened .wpforms-panel-fields-group-title i {
   transform: rotate(90deg);
 }
@@ -645,7 +655,7 @@
   line-height: 18px;
   margin: 0;
   outline: 0;
-  padding: 17px 20px 17px 20px;
+  padding: 17px 15px 17px 20px;
   position: relative;
   text-decoration: none;
 }
@@ -657,7 +667,7 @@
 
 .wpforms-panel-sidebar-section.icon {
   padding-block: 28px;
-  padding-inline-end: 20px;
+  padding-inline-end: 15px;
   padding-inline-start: 79px;
 }
 
@@ -685,6 +695,7 @@
   line-height: 16px;
   text-align: center;
   margin-inline-start: 10px;
+  margin-block-start: 2px;
 }
 
 .rtl .wpforms-panel-sidebar-section .fa-angle-right {
@@ -943,7 +954,7 @@
 .toggle-unfoldable-cont i,
 .toggle-smart-tag-display i {
   font-size: 14px;
-  margin: 0 10px;
+  margin: 0 5px;
 }
 
 .unfoldable-cont {
@@ -1059,11 +1070,11 @@
 }
 
 .wpforms-field-map-table table td.field {
-  width: calc( 50% - 80px);
+  width: calc( 50% - 76px);
 }
 
 .wpforms-field-map-table table td.actions {
-  width: 40px;
+  width: 44px;
 }
 
 .wpforms-field-map-table table tr td:last-child {
@@ -1072,11 +1083,7 @@
 
 .wpforms-field-map-table .actions i {
   display: inline-block;
-  font-size: 18px;
-}
-
-.wpforms-field-map-table .actions .add {
-  margin-right: 5px;
+  font-size: 16px;
 }
 
 .wpforms-field-map-table .actions .remove {

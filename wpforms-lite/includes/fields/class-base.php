@@ -1534,15 +1534,22 @@ abstract class WPForms_Field {
 				);
 
 				foreach ( $values as $key => $value ) {
-					$default        = ! empty( $value['default'] ) ? $value['default'] : '';
-					$base           = sprintf( 'fields[%s][choices][%d]', wpforms_validate_field_id( $field['id'] ), absint( $key ) );
-					$label          = $value['label'] ?? '';
-					$image          = ! empty( $value['image'] ) ? $value['image'] : '';
-					$hide_image_btn = false;
-					$icon           = isset( $value['icon'] ) && ! wpforms_is_empty_string( $value['icon'] ) ? $value['icon'] : IconChoices::DEFAULT_ICON;
-					$icon_style     = ! empty( $value['icon_style'] ) ? $value['icon_style'] : IconChoices::DEFAULT_ICON_STYLE;
+					$default         = ! empty( $value['default'] ) ? $value['default'] : '';
+					$base            = sprintf( 'fields[%s][choices][%d]', wpforms_validate_field_id( $field['id'] ), absint( $key ) );
+					$label           = $value['label'] ?? '';
+					$image           = ! empty( $value['image'] ) ? $value['image'] : '';
+					$hide_image_btn  = false;
+					$icon            = isset( $value['icon'] ) && ! wpforms_is_empty_string( $value['icon'] ) ? $value['icon'] : IconChoices::DEFAULT_ICON;
+					$icon_style      = ! empty( $value['icon_style'] ) ? $value['icon_style'] : IconChoices::DEFAULT_ICON_STYLE;
+					$is_other_option = ! empty( $value['other'] );
 
-					$fld .= '<li data-key="' . absint( $key ) . '">';
+					$not_draggable = $is_other_option ? 'not-draggable wpforms-choice-other-option' : '';
+
+					$fld .= '<li data-key="' . absint( $key ) . '" class="' . $not_draggable . '">';
+
+					$add_class    = $is_other_option ? 'add wpforms-disabled' : 'add';
+					$remove_class = $is_other_option ? 'remove wpforms-disabled' : 'remove';
+					$move_class   = $is_other_option ? 'move wpforms-disabled' : 'move';
 
 					$fld .= sprintf(
 						'<input type="%s" name="%s[default]" class="default" value="1" %s>',
@@ -1550,13 +1557,14 @@ abstract class WPForms_Field {
 						esc_attr( $base ),
 						checked( '1', $default, false )
 					);
-					$fld .= '<span class="move"><i class="fa fa-bars"></i></span>';
+
+					$fld .= sprintf( '<span class="%s"><i class="fa fa-bars"></i></span>', esc_attr( $move_class ) );
 					$fld .= sprintf(
 						'<input type="text" name="%s[label]" value="%s" class="label">',
 						esc_attr( $base ),
 						esc_attr( $label )
 					);
-					$fld .= '<a class="add" href="#"><i class="fa fa-plus-circle"></i></a><a class="remove" href="#"><i class="fa fa-minus-circle"></i></a>';
+					$fld .= sprintf( '<a class="%s" href="#"><i class="fa fa-plus-circle"></i></a><a class="%s" href="#"><i class="fa fa-minus-circle"></i></a>', esc_attr( $add_class ), esc_attr( $remove_class ) );
 					$fld .= sprintf(
 						'<input type="text" name="%s[value]" value="%s" class="value">',
 						esc_attr( $base ),
@@ -1600,6 +1608,10 @@ abstract class WPForms_Field {
 						esc_attr( $icon ),
 						esc_attr( $base )
 					);
+
+					if ( $is_other_option ) {
+						$fld .= sprintf( '<input type="hidden" name="%s[other]" value="1" />', esc_attr( $base ) );
+					}
 
 					$fld .= '</li>';
 				}
@@ -1710,7 +1722,7 @@ abstract class WPForms_Field {
 						esc_attr( $base ),
 						checked( '1', $default, false )
 					);
-					$fld .= '<span class="move"><i class="fa fa-bars"></i></span>';
+					$fld .= '<span class="move"><i class="fa fa-grip-lines"></i></span>';
 					$fld .= sprintf(
 						'<input type="text" name="%s[label]" value="%s" class="label">',
 						esc_attr( $base ),
@@ -1779,6 +1791,119 @@ abstract class WPForms_Field {
 				break;
 
 			/*
+			 * Add Other Choice.
+			 */
+			case 'choices_other':
+				// Field contents.
+				$fld = $this->field_element(
+					'toggle',
+					$field,
+					[
+						'slug'    => 'choices_other',
+						'value'   => $this->has_other_choice( $field ) ? '1' : '0',
+						'desc'    => esc_html__( 'Add Other Choice', 'wpforms-lite' ),
+						'tooltip' => esc_html__( 'Add an Other choice so users can input their own value.', 'wpforms-lite' ),
+					],
+					false
+				);
+
+				// Final field output.
+				$output = $this->field_element(
+					'row',
+					$field,
+					[
+						'slug'    => 'choices_other',
+						'class'   => $this->is_dynamic_choices( $field ) ? 'wpforms-hidden' : '',
+						'content' => $fld,
+					],
+					false
+				);
+				break;
+
+			/*
+			 * Other Placeholder (for "Other" choice input field).
+			 */
+			case 'other_placeholder':
+				$label = $this->field_element(
+					'label',
+					$field,
+					[
+						'slug'    => 'other_placeholder',
+						'value'   => esc_html__( 'Placeholder Text', 'wpforms-lite' ),
+						'tooltip' => esc_html__( 'Enter placeholder text for the Other input.', 'wpforms-lite' ),
+					],
+					false
+				);
+
+				$input = $this->field_element(
+					'text',
+					$field,
+					[
+						'slug'  => 'other_placeholder',
+						'value' => isset( $field['other_placeholder'] ) ? esc_attr( $field['other_placeholder'] ) : '',
+					],
+					false
+				);
+
+				$output = $this->field_element(
+					'row',
+					$field,
+					[
+						'slug'    => 'other_placeholder',
+						'content' => $label . $input,
+						'class'   => ( $this->is_dynamic_choices( $field ) || ! $this->has_other_choice( $field ) ) ? 'wpforms-hidden' : '',
+					],
+					false
+				);
+				break;
+
+			/*
+			 * Other Field Size (for "Other" choice input field).
+			 */
+			case 'other_size':
+				$tooltip = esc_html__( 'Select the size of the Other input.', 'wpforms-lite' );
+				$value   = ! empty( $field['other_size'] ) ? esc_attr( $field['other_size'] ) : 'medium';
+				$options = [
+					'small'  => esc_html__( 'Small', 'wpforms-lite' ),
+					'medium' => esc_html__( 'Medium', 'wpforms-lite' ),
+					'large'  => esc_html__( 'Large', 'wpforms-lite' ),
+				];
+
+				$output = $this->field_element(
+					'label',
+					$field,
+					[
+						'slug'    => 'other_size',
+						'value'   => esc_html__( 'Field Size', 'wpforms-lite' ),
+						'tooltip' => $tooltip,
+					],
+					false
+				);
+
+				$output .= $this->field_element(
+					'select',
+					$field,
+					[
+						'slug'    => 'other_size',
+						'value'   => $value,
+						'options' => $options,
+					],
+					false
+				);
+
+				$output = $this->field_element(
+					'row',
+					$field,
+					[
+						'slug'    => 'other_size',
+						'content' => $output,
+						'class'   => ( $this->is_dynamic_choices( $field ) || ! $this->has_other_choice( $field ) ) ? 'wpforms-hidden' : '',
+					],
+					false
+				);
+				break;
+
+			/*
 			 * Choices Images.
 			 */
 			case 'choices_images':
@@ -1803,8 +1928,8 @@ abstract class WPForms_Field {
 					[
 						'slug'    => 'choices_images',
 						'value'   => isset( $field['choices_images'] ) ? '1' : '0',
-						'desc'    => esc_html__( 'Use image choices', 'wpforms-lite' ),
-						'tooltip' => esc_html__( 'Check this option to enable using images with the choices.', 'wpforms-lite' ),
+						'desc'    => esc_html__( 'Use Image Choices', 'wpforms-lite' ),
+						'tooltip' => esc_html__( 'Enable this option to use images with choices', 'wpforms-lite' ),
 					],
 					false
 				);
@@ -1820,6 +1945,13 @@ abstract class WPForms_Field {
 					],
 					false
 				);
+				break;
+
+			/*
+			 * Hide Images Choices.
+			 */
+			case 'choices_images_hide':
+				$output = $this->choices_images_hide_option( $field );
 				break;
 
 			/*
@@ -1878,7 +2010,7 @@ abstract class WPForms_Field {
 					[
 						'slug'    => 'choices_icons',
 						'value'   => isset( $field['choices_icons'] ) ? '1' : '0',
-						'desc'    => esc_html__( 'Use icon choices', 'wpforms-lite' ),
+						'desc'    => esc_html__( 'Use Icon Choices', 'wpforms-lite' ),
 						'tooltip' => esc_html__( 'Enable this option to use icons with the choices.', 'wpforms-lite' ),
 					],
 					false
@@ -2351,7 +2483,7 @@ abstract class WPForms_Field {
 			 * Dynamic Choices.
 			 */
 			case 'dynamic_choices':
-				$value   = ! empty( $field['dynamic_choices'] ) ? esc_attr( $field['dynamic_choices'] ) : '';
+				$value   = $this->is_dynamic_choices( $field ) ? esc_attr( $field['dynamic_choices'] ) : '';
 				$tooltip = esc_html__( 'Select auto-populate method to use.', 'wpforms-lite' );
 				$options = [
 					''          => esc_html__( 'Off', 'wpforms-lite' ),
@@ -2386,7 +2518,7 @@ abstract class WPForms_Field {
 					$field,
 					[
 						'slug'    => 'dynamic_choices',
-						'class'   => ! empty( $field['choices_images'] ) || ! empty( $field['choices_icons'] ) ? 'wpforms-hidden' : '',
+						'class'   => ! empty( $field['choices_images'] ) || ! empty( $field['choices_icons'] ) || $this->has_other_choice( $field ) ? 'wpforms-hidden' : '',
 						'content' => $output,
 					],
 					false
@@ -2662,6 +2794,43 @@ abstract class WPForms_Field {
 	}
 
 	/**
+	 * Get choice images hide option field element.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @param array $field Field data and settings.
+	 *
+	 * @return string
+	 */
+	private function choices_images_hide_option( array $field ): string {
+
+		// Field contents.
+		$fld = $this->field_element(
+			'toggle',
+			$field,
+			[
+				'slug'    => 'choices_images_hide',
+				'value'   => isset( $field['choices_images_hide'] ) ? '1' : '0',
+				'desc'    => wpforms()->is_pro() ? esc_html__( 'Hide Images in Entries', 'wpforms-lite' ) : esc_html__( 'Hide Images in Notifications', 'wpforms-lite' ),
+				'tooltip' => wpforms()->is_pro() ? esc_html__( 'Enable this option to hide the images in entries and notifications.', 'wpforms-lite' ) : esc_html__( 'Enable this option to hide the images in notifications.', 'wpforms-lite' ),
+			],
+			false
+		);
+
+		// Final field output.
+		return $this->field_element(
+			'row',
+			$field,
+			[
+				'slug'    => 'choices_images_hide',
+				'class'   => ! empty( $field['choices_images'] ) ? '' : 'wpforms-hidden',
+				'content' => $fld,
+			],
+			false
+		);
+	}
+
+	/**
 	 * Get choice limit option field element.
 	 *
 	 * @since 1.9.7
@@ -2844,6 +3013,7 @@ abstract class WPForms_Field {
 				$list_class  = [ 'primary-input' ];
 				$with_images = empty( $field['dynamic_choices'] ) && empty( $field['choices_icons'] ) && ! empty( $field['choices_images'] );
 				$with_icons  = empty( $field['dynamic_choices'] ) && empty( $field['choices_images'] ) && ! empty( $field['choices_icons'] );
+				$with_other  = ! $this->is_dynamic_choices( $field ) && $this->has_other_choice( $field );
 				$is_modern   = ! empty( $field['style'] ) && $field['style'] === 'modern';
 
 				if ( $with_images ) {
@@ -2928,6 +3098,11 @@ abstract class WPForms_Field {
 
 						if ( ! empty( $value['default'] ) ) {
 							$item_class[] = 'wpforms-selected';
+						}
+
+						// Mark Other choice in preview and prepare standalone input HTML.
+						if ( $with_other ) {
+							$item_class[] = 'wpforms-other-choice';
 						}
 
 						if ( $with_images ) {
@@ -3020,6 +3195,24 @@ abstract class WPForms_Field {
 					}
 
 					$output .= '</ul>';
+
+					// Multiple choice: Other option.
+					if ( $type === 'radio' ) {
+
+						$placeholder   = ! empty( $field['other_placeholder'] ) ? $field['other_placeholder'] : '';
+						$default_value = ( ! empty( $field['show_values'] ) && isset( $value['value'] ) && $value['value'] !== '' ) ? $value['value'] : '';
+						// Show input by default if the Other choice is set as default.
+						$hidden_class = ! empty( $default ) && ! empty( $value['other'] ) ? '' : 'wpforms-hidden';
+
+						$other_input_html = sprintf(
+							'<input type="text" class="wpforms-other-input %s" placeholder="%s" value="%s">',
+							esc_attr( $hidden_class ),
+							esc_attr( $placeholder ),
+							esc_attr( $default_value )
+						);
+
+						$output .= $other_input_html;
+					}
 
 					/*
 					 * Contains more than 20/250 items, include a note about a limited subset of results displayed.
@@ -3438,7 +3631,8 @@ abstract class WPForms_Field {
 	}
 
 	/**
-	 * Return images, if any, for HTML-supported values.
+	 * Format field returning value due to the context and field type:
+	 * E.g., return images, if any, for HTML-supported values, use separate formatting for the Other option.
 	 *
 	 * @since 1.4.5
 	 *
@@ -3464,12 +3658,33 @@ abstract class WPForms_Field {
 			! empty( $field['value'] ) &&
 			$field['type'] === $this->type &&
 			$context !== 'entry-table' &&
-			$this->filter_field_html_value_images( $context )
+			$this->filter_field_html_value_images( $context, $form_data['fields'][ $field['id'] ] ?? [] )
 		) {
 			return $this->get_field_html( $field, $value, $form_data );
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Filter whether to use HTML formatting for a field with image choices enabled.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @param bool   $filtering Whether to use HTML formatting.
+	 * @param string $context   Value display context.
+	 * @param array  $field     Field settings.
+	 *
+	 * @return bool
+	 */
+	public function field_html_value_images( $filtering, string $context, array $field ): bool {
+
+		// Bail if images are hidden and not in entry-preview context.
+		if ( ! empty( $field['choices_images_hide'] ) && $context !== 'entry-preview' ) {
+			return false;
+		}
+
+		return (bool) $filtering;
 	}
 
 	/**
@@ -3487,14 +3702,14 @@ abstract class WPForms_Field {
 	private function get_field_html( array $field, string $value, array $form_data ): string {
 
 		if ( ! empty( $field['image'] ) ) {
-			$value = wpforms_get_choices_value( $field, $form_data );
+			$value = $this->get_choices_value( $field, $form_data );
 
 			return $this->get_field_html_image( $field['image'], $value );
 		}
 
 		if ( ! empty( $field['images'] ) ) {
 			$items  = [];
-			$value  = wpforms_get_choices_value( $field, $form_data );
+			$value  = $this->get_choices_value( $field, $form_data );
 			$values = explode( "\n", $value );
 
 			foreach ( $values as $key => $choice_label ) {
@@ -3509,6 +3724,23 @@ abstract class WPForms_Field {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Return choice value.
+	 *
+	 * This is only a wrapper for the wpforms_get_choices_value() global function.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @param array $field     Field settings.
+	 * @param array $form_data Form data.
+	 *
+	 * @return string
+	 */
+	protected function get_choices_value( array $field, array $form_data ): string {
+
+		return wpforms_get_choices_value( $field, $form_data );
 	}
 
 	/**
@@ -3539,20 +3771,23 @@ abstract class WPForms_Field {
 	 * @since 1.8.2
 	 *
 	 * @param string $context Context of the field.
+	 * @param array  $field   Field settings.
 	 *
 	 * @return bool
 	 */
-	private function filter_field_html_value_images( $context ): bool {
+	private function filter_field_html_value_images( string $context, array $field ): bool {
 
 		/**
 		 * Filters whether to use HTML formatting for a field with image choices enabled.
 		 *
 		 * @since 1.5.1
+		 * @since 1.9.8.3 Added $field parameter.
 		 *
 		 * @param bool   $use_html Whether to use HTML formatting.
 		 * @param string $context  Value display context.
+		 * @param array  $field    Field settings.
 		 */
-		return (bool) apply_filters( "wpforms_{$this->type}_field_html_value_images", true, $context ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+		return (bool) apply_filters( "wpforms_{$this->type}_field_html_value_images", true, $context, $field ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 	}
 
 	/**
@@ -3782,7 +4017,7 @@ abstract class WPForms_Field {
 	 *
 	 * @return bool
 	 */
-	protected function is_dynamic_choices( $field ) {
+	protected function is_dynamic_choices( array $field ): bool {
 
 		return ! empty( $field['dynamic_choices'] );
 	}
@@ -4095,5 +4330,19 @@ abstract class WPForms_Field {
 		$error = str_replace( '{#}', $choice_limit, $error );
 
 		wpforms()->obj( 'process' )->errors[ $form_data['id'] ][ $field_id ] = $error;
+	}
+
+	/**
+	 * Determines if the field has the "Add Other Choice" option enabled.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @param array $field The field data to check for the "Add Other Choice" option.
+	 *
+	 * @return bool True, if the "Add Other Choice" option is enabled, false otherwise.
+	 */
+	protected function has_other_choice( array $field ): bool {
+
+		return ! empty( $field['choices_other'] );
 	}
 }

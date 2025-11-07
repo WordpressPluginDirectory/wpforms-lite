@@ -408,6 +408,10 @@ function wpforms_date_formats() {
 		[
 			'm/d/Y'  => 'm/d/Y',
 			'd/m/Y'  => 'd/m/Y',
+			'Y/m/d'  => 'Y/m/d',
+			'm.d.Y'  => 'm.d.Y',
+			'd.m.Y'  => 'd.m.Y',
+			'Y.m.d'  => 'Y.m.d',
 			'F j, Y' => 'F j, Y',
 		]
 	);

@@ -119,10 +119,16 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			// Randomize elements.
 			$( '.wpforms-randomize' ).each( function() {
 				const $list = $( this ),
-					$listItems = $list.children();
+					$listItems = $list.children().not( '.wpforms-other-choice' ).toArray(),
+					$other = $list.children( '.wpforms-other-choice' );
 
 				while ( $listItems.length ) {
 					$list.append( $listItems.splice( Math.floor( Math.random() * $listItems.length ), 1 )[ 0 ] );
+				}
+
+				// Append the "other" choice last (if exists).
+				if ( $other.length ) {
+					$list.append( $other );
 				}
 			} );
 
@@ -365,7 +371,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 					return true;
 				}
 
-				// Check if camera field has a file or selected file.
+				// Check if the camera field has a file or selected file.
 				const hasFile = ( element.files && element.files.length > 0 ) ||
 					$field.find( '.wpforms-camera-selected-file.wpforms-camera-selected-file-active' ).length > 0;
 
@@ -1796,6 +1802,9 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				event.preventDefault();
 			} );
 
+			// Multiple Choice field: Other option.
+			app.bindOtherOptionActions();
+
 			// IE: Click on the `image choice` image should trigger the click event on the input (checkbox or radio) field.
 			if ( window.document.documentMode ) {
 				$document.on( 'click', '.wpforms-image-choices-item img', function() {
@@ -1951,6 +1960,31 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				.one( 'wpformsRichTextContentChange', app.richTextContentChanged );
 
 			$( 'form.wpforms-form' ).on( 'wpformsBeforePageChange', app.skipEmptyPages );
+		},
+
+		/**
+		 * Binds actions related to the "Other" option in radio fields within a form.
+		 *
+		 * @since 1.9.8.3
+		 */
+		bindOtherOptionActions() {
+			const $document = $( document );
+
+			// 1) Toggle visibility on radio change and mirror "Other" value to radio.
+			$document.on( 'change', '.wpforms-field-radio input[type="radio"]', function() {
+				const $this = $( this );
+				const $field = $this.closest( '.wpforms-field' );
+				const $li = $this.closest( 'li' );
+
+				// Hide and clear the standalone "Other" input in this field by default.
+				const $otherInput = $field.find( '.wpforms-other-input' );
+				$otherInput.addClass( 'wpforms-hidden' ).prop( 'disabled', true ).prop( 'required', false );
+
+				// If the selected radio is the "Other" choice, show its text input and mirror value.
+				if ( $this.is( ':checked' ) && $li.hasClass( 'wpforms-other-choice' ) ) {
+					$otherInput.removeClass( 'wpforms-hidden' ).prop( 'disabled', false ).prop( 'required', true );
+				}
+			} );
 		},
 
 		/**
@@ -2355,7 +2389,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				return;
 			}
 
-			const iframeWrapperHeight = $turnstile.find( '.g-recaptcha' ).height();
+			const iframeWrapperHeight = $turnstile.find( '.cf-turnstile' ).height();
 
 			parseInt( iframeWrapperHeight, 10 ) === 0
 				? $turnstile.addClass( 'wpforms-is-turnstile-invisible' )
@@ -2505,16 +2539,31 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 		 */
 		optinMonsterRecaptchaReset( optinId ) {
 			const $form = $( '#om-' + optinId ).find( '.wpforms-form' ),
-				$captchaContainer = $form.find( '.wpforms-recaptcha-container' ),
+				$captchaContainer = $form.find( '.wpforms-recaptcha-container' );
+
+			let $captcha, captchaClass, apiVar;
+
+			// Determine provider and get appropriate elements.
+			if ( $captchaContainer.hasClass( 'wpforms-is-hcaptcha' ) ) {
+				$captcha = $form.find( '.h-captcha' );
+				captchaClass = 'h-captcha';
+				apiVar = hcaptcha;
+			} else if ( $captchaContainer.hasClass( 'wpforms-is-turnstile' ) ) {
+				$captcha = $form.find( '.cf-turnstile' );
+				captchaClass = 'cf-turnstile';
+				apiVar = turnstile;
+			} else {
 				$captcha = $form.find( '.g-recaptcha' );
+				captchaClass = 'g-recaptcha';
+				apiVar = grecaptcha;
+			}
 
 			if ( $form.length && $captcha.length ) {
 				const captchaSiteKey = $captcha.attr( 'data-sitekey' ),
-					captchaID = 'recaptcha-' + Date.now(),
-					apiVar = $captchaContainer.hasClass( 'wpforms-is-hcaptcha' ) ? hcaptcha : grecaptcha;
+					captchaID = 'recaptcha-' + Date.now();
 
 				$captcha.remove();
-				$captchaContainer.prepend( '<div class="g-recaptcha" id="' + captchaID + '" data-sitekey="' + captchaSiteKey + '"></div>' );
+				$captchaContainer.prepend( '<div class="' + captchaClass + '" id="' + captchaID + '" data-sitekey="' + captchaSiteKey + '"></div>' );
 
 				apiVar.render(
 					captchaID,
@@ -3377,9 +3426,13 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 			// Check for invisible recaptcha first.
 			recaptchaID = $form.find( '.wpforms-submit' ).get( 0 ).recaptchaID;
 
-			// Check for hcaptcha/recaptcha v2 if invisible recaptcha is not found.
+			// Check for hcaptcha/recaptcha v2/turnstile if invisible recaptcha is not found.
 			if ( app.empty( recaptchaID ) && recaptchaID !== 0 ) {
-				recaptchaID = $form.find( '.g-recaptcha' ).data( 'recaptcha-id' );
+				const $captchaEl = $form.find( '.g-recaptcha, .h-captcha, .cf-turnstile' );
+
+				if ( $captchaEl.length ) {
+					recaptchaID = $captchaEl.data( 'recaptcha-id' );
+				}
 			}
 
 			// Reset captcha.

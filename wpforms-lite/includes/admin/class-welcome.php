@@ -127,6 +127,23 @@ class WPForms_Welcome {
 			return;
 		}
 
+		global $pagenow;
+
+		/**
+		 * When installing the plugin using the WPForms Gutenberg block, we should not redirect to the Getting Started page.
+		 * It causes the WPForms block rendering error.
+		 */
+		if ( in_array( $pagenow, [ 'edit.php', 'post.php', 'post-new.php', 'site-editor.php' ], true ) ) {
+			return;
+		}
+
+		/**
+		 * We should not redirect from the Form Builder.
+		 */
+		if ( wpforms_is_admin_page( 'builder' ) ) {
+			return;
+		}
+
 		// Check if this is an update or first install.
 		$upgrade = get_option( MigrationsBase::PREVIOUS_CORE_VERSION_OPTION_NAME );
 

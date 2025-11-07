@@ -130,9 +130,7 @@ class HTMLPurifier_ContentSets
         if ($return !== \false) {
             return $return;
         }
-        // error-out
-        \trigger_error('Could not determine which ChildDef class to instantiate', \E_USER_ERROR);
-        return \false;
+        throw new \Exception('Could not determine which ChildDef class to instantiate', \E_USER_ERROR);
     }
     /**
      * Converts a string list of elements separated by pipes into

@@ -13,7 +13,7 @@ class HTMLPurifier_Encoder
      */
     private function __construct()
     {
-        \trigger_error('Cannot instantiate encoder, call methods statically', \E_USER_ERROR);
+        throw new \Exception('Cannot instantiate encoder, call methods statically');
     }
     /**
      * Error-handler that mutes errors, alternative to shut-up operator.
@@ -351,7 +351,7 @@ class HTMLPurifier_Encoder
             $str = self::unsafeIconv($encoding, 'utf-8//IGNORE', $str);
             if ($str === \false) {
                 // $encoding is not a valid encoding
-                \trigger_error('Invalid encoding ' . $encoding, \E_USER_ERROR);
+                throw new \Exception('Invalid encoding ' . $encoding);
                 return '';
             }
             // If the string is bjorked by Shift_JIS or a similar encoding
@@ -365,9 +365,9 @@ class HTMLPurifier_Encoder
         }
         $bug = HTMLPurifier_Encoder::testIconvTruncateBug();
         if ($bug == self::ICONV_OK) {
-            \trigger_error('Encoding not supported, please install iconv', \E_USER_ERROR);
+            throw new \Exception('Encoding not supported, please install iconv');
         } else {
-            \trigger_error('You have a buggy version of iconv, see https://bugs.php.net/bug.php?id=48147 ' . 'and http://sourceware.org/bugzilla/show_bug.cgi?id=13541', \E_USER_ERROR);
+            throw new \Exception('You have a buggy version of iconv, see https://bugs.php.net/bug.php?id=48147 ' . 'and http://sourceware.org/bugzilla/show_bug.cgi?id=13541');
         }
     }
     /**
@@ -410,7 +410,7 @@ class HTMLPurifier_Encoder
             $str = \mb_convert_encoding($str, 'ISO-8859-1', 'UTF-8');
             return $str;
         }
-        \trigger_error('Encoding not supported', \E_USER_ERROR);
+        throw new \Exception('Encoding not supported');
         // You might be tempted to assume that the ASCII representation
         // might be OK, however, this is *not* universally true over all
         // encodings.  So we take the conservative route here, rather
@@ -501,7 +501,7 @@ class HTMLPurifier_Encoder
             } elseif (($c = \strlen($r)) < 9000) {
                 $code = self::ICONV_TRUNCATES;
             } elseif ($c > 9000) {
-                \trigger_error('Your copy of iconv is extremely buggy. Please notify HTML Purifier maintainers: ' . 'include your iconv version as per phpversion()', \E_USER_ERROR);
+                throw new \Exception('Your copy of iconv is extremely buggy. Please notify HTML Purifier maintainers: ' . 'include your iconv version as per phpversion()');
             } else {
                 $code = self::ICONV_OK;
             }

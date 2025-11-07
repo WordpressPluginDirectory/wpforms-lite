@@ -80,7 +80,7 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 		/**
 		 * Setup ChoicesJS events.
 		 *
-		 * @since 1.9.8.2
+		 * @since 1.9.8.3
 		 *
 		 * @param {Object} $element  jQuery element where to init ChoicesJS.
 		 * @param {Object} choicesJS ChoicesJS instance.
@@ -151,7 +151,7 @@ WPForms.Admin.Builder.WPFormsChoicesJS = WPForms.Admin.Builder.WPFormsChoicesJS 
 		/**
 		 * Setup ChoicesJS search events.
 		 *
-		 * @since 1.9.8.2
+		 * @since 1.9.8.3
 		 *
 		 * @param {Object} $element  jQuery element where to init ChoicesJS.
 		 * @param {Object} choicesJS ChoicesJS instance.

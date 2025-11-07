@@ -555,7 +555,7 @@ span.wpforms-challenge-dot.wpforms-challenge-dot-completed:before {
 
 .wpforms-challenge-popup-content .rating-stars {
   color: #fdb72c;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -575,11 +575,15 @@ span.wpforms-challenge-dot.wpforms-challenge-dot-completed:before {
 }
 
 .wpforms-challenge-popup .wpforms-challenge-popup-close {
-  font-size: 27px;
+  display: block;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  line-height: 1;
   color: #a7aaad;
   position: absolute;
   right: 0;
-  margin: 11px 10px 10px 10px;
+  margin: 10px;
   background-color: #ffffff;
   border-radius: 50%;
   cursor: pointer;

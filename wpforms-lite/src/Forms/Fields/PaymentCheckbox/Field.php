@@ -68,6 +68,7 @@ class Field extends WPForms_Field {
 
 		// Customize HTML field values.
 		add_filter( 'wpforms_html_field_value', [ $this, 'field_html_value' ], 10, 4 );
+		add_filter( "wpforms_{$this->type}_field_html_value_images", [ $this, 'field_html_value_images' ], 10, 3 );
 
 		// Define additional field properties.
 		add_filter( "wpforms_field_properties_{$this->type}", [ $this, 'field_properties' ], 5, 3 );
@@ -282,7 +283,7 @@ class Field extends WPForms_Field {
 			[
 				'slug'    => 'show_price_after_labels',
 				'value'   => isset( $field['show_price_after_labels'] ) ? '1' : '0',
-				'desc'    => esc_html__( 'Show price after item labels', 'wpforms-lite' ),
+				'desc'    => esc_html__( 'Show Price After Item Labels', 'wpforms-lite' ),
 				'tooltip' => esc_html__( 'Check this option to show price of the item after the label.', 'wpforms-lite' ),
 			],
 			false
@@ -296,6 +297,9 @@ class Field extends WPForms_Field {
 
 		// Choices Images.
 		$this->field_option( 'choices_images', $field );
+
+		// Hide Choices Images.
+		$this->field_option( 'choices_images_hide', $field );
 
 		// Choice Images Style (theme).
 		$this->field_option( 'choices_images_style', $field );

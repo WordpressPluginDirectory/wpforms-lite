@@ -186,7 +186,7 @@
 
 .wpforms_page_wpforms-builder .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon, .block-editor-page .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon, .elementor-editor-active .jconfirm .jconfirm-box-container .jconfirm-box .jconfirm-closeIcon {
   color: transparent;
-  font-family: FontAwesome;
+  font-family: "FontAwesome";
   height: 14px;
   opacity: 1;
   inset-inline-end: 10px;
@@ -355,7 +355,7 @@
   color: #00a32a;
   content: "\f058";
   display: inline-block;
-  font: normal normal normal 14px FontAwesome;
+  font: normal normal normal 14px "FontAwesome";
   font-size: 26px;
   margin-inline-end: -18px;
   padding: 5px 6px;

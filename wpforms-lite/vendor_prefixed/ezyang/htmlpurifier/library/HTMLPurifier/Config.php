@@ -22,7 +22,7 @@ class HTMLPurifier_Config
      * HTML Purifier's version
      * @type string
      */
-    public $version = '4.18.0';
+    public $version = '4.19.0';
     /**
      * Whether or not to automatically finalize
      * the object if a read operation is done.
@@ -792,7 +792,11 @@ class HTMLPurifier_Config
                 break;
             }
         }
-        \trigger_error($msg . $extra, $no);
+        if ($no == \E_USER_ERROR) {
+            throw new \Exception($msg . $extra);
+        } else {
+            \trigger_error($msg . $extra, $no);
+        }
     }
     /**
      * Returns a serialized form of the configuration object that can

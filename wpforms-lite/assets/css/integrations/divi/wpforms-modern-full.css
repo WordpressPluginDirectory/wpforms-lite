@@ -88,7 +88,9 @@ div[style*="z-index: 2147483647"] div[style*="border-width: 11px"][style*="posit
   max-width: 100%;
 }
 
-.wpforms-container .wpforms-recaptcha-container .g-recaptcha {
+.wpforms-container .wpforms-recaptcha-container .g-recaptcha,
+.wpforms-container .wpforms-recaptcha-container .h-captcha,
+.wpforms-container .wpforms-recaptcha-container .cf-turnstile {
   padding: 10px 0 0;
 }
 
@@ -102,7 +104,13 @@ div[style*="z-index: 2147483647"] div[style*="border-width: 11px"][style*="posit
   visibility: inherit !important;
 }
 
-.wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-v3 .g-recaptcha, .wpforms-container .wpforms-recaptcha-container.wpforms-is-turnstile-invisible .g-recaptcha, .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-invisible .g-recaptcha {
+.wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-v3 .g-recaptcha,
+.wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-v3 .h-captcha,
+.wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-v3 .cf-turnstile, .wpforms-container .wpforms-recaptcha-container.wpforms-is-turnstile-invisible .g-recaptcha,
+.wpforms-container .wpforms-recaptcha-container.wpforms-is-turnstile-invisible .h-captcha,
+.wpforms-container .wpforms-recaptcha-container.wpforms-is-turnstile-invisible .cf-turnstile, .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-invisible .g-recaptcha,
+.wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-invisible .h-captcha,
+.wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-invisible .cf-turnstile {
   padding: 0;
 }
 
@@ -3019,6 +3027,10 @@ div.wpforms-container-full .wpforms-field.wpforms-field-checkbox.wpforms-list-in
   flex-wrap: wrap;
 }
 
+div.wpforms-container-full .wpforms-field.wpforms-field-checkbox .wpforms-other-input, div.wpforms-container-full .wpforms-field.wpforms-field-radio .wpforms-other-input, div.wpforms-container-full .wpforms-field.wpforms-field-payment-checkbox .wpforms-other-input, div.wpforms-container-full .wpforms-field.wpforms-field-payment-multiple .wpforms-other-input, div.wpforms-container-full .wpforms-field.wpforms-field-gdpr-checkbox .wpforms-other-input {
+  margin-top: 16px;
+}
+
 div.wpforms-container-full .wpforms-form ul.wpforms-image-choices-modern .wpforms-image-choices-item label,
 div.wpforms-container-full .wpforms-form ul.wpforms-image-choices-classic .wpforms-image-choices-item label,
 div.wpforms-container-full .wpforms-form ul.wpforms-image-choices-none .wpforms-image-choices-item label {
@@ -4077,7 +4089,9 @@ div.wpforms-container-full .wpforms-form textarea:focus {
   max-width: 100%;
 }
 
-.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container .g-recaptcha {
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container .g-recaptcha,
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container .h-captcha,
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container .cf-turnstile {
   padding: 10px 0 0;
 }
 
@@ -4091,7 +4105,13 @@ div.wpforms-container-full .wpforms-form textarea:focus {
   visibility: inherit !important;
 }
 
-.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-v3 .g-recaptcha, .et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-turnstile-invisible .g-recaptcha, .et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-invisible .g-recaptcha {
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-v3 .g-recaptcha,
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-v3 .h-captcha,
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-v3 .cf-turnstile, .et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-turnstile-invisible .g-recaptcha,
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-turnstile-invisible .h-captcha,
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-turnstile-invisible .cf-turnstile, .et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-invisible .g-recaptcha,
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-invisible .h-captcha,
+.et-db #et-boc .et-l .et_pb_module .wpforms-container .wpforms-recaptcha-container.wpforms-is-recaptcha-type-invisible .cf-turnstile {
   padding: 0;
 }
 
@@ -7005,6 +7025,10 @@ div.wpforms-container-full .et-db #et-boc .et-l .et_pb_module * img, .et-db #et-
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-checkbox.wpforms-list-inline ul, .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-radio.wpforms-list-inline ul, .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-payment-checkbox.wpforms-list-inline ul, .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-payment-multiple.wpforms-list-inline ul, .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-gdpr-checkbox.wpforms-list-inline ul {
   display: inline-flex;
   flex-wrap: wrap;
+}
+
+.et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-checkbox .wpforms-other-input, .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-radio .wpforms-other-input, .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-payment-checkbox .wpforms-other-input, .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-payment-multiple .wpforms-other-input, .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-field.wpforms-field-gdpr-checkbox .wpforms-other-input {
+  margin-top: 16px;
 }
 
 .et-db #et-boc .et-l .et_pb_module div.wpforms-container-full .wpforms-form ul.wpforms-image-choices-modern .wpforms-image-choices-item label,

@@ -236,7 +236,7 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
         if (isset($this->info_content_sets['Block'][$block_wrapper])) {
             $this->info_block_wrapper = $block_wrapper;
         } else {
-            \trigger_error('Cannot use non-block element as block wrapper', \E_USER_ERROR);
+            throw new \Exception('Cannot use non-block element as block wrapper');
         }
         $parent = $config->get('HTML.Parent');
         $def = $this->manager->getElement($parent, \true);
@@ -244,8 +244,7 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
             $this->info_parent = $parent;
             $this->info_parent_def = $def;
         } else {
-            \trigger_error('Cannot use unrecognized element as parent', \E_USER_ERROR);
-            $this->info_parent_def = $this->manager->getElement($this->info_parent, \true);
+            throw new \Exception('Cannot use unrecognized element as parent');
         }
         // support template text
         $support = "(for information on implementing this, see the support forums) ";

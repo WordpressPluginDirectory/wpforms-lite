@@ -192,11 +192,11 @@ function wpforms_is_amp( $check_theme_support = true ): bool {
 function wpforms_is_admin_page( $slug = '', $view = '' ): bool {
 
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+	$page = ( (array) ( $_REQUEST['page'] ?? '' ) )[0];
 
 	// Check against basic requirements.
 	if (
-		empty( $_REQUEST['page'] ) ||
-		strpos( $_REQUEST['page'], 'wpforms' ) === false ||
+		strpos( $page, 'wpforms' ) === false ||
 		! is_admin()
 	) {
 		return false;
@@ -210,14 +210,13 @@ function wpforms_is_admin_page( $slug = '', $view = '' ): bool {
 		return false;
 	}
 
-	// Check against sub-level page view.
+	// Check against sublevel page view.
 	if (
 		! empty( $view ) &&
 		( empty( $_REQUEST['view'] ) || $_REQUEST['view'] !== $view )
 	) {
 		return false;
 	}
-
 	// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 	return true;

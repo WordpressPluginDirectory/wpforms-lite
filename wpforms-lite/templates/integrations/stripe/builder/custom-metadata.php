@@ -40,7 +40,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tbody>
 		<?php
 		foreach ( $custom_metadata as $key => $value ) :
-			$is_hidden = ! $key ? 'hidden' : '';
+			$is_hidden            = ! $key ? 'hidden' : '';
+			$is_meta_key_valid    = ! empty( $value['meta_key'] ) || empty( $value['object_type'] ) || empty( $value['meta_value'] );
+			$meta_key_input_class = [
+				'wpforms-panel-field-stripe-custom-metadata-meta-key',
+				$is_meta_key_valid ? '' : 'wpforms-required-field-error',
+			];
 			?>
 			<tr data-key="<?php echo esc_attr( $key ); ?>">
 				<td>
@@ -77,7 +82,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							'parent'      => 'payments',
 							'subsection'  => $subsection,
 							'index'       => $key,
-							'input_class' => 'wpforms-panel-field-stripe-custom-metadata-meta-key',
+							'input_class' => implode( ' ', $meta_key_input_class ),
 						]
 					);
 					?>

@@ -69,7 +69,7 @@ class HTMLPurifier_ConfigSchema
         $r = \unserialize($contents);
         if (!$r) {
             $hash = \sha1($contents);
-            \trigger_error("Unserialization of configuration schema failed, sha1 of file was {$hash}", \E_USER_ERROR);
+            throw new \Exception("Unserialization of configuration schema failed, sha1 of file was {$hash}");
         }
         return $r;
     }

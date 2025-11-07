@@ -162,14 +162,14 @@ abstract class FormBuilder implements FormBuilderInterface {
 											name="providers[{{ data.provider.slug }}][{{ data.connection.id }}][fields_meta][{{ meta_id }}][field_id]">
 											<option value=""><?php esc_html_e( '--- Select Form Field ---', 'wpforms-lite' ); ?></option>
 
-											<# _.each( data.fields, function( field, key ) { #>
-												<# item.field_id = item.field_id.toString();
-												field.id = field.id.toString();
-												isSelected = field.id === item.field_id
+											<# _.each( data.fields, function( field, key ) {
+												const fieldId = field.id.toString();
+												const itemId  = item.field_id.toString();
+												isSelected    = fieldId === itemId
 													<?php // BC: Previously saved name fields don't have the `.full` suffix in DB. ?>
-													|| ( ! item.field_id.includes('.') && field.id === item.field_id + '.full' );
+													|| ( ! itemId.includes('.') && fieldId === itemId + '.full' );
 												#>
-												<option value="{{ field.id }}"<# if ( isSelected ) { #> selected="selected"<# } #>>
+												<option value="{{ fieldId }}"<# if ( isSelected ) { #> selected="selected"<# } #>>
 													<# if ( ! _.isUndefined( field.label ) && field.label.toString().trim() !== '' ) { #>
 														{{ field.label.toString().trim() }}
 													<# } else { #>

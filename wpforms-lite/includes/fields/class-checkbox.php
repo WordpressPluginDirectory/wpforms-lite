@@ -67,6 +67,7 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 
 		// Customize HTML field values.
 		add_filter( 'wpforms_html_field_value', [ $this, 'field_html_value' ], 10, 4 );
+		add_filter( "wpforms_{$this->type}_field_html_value_images", [ $this, 'field_html_value_images' ], 10, 3 );
 
 		// Define additional field properties.
 		add_filter( 'wpforms_field_properties_checkbox', [ $this, 'field_properties' ], 5, 3 );
@@ -250,6 +251,9 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 
 		// Choices Images.
 		$this->field_option( 'choices_images', $field );
+
+		// Hide Choices Images.
+		$this->field_option( 'choices_images_hide', $field );
 
 		// Choices Images Style (theme).
 		$this->field_option( 'choices_images_style', $field );

@@ -21,6 +21,7 @@ class HTMLPurifier_CSSDefinition extends HTMLPurifier_Definition
     protected function doSetup($config)
     {
         $this->info['text-align'] = new HTMLPurifier_AttrDef_Enum(['left', 'right', 'center', 'justify'], \false);
+        $this->info['direction'] = new HTMLPurifier_AttrDef_Enum(['ltr', 'rtl'], \false);
         $border_style = $this->info['border-bottom-style'] = $this->info['border-right-style'] = $this->info['border-left-style'] = $this->info['border-top-style'] = new HTMLPurifier_AttrDef_Enum(['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset'], \false);
         $this->info['border-style'] = new HTMLPurifier_AttrDef_CSS_Multiple($border_style);
         $this->info['clear'] = new HTMLPurifier_AttrDef_Enum(['none', 'left', 'right', 'both'], \false);

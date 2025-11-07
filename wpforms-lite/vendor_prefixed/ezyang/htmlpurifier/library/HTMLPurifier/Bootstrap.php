@@ -6,7 +6,7 @@ namespace WPForms\Vendor;
 if (!\defined('WPForms\\Vendor\\HTMLPURIFIER_PREFIX')) {
     \define('WPForms\\Vendor\\HTMLPURIFIER_PREFIX', \realpath(\dirname(__FILE__) . '/..'));
 }
-// accomodations for versions earlier than 5.0.2
+// accommodations for versions earlier than 5.0.2
 // borrowed from PHP_Compat, LGPL licensed, by Aidan Lister <aidan@php.net>
 if (!\defined('PHP_EOL')) {
     switch (\strtoupper(\substr(\PHP_OS, 0, 3))) {

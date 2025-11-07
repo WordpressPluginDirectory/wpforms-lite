@@ -7,7 +7,7 @@
  * Requires PHP:      7.2
  * Author:            WPForms
  * Author URI:        https://wpforms.com
- * Version:           1.9.8.2
+ * Version:           1.9.8.4
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wpforms-lite
@@ -59,7 +59,7 @@ if ( ! defined( 'WPFORMS_VERSION' ) ) {
 	 *
 	 * @since 1.0.0
 	 */
-	define( 'WPFORMS_VERSION', '1.9.8.2' );
+	define( 'WPFORMS_VERSION', '1.9.8.4' );
 }
 
 if ( ! defined( 'WPFORMS_PLUGIN_DIR' ) ) {
