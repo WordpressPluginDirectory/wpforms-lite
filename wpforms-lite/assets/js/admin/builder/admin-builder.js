@@ -292,7 +292,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			browser.isMac = /Mac/.test( navigator.userAgent );
 
 			// Action buttons.
-			elements.$helpButton = $( '#wpforms-help' );
+			elements.$helpButton = $( '.js-wpforms-help' );
 			elements.$previewButton = $( '#wpforms-preview-btn' );
 			elements.$embedButton = $( '#wpforms-embed' );
 			elements.$saveButton = $( '#wpforms-save' );
@@ -1974,6 +1974,11 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				app.panelSectionSwitch( this, e );
 			} );
 
+			// Panel tab switching.
+			$builder.on( 'click', '.wpforms-panel .wpforms-panel-content .wpforms-panel-content-section-tabs-list-item', function( e ) {
+				app.panelSectionTabSwitch( this, e );
+			} );
+
 			// Panel sidebar toggle.
 			$builder.on( 'click', '.wpforms-panels .wpforms-panel-sidebar-content .wpforms-panel-sidebar-toggle', function() {
 				$( this ).parent().toggleClass( 'wpforms-panel-sidebar-closed' );
@@ -2059,12 +2064,53 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 
 				$sectionButtons.removeClass( 'active' );
 				$sectionButton.addClass( 'active' );
-				$panel.find( '.wpforms-panel-content-section' ).hide();
-				$panel.find( '.wpforms-panel-content-section-' + section ).show();
+				$panel.find( '.wpforms-panel-content-section' ).hide().removeClass( 'active' );
+				$panel.find( '.wpforms-panel-content-section-' + section ).show().addClass( 'active' );
 
 				// Update the active section parameter in the URL.
 				history.replaceState( {}, null, wpf.updateQueryString( 'section', section ) );
 			}
+		},
+
+		/**
+		 * Switches panel sections.
+		 *
+		 * @since 1.9.8.6
+		 *
+		 * @param {Element} el Element.
+		 * @param {Event}   e  Event.
+		 *
+		 * @return {void}
+		 */
+		panelSectionTabSwitch( el, e ) {
+			e.preventDefault();
+
+			const $tabToggle = $( el ),
+				disabledClass = 'wpforms-disabled',
+				activeToggleClass = 'wpforms-panel-content-section-tabs-list-item-active',
+				activeTab = $tabToggle.data( 'tab' );
+
+			if ( ! activeTab || $tabToggle.hasClass( disabledClass ) || $tabToggle.hasClass( activeToggleClass ) ) {
+				return;
+			}
+
+			const event = WPFormsUtils.triggerEvent( $builder, 'wpformsPanelSectionTabBeforeSwitch', [ activeTab, $tabToggle ] );
+
+			if ( event.isDefaultPrevented() ) {
+				return;
+			}
+
+			const activeContentClass = 'wpforms-panel-content-section-tabs-content-tab-active',
+				$tabs = $tabToggle.closest( '.wpforms-panel-content-section-tabs-list' ),
+				$tabContent = $tabs.closest( '.wpforms-panel-content' ).find( '.wpforms-panel-content-section-tabs-content-tab' );
+
+			$tabs.find( '.wpforms-panel-content-section-tabs-list-item' ).removeClass( activeToggleClass );
+			$tabToggle.addClass( activeToggleClass );
+
+			$tabContent.removeClass( activeContentClass );
+			$tabContent.filter( `[data-tab="${ activeTab }"]` ).addClass( activeContentClass );
+
+			WPFormsUtils.triggerEvent( $builder, 'wpformsPanelSectionTabSwitch', [ activeTab, $tabToggle ] );
 		},
 
 		//--------------------------------------------------------------------//
@@ -2142,7 +2188,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			} );
 
 			// Form field preview clicking.
-			$builder.on( 'click', '.wpforms-field', function( event ) {
+			$builder.on( 'click', '.wpforms-field', function( event, extraParameters ) {
 				if ( app.isFieldPreviewActionsDisabled( this ) ) {
 					return;
 				}
@@ -2153,7 +2199,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				}
 
 				// Dismiss the main context menu when it is open.
-				if ( WPForms.Admin.Builder.ContextMenu ) {
+				if ( WPForms.Admin.Builder.ContextMenu && extraParameters !== 'ignore-contextmenu' ) {
 					WPForms.Admin.Builder.ContextMenu.hideMainContextMenu( event );
 				}
 
@@ -4954,17 +5000,27 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				$choice = $parent.clone().insertAfter( $parent );
 
 			$choice.attr( 'data-key', id );
-			$choice.find( 'input.label' ).val( '' ).attr( 'name', 'fields[' + fieldID + '][choices][' + id + '][label]' );
-			$choice.find( 'input.value' ).val( '' ).attr( 'name', 'fields[' + fieldID + '][choices][' + id + '][value]' );
-			$choice.find( '.wpforms-image-upload input.source' ).val( '' ).attr( 'name', 'fields[' + fieldID + '][choices][' + id + '][image]' );
-			$choice.find( '.wpforms-icon-select input.source-icon' ).val( wpforms_builder.icon_choices.default_icon ).attr( 'name', 'fields[' + fieldID + '][choices][' + id + '][icon]' );
-			$choice.find( '.wpforms-icon-select input.source-icon-style' ).val( wpforms_builder.icon_choices.default_icon_style ).attr( 'name', 'fields[' + fieldID + '][choices][' + id + '][icon_style]' );
 			$choice.find( '.wpforms-icon-select .ic-fa-preview' ).removeClass().addClass( 'ic-fa-preview ic-fa-' + wpforms_builder.icon_choices.default_icon_style + ' ic-fa-' + wpforms_builder.icon_choices.default_icon );
 			$choice.find( '.wpforms-icon-select .ic-fa-preview + span' ).text( wpforms_builder.icon_choices.default_icon );
-			$choice.find( 'input.default' ).attr( 'name', 'fields[' + fieldID + '][choices][' + id + '][default]' ).prop( 'checked', false );
 			$choice.find( '.preview' ).empty();
 			$choice.find( '.wpforms-image-upload-add' ).show();
 			$choice.find( '.wpforms-money-input' ).trigger( 'focusout' );
+
+			$choice.find( 'input, select' ).each( function() {
+				const $field = $( this ),
+					type = $field.attr( 'type' );
+
+				$field.attr( 'name', $( this ).attr( 'name' ).replace( /\[choices]\[(\d+)]/g, `[choices][${ id }]` ) );
+
+				if ( type === 'radio' || type === 'checkbox' ) {
+					$field.prop( 'checked', false );
+				} else {
+					$field.val( '' );
+				}
+			} );
+
+			$choice.find( '.wpforms-icon-select input.source-icon' ).val( wpforms_builder.icon_choices.default_icon );
+			$choice.find( '.wpforms-icon-select input.source-icon-style' ).val( wpforms_builder.icon_choices.default_icon_style );
 
 			if ( checked === true ) {
 				$parent.find( 'input.default' ).prop( 'checked', true );
@@ -6578,16 +6634,18 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 		 * @param {boolean} hide Whether to hide the options.
 		 */
 		hideOpenConfirmationsInNewTabOptions( hide ) {
-			const $confirmationSection = $builder.find( '.wpforms-panel-content-section-confirmation' ),
-				$blocks = $confirmationSection.find( '.wpforms-builder-settings-block' ),
-				$options = $blocks.find( '.wpforms-panel-field-confirmations-redirect_new_tab' );
+			const $options = $( '.wpforms-panel-field-confirmations-redirect_new_tab' );
 
 			if ( ! $options.length ) {
 				return;
 			}
 
 			$options.each( function() {
-				$( this ).closest( '.wpforms-panel-field' ).toggle( ! hide );
+				const $option = $( this ),
+					$block = $option.closest( '.wpforms-builder-settings-block' ),
+					type = $block.find( '.wpforms-panel-field-confirmations-type' ).val();
+
+				$option.closest( '.wpforms-panel-field' ).toggle( ! hide && [ 'redirect', 'page' ].includes( type ) );
 			} );
 		},
 
@@ -7180,7 +7238,7 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 				nameHolder = headerHolder.find( '.wpforms-builder-settings-block-name' ),
 				editHolder = headerHolder.find( '.wpforms-builder-settings-block-name-edit' );
 			let currentName = editHolder.find( 'input' ).val().trim();
-			const blockType = $el.closest( '.wpforms-builder-settings-block' ).data( 'block-type' );
+			const blockType = $el.data( 'block-type' ) || $el.closest( '.wpforms-builder-settings-block' ).data( 'block-type' );
 
 			// Provide a default value for the empty settings block name.
 			if ( ! currentName.length ) {

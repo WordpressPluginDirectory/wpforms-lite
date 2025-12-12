@@ -153,7 +153,7 @@ class PDF {
 			esc_url( WPFORMS_PLUGIN_URL . 'assets/images/pdf-education/pdf.svg' ),
 			__( 'NEW FEATURE', 'wpforms-lite' ),
 			__( 'PDF Addon', 'wpforms-lite' ),
-			__( 'Easily turn form entry data into beautifully designed PDFs and attach them to notifications.' ),
+			__( 'Easily turn form entry data into beautifully designed PDFs and attach them to notifications.', 'wpforms-lite' ),
 			$this->get_button_html()
 		);
 

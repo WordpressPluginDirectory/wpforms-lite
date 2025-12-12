@@ -43,7 +43,7 @@ class Payments extends Education\Builder\Panel {
 	 */
 	protected function get_addons() {
 
-		return $this->addons->get_by_category( $this->get_name() );
+		return $this->addons->get_by_path( 'form_builder.category', $this->get_name() );
 	}
 
 	/**

@@ -13,56 +13,56 @@ class ComposerStaticInit52fcc6f01fb07171beb1c99b52a63c7f
     );
 
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WPForms\\Tests\\Unit\\' => 19,
             'WPForms\\Tests\\Integration\\' => 26,
             'WPForms\\Scoper\\' => 15,
             'WPForms\\' => 8,
         ),
-        'S' => 
+        'S' =>
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Iconv\\' => 23,
         ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\Log\\' => 8,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WPForms\\Tests\\Unit\\' => 
+        'WPForms\\Tests\\Unit\\' =>
         array (
             0 => __DIR__ . '/../..' . '/tests/unit',
         ),
-        'WPForms\\Tests\\Integration\\' => 
+        'WPForms\\Tests\\Integration\\' =>
         array (
             0 => __DIR__ . '/../..' . '/tests/integration',
         ),
-        'WPForms\\Scoper\\' => 
+        'WPForms\\Scoper\\' =>
         array (
             0 => __DIR__ . '/../..' . '/../.php-scoper',
         ),
-        'WPForms\\' => 
+        'WPForms\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
             1 => __DIR__ . '/../..' . '/src',
         ),
-        'Symfony\\Polyfill\\Php80\\' => 
+        'Symfony\\Polyfill\\Php80\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
-        'Symfony\\Polyfill\\Mbstring\\' => 
+        'Symfony\\Polyfill\\Mbstring\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'Symfony\\Polyfill\\Iconv\\' => 
+        'Symfony\\Polyfill\\Iconv\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-iconv',
         ),
-        'Psr\\Log\\' => 
+        'Psr\\Log\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),

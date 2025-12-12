@@ -263,8 +263,8 @@ abstract class Base {
 		$previous_core_version = $this->get_max_version( $last_migrated );
 
 		if (
-			$previous_core_version === self::CURRENT_VERSION ||
-			$previous_core_version === self::INITIAL_FAKE_VERSION
+			$previous_core_version === self::INITIAL_FAKE_VERSION ||
+			version_compare( $previous_core_version, self::CURRENT_VERSION, '>=' )
 		) {
 			return;
 		}

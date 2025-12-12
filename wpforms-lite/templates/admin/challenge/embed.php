@@ -78,8 +78,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				);
 				?>
 			</p>
-			<a href="https://wordpress.org/support/plugin/wpforms-lite/reviews/?filter=5#new-post" class="wpforms-challenge-popup-btn wpforms-challenge-popup-rate-btn" target="_blank" rel="noopener"><?php esc_html_e( 'Rate WPForms on WordPress.org', 'wpforms-lite' ); ?>
-				<span class="dashicons dashicons-external"></span></a>
+			<a
+					href="<?php echo wpforms_wp_org_review_link(); ?>"
+					class="wpforms-challenge-popup-btn wpforms-challenge-popup-rate-btn" target="_blank" rel="noopener">
+				<?php esc_html_e( 'Rate WPForms on WordPress.org', 'wpforms-lite' ); ?>
+				<span class="dashicons dashicons-external"></span>
+			</a>
 		</div>
 		<?php echo $congrats_popup_footer; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</div>

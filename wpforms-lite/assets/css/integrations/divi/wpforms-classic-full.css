@@ -1515,7 +1515,7 @@ body div.wpforms-container-full div.wpforms-camera-modal-overlay.wpforms-camera-
 }
 
 body div.wpforms-container-full div.wpforms-camera-modal-overlay.wpforms-camera-format-video .wpforms-camera-modal-footer .wpforms-camera-modal-buttons .wpforms-camera-crop {
-  background: url(../../../pro/images/video-cancel.svg) no-repeat center;
+  background: url(../../../images/crop.svg) no-repeat center;
 }
 
 body div.wpforms-container-full div.wpforms-camera-modal {
@@ -4923,7 +4923,7 @@ div.wpforms-container-full .wpforms-form .wpforms-error-container blockquote {
 }
 
 .et-db #et-boc .et-l .et_pb_module body div.wpforms-container-full div.wpforms-camera-modal-overlay.wpforms-camera-format-video .wpforms-camera-modal-footer .wpforms-camera-modal-buttons .wpforms-camera-crop {
-  background: url(../../../pro/images/video-cancel.svg) no-repeat center;
+  background: url(../../../images/crop.svg) no-repeat center;
 }
 
 .et-db #et-boc .et-l .et_pb_module body div.wpforms-container-full div.wpforms-camera-modal {

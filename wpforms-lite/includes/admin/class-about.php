@@ -1785,7 +1785,7 @@ class WPForms_About {
 			$pro_addons      = Requirements::get_instance()->get_addons_by_license( 'basic, plus, pro' );
 			$pro_addons_list = sprintf(
 				/* translators: %s - number of addons. */
-				esc_html__( 'PDF, Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, Dropbox, Google Calendar, Google Drive, Airtable, and more (%1$s+ total)', 'wpforms-lite' ),
+				esc_html__( 'PDF, Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, Dropbox, Google Calendar, Google Drive, Airtable, Notion, and more (%1$s+ total)', 'wpforms-lite' ),
 				count( $pro_addons )
 			);
 		}
@@ -1808,7 +1808,7 @@ class WPForms_About {
 			$pro_addons      = Requirements::get_instance()->get_addons_by_license( Requirements::BASIC_PLUS_PRO_AND_TOP );
 			$top_addons_list = sprintf(
 			/* translators: %s - number of addons. */
-				esc_html__( 'PDF, Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Webhooks, Google Sheets, Coupons, Dropbox, Google Calendar, Google Drive, Entry Automation, Airtable, and more (%1$s+ total)', 'wpforms-lite' ),
+				esc_html__( 'PDF, Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Webhooks, Google Sheets, Coupons, Dropbox, Google Calendar, Google Drive, Entry Automation, Airtable, Notion, and more (%1$s+ total)', 'wpforms-lite' ),
 				count( $pro_addons )
 			);
 		}

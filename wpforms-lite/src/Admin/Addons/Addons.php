@@ -241,28 +241,28 @@ class Addons {
 	 *
 	 * @return array Addons data filtered according to given arguments.
 	 */
-	private function get_filtered( array $addons, array $args ) {
+	private function get_filtered( array $addons, array $args ): array {
 
-		if ( empty( $addons ) ) {
-			return [];
-		}
+		$args = wp_parse_args(
+			$args,
+			[
+				'category' => '',
+				'license'  => '',
+			]
+		);
 
-		$default_args = [
-			'category' => '',
-			'license'  => '',
-		];
-
-		$args = wp_parse_args( $args, $default_args );
+		$args = array_map( 'strtolower', $args );
 
 		$filtered_addons = [];
 
 		foreach ( $addons as $addon ) {
-			foreach ( [ 'category', 'license' ] as $arg_key ) {
+			foreach ( $args as $arg_key => $arg_value ) {
+				$addon_value = wpforms_array_get_by_path( $addon, $arg_key, '' );
+
 				if (
-					! empty( $args[ $arg_key ] ) &&
-					! empty( $addon[ $arg_key ] ) &&
-					is_array( $addon[ $arg_key ] ) &&
-					in_array( strtolower( $args[ $arg_key ] ), $addon[ $arg_key ], true )
+					is_array( $addon_value ) &&
+					// We cannot use preg_quote here, as $arg_value could contain regex like 'crm|email-marketing|integration'.
+					preg_grep( '/^' . $arg_value . '$/', $addon_value )
 				) {
 					$filtered_addons[] = $addon;
 				}
@@ -283,7 +283,23 @@ class Addons {
 	 */
 	public function get_by_category( string $category ) {
 
-		return $this->get_filtered( $this->get_available(), [ 'category' => $category ] );
+		return $this->get_by_path( 'category', $category );
+	}
+
+	/**
+	 * Get available addons data by path.
+	 *
+	 * @since 1.9.8.6
+	 *
+	 * @param string $path  Path in addons multidimensional array.
+	 *                      May be 'category' or 'form_builder.category' or 'settings_integrations.category', etc.
+	 * @param string $value Addons multidimensional array value we are looking for in the path.
+	 *
+	 * @return array
+	 */
+	public function get_by_path( string $path, $value ): array {
+
+		return $this->get_filtered( $this->get_available(), [ $path => $value ] );
 	}
 
 	/**

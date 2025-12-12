@@ -19,12 +19,15 @@
  * Privacy Compliance Subpage.
  *
  * @since 1.9.7.3
+ * @deprecated 1.9.8.6 Use WPFormsPagesCommon instead.
  */
 const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( function( document, window, $ ) {
 	/**
 	 * Elements.
 	 *
 	 * @since 1.9.7.3
+	 *
+	 * @deprecated 1.9.8.6 Use WPFormsPagesCommon instead.
 	 *
 	 * @type {Object}
 	 */
@@ -35,6 +38,8 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 	 *
 	 * @since 1.9.7.3
 	 *
+	 * @deprecated 1.9.8.6 Use WPFormsPagesCommon instead.
+	 *
 	 * @type {Object}
 	 */
 	const app = {
@@ -43,8 +48,12 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 * Start the engine.
 		 *
 		 * @since 1.9.7.3
+		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.init() instead.
 		 */
 		init: () => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.init()" has been deprecated, please use the new "WPFormsPagesCommon.init()" function instead!' ); // eslint-disable-line no-console
+
 			$( app.ready );
 		},
 
@@ -52,8 +61,12 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 * Document ready.
 		 *
 		 * @since 1.9.7.3
+		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.ready() instead.
 		 */
 		ready: () => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.ready()" has been deprecated, please use the new "WPFormsPagesCommon.ready()" function instead!' ); // eslint-disable-line no-console
+
 			app.initVars();
 			app.events();
 		},
@@ -62,8 +75,12 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 * Init variables.
 		 *
 		 * @since 1.9.7.3
+		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.initVars() instead.
 		 */
 		initVars: () => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.initVars()" has been deprecated, please use the new "WPFormsPagesCommon.initVars()" function instead!' ); // eslint-disable-line no-console
+
 			el = {
 				$stepInstall:    $( 'section.step-install' ),
 				$stepInstallNum: $( 'section.step-install .num img' ),
@@ -78,8 +95,12 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 * Register JS events.
 		 *
 		 * @since 1.9.7.3
+		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.events() instead.
 		 */
 		events: () => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.events()" has been deprecated, please use the new "WPFormsPagesCommon.events()" function instead!' ); // eslint-disable-line no-console
+
 			// Step the 'Install' button click.
 			el.$stepInstall.on( 'click', 'button', app.stepInstallClick );
 
@@ -95,9 +116,13 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 *
 		 * @since 1.9.7.3
 		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.stepInstallClick() instead.
+		 *
 		 * @param {Event} e Event object.
 		 */
 		stepInstallClick: ( e ) => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.stepInstallClick()" has been deprecated, please use the new "WPFormsPagesCommon.stepInstallClick()" function instead!' ); // eslint-disable-line no-console
+
 			const $btn = $( e.currentTarget );
 
 			if ( $btn.hasClass( 'disabled' ) ) {
@@ -152,11 +177,15 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 *
 		 * @since 1.9.7.3
 		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.stepInstallDone() instead.
+		 *
 		 * @param {Object} res    Result of $.post() query.
 		 * @param {jQuery} $btn   Button.
 		 * @param {string} action Action (for more info look at the app.stepInstallClick() function).
 		 */
 		stepInstallDone: ( res, $btn, action ) => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.stepInstallDone()" has been deprecated, please use the new "WPFormsPagesCommon.stepInstallDone()" function instead!' ); // eslint-disable-line no-console
+
 			const success = 'install' === action ? res.success && res.data.is_activated : res.success;
 
 			if ( success ) {
@@ -178,8 +207,12 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 * Callback for step 'Install' completion.
 		 *
 		 * @since 1.9.7.3
+		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.stepInstallPluginStatus() instead.
 		 */
 		stepInstallPluginStatus: () => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.stepInstallPluginStatus()" has been deprecated, please use the new "WPFormsPagesCommon.stepInstallPluginStatus()" function instead!' ); // eslint-disable-line no-console
+
 			const data = {
 				action: 'wpforms_privacy_compliance_page_check_plugin_status',
 				nonce : wpforms_admin.nonce,
@@ -192,9 +225,13 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 *
 		 * @since 1.9.7.3
 		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.stepInstallPluginStatusDone() instead.
+		 *
 		 * @param {Object} res Result of $.post() query.
 		 */
 		stepInstallPluginStatusDone: ( res ) => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.stepInstallPluginStatusDone()" has been deprecated, please use the new "WPFormsPagesCommon.stepInstallPluginStatusDone()" function instead!' ); // eslint-disable-line no-console
+
 			if ( ! res.success ) {
 				return;
 			}
@@ -224,9 +261,13 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 *
 		 * @since 1.9.7.3
 		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.gotoURL() instead.
+		 *
 		 * @param {Event} e Event object.
 		 */
 		gotoURL: ( e ) => { // eslint-disable-line no-unused-vars
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.gotoURL()" has been deprecated, please use the new "WPFormsPagesCommon.gotoURL()" function instead!' ); // eslint-disable-line no-console
+
 			const $btn = $( e.currentTarget ),
 				url = $btn.attr( 'data-url' );
 
@@ -242,9 +283,13 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 *
 		 * @since 1.9.7.3
 		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.showSpinner() instead.
+		 *
 		 * @param {jQuery} $el Element.
 		 */
 		showSpinner: ( $el ) => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.showSpinner()" has been deprecated, please use the new "WPFormsPagesCommon.showSpinner()" function instead!' ); // eslint-disable-line no-console
+
 			$el.siblings( 'i.loader' ).removeClass( 'hidden' );
 		},
 
@@ -253,9 +298,13 @@ const WPFormsPagesPrivacyCompliance = window.WPFormsPagesPrivacyCompliance || ( 
 		 *
 		 * @since 1.9.7.3
 		 *
+		 * @deprecated 1.9.8.6 Use WPFormsPagesCommon.hideSpinner() instead.
+		 *
 		 * @param {jQuery} $el Element.
 		 */
 		hideSpinner: ( $el ) => {
+			console.warn( 'WARNING! Function "WPFormsPagesPrivacyCompliance.hideSpinner()" has been deprecated, please use the new "WPFormsPagesCommon.hideSpinner()" function instead!' ); // eslint-disable-line no-console
+
 			$el.show();
 			$el.siblings( 'i.loader' ).addClass( 'hidden' );
 		},

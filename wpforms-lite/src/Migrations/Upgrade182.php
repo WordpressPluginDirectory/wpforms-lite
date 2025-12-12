@@ -55,7 +55,7 @@ class Upgrade182 extends UpgradeBase {
 	 */
 	private function set_cache_time( $cache_dir, $cache_file, $filter ) {
 
-		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.PHP.ValidateHooks.InvalidHookName
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.PHP.ValidateHooks.InvalidHookName, WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 		$cache_ttl           = (int) apply_filters( $filter, WEEK_IN_SECONDS );
 		$cache_file_path     = $cache_dir . $cache_file;
 		$cache_modified_time = 0;

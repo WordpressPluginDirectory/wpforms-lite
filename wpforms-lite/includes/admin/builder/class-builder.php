@@ -1166,8 +1166,8 @@ class WPForms_Builder {
 		 *
 		 * @since 1.7.9
 		 *
-		 * @param array $classes   List of classes.
-		 * @param array $form_data Form data and settings.
+		 * @param array      $classes   List of classes.
+		 * @param array|bool $form_data Form data and settings or false when form isn't created.
 		 */
 		$builder_classes = (array) apply_filters( 'wpforms_builder_output_classes', $builder_classes, $this->form_data );
 
@@ -1244,7 +1244,7 @@ class WPForms_Builder {
 					<div class="wpforms-right">
 
 						<button id="wpforms-help"
-							class="wpforms-btn wpforms-btn-toolbar wpforms-btn-light-grey"
+							class="js-wpforms-help wpforms-btn wpforms-btn-toolbar wpforms-btn-light-grey"
 							title="<?php esc_attr_e( 'Help Ctrl+H', 'wpforms-lite' ); ?>">
 								<i class="fa fa-question-circle-o"></i>
 								<span<?php echo $this->form ? ' class="screen-reader-text"' : ''; ?>>

@@ -52,7 +52,7 @@ class Integrations extends AddonsListBase {
 	 */
 	protected function get_addons() {
 
-		return $this->addons->get_by_category( 'providers' );
+		return $this->addons->get_by_path( 'settings_integrations.category', 'crm|email-marketing|integration' );
 	}
 
 	/**

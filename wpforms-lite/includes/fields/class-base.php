@@ -1063,7 +1063,10 @@ abstract class WPForms_Field {
 			// Textarea.
 			case 'textarea':
 				$rows   = ! empty( $args['rows'] ) ? (int) $args['rows'] : '3';
-				$output = sprintf( '<textarea class="%s" id="wpforms-field-option-%d-%s" name="fields[%d][%s]" rows="%d" %s>%s</textarea>', $class, $id, $slug, $id, $slug, $rows, $attrs, $args['value'] );
+				$before = ! empty( $args['before'] ) ? '<span class="before-input">' . esc_html( $args['before'] ) . '</span>' : '';
+				$after  = ! empty( $args['after'] ) ? '<span class="after-input sub-label">' . esc_html( $args['after'] ) . '</span>' : '';
+
+				$output = sprintf( '%s<textarea class="%s" id="wpforms-field-option-%d-%s" name="fields[%d][%s]" rows="%d" %s>%s</textarea>%s', $before, $class, $id, $slug, $id, $slug, $rows, $attrs, $args['value'], $after );
 				break;
 
 			// Checkbox.
@@ -1559,11 +1562,39 @@ abstract class WPForms_Field {
 					);
 
 					$fld .= sprintf( '<span class="%s"><i class="fa fa-bars"></i></span>', esc_attr( $move_class ) );
+
+					/**
+					 * Fires before the field choice label.
+					 *
+					 * @since 1.9.8.6
+					 *
+					 * @param string $output  Output string.
+					 * @param int    $key     Choice key.
+					 * @param array  $value   Choice value.
+					 * @param array  $field   Field settings.
+					 * @param array  $args    Field options.
+					 */
+					$fld .= (string) apply_filters( 'wpforms_field_option_choice_before_label', '', $key, $value, $field, $args );
+
 					$fld .= sprintf(
 						'<input type="text" name="%s[label]" value="%s" class="label">',
 						esc_attr( $base ),
 						esc_attr( $label )
 					);
+
+					/**
+					 * Fires after the field choice label.
+					 *
+					 * @since 1.9.8.6
+					 *
+					 * @param string $output  Output string.
+					 * @param int    $key     Choice key.
+					 * @param array  $value   Choice value.
+					 * @param array  $field   Field settings.
+					 * @param array  $args    Field options.
+					 */
+					$fld .= (string) apply_filters( 'wpforms_field_option_choice_after_label', '', $key, $value, $field, $args );
+
 					$fld .= sprintf( '<a class="%s" href="#"><i class="fa fa-plus-circle"></i></a><a class="%s" href="#"><i class="fa fa-minus-circle"></i></a>', esc_attr( $add_class ), esc_attr( $remove_class ) );
 					$fld .= sprintf(
 						'<input type="text" name="%s[value]" value="%s" class="value">',
@@ -1728,6 +1759,7 @@ abstract class WPForms_Field {
 						esc_attr( $base ),
 						esc_attr( $value['label'] )
 					);
+
 					$fld .= sprintf(
 						'<input type="text" name="%s[value]" value="%s" class="value wpforms-money-input" placeholder="%s">',
 						esc_attr( $base ),
@@ -2765,8 +2797,26 @@ abstract class WPForms_Field {
 		}
 
 		if ( ! in_array( $option, [ 'basic-options', 'advanced-options' ], true ) ) {
+			/**
+			 * Fires before the field option output.
+			 *
+			 * @since 1.9.8.6
+			 *
+			 * @param array  $field Field data and settings.
+			 * @param object $this  WPForms_Field object.
+			 */
+			do_action( "wpforms_field_options_before_{$option}", $field, $this );
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $output;
+			/**
+			 * Fires after the field option output.
+			 *
+			 * @since 1.9.8.6
+			 *
+			 * @param array  $field Field data and settings.
+			 * @param object $this  WPForms_Field object.
+			 */
+			do_action( "wpforms_field_options_after_{$option}", $field, $this );
 
 			return null;
 		}
@@ -3338,7 +3388,15 @@ abstract class WPForms_Field {
 
 		// Build Preview.
 		ob_start();
-		$this->field_preview( $field );
+		/**
+		 * Fires after the field preview output in the Form Builder.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array $field Field data.
+		 */
+		do_action( "wpforms_builder_fields_previews_{$field_type}", $field ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+
 		$prev    = ob_get_clean();
 		$preview = sprintf(
 			'<div class="wpforms-field wpforms-field-%1$s %2$s %3$s" id="wpforms-field-%4$s" data-field-id="%4$s" data-field-type="%5$s">',

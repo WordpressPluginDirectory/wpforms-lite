@@ -544,7 +544,7 @@ export default function( generator, $ ) { // eslint-disable-line max-lines-per-f
 		 */
 		setToolbarState( isEmpty ) {
 			main.el.$builderToolbar.toggleClass( 'empty', isEmpty );
-			main.el.$builderToolbar.find( '#wpforms-help span' ).toggleClass( 'screen-reader-text', ! isEmpty );
+			main.el.$builderToolbar.find( '.js-wpforms-help span' ).toggleClass( 'screen-reader-text', ! isEmpty );
 		},
 
 		/**

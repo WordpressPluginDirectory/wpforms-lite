@@ -84,7 +84,7 @@ WPForms.Admin.Builder.Help = WPForms.Admin.Builder.Help || ( function( document,
 			el = {
 				$builder:     $( '#wpforms-builder' ),
 				$builderForm: $( '#wpforms-builder-form' ),
-				$helpBtn:     $( '#wpforms-help' ),
+				$helpBtn:     $( '.js-wpforms-help' ),
 				$help:        $( '#wpforms-builder-help' ),
 				$closeBtn:    $( '#wpforms-builder-help-close' ),
 				$search:      $( '#wpforms-builder-help-search' ),

@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.8
-Stable tag: 1.9.8.4
+Stable tag: 1.9.8.7
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -140,6 +140,7 @@ We also know that our developer friends may want more control, so we added tons 
 * [GetResponse](https://wpforms.com/features/getresponse-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Constant Contact](https://wpforms.com/features/constant-contact/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Airtable](https://wpforms.com/features/airtable-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Notion](https://wpforms.com/features/notion-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Drip](https://wpforms.com/features/drip-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [ActiveCampaign](https://wpforms.com/features/activecampaign-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [HubSpot](https://wpforms.com/features/hubspot-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
@@ -388,6 +389,14 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.8.7 =
+- Fixed: A fatal error occurred on the admin dashboard with some third-party plugins.
+
+= 1.9.8.6 =
+- Fixed: Prevented loading of Divi assets on pages not containing a form.
+- Fixed: Compatibility with the LeadConnector plugin.
+- Fixed: Integration icons were misaligned on the Form Builder page.
 
 = 1.9.8.4 =
 - Added: Ability to hide choice images notifications.

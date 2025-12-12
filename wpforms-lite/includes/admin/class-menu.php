@@ -41,6 +41,8 @@ class WPForms_Admin_Menu {
 
 		// Plugins page settings link.
 		add_filter( 'plugin_action_links_' . plugin_basename( WPFORMS_PLUGIN_DIR . 'wpforms.php' ), [ $this, 'settings_link' ], 10, 4 );
+
+		add_action( 'activated_plugin', [ $this, 'activated_rotation_plugin' ], 10, 2 );
 	}
 
 	/**
@@ -182,14 +184,19 @@ class WPForms_Admin_Menu {
 			[ $this, 'admin_page' ]
 		);
 
-		add_submenu_page(
-			'wpforms-overview',
-			esc_html__( 'Privacy Compliance', 'wpforms-lite' ),
-			esc_html__( 'Privacy Compliance', 'wpforms-lite' ),
-			$manage_cap,
-			WPForms\Admin\Pages\PrivacyCompliance::SLUG,
-			[ $this, 'admin_page' ]
-		);
+		// Rotating submenu.
+		$rotation = $this->get_rotating_submenu();
+
+		if ( $rotation ) {
+			add_submenu_page(
+				'wpforms-overview',
+				$rotation['page_title'],
+				$rotation['menu_title'],
+				$manage_cap,
+				$rotation['menu_slug'],
+				[ $this, 'admin_page' ]
+			);
+		}
 
 		// SMTP submenu page.
 		add_submenu_page(
@@ -416,6 +423,158 @@ class WPForms_Admin_Menu {
 	}
 
 	/**
+	 * Determine which submenu item to show (rotation).
+	 *
+	 * Current behavior:
+	 * - Show item until the plugin has been activated for 7 or more days.
+	 * - Once 7+ days have passed since activation - show next item.
+	 * - Once the last item has been active for more than 7 days, always display the first item (WP Consent page).
+	 *
+	 * @since 1.9.8.6
+	 *
+	 * @return array|null { menu_title, page_title, menu_slug } or null to show none.
+	 */
+	private function get_rotating_submenu(): ?array {
+
+		$items    = $this->get_rotation_items();
+		$now      = time();
+		$defaults = [
+			'label'       => '',
+			'menu_slug'   => '',
+			'slug'        => '',
+			'plugin_file' => '',
+		];
+
+		// Find the first item that should be displayed.
+		foreach ( $items as $item ) {
+			$item = wp_parse_args( $item, $defaults );
+
+			$label       = (string) $item['label'];
+			$menu_slug   = (string) $item['menu_slug'];
+			$plugin_slug = (string) $item['slug'];
+
+			if ( empty( $label ) || empty( $menu_slug ) ) {
+				continue; // Skip misconfigured items.
+			}
+
+			$timestamp = $this->get_promo_plugin_activation_timestamp( $plugin_slug );
+
+			// Show if a plugin has never activated or within 7 days of activation.
+			$within = $timestamp === 0 || ( $now - $timestamp ) < 7 * DAY_IN_SECONDS;
+
+			if ( $within ) {
+				return [
+					'menu_title' => $label,
+					'page_title' => $label,
+					'menu_slug'  => $menu_slug,
+				];
+			}
+		}
+
+		// If all items are considered "complete", return the first one (cycle back).
+		$first     = $items[0];
+		$label     = $first['label'];
+		$menu_slug = $first['menu_slug'];
+
+		if ( ! empty( $label ) && ! empty( $menu_slug ) ) {
+			return [
+				'menu_title' => $label,
+				'page_title' => $label,
+				'menu_slug'  => $menu_slug,
+			];
+		}
+
+		return null;
+	}
+
+	/**
+	 * List of rotating plugins files.
+	 *
+	 * @since 1.9.8.6
+	 *
+	 * @return array
+	 */
+	private function get_rotation_plugins(): array {
+
+		return [
+			'wpconsent-cookies-banner-privacy-suite/wpconsent.php' => 'wpconsent',
+			'wpconsent-premium/wpconsent-premium.php'     => 'wpconsent',
+			'sugar-calendar-lite/sugar-calendar-lite.php' => 'sugar-calendar',
+			'sugar-calendar/sugar-calendar.php'           => 'sugar-calendar',
+			'duplicator/duplicator.php'                   => 'duplicator',
+			'duplicator-pro/duplicator-pro.php'           => 'duplicator',
+			'uncanny-automator/uncanny-automator.php'     => 'uncanny-automator',
+			'uncanny-automator-pro/uncanny-automator-pro.php' => 'uncanny-automator',
+		];
+	}
+
+	/**
+	 * Record the activation time of a rotation plugin.
+	 *
+	 * @since 1.9.8.6
+	 *
+	 * @param string $plugin       Path to the plugin file relative to the plugins' directory.
+	 * @param bool   $network_wide Whether the plugin is being activated network wide.
+	 */
+	public function activated_rotation_plugin( string $plugin, bool $network_wide ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		$rotation_plugins = $this->get_rotation_plugins();
+		$plugin_key       = $rotation_plugins[ $plugin ] ?? '';
+
+		if ( empty( $plugin_key ) ) {
+			return;
+		}
+
+		$activated_plugins = (array) get_option( 'wpforms_rotation_activated_plugins', [] );
+
+		// Skip if already recorded.
+		if ( isset( $activated_plugins[ $plugin_key ] ) ) {
+			return;
+		}
+
+		$activated_plugins[ $plugin_key ] = time();
+
+		update_option( 'wpforms_rotation_activated_plugins', $activated_plugins );
+	}
+
+	/**
+	 * Editable list of rotating submenu items.
+	 *
+	 * @since 1.9.8.6
+	 *
+	 * @return array
+	 */
+	private function get_rotation_items(): array {
+
+		return [
+			[
+				'label'       => esc_html__( 'Privacy Compliance', 'wpforms-lite' ),
+				'menu_slug'   => WPForms\Admin\Pages\PrivacyCompliance::SLUG,
+				'slug'        => 'wpconsent',
+				'plugin_file' => 'wpconsent-cookies-banner-privacy-suite/wpconsent.php',
+			],
+			[
+				'label'       => esc_html__( 'Events', 'wpforms-lite' ),
+				'menu_slug'   => WPForms\Admin\Pages\SugarCalendar::SLUG,
+				'slug'        => 'sugar-calendar',
+				'plugin_file' => 'sugar-calendar-lite/sugar-calendar-lite.php',
+			],
+			[
+				'label'       => esc_html__( 'Backups', 'wpforms-lite' ),
+				'menu_slug'   => WPForms\Admin\Pages\Duplicator::SLUG,
+				'slug'        => 'duplicator',
+				'plugin_file' => 'duplicator/duplicator.php',
+			],
+			[
+				'label'       => esc_html__( 'Automation', 'wpforms-lite' ),
+				'menu_slug'   => WPForms\Admin\Pages\UncannyAutomator::SLUG,
+				'slug'        => 'uncanny-automator',
+				'plugin_file' => 'uncanny-automator/uncanny-automator.php',
+			],
+		];
+	}
+
+	/**
 	 * Get the HTML for the "NEW!" badge.
 	 *
 	 * @since 1.7.8
@@ -442,6 +601,22 @@ class WPForms_Admin_Menu {
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		printf( '<style>%s</style>', $styles );
+	}
+
+	/**
+	 * Get a timestamp.
+	 *
+	 * @since 1.9.8.6
+	 *
+	 * @param string $slug Slug of the plugin.
+	 *
+	 * @return int
+	 */
+	private function get_promo_plugin_activation_timestamp( string $slug ): int {
+
+		$activated_plugins = (array) get_option( 'wpforms_rotation_activated_plugins', [] );
+
+		return isset( $activated_plugins[ $slug ] ) ? (int) $activated_plugins[ $slug ] : 0;
 	}
 }
 

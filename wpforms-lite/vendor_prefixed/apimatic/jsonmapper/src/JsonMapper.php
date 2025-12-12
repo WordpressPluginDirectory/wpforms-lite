@@ -943,7 +943,13 @@ class JsonMapper
             return \true;
         }
         // if discriminator field is set then decide w.r.t its value
-        return $value->{$discriminatorField} == $discriminatorValue;
+        $discriminatorFieldValue = $value->{$discriminatorField};
+        if (\is_array($discriminatorValue)) {
+            return !empty(\array_filter($discriminatorValue, function ($v) use($discriminatorFieldValue) {
+                return $discriminatorFieldValue == $v;
+            }));
+        }
+        return $discriminatorFieldValue == $discriminatorValue;
     }
     /**
      * Checks if the given type is a "simple type"

@@ -1426,6 +1426,20 @@ class WPForms_Process {
 
 		$confirmations = $this->form_data['settings']['confirmations'];
 
+		/**
+		 * Filter confirmations before processing.
+		 *
+		 * Allows addons to replace confirmations with their own data.
+		 *
+		 * @since 1.9.8.6
+		 *
+		 * @param array $confirmations Confirmations data.
+		 * @param array $form_data     Form data and settings.
+		 * @param array $fields        Submitted form fields.
+		 * @param int   $entry_id      Entry ID.
+		 */
+		$confirmations = (array) apply_filters( 'wpforms_process_entry_confirmation_redirect_confirmations', $confirmations, $this->form_data, $this->fields, $this->entry_id );
+
 		// Reverse sort confirmations by id to process newer ones first.
 		krsort( $confirmations );
 

@@ -644,7 +644,7 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 						errorElement: app.isModernMarkupEnabled() ? 'em' : 'label',
 						errorClass: 'wpforms-error',
 						validClass: 'wpforms-valid',
-						ignore: ':hidden:not(textarea.wp-editor-area):not(.wpforms-field-camera input), .wpforms-conditional-hide textarea.wp-editor-area',
+						ignore: ':hidden:not(textarea.wp-editor-area):not(.wpforms-field-camera:not(.wpforms-conditional-hide) input), .wpforms-conditional-hide textarea.wp-editor-area',
 						ignoreTitle: true,
 						errorPlacement( error, element ) { // eslint-disable-line complexity
 							if ( app.isLikertScaleField( element ) ) {
@@ -1934,6 +1934,11 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 
 				if ( $t.hasClass( 'wpforms-datepicker' ) ) {
 					$t.flatpickr( 'close' );
+				}
+
+				// If the field is File Upload prevent change page or submit form.
+				if ( $t.hasClass( 'dropzone-input' ) ) {
+					return;
 				}
 
 				e.preventDefault();
@@ -4155,7 +4160,10 @@ var wpforms = window.wpforms || ( function( document, window, $ ) { // eslint-di
 				.attr( 'tabindex', '-1' );
 
 			if ( $field.hasClass( 'wpforms-field-select-style-modern' ) ) {
-				$field.find( 'select' ).data( 'choicesjs' )?.disable();
+				const $select = $field.find( 'select' );
+				$select.data( 'choicesjs' )?.disable();
+				$select.removeAttr( 'disabled' );
+
 				return;
 			}
 

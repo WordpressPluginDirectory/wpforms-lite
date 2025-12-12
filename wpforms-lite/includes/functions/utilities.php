@@ -228,6 +228,25 @@ function wpforms_utm_link( $link, $medium, $content = '', $term = '' ) {
 }
 
 /**
+ * Get the link to the WPForms review page on WordPress.org.
+ *
+ * @since 1.9.8.6
+ *
+ * @return string
+ */
+function wpforms_wp_org_review_link(): string {
+
+	$link = 'https://wordpress.org/support/plugin/wpforms-lite/reviews/#new-post';
+
+	$link = add_query_arg(
+		[ 'filter' => 5 ],
+		$link
+	);
+
+	return esc_url( $link );
+}
+
+/**
  * Check if it is a Pro version of the plugin.
  * This function be used on very early stage of WPForms loading, to check the requirements.
  * At requirements' check, the wpforms() function is not defined.
@@ -361,4 +380,44 @@ function wpforms_list_array( array $arr, bool $sep = true ): string {
 	$both  = array_filter( array_merge( [ $first ], $last ) );
 
 	return implode( ' ' . $separator . ' ', $both );
+}
+
+/**
+ * Retrieve a value from a nested array using a dot-notated path.
+ * This function navigates through a multidimensional array using a specified
+ * path and delimiter to fetch the desired value.
+ * If the path does not exist,
+ * a default value will be returned.
+ *
+ * @since 1.9.8.6
+ *
+ * @param array  $data          The array to search within.
+ * @param string $path          The dot-notated path specifying the array key(s).
+ * @param mixed  $default_value The default value to return if the path does not exist.
+ * @param string $delimiter     The delimiter used to separate path segments (default: '.').
+ *
+ * @return mixed The value from the array at the specified path, or the default value if not found.
+ */
+function wpforms_array_get_by_path( array $data, string $path, $default_value = null, string $delimiter = '.' ) {
+
+	if ( $path === '' ) {
+		return $data;
+	}
+
+	$segments = explode( $delimiter, $path );
+
+	$current = $data;
+
+	foreach ( $segments as $seg ) {
+		// Convert "0", "1" to a number for indexed arrays.
+		$key = is_numeric( $seg ) ? (int) $seg : $seg;
+
+		if ( is_array( $current ) && array_key_exists( $key, $current ) ) {
+			$current = $current[ $key ];
+		} else {
+			return $default_value;
+		}
+	}
+
+	return $current;
 }

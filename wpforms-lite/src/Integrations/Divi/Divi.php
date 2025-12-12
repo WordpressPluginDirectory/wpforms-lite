@@ -167,7 +167,9 @@ class Divi implements IntegrationInterface {
 			return;
 		}
 
-		$this->divi_frontend_styles();
+		if ( $this->allow_frontend_styles() ) {
+			$this->divi_frontend_styles();
+		}
 	}
 
 	/**
@@ -232,7 +234,7 @@ class Divi implements IntegrationInterface {
 	/**
 	 * Register module.
 	 *
-	 * @since 1.6.3
+	 * @since        1.6.3
 	 *
 	 * @noinspection PhpExpressionResultUnusedInspection
 	 */
@@ -352,6 +354,33 @@ class Divi implements IntegrationInterface {
 					$show_desc
 				)
 			)
+		);
+	}
+
+	/**
+	 * Allow frontend styles.
+	 *
+	 * @since 1.9.8.6
+	 *
+	 * @return bool
+	 */
+	protected function allow_frontend_styles(): bool {
+
+		$frontend_obj = wpforms()->obj( 'frontend' );
+
+		if ( ! $frontend_obj ) {
+			return false;
+		}
+
+		global $post;
+
+		$content = $post->post_content ?? '';
+
+		return (
+			$frontend_obj->assets_global() ||
+			has_shortcode( $content, 'wpforms' ) ||
+			has_shortcode( $content, 'wpforms_selector' ) ||
+			( function_exists( 'has_block' ) && has_block( 'wpforms/form-selector' ) )
 		);
 	}
 }

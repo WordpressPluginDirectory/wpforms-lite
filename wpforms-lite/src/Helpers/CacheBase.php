@@ -14,7 +14,7 @@ use WPForms\Tasks\Tasks;
 abstract class CacheBase {
 
 	/**
-	 * Encrypt cached file.
+	 * Encrypt a cached file.
 	 *
 	 * @since 1.8.7
 	 */
@@ -111,6 +111,14 @@ abstract class CacheBase {
 		$this->cache_dir  = $this->get_cache_dir(); // See comment in the method.
 		$this->cache_file = $this->cache_dir . $this->settings['cache_file'];
 
+		// Do not update caches on heartbeat events.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$action = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : '';
+
+		if ( $action === 'heartbeat' ) {
+			return;
+		}
+
 		if ( ! $this->allow_load() ) {
 			return;
 		}
@@ -131,7 +139,7 @@ abstract class CacheBase {
 	 *
 	 * @since 1.6.8
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		add_action( 'shutdown', [ $this, 'cache_dir_complete' ] );
 
@@ -157,7 +165,7 @@ abstract class CacheBase {
 	 * @noinspection PhpCastIsUnnecessaryInspection
 	 * @noinspection UnnecessaryCastingInspection
 	 */
-	public function sync_updates() {
+	public function sync_updates(): void {
 
 		// Prevent infinite loop.
 		if ( $this->syncing_updates ) {
@@ -178,7 +186,7 @@ abstract class CacheBase {
 	 *
 	 * @since 1.6.8
 	 */
-	private function update_settings() {
+	private function update_settings(): void {
 
 		$default_settings = [
 
@@ -266,7 +274,7 @@ abstract class CacheBase {
 	 *
 	 * @return int
 	 */
-	private function cache_time() {
+	private function cache_time(): int {
 
 		return (int) Transient::get( $this->cache_key );
 	}
@@ -278,7 +286,7 @@ abstract class CacheBase {
 	 *
 	 * @return bool
 	 */
-	private function exists() {
+	private function exists(): bool {
 
 		return is_file( $this->cache_file ) && is_readable( $this->cache_file );
 	}
@@ -459,7 +467,7 @@ abstract class CacheBase {
 	 * @param array  $data  Log data.
 	 * @param string $type  Log type.
 	 */
-	protected function add_log( string $title, array $data, string $type = 'log' ) {
+	protected function add_log( string $title, array $data, string $type = 'log' ): void {
 
 		wpforms_log(
 			$title,
@@ -475,9 +483,9 @@ abstract class CacheBase {
 	 *
 	 * @since 1.6.8
 	 */
-	public function schedule_update_cache() {
+	public function schedule_update_cache(): void {
 
-		// Just skip if not need to register scheduled action.
+		// Just skip if not need to register a scheduled action.
 		if ( empty( $this->settings['update_action'] ) ) {
 			return;
 		}
@@ -502,7 +510,7 @@ abstract class CacheBase {
 	 *
 	 * @since 1.6.8
 	 */
-	public function cache_dir_complete() {
+	public function cache_dir_complete(): void {
 
 		if ( ! $this->updated ) {
 			return;
@@ -519,7 +527,7 @@ abstract class CacheBase {
 	 *
 	 * @since 1.8.7
 	 */
-	public function invalidate_cache() {
+	public function invalidate_cache(): void {
 
 		Transient::delete( $this->cache_key );
 	}

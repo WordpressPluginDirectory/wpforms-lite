@@ -3,7 +3,7 @@
         'name' => 'awesomemotive/wpforms',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '5223defa36fed644c9bb19f9b2107057f647d5f1',
+        'reference' => '9aeb12ae1bbfc80de47d89307a82700c13b356ca',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -29,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'apimatic/jsonmapper' => array(
-            'pretty_version' => '3.1.6',
-            'version' => '3.1.6.0',
-            'reference' => 'c6cc21bd56bfe5d5822bbd08f514be465c0b24e7',
+            'pretty_version' => '3.1.7',
+            'version' => '3.1.7.0',
+            'reference' => '61e45f6021e4a4e07497be596b4787c3c6b39bea',
             'type' => 'library',
             'install_path' => __DIR__ . '/../apimatic/jsonmapper',
             'aliases' => array(),
@@ -49,7 +49,7 @@
         'awesomemotive/wpforms' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '5223defa36fed644c9bb19f9b2107057f647d5f1',
+            'reference' => '9aeb12ae1bbfc80de47d89307a82700c13b356ca',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -103,7 +103,7 @@
         'roave/security-advisories' => array(
             'pretty_version' => 'dev-latest',
             'version' => 'dev-latest',
-            'reference' => '19966d2f97bbc444bb176432754e33256a7d45bf',
+            'reference' => '4400137eb61cd0db3192a409353ae83e811395fe',
             'type' => 'metapackage',
             'install_path' => null,
             'aliases' => array(

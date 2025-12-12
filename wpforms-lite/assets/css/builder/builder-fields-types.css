@@ -2760,6 +2760,7 @@ div.wpforms-container.wpforms-edit-entry-container .wpforms-form .choices .choic
 .wpforms-panel-fields .wpforms-field-option-file-upload .wpforms-file-upload-password-clean i,
 .wpforms-panel-fields .wpforms-field-option-camera .wpforms-file-upload-password-clean i {
   font-size: 16px;
+  line-height: normal;
 }
 
 .wpforms-panel-fields .wpforms-field-option-file-upload .wpforms-field-option-row-protection_password_label,
