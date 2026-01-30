@@ -71,7 +71,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @var WP_Post
+	 * @var WP_Post|null
 	 */
 	public $form;
 
@@ -119,7 +119,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.0.0
 	 */
-	public function init() { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function init(): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks, Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Only load if we are actually on the builder.
 		if ( ! wpforms_is_admin_page( 'builder' ) ) {
@@ -135,11 +135,11 @@ class WPForms_Builder {
 		}
 
 		if ( $form_id ) {
-			// Default view for with an existing form is fields panel.
+			// The default view for with an existing form is the fields panel.
 			$this->view = isset( $_GET['view'] ) ? sanitize_key( $_GET['view'] ) : 'fields'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		} else {
-			// The default view for new form is the setup panel.
+			// The default view for the new form is the setup panel.
 			$this->view = isset( $_GET['view'] ) ? sanitize_key( $_GET['view'] ) : 'setup'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		}
@@ -153,7 +153,8 @@ class WPForms_Builder {
 		}
 
 		// Fetch form.
-		$this->form = wpforms()->obj( 'form' )->get( $form_id );
+		$form_obj   = wpforms()->obj( 'form' );
+		$this->form = $form_obj ? $form_obj->get( $form_id ) : null;
 
 		if ( ! empty( $form_id ) && empty( $this->form ) ) {
 			$this->abort_message = esc_html__( 'It looks like the form you are trying to access is no longer available.', 'wpforms-lite' );
@@ -175,15 +176,15 @@ class WPForms_Builder {
 		 *
 		 * @since 1.6.8
 		 *
-		 * @param array $template Template data.
-		 * @param array $form_id  Form ID.
+		 * @param array         $template Template data.
+		 * @param WP_Post|false $form_id  Form object.
 		 */
 		$this->template = apply_filters( 'wpforms_builder_template_active', [], $this->form );
 
 		// Load builder panels.
 		$this->load_panels();
 
-		// Modify meta viewport tag if desktop view is forced.
+		// Modify meta-viewport tag if desktop view is forced.
 		add_filter( 'admin_viewport_meta', [ $this, 'viewport_meta' ] );
 
 		add_action( 'admin_head', [ $this, 'admin_head' ] );
@@ -217,7 +218,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.6.8
 	 */
-	public function deregister_common_wp_admin_styles() {
+	public function deregister_common_wp_admin_styles(): void {
 
 		if ( ! wpforms_is_admin_page( 'builder' ) ) {
 			return;
@@ -254,7 +255,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.8.8
 	 */
-	public function process_actions() {
+	public function process_actions(): void {
 
 		$form_id = isset( $_GET['form_id'] ) ? (int) $_GET['form_id'] : 0;
 		$action  = isset( $_REQUEST['action'] ) ? sanitize_key( $_REQUEST['action'] ) : false;
@@ -304,7 +305,7 @@ class WPForms_Builder {
 	 * @param int    $form_id Form ID.
 	 * @param string $action  Action name.
 	 */
-	private function process_action( int $form_id, string $action ) {
+	private function process_action( int $form_id, string $action ): void {
 
 		$form_handler = wpforms()->obj( 'form' );
 
@@ -380,7 +381,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.0.0
 	 */
-	public function load_panels() {
+	public function load_panels(): void {
 
 		// Base class and functions.
 		require_once WPFORMS_PLUGIN_DIR . 'includes/admin/builder/panels/class-base.php';
@@ -424,7 +425,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.4.6
 	 */
-	public function admin_head() {
+	public function admin_head(): void {
 
 		// Force hide an admin side menu.
 		echo '<style>#adminmenumain { display: none !important }</style>';
@@ -445,7 +446,7 @@ class WPForms_Builder {
 	 * @since 1.0.0
 	 * @since 1.6.8 All the panel's stylesheets restructured and moved here.
 	 */
-	public function enqueues() {
+	public function enqueues(): void {
 
 		$this->suppress_conflicts();
 
@@ -637,6 +638,14 @@ class WPForms_Builder {
 		);
 
 		wp_enqueue_script(
+			'wpforms-oops',
+			WPFORMS_PLUGIN_URL . 'assets/lib/oops.min.js',
+			[],
+			'1.0.2',
+			false
+		);
+
+		wp_enqueue_script(
 			'wpforms-builder',
 			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/admin-builder{$min}.js",
 			[
@@ -717,7 +726,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.9.0
 	 */
-	private function suppress_conflicts() {
+	private function suppress_conflicts(): void {
 
 		// Remove conflicting styles (e.g., WP JobSearch plugin).
 		wp_deregister_style( 'font-awesome' );
@@ -737,6 +746,18 @@ class WPForms_Builder {
 	 */
 	private function get_localized_strings(): array {
 
+		/**
+		 * It is a phpcs bug. This local variable is used below.
+		 *
+		 * @noinspection PhpUnusedLocalVariableInspection
+		 */
+		$min = wpforms_get_min_suffix();
+
+		/**
+		 * It is a phpcs bug. This local variable is used below.
+		 *
+		 * @noinspection PhpUnusedLocalVariableInspection
+		 */
 		$image_extensions = wpforms_chain( get_allowed_mime_types() )
 			->map(
 				static function ( $mime ) {
@@ -763,15 +784,17 @@ class WPForms_Builder {
 			'date_select_month'                       => 'MM',
 			'date_select_year'                        => 'YYYY',
 			'debug'                                   => wpforms_debug(),
+			'version'                                 => WPFORMS_VERSION,
+			'content_url'                             => content_url(), // Absolute URL to wp-content directory.
 			'dynamic_choices'                         => [
-				'limit_message' => sprintf( /* translators: %1$s - data source name (e.g. Categories, Posts), %2$s - data source type (e.g. post type, taxonomy), %3$s - display limit, %4$s - total number of items. */
+				'limit_message' => sprintf( /* translators: %1$s - data source name (e.g., Categories, Posts), %2$s - data source type (e.g., post type, taxonomy), %3$s - display limit, %4$s - total number of items. */
 					esc_html__( 'The %1$s %2$s contains over %3$s items (%4$s). This may make the field difficult for your visitors to use and/or cause the form to be slow.', 'wpforms-lite' ),
 					'{source}',
 					'{type}',
 					'{limit}',
 					'{total}'
 				),
-				'empty_message' => sprintf( /* translators: %1$s - data source name (e.g. Categories, Posts), %2$s - data source type (e.g. post type, taxonomy). */
+				'empty_message' => sprintf( /* translators: %1$s - data source name (e.g., Categories, Posts), %2$s - data source type (e.g., post type, taxonomy). */
 					esc_html__( 'This field will not be displayed in your form since there are no %2$s belonging to %1$s.', 'wpforms-lite' ),
 					'{source}',
 					'{type}'
@@ -832,8 +855,15 @@ class WPForms_Builder {
 			'exit_url'                                => wpforms_current_user_can( 'view_forms' ) ? admin_url( 'admin.php?page=wpforms-overview' ) : admin_url(),
 			'exit_confirm'                            => esc_html__( 'Your form contains unsaved changes. Would you like to save your changes first.', 'wpforms-lite' ),
 			'delete_confirm'                          => esc_html__( 'Are you sure you want to delete this field?', 'wpforms-lite' ),
+			/* translators: %s - number of fields.*/
+			'delete_confirm_multiple'                 => esc_html__( 'Are you sure you want to delete these %s fields?', 'wpforms-lite' ),
+			'delete_confirm_multiple_title'           => esc_html__( 'Delete Fields', 'wpforms-lite' ),
 			'delete_choice_confirm'                   => esc_html__( 'Are you sure you want to delete this choice?', 'wpforms-lite' ),
 			'duplicate_confirm'                       => esc_html__( 'Are you sure you want to duplicate this field?', 'wpforms-lite' ),
+			'duplicate_confirm_title'                 => esc_html__( 'Duplicate Field', 'wpforms-lite' ),
+			/* translators: %s - number of fields. */
+			'duplicate_confirm_multiple'              => esc_html__( 'Are you sure you want to duplicate these %s fields?', 'wpforms-lite' ),
+			'duplicate_confirm_multiple_title'        => esc_html__( 'Duplicate Fields', 'wpforms-lite' ),
 			'duplicate_copy'                          => esc_html__( '(copy)', 'wpforms-lite' ),
 			'error_title'                             => esc_html__( 'Please enter a form name.', 'wpforms-lite' ),
 			'error_choice'                            => esc_html__( 'This item must contain at least one choice.', 'wpforms-lite' ),
@@ -911,7 +941,7 @@ class WPForms_Builder {
 				'{to}'
 			),
 			'form_meta'                               => $this->form_data['meta'] ?? [],
-			'scrollbars_css_url'                      => WPFORMS_PLUGIN_URL . 'assets/css/builder/builder-scrollbars.css',
+			'scrollbars_css_url'                      => WPFORMS_PLUGIN_URL . "assets/css/builder/builder-scrollbars$min.css",
 			'is_ai_disabled'                          => AIHelpers::is_disabled(),
 			'connection_label'                        => esc_html__( 'Connection', 'wpforms-lite' ),
 			'cl_reference'                            => sprintf( /* translators: %s - Integration name. */
@@ -924,7 +954,7 @@ class WPForms_Builder {
 
 		$strings['disable_entries'] = sprintf(
 			wp_kses( /* translators: %s - link to the WPForms.com doc article. */
-				__( 'Disabling entry storage for this form will completely prevent any new submissions from getting saved to your site. If you still intend to keep a record of entries through notification emails, then please <a href="%s" target="_blank" rel="noopener noreferrer">test your form</a> to ensure emails send reliably.', 'wpforms-lite' ),
+				__( 'Disabling entry storage for this form will completely prevent any new submissions from getting saved to your site. If you still intend to keep a record of entries through notification emails, then please <a href="%s" target="_blank" rel="noopener noreferrer">test your form</a> to ensure emails are sent reliably.', 'wpforms-lite' ),
 				[
 					'a' => [
 						'href'   => [],
@@ -944,7 +974,7 @@ class WPForms_Builder {
 
 		$strings['akismet_not_installed'] = sprintf(
 			wp_kses( /* translators: %1$s - link to the plugin search page, %2$s - link to the WPForms.com doc article. */
-				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been installed</a>. For information on how to use this feature please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
+				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been installed</a>. For information on how to use this feature, please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
 				[
 					'a' => [
 						'href'   => [],
@@ -964,8 +994,8 @@ class WPForms_Builder {
 		);
 
 		$strings['akismet_not_activated'] = sprintf(
-			wp_kses( /* translators: %1$s - link to the plugins page, %2$s - link to the WPForms.com doc article. */
-				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been activated</a>. For information on how to use this feature please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
+			wp_kses( /* translators: %1$s - link to the plugin page, %2$s - link to the WPForms.com doc article. */
+				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been activated</a>. For information on how to use this feature, please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
 				[
 					'a' => [
 						'href'   => [],
@@ -986,7 +1016,7 @@ class WPForms_Builder {
 
 		$strings['akismet_no_api_key'] = sprintf(
 			wp_kses( /* translators: %1$s - link to the Akismet settings page, %2$s - link to the WPForms.com doc article. */
-				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been properly configured</a>. For information on how to use this feature please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
+				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been properly configured</a>. For information on how to use this feature, please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
 				[
 					'a' => [
 						'href'   => [],
@@ -1019,6 +1049,8 @@ class WPForms_Builder {
 			wpforms_utm_link( 'https://wpforms.com/docs/troubleshooting-403-forbidden-errors/', 'Builder - Settings', '403 Form Errors' )
 		);
 
+		$strings['js_modules'] = $this->get_js_modules();
+
 		/**
 		 * Form Builder localized strings filter.
 		 *
@@ -1042,11 +1074,72 @@ class WPForms_Builder {
 	}
 
 	/**
+	 * Get JS modules.
+	 *
+	 * Modules become available in the browser context as `WPForms.Admin.Builder.{key}`,
+	 * for example, `WPForms.Admin.Builder.CopyPaste`.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @return array List of JS modules.
+	 */
+	public function get_js_modules(): array {
+
+		$min = wpforms_get_min_suffix();
+
+		$modules = [
+			'KeyboardShortcuts'                 => "keyboard-shortcuts$min.js",
+			'UndoRedoHelpers'                   => "undo-redo/helpers$min.js",
+			'UndoRedoHelpersFields'             => "undo-redo/helpers-fields$min.js",
+			'UndoRedoInputCommandBase'          => "undo-redo/input-command-base$min.js",
+			'UndoRedoActionCommandBase'         => "undo-redo/action-command-base$min.js",
+			'UndoRedoInputSimple'               => "undo-redo/input-simple$min.js",
+			'UndoRedoInputToggle'               => "undo-redo/input-toggle$min.js",
+			'UndoRedoInputChoicesJS'            => "undo-redo/input-choicesjs$min.js",
+			'UndoRedoInputSmartTags'            => "undo-redo/input-smart-tags$min.js",
+			'UndoRedoInputCodeMirror'           => "undo-redo/input-codemirror$min.js",
+			'UndoRedoInputTinyMCE'              => "undo-redo/input-tinymce$min.js",
+			'UndoRedoChoicesList'               => "undo-redo/choices-list$min.js",
+			'UndoRedoFormThemes'                => "undo-redo/form-themes$min.js",
+			'UndoRedoDateTimePickers'           => "undo-redo/date-time-pickers$min.js",
+			'UndoRedoActionFieldAdd'            => "undo-redo/action-field-add$min.js",
+			'UndoRedoActionFieldDelete'         => "undo-redo/action-field-delete$min.js",
+			'UndoRedoActionFieldDuplicate'      => "undo-redo/action-field-duplicate$min.js",
+			'UndoRedoActionFieldMove'           => "undo-redo/action-field-move$min.js",
+			'UndoRedoActionMultiFieldDelete'    => "undo-redo/action-multi-field-delete$min.js",
+			'UndoRedoActionMultiFieldDuplicate' => "undo-redo/action-multi-field-duplicate$min.js",
+			'UndoRedoActionMultiFieldPaste'     => "undo-redo/action-multi-field-paste$min.js",
+			'UndoRedoActionSettingsBlockAdd'    => "undo-redo/action-settings-block-add$min.js",
+			'UndoRedoActionSettingsBlockDelete' => "undo-redo/action-settings-block-delete$min.js",
+			'UndoRedoActionItemsAddRemove'      => "undo-redo/action-items-add-remove$min.js",
+			'UndoRedoActionImageAddRemove'      => "undo-redo/action-image-add-remove$min.js",
+			'UndoRedo'                          => "undo-redo$min.js",
+			'MultiSelectActions'                => "multi-select/actions$min.js",
+			'MultiSelect'                       => "multi-select/multi-select$min.js",
+			'MultiSelectKeyboardShortcuts'      => "multi-select/keyboard-shortcuts$min.js",
+			'CopyPaste'                         => "copy-paste$min.js",
+		];
+
+		/**
+		 * Filters the list of Form Builder JS modules.
+		 *
+		 * Allows developers to add their own modules.
+		 * The modules are loaded asynchronously.
+		 * Custom module's path value should be absolute.
+		 *
+		 * @since 1.9.9
+		 *
+		 * @param array $modules List of JS modules.
+		 */
+		return apply_filters( 'wpforms_builder_js_modules', $modules );
+	}
+
+	/**
 	 * Footer JavaScript.
 	 *
 	 * @since 1.3.7
 	 */
-	public function footer_scripts() {
+	public function footer_scripts(): void {
 
 		$countries        = wpforms_countries();
 		$countries_postal = array_keys( $countries );
@@ -1084,9 +1177,9 @@ class WPForms_Builder {
 
 		// phpcs:disable WPForms.Comments.ParamTagHooks.InvalidParamTagsQuantity
 		/**
-		 * Choices preset array filter.
+		 * Choice preset array filter.
 		 *
-		 * Allows developers to edit the choices preset used in all choices-based fields.
+		 * Allows developers to edit the choice preset used in all choice-based fields.
 		 *
 		 * @since 1.3.7
 		 *
@@ -1120,7 +1213,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.0.0
 	 */
-	public function output() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function output(): void { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		if ( $this->abort ) {
 			return;
@@ -1139,7 +1232,8 @@ class WPForms_Builder {
 
 		$form_id         = $this->form ? absint( $this->form->ID ) : '';
 		$field_id        = ! empty( $this->form_data['field_id'] ) ? $this->form_data['field_id'] : '';
-		$revision        = wpforms()->obj( 'revisions' )->get_revision();
+		$revisions_obj   = wpforms()->obj( 'revisions' );
+		$revision        = $revisions_obj ? $revisions_obj->get_revision() : null;
 		$preview_url     = wpforms_get_form_preview_url( $form_id, true );
 		$allowed_caps    = [ 'edit_posts', 'edit_other_posts', 'edit_private_posts', 'edit_published_posts', 'edit_pages', 'edit_other_pages', 'edit_published_pages', 'edit_private_pages' ];
 		$can_embed       = array_filter( $allowed_caps, 'current_user_can' );
@@ -1167,7 +1261,7 @@ class WPForms_Builder {
 		 * @since 1.7.9
 		 *
 		 * @param array      $classes   List of classes.
-		 * @param array|bool $form_data Form data and settings or false when form isn't created.
+		 * @param array|bool $form_data Form data and settings or false when the form isn't created.
 		 */
 		$builder_classes = (array) apply_filters( 'wpforms_builder_output_classes', $builder_classes, $this->form_data );
 
@@ -1176,7 +1270,7 @@ class WPForms_Builder {
 		 *
 		 * @since 1.7.4
 		 *
-		 * @param string $content Content before toolbar. Defaults to empty string.
+		 * @param string $content Content before the toolbar. Defaults to empty string.
 		 */
 		$before_toolbar = apply_filters( 'wpforms_builder_output_before_toolbar', '' );
 		?>
@@ -1349,7 +1443,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.7.3
 	 */
-	public function display_abort_message() {
+	public function display_abort_message(): void {
 
 		if ( ! $this->abort ) {
 			return;
@@ -1366,8 +1460,7 @@ class WPForms_Builder {
 	}
 
 	/**
-	 * Change default admin meta viewport tag upon request to force scrollable
-	 * desktop view on small screens.
+	 * Change the default admin meta viewport tag upon request to force a scrollable desktop view on small screens.
 	 *
 	 * @since 1.7.8
 	 *
@@ -1419,14 +1512,16 @@ class WPForms_Builder {
 	 */
 	private function get_context_menu_args(): array {
 
-		$args = [
+		$payment_obj = wpforms()->obj( 'payment' );
+		$args        = [
 			'form_id'          => $this->form->ID,
 			'is_form_template' => $this->form->post_type === 'wpforms-template',
-			'has_payments'     => wpforms()->obj( 'payment' )->get_by( 'form_id', $this->form->ID ) !== null,
+			'has_payments'     => $payment_obj && $payment_obj->get_by( 'form_id', $this->form->ID ) !== null,
 		];
 
 		if ( wpforms()->is_pro() ) {
-			$args['has_entries']   = wpforms()->obj( 'entry' )->get_entries( [ 'form_id' => $this->form->ID ], true ) > 0;
+			$entry_obj             = wpforms()->obj( 'entry' );
+			$args['has_entries']   = $entry_obj && $entry_obj->get_entries( [ 'form_id' => $this->form->ID ], true ) > 0;
 			$args['can_duplicate'] = $this->can_duplicate();
 		}
 

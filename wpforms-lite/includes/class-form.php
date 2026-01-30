@@ -211,7 +211,7 @@ class WPForms_Form_Handler {
 	 * @param mixed $id   Form ID.
 	 * @param array $args Additional arguments array.
 	 *
-	 * @return array|bool|null|WP_Post
+	 * @return array|false|WP_Post
 	 */
 	public function get( $id = '', array $args = [] ) {
 
@@ -253,7 +253,7 @@ class WPForms_Form_Handler {
 	 * @param string|int $id   Form ID.
 	 * @param array      $args Additional arguments array.
 	 *
-	 * @return array|bool|null|WP_Post
+	 * @return array|false|WP_Post
 	 */
 	protected function get_single( $id = '', array $args = [] ) {
 

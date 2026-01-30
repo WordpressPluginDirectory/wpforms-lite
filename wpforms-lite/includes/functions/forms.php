@@ -502,17 +502,19 @@ function wpforms_get_captcha_settings() {
  * Process smart tags.
  *
  * @since 1.7.1
- * @since 1.8.7 Added `$context` parameter.
+ * @since 1.8.7     Added `$context` parameter.
+ * @since 1.9.9.2 Added `$context` parameter.
  *
- * @param string $content   Content.
- * @param array  $form_data Form data.
- * @param array  $fields    List of fields.
- * @param string $entry_id  Entry ID.
- * @param string $context   Context.
+ * @param string $content      Content.
+ * @param array  $form_data    Form data.
+ * @param array  $fields       List of fields.
+ * @param string $entry_id     Entry ID.
+ * @param string $context      Context.
+ * @param array  $context_data Context data.
  *
- * @return string
+ * @return string|mixed
  */
-function wpforms_process_smart_tags( $content, $form_data, $fields = [], $entry_id = '', $context = '' ) {
+function wpforms_process_smart_tags( $content, $form_data, $fields = [], $entry_id = '', $context = '', array $context_data = [] ) {
 
 	// Skip it if variables have invalid format.
 	if ( ! is_string( $content ) || ! is_array( $form_data ) || ! is_array( $fields ) ) {
@@ -525,15 +527,16 @@ function wpforms_process_smart_tags( $content, $form_data, $fields = [], $entry_
 	 * @since 1.4.0
 	 * @since 1.8.7 Added $context parameter.
 	 *
-	 * @param string $content   Content.
-	 * @param array  $form_data Form data.
-	 * @param array  $fields    List of fields.
-	 * @param string $entry_id  Entry ID.
-	 * @param string $context   Context.
+	 * @param string $content      Content.
+	 * @param array  $form_data    Form data.
+	 * @param array  $fields       List of fields.
+	 * @param string $entry_id     Entry ID.
+	 * @param string $context      Context.
+	 * @param array  $context_data Context data.
 	 *
 	 * @return string
 	 */
-	return apply_filters( 'wpforms_process_smart_tags', $content, $form_data, $fields, $entry_id, $context );
+	return (string) apply_filters( 'wpforms_process_smart_tags', $content, $form_data, $fields, $entry_id, $context, $context_data );
 }
 
 /**

@@ -225,6 +225,12 @@ class Notifications extends Mailer {
 		$attachments = [];
 
 		/**
+		 * Preliminary set the unfiltered recipient email address.
+		 * It will be used in get_headers() while resolving smart tags.
+		 */
+		$this->to_email( $to );
+
+		/**
 		 * Filter the email data before sending.
 		 *
 		 * The filter has been ported from "class-emails.php" to maintain backward compatibility
@@ -419,7 +425,24 @@ class Notifications extends Mailer {
 			return $message;
 		}
 
-		return make_clickable( str_replace( "\r\n", '<br/>', $message ) );
+		/**
+		 * Filter and modify the processed email message content before sending.
+		 * This filter allows customizing the processed email message content for notifications.
+		 *
+		 * @since 1.9.9
+		 *
+		 * @param string        $processed_message The processed email message to be sent out.
+		 * @param string        $message           The email message before processing.
+		 * @param Notifications $this              The instance of the "Notifications" class.
+		 *
+		 * @return string The processed email message to be sent out.
+		 */
+		return (string) apply_filters(
+			'wpforms_emails_notifications_processed_message',
+			make_clickable( str_replace( "\r\n", '<br/>', $message ) ), // TODO: Replacing line breaks may not work as expected. Needs further investigation.
+			$message,
+			$this
+		);
 	}
 
 	/**
@@ -872,7 +895,17 @@ class Notifications extends Mailer {
 	 */
 	private function process_tag( $input = '', $context = 'notification' ): string {
 
-		return wpforms_process_smart_tags( $input, $this->form_data, $this->fields, (string) $this->entry_id, $context );
+		$context_data = [];
+
+		/**
+		 * Email(s).
+		 *
+		 * @var string|string[] $to_email
+		 */
+		$to_email                 = array_filter( (array) ( $this->__get( 'to_email' ) ?? '' ) );
+		$context_data['to_email'] = $to_email;
+
+		return wpforms_process_smart_tags( $input, $this->form_data, $this->fields, (string) $this->entry_id, $context, $context_data );
 	}
 
 	/**

@@ -813,7 +813,15 @@ class WPForms_Process {
 			return;
 		}
 
-		$this->spam_errors[ $form_id ]['footer'] = $country_filter->get_error_message( $this->form_data );
+		$error_message = $country_filter->get_error_message( $this->form_data );
+
+		if ( $this->is_block_submission_by_spam_filtering_enabled() ) {
+			$this->errors[ $form_id ]['footer'] = $error_message;
+
+			return;
+		}
+
+		$this->spam_errors[ $form_id ]['footer'] = $error_message;
 
 		$this->spam_reason = 'Country Filter';
 
@@ -846,7 +854,15 @@ class WPForms_Process {
 			return;
 		}
 
-		$this->spam_errors[ $form_id ]['footer'] = $keyword_filter->get_error_message( $this->form_data );
+		$error_message = $keyword_filter->get_error_message( $this->form_data );
+
+		if ( $this->is_block_submission_by_spam_filtering_enabled() ) {
+			$this->errors[ $form_id ]['footer'] = $error_message;
+
+			return;
+		}
+
+		$this->spam_errors[ $form_id ]['footer'] = $error_message;
 
 		$this->spam_reason = 'Keyword Filter';
 
@@ -1844,7 +1860,17 @@ class WPForms_Process {
 			$email['template']       = ! empty( $notification['template'] ) ? $notification['template'] : '';
 
 			if ( $is_carboncopy_enabled && ! empty( $notification['carboncopy'] ) ) {
-				$email['carboncopy'] = explode( ',', wpforms_process_smart_tags( $notification['carboncopy'], $form_data, $fields, $this->entry_id, 'notification-carboncopy' ) );
+				$email['carboncopy'] = explode(
+					',',
+					wpforms_process_smart_tags(
+						$notification['carboncopy'],
+						$form_data,
+						$fields,
+						$this->entry_id,
+						'notification-carboncopy',
+						[ 'to_email' => $email['address'] ]
+					)
+				);
 				$email['carboncopy'] = array_filter( array_map( 'sanitize_email', $email['carboncopy'] ) );
 			}
 
@@ -2233,5 +2259,24 @@ class WPForms_Process {
 	public function get_email_handler() {
 
 		return $this->email_handler;
+	}
+
+	/**
+	 * Determines if blocking submissions by spam filtering is enabled.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @return bool True if blocking submissions by spam filtering is enabled, false otherwise.
+	 */
+	private function is_block_submission_by_spam_filtering_enabled(): bool {
+
+		/**
+		 * Determines if blocking submissions by spam filtering should be forced.
+		 *
+		 * @since 1.9.9
+		 *
+		 * @param bool $enabled True if blocking submissions should be forced.
+		 */
+		return (bool) apply_filters( 'wpforms_process_is_block_submission_by_spam_filtering_enabled', false );
 	}
 }

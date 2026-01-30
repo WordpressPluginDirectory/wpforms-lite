@@ -246,26 +246,21 @@ trait ContentTrait {
 			return false;
 		}
 
-		$this->alert_icon();
-		echo '<div class="wpforms-builder-payment-settings-default-content"><p>';
-		esc_html_e( 'Heads up! Stripe payments can\'t be enabled yet.', 'wpforms-lite' );
-		echo '</p><p>';
-		printf(
-			wp_kses( /* translators: %1$s - admin area Payments settings page URL. */
-				__( 'First, please connect to your Stripe account on the <a href="%1$s" class="secondary-text">WPForms Settings</a> page.', 'wpforms-lite' ),
-				[
-					'a' => [
-						'href'  => [],
-						'class' => [],
-					],
-				]
-			),
-			esc_url( admin_url( 'admin.php?page=wpforms-settings&view=payments' ) )
+		$this->alert_content(
+			__( 'Heads up! Stripe payments can\'t be enabled yet.', 'wpforms-lite' ),
+			sprintf(
+				wp_kses( /* translators: %1$s - admin area Payments settings page URL. */
+					__( 'First, please connect to your Stripe account on the <a href="%1$s" class="secondary-text">WPForms Settings</a> page.', 'wpforms-lite' ),
+					[
+						'a' => [
+							'href'  => [],
+							'class' => [],
+						],
+					]
+				),
+				esc_url( admin_url( 'admin.php?page=wpforms-settings&view=payments' ) )
+			)
 		);
-		echo '</p><p class="wpforms-builder-payment-settings-learn-more">';
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo $this->learn_more_link();
-		echo '</p></div>';
 
 		return true;
 	}
@@ -281,12 +276,7 @@ trait ContentTrait {
 		?>
 
 		<div id="wpforms-stripe-credit-card-alert" class="wpforms-alert wpforms-alert-info <?php echo esc_attr( $hide_class ); ?>">
-
-			<?php $this->alert_icon(); ?>
-			<div class="wpforms-builder-payment-settings-default-content">
-				<p><?php esc_html_e( 'To use Stripe, first add the Stripe payment field to your form.', 'wpforms-lite' ); ?></p>
-				<p class="wpforms-builder-payment-settings-learn-more"><?php echo $this->learn_more_link(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-			</div>
+			<?php $this->alert_content( '', esc_html__( 'To use Stripe, first add the Stripe payment field to your form.', 'wpforms-lite' ) ); ?>
 		</div>
 
 	<?php
@@ -646,7 +636,7 @@ trait ContentTrait {
 	}
 
 	/**
-	 * Get Customer phone panel field.
+	 * Get the Customer phone panel field.
 	 *
 	 * @since 1.9.6
 	 *
@@ -654,7 +644,7 @@ trait ContentTrait {
 	 *
 	 * @return string
 	 */
-	private function get_customer_phone_field( string $plan_id = null ): string {
+	private function get_customer_phone_field( ?string $plan_id = null ): string {
 
 		$args = [
 			'parent'      => 'payments',
@@ -683,7 +673,7 @@ trait ContentTrait {
 			$args['tooltip'] = esc_html__( 'Select the field that contains the customer\'s phone. This is optional but recommended.', 'wpforms-lite' );
 		}
 
-		return wpforms_panel_field(
+		return (string) wpforms_panel_field(
 			'select',
 			$this->slug,
 			'customer_phone',
@@ -800,5 +790,35 @@ trait ContentTrait {
 		}
 
 		return Helpers::recurring_plan_cycles_max();
+	}
+
+	/**
+	 * Display alert content.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param string $title   Alert title.
+	 * @param string $message Alert message.
+	 */
+	private function alert_content( string $title, string $message ): void {
+		?>
+
+		<?php $this->alert_icon(); ?>
+
+		<div class="wpforms-builder-payment-settings-default-content">
+			<?php if ( ! empty( $title ) ) : ?>
+				<p class="wpforms-builder-payment-settings-error-title">
+					<?php echo esc_html( $title ); ?>
+				</p>
+			<?php endif; ?>
+			<p>
+				<?php echo $message; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</p>
+			<p class="wpforms-builder-payment-settings-learn-more">
+				<?php echo $this->learn_more_link(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</p>
+		</div>
+
+		<?php
 	}
 }

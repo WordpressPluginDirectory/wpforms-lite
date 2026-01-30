@@ -88,7 +88,7 @@ class Calculations extends AddonsItemBase {
 			return;
 		}
 
-		// Display notice only if Calculations addon is released (available in `addons.json` file).
+		// Display notice only if Calculations addon is released (available in the `addons.json` file).
 		$addon = $this->addons->get_addon( 'calculations' );
 
 		if ( ! $addon ) {
@@ -128,7 +128,7 @@ class Calculations extends AddonsItemBase {
 		);
 
 		printf(
-			'<div class="wpforms-alert-ai wpforms-alert wpforms-educational-alert wpforms-calculations wpforms-dismiss-container">
+			'<div class="wpforms-alert-ai wpforms-alert wpforms-educational-alert wpforms-calculations wpforms-field-educational-alert wpforms-dismiss-container">
 				<span class="wpforms-badge wpforms-badge-sm wpforms-badge-block wpforms-badge-purple wpforms-badge-rounded">
 					%5$s
 				</span>
@@ -150,8 +150,11 @@ class Calculations extends AddonsItemBase {
 	 * @since 1.9.4
 	 *
 	 * @param string $dismiss_section Dismiss section.
+	 *
+	 * @noinspection HtmlUnknownAnchorTarget
+	 * @noinspection HtmlUnknownTarget
 	 */
-	private function print_standard_education( $dismiss_section ) {
+	private function print_standard_education( string $dismiss_section ): void {
 
 		$notice = sprintf(
 			wp_kses( /* translators: %1$s - link to the WPForms.com doc article. */
@@ -168,7 +171,7 @@ class Calculations extends AddonsItemBase {
 		);
 
 		printf(
-			'<div class="wpforms-alert-info wpforms-alert wpforms-educational-alert wpforms-calculations wpforms-dismiss-container">
+			'<div class="wpforms-alert-info wpforms-alert wpforms-educational-alert wpforms-calculations wpforms-field-educational-alert wpforms-dismiss-container">
 				<button type="button" class="wpforms-dismiss-button" title="%1$s" data-section="%2$s"></button>
 				<p>%3$s</p>
 			</div>',
@@ -247,7 +250,7 @@ class Calculations extends AddonsItemBase {
 	}
 
 	/**
-	 * Get attributes for Enable Calculation field.
+	 * Get attributes for the Enable Calculation field.
 	 *
 	 * @since 1.8.4.1
 	 *

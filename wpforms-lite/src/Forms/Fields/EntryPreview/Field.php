@@ -42,6 +42,8 @@ class Field extends WPForms_Field {
 	protected function hooks() {
 
 		add_filter( 'wpforms_builder_strings', [ $this, 'add_builder_strings' ], 10, 2 );
+		add_filter( 'wpforms_field_preview_display_duplicate_button', [ $this, 'field_display_duplicate_button' ], 10, 2 );
+		add_filter( 'wpforms_field_new_display_duplicate_button', [ $this, 'field_display_duplicate_button' ], 10, 2 );
 	}
 
 	/**
@@ -267,5 +269,27 @@ class Field extends WPForms_Field {
 			'table'         => esc_html__( 'Table', 'wpforms-lite' ),
 			'table_compact' => esc_html__( 'Table, Compact', 'wpforms-lite' ),
 		];
+	}
+
+	/**
+	 * Disallow the field preview "Duplicate" button.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param bool|mixed $display Display switch.
+	 * @param array      $field   Field settings.
+	 *
+	 * @return bool
+	 */
+	public function field_display_duplicate_button( $display, array $field ): bool {
+
+		$type = $field['type'] ?? '';
+
+		if ( $type === $this->type ) {
+			// Pagebreak fields cannot be duplicated.
+			return false;
+		}
+
+		return (bool) $display;
 	}
 }

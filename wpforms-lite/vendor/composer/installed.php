@@ -3,7 +3,7 @@
         'name' => 'awesomemotive/wpforms',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '9aeb12ae1bbfc80de47d89307a82700c13b356ca',
+        'reference' => 'e41df082113f820306f6eae58b37ee7383ab7f90',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -49,7 +49,7 @@
         'awesomemotive/wpforms' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '9aeb12ae1bbfc80de47d89307a82700c13b356ca',
+            'reference' => 'e41df082113f820306f6eae58b37ee7383ab7f90',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -103,7 +103,7 @@
         'roave/security-advisories' => array(
             'pretty_version' => 'dev-latest',
             'version' => 'dev-latest',
-            'reference' => '4400137eb61cd0db3192a409353ae83e811395fe',
+            'reference' => 'c4162b6092bc6170cc6d0758ba6ee7d29d0dfbb8',
             'type' => 'metapackage',
             'install_path' => null,
             'aliases' => array(

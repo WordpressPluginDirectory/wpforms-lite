@@ -34,6 +34,13 @@ class Addons {
 		'surveys-polls' => [
 			'survey',
 		],
+		'quiz'          => [
+			'quiz_enabled',
+			'choices' => [
+				'quiz_personality',
+				'quiz_weight',
+			],
+		],
 	];
 
 	/**
@@ -182,6 +189,43 @@ class Addons {
 				in_array( $setting_name, $preserve_fields, true )
 			) {
 				$new_field[ $setting_name ] = $setting_value;
+			}
+		}
+
+		if (
+			! empty( $preserve_fields['choices'] ) &&
+			is_array( $preserve_fields['choices'] ) &&
+			! empty( $new_field['choices'] ) &&
+			is_array( $new_field['choices'] )
+		) {
+			$this->preserve_addon_field_choices_settings( $preserve_fields['choices'], $new_field, $previous_field );
+		}
+	}
+
+	/**
+	 * Preserve addon field choices settings.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param array $choice_settings Choice settings.
+	 * @param array $new_field       Previous form fields settings.
+	 * @param array $previous_field  Form fields settings.
+	 *
+	 * @return void
+	 */
+	private function preserve_addon_field_choices_settings( array $choice_settings, array &$new_field, array $previous_field ): void {
+
+		if ( ! isset( $previous_field['choices'] ) || ! is_array( $previous_field['choices'] ) ) {
+			return;
+		}
+
+		$previous_choices = $previous_field['choices'];
+
+		foreach ( $new_field['choices'] as $choice_id => $choice ) {
+			foreach ( $choice_settings as $setting_name ) {
+				if ( isset( $previous_choices[ $choice_id ][ $setting_name ] ) ) {
+					$new_field['choices'][ $choice_id ][ $setting_name ] = $previous_choices[ $choice_id ][ $setting_name ];
+				}
 			}
 		}
 	}

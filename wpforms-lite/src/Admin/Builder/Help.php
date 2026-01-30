@@ -190,6 +190,7 @@ class Help {
 			'settings/webhooks'                       => 'webhooks',
 			'settings/entry_automation'               => 'entry automation',
 			'settings/pdf'                            => 'pdf',
+			'settings/quiz'                           => 'quiz',
 			'providers'                               => '',
 			'providers/aweber'                        => 'aweber',
 			'providers/activecampaign'                => 'activecampaign',
@@ -1283,6 +1284,9 @@ class Help {
 			],
 			'airtable'                  => [
 				'/docs/airtable-addon/',
+			],
+			'quiz'                      => [
+				'/docs/quiz-addon/',
 			],
 		];
 	}

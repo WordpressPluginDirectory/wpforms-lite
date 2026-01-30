@@ -284,11 +284,13 @@ trait ContentInput {
 	 */
 	public function builder_enqueues( $view ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 
+		$wp_min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
 		// Enqueue editor styles explicitly. Hack for broken styles when the Content field is deleted and Settings > Confirmation editor get broken.
 		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		wp_enqueue_style(
 			'wpforms-editor-styles',
-			includes_url( 'css/editor.css' )
+			includes_url( "css/editor$wp_min.css" )
 		);
 	}
 

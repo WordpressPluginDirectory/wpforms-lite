@@ -327,6 +327,7 @@ class Requirements {
 		],
 		'wpforms-user-journey/wpforms-user-journey.php'                 => [],
 		'wpforms-user-registration/wpforms-user-registration.php'       => [],
+		'wpforms-quiz/wpforms-quiz.php'                                 => [],
 		'wpforms-webhooks/wpforms-webhooks.php'                         => [
 			self::LICENSE => self::TOP,
 		],

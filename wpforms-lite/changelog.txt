@@ -1,9 +1,26 @@
 == Changelog ==
 
+= 1.9.9.2 =
+- Added: WordPress Abilities API integration for AI and automation-ready access to WPForms.
+- Added: Ability to generate Quiz-enabled forms using the AI Form generator.
+- Added: Support for multiple fields selection: you can now drag, duplicate, or delete multiple fields at once.
+- Added: Keyboard shortcuts for field duplication (D), field removal (Delete), copy (Ctrl/Cmd + C), and paste (Ctrl/Cmd + V).
+- Added: Undo/redo command manager with modular integrations for Form Builder inputs.
+- Added: Divi 5 compatibility and a new block for the Divi page builder.
+- Changed: Put the plugin on a diet – performed a cleanup, reducing plugin size.
+- Changed: Improved compatibility with the MotoPress Content Editor plugin.
+- Changed: Updated Chart.js library to v4.5.1.
+- Fixed: Selected form type was not retained when refreshing the Forms Overview page.
+- Fixed: Deprecation error with PHP 8.4 that occurred during WPForms installation.
+- Fixed: Form creation via Form AI for users without manage_options capability.
+- Fixed: Deprecation warning being logged in the browser console on the Dashboard admin page.
+- Fixed: Fixed PHP 8.4 deprecated error in Stripe integration related to nullable parameter type declaration.
+- Fixed: From Email/Name fields appeared blank for new notifications when WP Mail SMTP force settings were enabled.
+- Fixed: The collapsible block height in the builder to be consistent with other fields.
+- Fixed: Disabled field option toggle remained interactive.
+
 = 1.9.8.7 =
 - Fixed: A fatal error occurred on the admin dashboard with some third-party plugins.
-
-= 1.9.8.6 =
 - Fixed: Prevented loading of Divi assets on pages not containing a form.
 - Fixed: Compatibility with the LeadConnector plugin.
 - Fixed: Integration icons were misaligned on the Form Builder page.

@@ -18,25 +18,19 @@ class AuthorId extends SmartTag {
 	 * @param array  $fields    List of fields.
 	 * @param string $entry_id  Entry ID.
 	 *
-	 * @return int
+	 * @return int|string
 	 */
 	public function get_value( $form_data, $fields = [], $entry_id = '' ) {
 
 		$author_id = $this->get_author_meta( $entry_id, 'ID' );
 
-		if ( ! empty( $author_id ) ) {
-			return absint( $author_id );
-		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		if ( ! empty( $_POST['page_id'] ) ) {
+		if ( empty( $author_id ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$author_id = get_post_field( 'post_author', absint( $_POST['page_id'] ) );
-
-			return $author_id ? absint( $author_id ) : '';
+			$page_id   = isset( $_POST['page_id'] ) ? absint( $_POST['page_id'] ) : 0;
+			$author_id = $page_id ? (int) get_post_field( 'post_author', $page_id ) : get_current_user_id();
 		}
 
-		$author_id = get_the_author_meta( 'ID' );
+		$author_id = $this->has_cap() ? $author_id : '';
 
 		return $author_id ? absint( $author_id ) : '';
 	}

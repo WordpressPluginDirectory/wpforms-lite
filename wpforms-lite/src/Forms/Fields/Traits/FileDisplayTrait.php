@@ -22,39 +22,30 @@ trait FileDisplayTrait {
 	 * @param string       $context   Display context.
 	 *
 	 * @return string
-	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function html_field_value( $val, array $field, array $form_data = [], string $context = '' ): string {
 
 		$val = (string) $val;
 
-		if ( empty( $field['value'] ) || $field['type'] !== $this->type ) {
+		if ( $field['type'] !== $this->type ) {
+			return $val;
+		}
+
+		$field = $this->entry_preview_prepare_field_value( $field, $form_data, $context );
+
+		// Return early if there is no value at all.
+		if ( empty( $field['value'] ) && empty( $field['value_raw'] ) ) {
 			return $val;
 		}
 
 		// Process modern uploader.
 		if ( ! empty( $field['value_raw'] ) ) {
-			$values = $context === 'entry-table' ? array_slice( $field['value_raw'], 0, 3, true ) : $field['value_raw'];
-			$html   = wpforms_chain( $values )
-				->map(
-					function ( $file ) use ( $context ) {
+			return $this->process_modern_uploader( $field, $context );
+		}
 
-						if ( empty( $file['value'] ) || empty( $file['file_original'] ) ) {
-							return '';
-						}
-
-						return $this->get_file_link_html( $file, $context ) . '<br>';
-					}
-				)
-				->array_filter()
-				->implode()
-				->value();
-
-			if ( count( $values ) < count( $field['value_raw'] ) ) {
-				$html .= '&hellip;';
-			}
-
-			return $html;
+		// Process classic uploader.
+		if ( $this->is_entry_preview( $context ) ) {
+			return $this->entry_preview_file_link_html( $field, $this->get_file_url( $field ) );
 		}
 
 		return $this->get_file_link_html( $field, $context );
@@ -172,11 +163,194 @@ trait FileDisplayTrait {
 
 		if ( $this->is_file_protected( $file_data ) || ! in_array( $file_data['ext'], $ext_types['image'], true ) ) {
 			$src = wp_mime_type_icon( wp_ext2type( $file_data['ext'] ) ?? '' );
-		} elseif ( $file_data['attachment_id'] ) {
+		} elseif ( ! empty( $file_data['attachment_id'] ) ) {
 			$image = wp_get_attachment_image_src( $file_data['attachment_id'], [ 16, 16 ], true );
 			$src   = $image ? $image[0] : $src;
 		}
 
 		return sprintf( '<span class="file-icon"><img width="16" height="16" src="%s" alt="" /></span>', esc_url( $src ) );
+	}
+
+	/**
+	 * Prepare field value for entry preview.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param array  $field     Field data.
+	 * @param array  $form_data Form data.
+	 * @param string $context   Display context.
+	 *
+	 * @return array
+	 */
+	private function entry_preview_prepare_field_value( array $field, array $form_data, string $context ): array {
+
+		if ( ! empty( $field['value'] ) || ! empty( $field['value_raw'] ) || ! $this->is_entry_preview( $context ) ) {
+			return $field;
+		}
+
+		$this->form_id  = absint( $form_data['id'] );
+		$this->field_id = absint( $field['id'] );
+		$input_name     = $this->get_input_name();
+
+		// Modern uploader: data (JSON) in $_POST.
+		$raw_json = isset( $_POST[ $input_name ] ) ? sanitize_text_field( wp_unslash( $_POST[ $input_name ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+		if ( $raw_json !== '' && wpforms_is_json( $raw_json ) ) {
+			$files = json_decode( $raw_json, true );
+
+			if ( ! empty( $files ) ) {
+				$field['value_raw'] = array_map(
+					static function ( $file ) {
+						$name = $file['name'] ?? '';
+
+						return [
+							'value'         => $file['url'] ?? '',
+							'file_original' => $name,
+							'ext'           => strtolower( pathinfo( $name, PATHINFO_EXTENSION ) ),
+						];
+					},
+					$files
+				);
+			}
+
+			return $field;
+		}
+
+		// Classic uploader: data in $_FILES.
+		$files = $_FILES[ $input_name ]['name'] ?? []; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$files = is_array( $files ) ? $files : [ $files ];
+		$files = array_filter( array_map( 'sanitize_file_name', $files ) );
+
+		if ( ! empty( $files ) ) {
+			$field['value_raw'] = array_map(
+				static function ( $file ) {
+
+					return [
+						'value'         => '', // No public URL available.
+						'file_original' => $file,
+						'ext'           => strtolower( pathinfo( $file, PATHINFO_EXTENSION ) ),
+					];
+				},
+				$files
+			);
+		}
+
+		return $field;
+	}
+
+	/**
+	 * Process modern uploader.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param array  $field   Field data.
+	 * @param string $context Value display context.
+	 *
+	 * @return string
+	 */
+	private function process_modern_uploader( array $field, string $context ): string {
+
+		$values           = $context === 'entry-table' ? array_slice( $field['value_raw'], 0, 3, true ) : $field['value_raw'];
+		$html             = '';
+		$submitted_fields = ! empty( $_POST['wpforms'] ) ? stripslashes_deep( $_POST['wpforms'] ) : []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
+		$is_entry_preview = $this->is_entry_preview( $context );
+
+		foreach ( $values as $key => $file ) {
+
+			$src = $this->get_file_url( $file );
+
+			// If the temp file doesn't exist, fallback to submitted field data if set.
+			if ( $is_entry_preview && ! file_exists( $src ) && isset( $submitted_fields['complete'][ $field['id'] ]['value_raw'][ $key ] ) ) {
+				$file = $submitted_fields['complete'][ $field['id'] ]['value_raw'][ $key ];
+				$src  = $this->get_file_url( $file );
+			}
+
+			// Normalize structure ( pre-submit uses url/name; post-submit uses value/file_original ).
+			if ( empty( $file['value'] ) && ! empty( $file['url'] ) ) {
+				$file['value'] = $file['url'];
+			}
+
+			if ( empty( $file['file_original'] ) && ! empty( $file['name'] ) ) {
+				$file['file_original'] = $file['name'];
+			}
+
+			if ( empty( $file['ext'] ) ) {
+				$source      = $file['file_original'] ?? ( $file['name'] ?? '' );
+				$file['ext'] = strtolower( pathinfo( $source, PATHINFO_EXTENSION ) );
+			}
+
+			if ( empty( $file['file_original'] ) ) {
+				continue;
+			}
+
+			if ( $is_entry_preview ) {
+				$html .= $this->entry_preview_file_link_html( $file, $src );
+
+				continue;
+			}
+
+			$html .= $this->get_file_link_html( $file, $context ) . '<br/>';
+		}
+
+		if ( count( $values ) < count( $field['value_raw'] ) ) {
+			$html .= '&hellip;';
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Get file link HTML for entry preview.
+	 * Show image previews, non-images as plain text.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param array  $file File data.
+	 * @param string $src  File source.
+	 *
+	 * @return string
+	 */
+	private function entry_preview_file_link_html( array $file, string $src ): string {
+
+		$filename = esc_html( $this->get_file_name( $file ) );
+		$is_image = in_array( $file['ext'] ?? '', wp_get_ext_types()['image'], true );
+
+		// If we have a URL, display an inline thumbnail preview.
+		if ( $is_image && ! empty( $src ) ) {
+			return sprintf(
+				'<span class="wpforms-entry-preview-file is-image"><img src="%1$s" alt="%2$s"/><span class="wpforms-entry-preview-filename">%2$s</span></span>',
+				esc_url( $src ),
+				esc_html( $filename )
+			);
+		}
+
+		// Show the file name otherwise.
+		return sprintf( '<span class="wpforms-entry-preview-file">%1$s</span>', $filename );
+	}
+
+	/**
+	 * Check if the context is an entry preview.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param string $context Value display context.
+	 *
+	 * @return bool True if the context is entry preview, false otherwise.
+	 */
+	private function is_entry_preview( string $context ): bool {
+
+		return $context === 'entry-preview';
+	}
+
+	/**
+	 * Get the input name for the field.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @return string
+	 */
+	public function get_input_name(): string {
+
+		return sprintf( 'wpforms_%d_%d', $this->form_id, $this->field_id );
 	}
 }

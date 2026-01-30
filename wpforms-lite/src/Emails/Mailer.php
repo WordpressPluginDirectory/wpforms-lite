@@ -36,7 +36,7 @@ class Mailer {
 	 *
 	 * @var string
 	 */
-	private $from_address;
+	private $from_address = '';
 
 	/**
 	 * From name.
@@ -217,10 +217,11 @@ class Mailer {
 	 */
 	public function get_from_address() {
 
-		$this->from_address = $this->from_address ? $this->sanitize( $this->from_address, 'notification-from' ) : get_option( 'admin_email' );
+		$from_address = $this->sanitize( $this->from_address, 'notification-from' );
+		$from_address = $from_address ? $from_address : get_option( 'admin_email' );
 
 		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
-		return apply_filters( 'wpforms_emails_mailer_get_from_address', $this->from_address, $this );
+		return apply_filters( 'wpforms_emails_mailer_get_from_address', $from_address, $this );
 	}
 
 	/**
@@ -360,11 +361,6 @@ class Mailer {
 	 * @return string The email headers.
 	 */
 	public function get_headers() {
-
-		if ( $this->headers ) {
-			// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
-			return apply_filters( 'wpforms_emails_mailer_get_headers', $this->headers, $this );
-		}
 
 		$this->headers = "From: {$this->get_from_name()} <{$this->get_from_address()}>\r\n";
 

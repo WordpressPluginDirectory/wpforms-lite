@@ -898,7 +898,7 @@ class Process {
 		}
 
 		$this->log_error(
-			esc_html__( 'Stripe Subscription payment stopped validation error.', 'wpforms-lite' ),
+			esc_html__( 'Stripe Subscription payment stopped, validation error.', 'wpforms-lite' ),
 			$this->fields,
 			'conditional_logic'
 		);

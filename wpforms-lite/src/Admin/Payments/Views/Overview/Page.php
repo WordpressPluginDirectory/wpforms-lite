@@ -118,7 +118,7 @@ class Page implements PaymentsViewsInterface {
 			'wpforms-chart',
 			WPFORMS_PLUGIN_URL . 'assets/lib/chart.min.js',
 			[ 'moment' ],
-			'4.4.4',
+			'4.5.1',
 			true
 		);
 

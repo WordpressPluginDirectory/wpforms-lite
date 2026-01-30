@@ -435,7 +435,7 @@ class Process {
 		}
 
 		$this->log_errors(
-			esc_html__( 'Square Subscription payment stopped validation error.', 'wpforms-lite' ),
+			esc_html__( 'Square Subscription payment stopped, validation error.', 'wpforms-lite' ),
 			$this->fields,
 			'conditional_logic'
 		);

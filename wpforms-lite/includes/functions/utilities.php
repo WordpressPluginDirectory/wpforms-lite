@@ -14,9 +14,24 @@ use WPForms\Helpers\Chain;
  *
  * @return string
  */
-function wpforms_get_min_suffix() {
+function wpforms_get_min_suffix(): string {
 
-	return wpforms_debug() ? '' : '.min';
+	$script_debug = false;
+
+	if ( ( defined( 'WPFORMS_SCRIPT_DEBUG' ) && WPFORMS_SCRIPT_DEBUG ) && is_super_admin() ) {
+		$script_debug = true;
+	}
+
+	/**
+	 * Filters wpforms script debug status.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param bool $script_debug WPForms script debug status.
+	 */
+	$script_debug = (bool) apply_filters( 'wpforms_script_debug', $script_debug );
+
+	return $script_debug ? '' : '.min';
 }
 
 /**

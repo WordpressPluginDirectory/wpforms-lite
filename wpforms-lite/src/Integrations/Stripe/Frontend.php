@@ -58,7 +58,7 @@ class Frontend {
 		add_filter( 'register_block_type_args', [ $this, 'register_block_type_args' ], 20, 2 );
 
 		if ( wpforms_is_divi_editor() ) {
-			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles' ], 12 );
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_divi_styles' ], 12 );
 		}
 	}
 
@@ -249,6 +249,27 @@ class Frontend {
 		wp_enqueue_style(
 			self::HANDLE,
 			WPFORMS_PLUGIN_URL . "assets/css/integrations/stripe/wpforms-stripe{$min}.css",
+			[],
+			WPFORMS_VERSION
+		);
+	}
+
+	/**
+	 * Enqueue Stripe integration styles for Divi Builder.
+	 *
+	 * @since 1.9.9
+	 */
+	public function enqueue_divi_styles(): void {
+
+		if ( (int) wpforms_setting( 'disable-css', '1' ) === 3 ) {
+			return;
+		}
+
+		$min = wpforms_get_min_suffix();
+
+		wp_enqueue_style(
+			self::HANDLE,
+			WPFORMS_PLUGIN_URL . "assets/css/integrations/stripe/divi/wpforms-stripe{$min}.css",
 			[],
 			WPFORMS_VERSION
 		);

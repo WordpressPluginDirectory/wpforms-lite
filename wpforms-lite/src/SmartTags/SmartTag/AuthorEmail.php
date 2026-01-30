@@ -20,28 +20,19 @@ class AuthorEmail extends SmartTag {
 	 *
 	 * @return string
 	 */
-	public function get_value( $form_data, $fields = [], $entry_id = '' ) {
+	public function get_value( $form_data, $fields = [], $entry_id = '' ): string {
 
 		$author_email = $this->get_author_meta( $entry_id, 'user_email' );
 
-		if ( ! empty( $author_email ) ) {
-			return sanitize_email( $author_email );
-		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		if ( ! empty( $_POST['page_id'] ) ) {
+		if ( empty( $author_email ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$author_id = get_post_field( 'post_author', absint( $_POST['page_id'] ) );
-
-			if ( ! $author_id ) {
-				return '';
-			}
-
+			$page_id      = isset( $_POST['page_id'] ) ? absint( $_POST['page_id'] ) : 0;
+			$author_id    = $page_id ? (int) get_post_field( 'post_author', $page_id ) : get_current_user_id();
 			$author_email = get_the_author_meta( 'user_email', $author_id );
-
-			return sanitize_email( $author_email );
 		}
 
-		return sanitize_email( get_the_author_meta( 'user_email' ) );
+		$author_email = $this->has_cap() ? $author_email : '';
+
+		return sanitize_email( $author_email );
 	}
 }

@@ -2,8 +2,8 @@
 Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
-Tested up to: 6.8
-Stable tag: 1.9.8.7
+Tested up to: 6.9
+Stable tag: 1.9.9.2
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -156,6 +156,7 @@ We also know that our developer friends may want more control, so we added tons 
 * [Twilio](https://wpforms.com/features/twilio-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Pipedrive](https://wpforms.com/features/pipedrive-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Make](https://wpforms.com/features/make-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Quiz](https://wpforms.com/features/quiz-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Zoho CRM](https://wpforms.com/features/zoho-crm-addon//?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 
 You can see why WPForms is the best WordPress contact form plugin on the market! Want to unlock these features? [Upgrade to our Pro version](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
@@ -390,10 +391,27 @@ Syed Balkhi
 
 == Changelog ==
 
+= 1.9.9.2 =
+- Added: WordPress Abilities API integration for AI and automation-ready access to WPForms.
+- Added: Ability to generate Quiz-enabled forms using the AI Form generator.
+- Added: Support for multiple fields selection: you can now drag, duplicate, or delete multiple fields at once.
+- Added: Keyboard shortcuts for field duplication (D), field removal (Delete), copy (Ctrl/Cmd + C), and paste (Ctrl/Cmd + V).
+- Added: Undo/redo command manager with modular integrations for Form Builder inputs.
+- Added: Divi 5 compatibility and a new block for the Divi page builder.
+- Changed: Put the plugin on a diet – performed a cleanup, reducing plugin size.
+- Changed: Improved compatibility with the MotoPress Content Editor plugin.
+- Changed: Updated Chart.js library to v4.5.1.
+- Fixed: Selected form type was not retained when refreshing the Forms Overview page.
+- Fixed: Deprecation error with PHP 8.4 that occurred during WPForms installation.
+- Fixed: Form creation via Form AI for users without manage_options capability.
+- Fixed: Deprecation warning being logged in the browser console on the Dashboard admin page.
+- Fixed: Fixed PHP 8.4 deprecated error in Stripe integration related to nullable parameter type declaration.
+- Fixed: From Email/Name fields appeared blank for new notifications when WP Mail SMTP force settings were enabled.
+- Fixed: The collapsible block height in the builder to be consistent with other fields.
+- Fixed: Disabled field option toggle remained interactive.
+
 = 1.9.8.7 =
 - Fixed: A fatal error occurred on the admin dashboard with some third-party plugins.
-
-= 1.9.8.6 =
 - Fixed: Prevented loading of Divi assets on pages not containing a form.
 - Fixed: Compatibility with the LeadConnector plugin.
 - Fixed: Integration icons were misaligned on the Form Builder page.

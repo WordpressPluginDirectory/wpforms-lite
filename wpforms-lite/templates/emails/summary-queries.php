@@ -14,4 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require WPFORMS_PLUGIN_DIR . 'assets/css/emails/partials/summary_media_queries.css';
+$min = wpforms_get_min_suffix();
+
+require WPFORMS_PLUGIN_DIR . "assets/css/emails/partials/summary_media_queries{$min}.css";

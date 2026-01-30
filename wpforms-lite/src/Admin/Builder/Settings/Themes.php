@@ -153,7 +153,7 @@ class Themes {
 
 		wp_enqueue_style(
 			'wpforms-full',
-			WPFORMS_PLUGIN_URL . 'assets/css/frontend/modern/wpforms-full.css',
+			WPFORMS_PLUGIN_URL . "assets/css/frontend/modern/wpforms-full{$min}.css",
 			[],
 			WPFORMS_VERSION
 		);
@@ -201,6 +201,7 @@ class Themes {
 	 * @param string $slug    Sidebar section slug.
 	 *
 	 * @return array
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function add_pro_class( array $classes, string $name, string $slug ): array {
 
@@ -252,7 +253,7 @@ class Themes {
 				],
 				'permission_modal'         => [
 					'title'   => esc_html__( 'Insufficient Permissions', 'wpforms-lite' ),
-					'content' => esc_html__( 'Sorry, your user role doesn\'t have permission to access this feature.', 'wpforms-lite' ),
+					'content' => esc_html__( "Sorry, your user role doesn't have permission to access this feature.", 'wpforms-lite' ),
 					'confirm' => esc_html__( 'OK', 'wpforms-lite' ),
 				],
 			],

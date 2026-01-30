@@ -167,9 +167,9 @@ class Field extends WPForms_Field {
 			false
 		);
 		$fld = sprintf(
-			'<ul data-next-id="%s" data-field-id="%d" data-field-type="%s" class="choices-list">',
-			max( array_keys( $qs ) ) + 1,
+			'<ul id="wpforms-field-option-%1$d-questions-list" data-next-id="%2$s" data-field-id="%1$d" data-field-type="%3$s" class="choices-list wpforms-undo-redo-container">',
 			esc_attr( $field['id'] ),
+			max( array_keys( $qs ) ) + 1,
 			esc_attr( $this->type )
 		);
 

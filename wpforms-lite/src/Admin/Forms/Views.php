@@ -94,7 +94,7 @@ class Views {
 					'forms'     => [
 						'title'         => __( 'Forms', 'wpforms-lite' ),
 						'get_var'       => 'type',
-						'get_var_value' => 'wpforms',
+						'get_var_value' => 'form',
 						'args'          => [
 							'post_type' => 'wpforms',
 						],
@@ -102,7 +102,7 @@ class Views {
 					'templates' => [
 						'title'         => __( 'Templates', 'wpforms-lite' ),
 						'get_var'       => 'type',
-						'get_var_value' => 'wpforms-template',
+						'get_var_value' => 'template',
 						'args'          => [
 							'post_type' => 'wpforms-template',
 						],
@@ -231,7 +231,6 @@ class Views {
 				'restored',
 				'deleted',
 				'duplicated',
-				'type',
 			]
 		);
 
@@ -633,7 +632,7 @@ class Views {
 			];
 
 			if ( $this->current_view !== 'all' ) {
-				$query_arg['type'] = $this->current_view === 'templates' ? 'wpforms-template' : 'wpforms';
+				$query_arg['type'] = $this->current_view === 'templates' ? 'template' : 'form';
 			}
 
 			$row_actions['trash'] = sprintf(

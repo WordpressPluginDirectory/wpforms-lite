@@ -7,6 +7,7 @@
 
 namespace WPForms\Integrations\AI\Admin\Builder;
 
+use WP_Post;
 use WPForms\Integrations\AI\Admin\Ajax\Forms as FormsAjax;
 use WPForms\Integrations\AI\Helpers;
 use WPForms\Integrations\LiteConnect\LiteConnect;
@@ -24,7 +25,7 @@ class Forms {
 	 *
 	 * @since 1.9.2
 	 */
-	public function init() {
+	public function init(): void {
 
 		$this->hooks();
 	}
@@ -34,7 +35,7 @@ class Forms {
 	 *
 	 * @since 1.9.2
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		add_action( 'wpforms_builder_enqueues', [ $this, 'enqueues' ] );
 		add_filter( 'wpforms_integrations_ai_admin_builder_enqueues_localize_chat_strings', [ $this, 'add_localize_chat_data' ] );
@@ -51,7 +52,7 @@ class Forms {
 	 * @noinspection PhpMissingParamTypeInspection
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function enqueues( $view ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+	public function enqueues( $view ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 
 		$this->enqueue_styles();
 		$this->enqueue_scripts();
@@ -62,7 +63,7 @@ class Forms {
 	 *
 	 * @since 1.9.2
 	 */
-	private function enqueue_styles() {
+	private function enqueue_styles(): void {
 
 		$min = wpforms_get_min_suffix();
 
@@ -79,7 +80,7 @@ class Forms {
 	 *
 	 * @since 1.9.2
 	 */
-	private function enqueue_scripts() {
+	private function enqueue_scripts(): void {
 
 		$min = wpforms_get_min_suffix();
 
@@ -99,21 +100,21 @@ class Forms {
 	}
 
 	/**
-	 * Set active form template.
+	 * Set an active form template.
 	 *
 	 * @since 1.9.2
 	 *
-	 * @param array|mixed $details Details.
-	 * @param object      $form    Form data.
+	 * @param array|mixed   $details Details.
+	 * @param WP_Post|false $form    Form data.
 	 *
-	 * @return array|void
+	 * @return array
 	 */
-	public function template_active( $details, $form ) {
+	public function template_active( $details, $form ): array {
 
 		$details = (array) $details;
 
 		if ( empty( $form ) ) {
-			return;
+			return [];
 		}
 
 		$form_data = wpforms_decode( $form->post_content );
@@ -139,6 +140,7 @@ class Forms {
 	 * @since 1.9.2
 	 *
 	 * @return array
+	 * @noinspection HtmlUnknownTarget
 	 */
 	private function get_localize_form_generator_data(): array {
 
@@ -203,6 +205,26 @@ class Forms {
 				'dismissError'              => esc_html__( 'Can\'t dismiss the modal window.', 'wpforms-lite' ),
 				'addon'                     => esc_html__( 'Addon', 'wpforms-lite' ),
 				'and'                       => esc_html__( 'and', 'wpforms-lite' ),
+				'addonInstalledTitle'       => esc_html__( 'Addon Installed', 'wpforms-lite' ),
+				'addonActivatedTitle'       => esc_html__( 'Addon Activated', 'wpforms-lite' ),
+				'addonInstalledContent'     => esc_html__( 'You’re all set. We’re going to continue building your form.', 'wpforms-lite' ),
+			],
+			'quiz'               => [
+				'modalTitle'   => esc_html__( 'Quiz Detected', 'wpforms-lite' ),
+				'modalContent' => sprintf(
+					wp_kses( /* translators: %1$s - Quiz addon doc link. */
+						__( 'It looks like you\'re trying to create a quiz. Would you like to activate the <a href="%1$s" target="_blank" rel="noopener noreferrer">Quiz Addon</a> and easily create graded, personality, and weighted quizzes?', 'wpforms-lite' ),
+						[
+							'a' => [
+								'href'   => [],
+								'rel'    => [],
+								'target' => [],
+							],
+						]
+					),
+					// @TODO: Confirm the URL.
+					esc_url( wpforms_utm_link( 'https://wpforms.com/docs/quiz-addon/', 'builder-modal',  'Quiz Addon Documentation' ) )
+				),
 			],
 			'previewNotice'      => [
 				'title'      => esc_html__( 'This Form Would Be Even Better With Fields From', 'wpforms-lite' ),
@@ -298,27 +320,42 @@ class Forms {
 			'samplePrompts'       => [
 				[
 					'icon'  => 'wpforms-ai-chat-sample-restaurant',
-					'title' => esc_html__( 'restaurant customer satisfaction survey', 'wpforms-lite' ),
+					'title' => esc_html__( 'Restaurant customer satisfaction survey', 'wpforms-lite' ),
 				],
 				[
 					'icon'  => 'wpforms-ai-chat-sample-ticket',
-					'title' => esc_html__( 'online event registration', 'wpforms-lite' ),
+					'title' => esc_html__( 'Online event registration', 'wpforms-lite' ),
 				],
 				[
 					'icon'  => 'wpforms-ai-chat-sample-design',
-					'title' => esc_html__( 'job application for a web designer', 'wpforms-lite' ),
+					'title' => esc_html__( 'Job application for a web designer', 'wpforms-lite' ),
 				],
 				[
 					'icon'  => 'wpforms-ai-chat-sample-stop',
-					'title' => esc_html__( 'cancelation survey for a subscription', 'wpforms-lite' ),
+					'title' => esc_html__( 'Cancellation survey for a subscription', 'wpforms-lite' ),
 				],
 				[
 					'icon'  => 'wpforms-ai-chat-sample-pizza',
-					'title' => esc_html__( 'takeout order for a pizza store', 'wpforms-lite' ),
+					'title' => esc_html__( 'Takeout order for a pizza store', 'wpforms-lite' ),
 				],
 				[
 					'icon'  => 'wpforms-ai-chat-sample-market',
-					'title' => esc_html__( 'market vendor application', 'wpforms-lite' ),
+					'title' => esc_html__( 'Market vendor application', 'wpforms-lite' ),
+				],
+				[
+					'icon'   => 'wpforms-ai-chat-sample-quiz-capitals',
+					'title'  => esc_html__( 'How well do you know world capitals?', 'wpforms-lite' ),
+					'prompt' => esc_html__( 'Create a graded quiz on the topic of "How well do you know world capitals?" with 10 questions and 3 answers each. Randomize the choices. Collect the user\'s name and email address. Create 4 outcomes set to Graded Quiz type with appropriate text for each grade and utilize the available smart tags. The graded outcomes should be if Quiz Grade is A, if Quiz Grade is B, if Quiz Grade is C, if Quiz Grade is D, and if Quiz Grade is F.', 'wpforms-lite' ),
+				],
+				[
+					'icon'   => 'wpforms-ai-chat-sample-quiz-learn',
+					'title'  => esc_html__( 'What is your ideal learning style?', 'wpforms-lite' ),
+					'prompt' => esc_html__( 'Create a personality quiz on the topic of "What is your ideal learning style?" with 10 questions and 4 answers each. The personalities are Visual, Auditory, Reading/Writing, and Kinesthetic. Collect the user\'s name and email address. Create 4 outcomes set to Personality Quiz type with neutral text and utilize the available smart tags.', 'wpforms-lite' ),
+				],
+				[
+					'icon'   => 'wpforms-ai-chat-sample-quiz-business',
+					'title'  => esc_html__( 'How prepared are you to start a business?', 'wpforms-lite' ),
+					'prompt' => esc_html__( 'Create a weighted quiz on the topic of "How prepared are you to start a business?" with 10 questions and 3 answers each. Collect the user\'s name and email address. Create 3 outcomes set to Weighted Quiz type for greater than 74%, less than 75% and greater than 49%, and less than 50%.', 'wpforms-lite' ),
 				],
 			],
 		];
@@ -345,14 +382,14 @@ class Forms {
 		return $strings;
 	}
 
-    /**
-     * Get required addons' data.
-     *
-     * @since 1.9.2
-     *
-     * @return array
-     */
-    private function get_required_addons_data(): array {
+	/**
+	 * Get required addons' data.
+	 *
+	 * @since 1.9.2
+	 *
+	 * @return array
+	 */
+	private function get_required_addons_data(): array {
 
 		// The addon installation procedure has floating issues in PHP < 7.4.
 		// It's better to skip the installation in this case to avoid addon installation errors.
@@ -360,7 +397,7 @@ class Forms {
 			return [];
 		}
 
-        $addons_obj = wpforms()->obj( 'addons' );
+		$addons_obj = wpforms()->obj( 'addons' );
 
 		if ( ! $addons_obj ) {
 			return [];
@@ -370,40 +407,53 @@ class Forms {
 
 		// Get the URLs for the required addons.
 		foreach ( FormsAjax::FORM_GENERATOR_REQUIRED_ADDONS as $slug ) {
-			$addon = $addons_obj->get_addon( $slug );
-
-			if (
-				empty( $addon ) || // Exceptional case when `addons.json` is not loaded.
-
-				// This means that addon is already installed and active.
-				( isset( $addon['status'] ) && $addon['status'] === 'active' ) ||
-
-				// This means that addon is not available in the current license.
-				// We should skip in this case as it is impossible to install or activate the addon.
-				( isset( $addon['action'] ) && $addon['action'] === 'upgrade' )
-			) {
-				continue;
-			}
-
-			$data[ $slug ] = [
-				'url'  => $addon['url'] ?? '',
-				'path' => $addon['path'] ?? '',
-			];
+			$addon         = $addons_obj->get_addon( $slug );
+			$data[ $slug ] = $this->get_required_addon_data( $addon );
 		}
 
-		return $data;
-    }
+		return array_filter( $data );
+	}
 
-    /**
-     * Get required addons action.
-     *
-     * @since 1.9.2
+	/**
+	 * Get required addon data.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param array|mixed $addon Addon data.
+	 *
+	 * @return array|null
+	 */
+	private function get_required_addon_data( $addon ): ?array {
+
+		if (
+			empty( $addon ) || // Exceptional case when `addons.json` is not loaded.
+
+			// This means that addon is already installed and active.
+			( isset( $addon['status'] ) && $addon['status'] === 'active' ) ||
+
+			// This means that addon is not available in the current license.
+			// We should skip in this case as it is impossible to install or activate the addon.
+			( isset( $addon['action'] ) && $addon['action'] === 'upgrade' )
+		) {
+			return null;
+		}
+
+		return [
+			'url'  => $addon['url'] ?? '',
+			'path' => $addon['path'] ?? '',
+		];
+	}
+
+	/**
+	 * Get required addons action.
+	 *
+	 * @since 1.9.2
 	 *
 	 * @param array $addons_data Addons data.
-     *
-     * @return string
-     */
-    private function get_required_addons_action( array $addons_data ): string {
+	 *
+	 * @return string
+	 */
+	private function get_required_addons_action( array $addons_data ): string {
 
 		if ( empty( $addons_data ) ) {
 			return '';
@@ -418,14 +468,14 @@ class Forms {
 		return 'activate';
 	}
 
-    /**
-     * Get dismissed elements data.
-     *
-     * @since 1.9.2
-     *
-     * @return array
-     */
-    private function get_dismissed_elements(): array {
+	/**
+	 * Get dismissed elements data.
+	 *
+	 * @since 1.9.2
+	 *
+	 * @return array
+	 */
+	private function get_dismissed_elements(): array {
 
 		$user_id = get_current_user_id();
 

@@ -53,6 +53,8 @@ class Loader {
 			'AI\AI',
 			'ConstantContact\V3\ConstantContact',
 			'Square\Square',
+			'MotoPress\MotoPress',
+			'Abilities\Abilities',
 		];
 
 		/**

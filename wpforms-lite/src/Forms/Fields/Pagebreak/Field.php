@@ -61,6 +61,8 @@ class Field extends WPForms_Field {
 	protected function hooks() {
 
 		add_filter( 'wpforms_field_preview_class', [ $this, 'preview_field_class' ], 10, 2 );
+		add_filter( 'wpforms_field_preview_display_duplicate_button', [ $this, 'field_display_duplicate_button' ], 10, 2 );
+		add_filter( 'wpforms_field_new_display_duplicate_button', [ $this, 'field_display_duplicate_button' ], 10, 2 );
 	}
 
 	/**
@@ -142,12 +144,15 @@ class Field extends WPForms_Field {
 				false
 			);
 
+			$indicator = ! empty( $field['indicator'] ) ? esc_attr( $field['indicator'] ) : 'progress';
+
 			$this->field_element(
 				'row',
 				$field,
 				[
 					'slug'    => 'title',
 					'content' => $lbl . $fld,
+					'class'   => $indicator === 'none' ? 'wpforms-hidden' : '',
 				]
 			);
 		}
@@ -337,12 +342,15 @@ class Field extends WPForms_Field {
 			],
 			false
 		);
-		$fld    = $this->field_element(
+
+		$indicator = ! empty( $field['indicator'] ) ? esc_attr( $field['indicator'] ) : 'progress';
+
+		$fld = $this->field_element(
 			'select',
 			$field,
 			[
 				'slug'    => 'indicator',
-				'value'   => ! empty( $field['indicator'] ) ? esc_attr( $field['indicator'] ) : 'progress',
+				'value'   => $indicator,
 				'options' => $themes,
 				'class'   => 'wpforms-pagebreak-progress-indicator',
 			],
@@ -385,13 +393,19 @@ class Field extends WPForms_Field {
 			false
 		);
 
+		$indicator_color_classes = [ 'color-picker-row' ];
+
+		if ( $indicator === 'none' ) {
+			$indicator_color_classes[] = 'wpforms-hidden';
+		}
+
 		$this->field_element(
 			'row',
 			$field,
 			[
 				'slug'    => 'indicator_color',
 				'content' => $lbl . $fld,
-				'class'   => 'color-picker-row',
+				'class'   => $indicator_color_classes,
 			]
 		);
 
@@ -642,5 +656,27 @@ class Field extends WPForms_Field {
 		$render_engine = wpforms_get_render_engine();
 
 		return array_key_exists( $render_engine, self::DEFAULT_INDICATOR_COLOR ) ? self::DEFAULT_INDICATOR_COLOR[ $render_engine ] : self::DEFAULT_INDICATOR_COLOR['modern'];
+	}
+
+	/**
+	 * Disallow the field preview "Duplicate" button.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param bool|mixed $display Display switch.
+	 * @param array      $field   Field settings.
+	 *
+	 * @return bool
+	 */
+	public function field_display_duplicate_button( $display, array $field ): bool {
+
+		$type = $field['type'] ?? '';
+
+		if ( $type === $this->type ) {
+			// Pagebreak fields cannot be duplicated.
+			return false;
+		}
+
+		return (bool) $display;
 	}
 }

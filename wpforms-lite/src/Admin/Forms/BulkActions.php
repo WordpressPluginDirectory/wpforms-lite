@@ -402,7 +402,6 @@ class BulkActions {
 		$removable_query_args[] = 'restored';
 		$removable_query_args[] = 'deleted';
 		$removable_query_args[] = 'duplicated';
-		$removable_query_args[] = 'type';
 
 		return $removable_query_args;
 	}

@@ -603,7 +603,7 @@ class WPForms_About {
 							<ul class="list-features list-plain">
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( '7000+ integrations with marketing and payment services', 'wpforms-lite' ); ?>
+									<?php esc_html_e( '9000+ integrations with marketing and payment services', 'wpforms-lite' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
@@ -1358,7 +1358,7 @@ class WPForms_About {
 						),
 						'',
 						wp_kses(
-							__( '<strong>Bonus:</strong> 7000+ integrations with Zapier.', 'wpforms-lite' ),
+							__( '<strong>Bonus:</strong> 9000+ integrations with Zapier.', 'wpforms-lite' ),
 							[
 								'strong' => [],
 							]
@@ -1394,7 +1394,7 @@ class WPForms_About {
 						),
 						'',
 						wp_kses(
-							__( '<strong>Bonus:</strong> 7000+ integrations with Zapier.', 'wpforms-lite' ),
+							__( '<strong>Bonus:</strong> 9000+ integrations with Zapier.', 'wpforms-lite' ),
 							[
 								'strong' => [],
 							]
@@ -1430,7 +1430,7 @@ class WPForms_About {
 						),
 						'',
 						wp_kses(
-							__( '<strong>Bonus:</strong> 7000+ integrations with Zapier.', 'wpforms-lite' ),
+							__( '<strong>Bonus:</strong> 9000+ integrations with Zapier.', 'wpforms-lite' ),
 							[
 								'strong' => [],
 							]
@@ -1466,7 +1466,7 @@ class WPForms_About {
 						),
 						'',
 						wp_kses(
-							__( '<strong>Bonus:</strong> 7000+ integrations with Zapier.', 'wpforms-lite' ),
+							__( '<strong>Bonus:</strong> 9000+ integrations with Zapier.', 'wpforms-lite' ),
 							[
 								'strong' => [],
 							]
@@ -1547,7 +1547,7 @@ class WPForms_About {
 				'pro'   => [
 					'status' => 'full',
 					'text'   => [
-						'<strong>' . esc_html__( 'Create interactive Surveys and Polls with beautiful reports', 'wpforms-lite' ) . '</strong>',
+						'<strong>' . esc_html__( 'Create interactive Surveys, Polls, and Quizzes with beautiful reports', 'wpforms-lite' ) . '</strong>',
 					],
 				],
 			],
@@ -1760,7 +1760,7 @@ class WPForms_About {
 			'conditionals' => esc_html__( 'Smart Conditional Logic', 'wpforms-lite' ),
 			'marketing'    => esc_html__( 'Marketing Integrations', 'wpforms-lite' ),
 			'payments'     => esc_html__( 'Payment Forms', 'wpforms-lite' ),
-			'surveys'      => esc_html__( 'Surveys & Polls', 'wpforms-lite' ),
+			'surveys'      => esc_html__( 'Surveys, Polls, and Quizzes', 'wpforms-lite' ),
 			'advanced'     => esc_html__( 'Advanced Form Features', 'wpforms-lite' ),
 			'addons'       => esc_html__( 'WPForms Addons', 'wpforms-lite' ),
 			'support'      => esc_html__( 'Customer Support', 'wpforms-lite' ),

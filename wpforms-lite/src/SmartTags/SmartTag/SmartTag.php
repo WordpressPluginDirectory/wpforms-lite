@@ -13,7 +13,7 @@ abstract class SmartTag {
 
 	/**
 	 * Full smart tag.
-	 * For example: {smart_tag attr="1" attr2="true"}.
+	 * For example, {smart_tag attr="1" attr2="true"}.
 	 *
 	 * @since 1.6.7
 	 *
@@ -22,13 +22,22 @@ abstract class SmartTag {
 	protected $smart_tag;
 
 	/**
-	 * Context usage.
+	 * Context.
 	 *
 	 * @since 1.8.7
 	 *
 	 * @var string
 	 */
 	public $context;
+
+	/**
+	 * Context data.
+	 *
+	 * @since 1.9.9.2
+	 *
+	 * @var array
+	 */
+	public $context_data;
 
 	/**
 	 * List of attributes.
@@ -45,13 +54,15 @@ abstract class SmartTag {
 	 * @since 1.6.7
 	 * @since 1.8.7 Added $context parameter.
 	 *
-	 * @param string $smart_tag Full smart tag.
-	 * @param string $context   Context usage.
+	 * @param string $smart_tag    Full smart tag.
+	 * @param string $context      Context.
+	 * @param array  $context_data Context data.
 	 */
-	public function __construct( $smart_tag, $context = '' ) {
+	public function __construct( $smart_tag, $context = '', array $context_data = [] ) {
 
-		$this->smart_tag = $smart_tag;
-		$this->context   = $context;
+		$this->smart_tag    = $smart_tag;
+		$this->context      = $context;
+		$this->context_data = $context_data;
 	}
 
 	/**
@@ -68,7 +79,7 @@ abstract class SmartTag {
 	abstract public function get_value( $form_data, $fields = [], $entry_id = '' );
 
 	/**
-	 * Get list of smart tag attributes.
+	 * Get a list of smart tag attributes.
 	 *
 	 * @since 1.6.7
 	 *
@@ -84,7 +95,7 @@ abstract class SmartTag {
 		 * (\w+) an attribute name and also the first capturing group. Lowercase or uppercase letters, digits, underscore.
 		 * = the equal sign.
 		 * (["\']) single or double quote, the second capturing group.
-		 * (.+?) an attribute value within the quotes, and also the third capturing group. Any number of any characters except new line. Lazy mode - match as few characters as possible to allow multiple attributes on one line.
+		 * (.+?) an attribute value within the quotes, and also the third capturing group. Any number of any characters except the new line. Lazy mode - match as few characters as possible to allow multiple attributes on one line.
 		 * \2 - repeat the second capturing group.
 		 */
 		preg_match_all( '/(\w+)=(["\'])(.+?)\2/', $this->smart_tag, $attributes );
@@ -250,7 +261,7 @@ abstract class SmartTag {
 	}
 
 	/**
-	 * Get formatted field value.
+	 * Get a formatted field value.
 	 *
 	 * @since 1.8.9
 	 *
@@ -318,5 +329,62 @@ abstract class SmartTag {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Check if a user has capabilities to get the smart tag value.
+	 *
+	 * @since 1.9.9.2
+	 *
+	 * @return bool
+	 */
+	protected function has_cap(): bool {
+
+		switch ( $this->context ) {
+			case 'notification':
+			case 'notification-carboncopy':
+			case 'notification-from':
+			case 'notification-reply-to':
+			case 'email':
+				$cap = $this->recipient_has_cap();
+				break;
+
+			case 'confirmation':
+				$cap = current_user_can( 'manage_options' );
+				break;
+
+			default:
+				$cap = true;
+		}
+
+		return $cap;
+	}
+
+	/**
+	 * Check if the notification recipient is allowed to view the author email.
+	 *
+	 * @since 1.9.9.2
+	 *
+	 * @return bool
+	 */
+	private function recipient_has_cap(): bool {
+
+		$emails = $this->context_data['to_email'] ?? [];
+		$emails = array_unique( array_filter( array_map( 'trim', $emails ) ) );
+
+		if ( ! $emails ) {
+			return false;
+		}
+
+		return array_reduce(
+			$emails,
+			static function ( $carry, $email ) {
+
+				$user = get_user_by( 'email', $email );
+
+				return $carry && $user && user_can( $user, 'manage_options' );
+			},
+			true
+		);
 	}
 }

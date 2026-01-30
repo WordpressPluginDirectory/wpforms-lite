@@ -19,7 +19,7 @@ class Enqueues {
 	 *
 	 * @since 1.9.1
 	 */
-	public function init() {
+	public function init(): void {
 
 		$this->hooks();
 	}
@@ -29,7 +29,7 @@ class Enqueues {
 	 *
 	 * @since 1.9.1
 	 */
-	private function hooks() {
+	private function hooks(): void {
 
 		add_action( 'wpforms_builder_enqueues', [ $this, 'enqueues' ] );
 	}
@@ -44,7 +44,7 @@ class Enqueues {
 	 * @noinspection PhpMissingParamTypeInspection
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function enqueues( $view ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+	public function enqueues( $view ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 
 		$this->enqueue_styles();
 		$this->enqueue_scripts();
@@ -55,7 +55,7 @@ class Enqueues {
 	 *
 	 * @since 1.9.1
 	 */
-	private function enqueue_styles() {
+	private function enqueue_styles(): void {
 
 		$min = wpforms_get_min_suffix();
 
@@ -79,7 +79,7 @@ class Enqueues {
 	 *
 	 * @since 1.9.1
 	 */
-	private function enqueue_scripts() {
+	private function enqueue_scripts(): void {
 
 		$min = wpforms_get_min_suffix();
 

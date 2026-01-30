@@ -7,6 +7,7 @@
 
 use WPForms\Forms\Fields\Base\Frontend as FrontendBase;
 use WPForms\Forms\Fields\Helpers\RequirementsAlerts;
+use WPForms\Forms\Fields\Traits\MultiFieldMenu as MultiFieldMenuTrait;
 use WPForms\Forms\Fields\Traits\ReadOnlyField as ReadOnlyFieldTrait;
 use WPForms\Forms\IconChoices;
 use WPForms\Integrations\AI\Helpers as AIHelpers;
@@ -18,6 +19,7 @@ use WPForms\Integrations\AI\Helpers as AIHelpers;
  */
 abstract class WPForms_Field {
 
+	use MultiFieldMenuTrait;
 	use ReadOnlyFieldTrait;
 
 	/**
@@ -115,7 +117,7 @@ abstract class WPForms_Field {
 	 *
 	 * @since 1.1.1
 	 *
-	 * @var int|bool
+	 * @var int|false
 	 */
 	public $form_id;
 
@@ -1472,7 +1474,7 @@ abstract class WPForms_Field {
 			case 'choices':
 				$values       = ! empty( $field['choices'] ) ? $field['choices'] : $this->defaults;
 				$label        = ! empty( $args['label'] ) ? esc_html( $args['label'] ) : esc_html__( 'Choices', 'wpforms-lite' );
-				$class        = [];
+				$class        = [ 'wpforms-undo-redo-container' ];
 				$field_type   = $this->type;
 				$inline_style = '';
 
@@ -1526,9 +1528,12 @@ abstract class WPForms_Field {
 					false
 				);
 
+				$id = 'wpforms-field-option-' . wpforms_validate_field_id( $field['id'] ) . '-choices-list';
+
 				// Field contents.
 				$fld = sprintf(
-					'<ul data-next-id="%s" class="choices-list %s" data-field-id="%s" data-field-type="%s" style="%s">',
+					'<ul id="%1$s" data-next-id="%2$s" class="choices-list %3$s" data-field-id="%4$s" data-field-type="%5$s" style="%6$s">',
+					esc_attr( $id ),
 					max( array_keys( $values ) ) + 1,
 					wpforms_sanitize_classes( $class, true ),
 					wpforms_validate_field_id( $field['id'] ),
@@ -1554,14 +1559,14 @@ abstract class WPForms_Field {
 					$remove_class = $is_other_option ? 'remove wpforms-disabled' : 'remove';
 					$move_class   = $is_other_option ? 'move wpforms-disabled' : 'move';
 
+					$fld .= sprintf( '<span class="%s"><i class="fa fa-grip-lines"></i></span>', esc_attr( $move_class ) );
+
 					$fld .= sprintf(
 						'<input type="%s" name="%s[default]" class="default" value="1" %s>',
 						$field_type === 'checkbox' ? 'checkbox' : 'radio',
 						esc_attr( $base ),
 						checked( '1', $default, false )
 					);
-
-					$fld .= sprintf( '<span class="%s"><i class="fa fa-bars"></i></span>', esc_attr( $move_class ) );
 
 					/**
 					 * Fires before the field choice label.
@@ -1574,7 +1579,7 @@ abstract class WPForms_Field {
 					 * @param array  $field   Field settings.
 					 * @param array  $args    Field options.
 					 */
-					$fld .= (string) apply_filters( 'wpforms_field_option_choice_before_label', '', $key, $value, $field, $args );
+					$fld .= apply_filters( 'wpforms_field_option_choice_before_label', '', $key, $value, $field, $args );
 
 					$fld .= sprintf(
 						'<input type="text" name="%s[label]" value="%s" class="label">',
@@ -1593,9 +1598,23 @@ abstract class WPForms_Field {
 					 * @param array  $field   Field settings.
 					 * @param array  $args    Field options.
 					 */
-					$fld .= (string) apply_filters( 'wpforms_field_option_choice_after_label', '', $key, $value, $field, $args );
+					$fld .= apply_filters( 'wpforms_field_option_choice_after_label', '', $key, $value, $field, $args );
 
 					$fld .= sprintf( '<a class="%s" href="#"><i class="fa fa-plus-circle"></i></a><a class="%s" href="#"><i class="fa fa-minus-circle"></i></a>', esc_attr( $add_class ), esc_attr( $remove_class ) );
+
+					/**
+					 * Fires after the field choice label.
+					 *
+					 * @since 1.9.9
+					 *
+					 * @param string $output  Output string.
+					 * @param int    $key     Choice key.
+					 * @param array  $value   Choice value.
+					 * @param array  $field   Field settings.
+					 * @param array  $args    Field options.
+					 */
+					$fld .= apply_filters( 'wpforms_field_option_choice_after_controls', '', $key, $value, $field, $args );
+
 					$fld .= sprintf(
 						'<input type="text" name="%s[value]" value="%s" class="value">',
 						esc_attr( $base ),
@@ -1701,7 +1720,7 @@ abstract class WPForms_Field {
 			 */
 			case 'choices_payments':
 				$values       = ! empty( $field['choices'] ) ? $field['choices'] : $this->defaults;
-				$class        = [];
+				$class        = [ 'wpforms-undo-redo-container' ];
 				$input_type   = in_array( $field['type'], [ 'payment-multiple', 'payment-select' ], true ) ? 'radio' : 'checkbox';
 				$inline_style = '';
 
@@ -1728,9 +1747,12 @@ abstract class WPForms_Field {
 					false
 				);
 
+				$id = 'wpforms-field-option-' . wpforms_validate_field_id( $field['id'] ) . '-choices-list';
+
 				// Field contents.
 				$fld = sprintf(
-					'<ul data-next-id="%s" class="choices-list %s" data-field-id="%s" data-field-type="%s" style="%s">',
+					'<ul id="%1$s" data-next-id="%2$s" class="choices-list %3$s" data-field-id="%4$s" data-field-type="%5$s" style="%6$s">',
+					esc_attr( $id ),
 					max( array_keys( $values ) ) + 1,
 					wpforms_sanitize_classes( $class, true ),
 					wpforms_validate_field_id( $field['id'] ),
@@ -1747,13 +1769,13 @@ abstract class WPForms_Field {
 					$icon_style     = ! empty( $value['icon_style'] ) ? $value['icon_style'] : IconChoices::DEFAULT_ICON_STYLE;
 
 					$fld .= '<li data-key="' . absint( $key ) . '">';
+					$fld .= '<span class="move"><i class="fa fa-grip-lines"></i></span>';
 					$fld .= sprintf(
 						'<input type="%s" name="%s[default]" class="default" value="1" %s>',
 						esc_attr( $input_type ),
 						esc_attr( $base ),
 						checked( '1', $default, false )
 					);
-					$fld .= '<span class="move"><i class="fa fa-grip-lines"></i></span>';
 					$fld .= sprintf(
 						'<input type="text" name="%s[label]" value="%s" class="label">',
 						esc_attr( $base ),
@@ -1853,7 +1875,7 @@ abstract class WPForms_Field {
 				break;
 
 			/*
-			 * Other Placeholder (for "Other" choice input field).
+			 * Other Placeholder (for the "Other" choice input field).
 			 */
 			case 'other_placeholder':
 				$label = $this->field_element(
@@ -2806,8 +2828,10 @@ abstract class WPForms_Field {
 			 * @param object $this  WPForms_Field object.
 			 */
 			do_action( "wpforms_field_options_before_{$option}", $field, $this );
+
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $output;
+
 			/**
 			 * Fires after the field option output.
 			 *
@@ -2822,10 +2846,26 @@ abstract class WPForms_Field {
 		}
 
 		if ( $markup === 'open' ) {
+			/**
+			 * Fires before the field option output.
+			 *
+			 * @since 1.0.2
+			 *
+			 * @param array  $field Field data and settings.
+			 * @param object $this  WPForms_Field object.
+			 */
 			do_action( "wpforms_field_options_before_{$option}", $field, $this );
 		}
 
 		if ( $markup === 'close' ) {
+			/**
+			 * Fires at the bottom of the field option output.
+			 *
+			 * @since 1.0.2
+			 *
+			 * @param array  $field Field data and settings.
+			 * @param object $this  WPForms_Field object.
+			 */
 			do_action( "wpforms_field_options_bottom_{$option}", $field, $this );
 		}
 
@@ -2833,10 +2873,26 @@ abstract class WPForms_Field {
 		echo $output;
 
 		if ( $markup === 'open' ) {
+			/**
+			 * Fires at the top of the field option output.
+			 *
+			 * @since 1.0.2
+			 *
+			 * @param array  $field Field data and settings.
+			 * @param object $this  WPForms_Field object.
+			 */
 			do_action( "wpforms_field_options_top_{$option}", $field, $this );
 		}
 
 		if ( $markup === 'close' ) {
+			/**
+			 * Fires after the field option output.
+			 *
+			 * @since 1.0.2
+			 *
+			 * @param array  $field Field data and settings.
+			 * @param object $this  WPForms_Field object.
+			 */
 			do_action( "wpforms_field_options_after_{$option}", $field, $this );
 		}
 
@@ -2844,7 +2900,7 @@ abstract class WPForms_Field {
 	}
 
 	/**
-	 * Get choice images hide option field element.
+	 * Get choice images hide an option field element.
 	 *
 	 * @since 1.9.8.3
 	 *
@@ -2989,20 +3045,29 @@ abstract class WPForms_Field {
 							$total_obj = wp_count_posts( $field['dynamic_post_type'] );
 							$total     = isset( $total_obj->publish ) ? (int) $total_obj->publish : 0;
 							$values    = [];
-							$posts     = wpforms_get_hierarchical_object(
-								apply_filters( // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName, WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.Comments.SinceTagHooks.MissingSinceTag
-									'wpforms_dynamic_choice_post_type_args',
-									[
-										'post_type'      => $field['dynamic_post_type'],
-										'posts_per_page' => 20,
-										'orderby'        => 'title',
-										'order'          => 'ASC',
-									],
-									$field,
-									$this->form_id
-								),
-								true
+
+							/**
+							 * Filters dynamic choice taxonomy args.
+							 *
+							 * @since 1.5.0
+							 *
+							 * @param array     $args    Arguments.
+							 * @param array     $field   Field.
+							 * @param int|false $form_id Form ID.
+							 */
+							$args = apply_filters( // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName, WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.Comments.SinceTagHooks.MissingSinceTag
+								'wpforms_dynamic_choice_post_type_args',
+								[
+									'post_type'      => $field['dynamic_post_type'],
+									'posts_per_page' => 20,
+									'orderby'        => 'title',
+									'order'          => 'ASC',
+								],
+								$field,
+								$this->form_id
 							);
+
+							$posts = wpforms_get_hierarchical_object( $args, true );
 
 							foreach ( $posts as $post ) {
 								$values[] = [
@@ -3015,19 +3080,28 @@ abstract class WPForms_Field {
 							// Taxonomy dynamic populating.
 							$total  = (int) wp_count_terms( $field['dynamic_taxonomy'] );
 							$values = [];
-							$terms  = wpforms_get_hierarchical_object(
-								apply_filters(
-									'wpforms_dynamic_choice_taxonomy_args',
-									[
-										'taxonomy'   => $field['dynamic_taxonomy'],
-										'hide_empty' => false,
-										'number'     => 20,
-									],
-									$field,
-									$this->form_id
-								),
-								true
+
+							/**
+							 * Filters dynamic choice taxonomy args.
+							 *
+							 * @since 1.5.0
+							 *
+							 * @param array     $args    Arguments.
+							 * @param array     $field   Field.
+							 * @param int|false $form_id Form ID.
+							 */
+							$args = apply_filters( // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+								'wpforms_dynamic_choice_taxonomy_args',
+								[
+									'taxonomy'   => $field['dynamic_taxonomy'],
+									'hide_empty' => false,
+									'number'     => 20,
+								],
+								$field,
+								$this->form_id
 							);
+
+							$terms = wpforms_get_hierarchical_object( $args, true );
 
 							foreach ( $terms as $term ) {
 								$values[] = [
@@ -3246,7 +3320,7 @@ abstract class WPForms_Field {
 
 					$output .= '</ul>';
 
-					// Multiple choice: Other option.
+					// Multiple choice: Another option.
 					if ( $type === 'radio' ) {
 
 						$placeholder   = ! empty( $field['other_placeholder'] ) ? $field['other_placeholder'] : '';
@@ -3420,6 +3494,9 @@ abstract class WPForms_Field {
 		}
 
 		$preview .= sprintf( '<a href="#" class="wpforms-field-delete" title="%s"><i class="fa fa-trash-o"></i></a>', esc_attr__( 'Delete Field', 'wpforms-lite' ) );
+
+		// Multi-field actions menu.
+		$preview .= $this->get_multi_field_menu_html();
 
 		if ( ! $field_helper_hide ) {
 			$preview .= sprintf(
@@ -3737,7 +3814,7 @@ abstract class WPForms_Field {
 	 */
 	public function field_html_value_images( $filtering, string $context, array $field ): bool {
 
-		// Bail if images are hidden and not in entry-preview context.
+		// Bail if images are hidden and not in the entry-preview context.
 		if ( ! empty( $field['choices_images_hide'] ) && $context !== 'entry-preview' ) {
 			return false;
 		}
@@ -3972,7 +4049,14 @@ abstract class WPForms_Field {
 	 */
 	protected function is_choicesjs_search_enabled( $choices_count ) {
 
-		// We should auto hide/remove search, if less than 8 choices.
+		/**
+		 * Allow modifying the minimum number of choices to show the search area.
+		 * We should auto hide/remove search, if less than 8 choices by default.
+		 *
+		 * @since 1.6.4
+		 *
+		 * @param int $min_choices Minimum number of choices to show the search area.
+		 */
 		return $choices_count >= (int) apply_filters( 'wpforms_field_choicesjs_search_enabled_items_min', 8 );
 	}
 

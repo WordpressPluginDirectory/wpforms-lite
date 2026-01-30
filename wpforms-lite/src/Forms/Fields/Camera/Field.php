@@ -80,7 +80,7 @@ class Field extends WPForms_Field {
 
 		wp_enqueue_script(
 			'wpforms-builder-camera',
-			WPFORMS_PLUGIN_URL . "assets/pro/js/admin/builder/camera{$min}.js",
+			WPFORMS_PLUGIN_URL . "assets/pro/js/admin/builder/fields/camera{$min}.js",
 			[ 'jquery', 'wpforms-builder' ],
 			WPFORMS_VERSION,
 			false

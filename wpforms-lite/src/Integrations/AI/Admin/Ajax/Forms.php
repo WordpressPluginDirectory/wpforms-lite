@@ -19,7 +19,7 @@ class Forms extends Base {
 	 *
 	 * @var array
 	 */
-	public const FORM_GENERATOR_REQUIRED_ADDONS = [ 'surveys-polls', 'signatures', 'coupons', 'calculations' ];
+	public const FORM_GENERATOR_REQUIRED_ADDONS = [ 'surveys-polls', 'signatures', 'coupons', 'calculations', 'quiz' ];
 
 	/**
 	 * The addon fields.
@@ -214,12 +214,16 @@ class Forms extends Base {
 	 */
 	private function prepare_form_settings( array $form_data ): array {
 
+		// Prepare the notifications.
 		if ( isset( $form_data['settings']['notifications']['1'] ) ) {
 			$form_data['settings']['notifications']['1']['subject'] = sprintf( /* translators: %s - form name. */
 				esc_html__( 'New Entry: %s', 'wpforms-lite' ),
 				esc_html( $form_data['form_title'] )
 			);
 		}
+
+		// Quiz settings.
+		$form_data = $this->prepare_quiz_settings( $form_data );
 
 		return $form_data['settings'];
 	}
@@ -279,7 +283,13 @@ class Forms extends Base {
 			);
 		}
 
-		if ( ! wpforms_current_user_can( 'edit_form_single', $form_id ) ) {
+		if ( empty( $form_id ) && ! wpforms_current_user_can( 'create_forms' ) ) {
+			wp_send_json_error(
+				[ 'error' => esc_html__( 'Sorry, you are not allowed to create new forms.', 'wpforms-lite' ) ]
+			);
+		}
+
+		if ( ! empty( $form_id ) && ! wpforms_current_user_can( 'edit_form_single', $form_id ) ) {
 			wp_send_json_error(
 				[ 'error' => esc_html__( 'Sorry, you are not allowed to edit this form.', 'wpforms-lite' ) ]
 			);
@@ -438,5 +448,46 @@ class Forms extends Base {
 
 		update_user_meta( $user_id, 'wpforms_dismissed', $dismissed );
 		wp_send_json_success();
+	}
+
+	/**
+	 * Prepare the quiz settings.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param array $form_data Form data.
+	 *
+	 * @return array
+	 */
+	private function prepare_quiz_settings( array $form_data ): array {
+
+		if ( empty( $form_data['settings']['quiz']['enabled'] ) ) {
+			return $form_data;
+		}
+
+		$outcomes = (array) ( $form_data['settings']['quiz']['outcomes'] ?? [] );
+
+		$default_outcome = [
+			'graded_message'      => '',
+			'personality_message' => '',
+			'weighted_message'    => '',
+			'conditionals'        => [],
+		];
+
+		// Decode the outcome messages.
+		foreach ( $outcomes as $key => $outcome ) {
+			$outcome = wp_parse_args( $outcome, $default_outcome );
+
+			$outcome['graded_message']      = htmlspecialchars_decode( $outcome['graded_message'] );
+			$outcome['personality_message'] = htmlspecialchars_decode( $outcome['personality_message'] );
+			$outcome['weighted_message']    = htmlspecialchars_decode( $outcome['weighted_message'] );
+			$outcome['conditionals']        = $this->prepare_field_cl( $outcome );
+
+			$outcomes[ $key ] = $outcome;
+		}
+
+		$form_data['settings']['quiz']['outcomes'] = $outcomes;
+
+		return $form_data;
 	}
 }

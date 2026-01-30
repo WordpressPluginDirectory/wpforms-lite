@@ -18,14 +18,14 @@ class Request {
 	 *
 	 * @since 1.9.1
 	 */
-	const URL = 'https://wpformsapi.com/api/v1';
+	private const URL = 'https://wpformsapi.com/api/v1';
 
 	/**
 	 * Request timeout.
 	 *
 	 * @since 1.9.1
 	 */
-	const TIMEOUT = 30;
+	private const TIMEOUT = 60;
 
 	/**
 	 * Send a POST request.
@@ -52,6 +52,7 @@ class Request {
 	 * @param array  $args     Arguments to send.
 	 *
 	 * @return Response Response from the API.
+	 * @noinspection PhpSameParameterValueInspection
 	 */
 	private function request( string $method, string $endpoint, array $args ): Response {
 

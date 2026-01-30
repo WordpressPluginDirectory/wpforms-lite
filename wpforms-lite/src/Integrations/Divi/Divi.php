@@ -2,6 +2,7 @@
 
 namespace WPForms\Integrations\Divi;
 
+use WPForms\Integrations\Divi\Interfaces\LocalizedDataInterface;
 use WPForms_Field_Select;
 use WPForms\Integrations\IntegrationInterface;
 
@@ -13,7 +14,26 @@ use WPForms\Integrations\IntegrationInterface;
 class Divi implements IntegrationInterface {
 
 	/**
-	 * Indicate if current integration is allowed to load.
+	 * Instance of the legacy module.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @var WPFormsSelector|null
+	 */
+	private $legacy_module;
+
+	/**
+	 * Instance of the modern module.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @var WPFormsSelectorModern|null
+	 * @noinspection PhpPrivateFieldCanBeLocalVariableInspection
+	 */
+	private $modern_module;
+
+	/**
+	 * Indicate if the current integration is allowed to load.
 	 *
 	 * @since 1.6.3
 	 *
@@ -44,6 +64,9 @@ class Divi implements IntegrationInterface {
 		add_action( 'et_builder_ready', [ $this, 'register_module' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'frontend_styles' ], 12 );
 
+		// Register module.
+		add_action( 'divi_module_library_modules_dependency_tree', [ $this, 'register_modern_selector' ] );
+
 		if ( wp_doing_ajax() ) {
 			add_action( 'wp_ajax_wpforms_divi_preview', [ $this, 'preview' ] );
 		}
@@ -61,6 +84,45 @@ class Divi implements IntegrationInterface {
 	}
 
 	/**
+	 * Register modern selector dependency.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param object $dependency_tree Dependency tree object.
+	 */
+	public function register_modern_selector( object $dependency_tree ): void {
+
+		if ( ! $this->is_divi_5_or_higher() ) {
+			return;
+		}
+
+		$this->modern_module = new WPFormsSelectorModern();
+
+		if ( $this->is_divi_builder() ) {
+			$this->insert( $this->modern_module );
+		}
+
+		$dependency_tree->add_dependency( $this->modern_module );
+	}
+
+	/**
+	 * Check if Divi 5 or higher is active.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @return bool
+	 * @noinspection PhpUndefinedConstantInspection
+	 */
+	protected function is_divi_5_or_higher(): bool {
+
+		if ( ! defined( 'ET_BUILDER_VERSION' ) ) {
+			return false;
+		}
+
+		return version_compare( ET_BUILDER_VERSION, '5.0.0', '>=' );
+	}
+
+	/**
 	 * Determine if a current page is opened in the Divi Builder.
 	 *
 	 * @since 1.6.3
@@ -71,7 +133,6 @@ class Divi implements IntegrationInterface {
 
 		return ! empty( $_GET['et_fb'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
-
 
 	/**
 	 * Get the current style name.
@@ -90,7 +151,8 @@ class Divi implements IntegrationInterface {
 			return '';
 		}
 
-		$styles_name  = wpforms_get_render_engine() . '-';
+		$styles_name = wpforms_get_render_engine() . '-';
+
 		$styles_name .= $disable_css === 1 ? 'full' : 'base';
 
 		return $styles_name;
@@ -109,7 +171,7 @@ class Divi implements IntegrationInterface {
 	}
 
 	/**
-	 * Helper method to check if Divi plugin is loaded.
+	 * Helper method to check if the Divi plugin is loaded.
 	 *
 	 * @since 1.8.5
 	 *
@@ -198,6 +260,10 @@ class Divi implements IntegrationInterface {
 	 */
 	public function builder_scripts(): void {
 
+		if ( ! $this->legacy_module ) {
+			return;
+		}
+
 		$min = wpforms_get_min_suffix();
 
 		wp_enqueue_script(
@@ -208,9 +274,25 @@ class Divi implements IntegrationInterface {
 			true
 		);
 
+		$this->insert( $this->legacy_module );
+
 		wp_localize_script(
 			'wpforms-divi',
 			'wpforms_divi_builder',
+			$this->legacy_module->get_localized_data()
+		);
+	}
+
+	/**
+	 * Injects localized data into the provided form selector to be used in the frontend.
+	 *
+	 * @since 1.9.9
+	 *
+	 * @param LocalizedDataInterface $form_selector Interface instance to set localized data for forms.
+	 */
+	private function insert( LocalizedDataInterface $form_selector ): void {
+
+		$form_selector->set_localized_data(
 			[
 				'ajax_url'         => admin_url( 'admin-ajax.php' ),
 				'nonce'            => wp_create_nonce( 'wpforms_divi_builder' ),
@@ -235,16 +317,16 @@ class Divi implements IntegrationInterface {
 	 * Register module.
 	 *
 	 * @since        1.6.3
-	 *
-	 * @noinspection PhpExpressionResultUnusedInspection
 	 */
 	public function register_module(): void {
 
-		if ( ! class_exists( 'ET_Builder_Module' ) ) {
+		if ( ! class_exists( 'ET_Builder_Module' ) ||
+			( $this->is_divi_5_or_higher() && $this->is_divi_builder() )
+		) {
 			return;
 		}
 
-		new WPFormsSelector();
+		$this->legacy_module = new WPFormsSelector();
 	}
 
 	/**
@@ -305,7 +387,7 @@ class Divi implements IntegrationInterface {
 				echo '</fieldset>';
 
 				// This empty image is needed to execute JS code that triggers the custom event.
-				// Unfortunately, <script> tag doesn't work in the Divi Builder.
+				// Unfortunately, the < script > tag doesn't work in the Divi Builder.
 				echo '<img
 					src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
 					alt="Empty"
@@ -318,7 +400,7 @@ class Divi implements IntegrationInterface {
 		);
 
 		/**
-		 * Allows to show/hide form title and description.
+		 * Allows showing/hiding form title and description.
 		 *
 		 * @since 1.6.3.1
 		 *
@@ -332,7 +414,7 @@ class Divi implements IntegrationInterface {
 		);
 
 		/**
-		 * Allows to show/hide form description.
+		 * Allows showing/hiding form description.
 		 *
 		 * @since 1.6.3.1
 		 *

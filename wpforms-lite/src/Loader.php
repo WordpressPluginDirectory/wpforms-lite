@@ -904,6 +904,7 @@ class Loader {
 			'Builder\Payments',
 			'Builder\DidYouKnow',
 			'Builder\Geolocation',
+			'Builder\Quiz',
 			'Builder\Confirmations',
 			'Builder\Notifications',
 			'Builder\PDF',

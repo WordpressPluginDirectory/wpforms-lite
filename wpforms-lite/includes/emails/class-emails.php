@@ -138,6 +138,15 @@ class WPForms_WP_Emails {
 	public $notification_id = '';
 
 	/**
+	 * Context data to be passed to the tag.
+	 *
+	 * @since 1.9.9.2
+	 *
+	 * @var array|array[]
+	 */
+	private $context_data = [];
+
+	/**
 	 * Get things going.
 	 *
 	 * @since 1.1.3
@@ -396,6 +405,8 @@ class WPForms_WP_Emails {
 			return false;
 		}
 
+		$this->context_data = [ 'to_email' => (array) $to ];
+
 		// Hooks before email is sent.
 		do_action( 'wpforms_email_send_before', $this );
 
@@ -423,6 +434,9 @@ class WPForms_WP_Emails {
 			],
 			$this
 		);
+
+		// Update context data, as 'to' email address could be changed by the filter above.
+		$this->context_data = [ 'to_email' => (array) $data['to'] ];
 
 		$entry_obj = wpforms()->obj( 'entry' );
 
@@ -521,18 +535,18 @@ class WPForms_WP_Emails {
 	 * Process a smart tag.
 	 * Decodes entities and sanitized (keeping line breaks) by default.
 	 *
-	 * @uses wpforms_decode_string()
+	 * @uses  wpforms_decode_string()
 	 *
 	 * @since 1.1.3
 	 * @since 1.6.0 Deprecated 2 params: $sanitize, $linebreaks.
 	 *
-	 * @param string $string String that may contain tags.
+	 * @param string $content String that may contain tags.
 	 *
-	 * @return string
+	 * @return string|mixed
 	 */
-	public function process_tag( $string = '' ) {
+	public function process_tag( $content = '' ) {
 
-		return wpforms_process_smart_tags( $string, $this->form_data, $this->fields, $this->entry_id, 'email' );
+		return wpforms_process_smart_tags( $content, $this->form_data, $this->fields, $this->entry_id, 'email', $this->context_data );
 	}
 
 	/**

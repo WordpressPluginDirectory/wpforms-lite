@@ -123,7 +123,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 		<script type="text/html" id="tmpl-wpforms-providers-builder-content-connection-fields">
 			<div class="wpforms-builder-provider-connection-block wpforms-builder-provider-connection-fields">
 				<h4><?php esc_html_e( 'Custom Fields', 'wpforms-lite' ); ?></h4>
-				<table class="wpforms-builder-provider-connection-fields-table">
+				<table class="wpforms-builder-provider-connection-fields-table wpforms-undo-redo-container">
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Custom Field Name', 'wpforms-lite' ); ?></th>

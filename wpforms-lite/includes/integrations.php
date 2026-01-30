@@ -8,6 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Register and setup WPForms as a Visual Composer element.
  *
  * @since 1.3.0
+ *
+ * @noinspection PhpUndefinedFunctionInspection
  */
 function wpforms_visual_composer_shortcode() {
 
@@ -15,7 +17,13 @@ function wpforms_visual_composer_shortcode() {
 		return;
 	}
 
-	$wpf = wpforms()->obj( 'form' )->get(
+	$form_obj = wpforms()->obj( 'form' );
+
+	if ( ! $form_obj ) {
+		return;
+	}
+
+	$wpf = $form_obj->get(
 		'',
 		[
 			'orderby' => 'title',
@@ -58,6 +66,7 @@ function wpforms_visual_composer_shortcode() {
 					'heading'     => esc_html__( 'Display Form Name', 'wpforms-lite' ),
 					'param_name'  => 'title',
 					'value'       => [
+						// phpcs:ignore WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 						esc_html__( 'No', 'wpforms-lite' )  => 'false',
 						esc_html__( 'Yes', 'wpforms-lite' ) => 'true',
 					],
@@ -73,6 +82,7 @@ function wpforms_visual_composer_shortcode() {
 					'heading'     => esc_html__( 'Display Form Description', 'wpforms-lite' ),
 					'param_name'  => 'description',
 					'value'       => [
+						// phpcs:ignore WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 						esc_html__( 'No', 'wpforms-lite' )  => 'false',
 						esc_html__( 'Yes', 'wpforms-lite' ) => 'true',
 					],
@@ -96,11 +106,13 @@ add_action( 'vc_before_init', 'wpforms_visual_composer_shortcode' );
  */
 function wpforms_visual_composer_shortcode_css() {
 
+	$min = wpforms_get_min_suffix();
+
 	// Load CSS per global setting.
 	if ( wpforms_setting( 'disable-css', '1' ) === '1' ) {
 		wp_enqueue_style(
 			'wpforms-full',
-			WPFORMS_PLUGIN_URL . 'assets/css/frontend/classic/wpforms-full.css',
+			WPFORMS_PLUGIN_URL . "assets/css/frontend/classic/wpforms-full{$min}.css",
 			[],
 			WPFORMS_VERSION
 		);
@@ -109,7 +121,7 @@ function wpforms_visual_composer_shortcode_css() {
 	if ( wpforms_setting( 'disable-css', '1' ) === '2' ) {
 		wp_enqueue_style(
 			'wpforms-base',
-			WPFORMS_PLUGIN_URL . 'assets/css/frontend/classic/wpforms-base.css',
+			WPFORMS_PLUGIN_URL . "assets/css/frontend/classic/wpforms-base{$min}.css",
 			[],
 			WPFORMS_VERSION
 		);
