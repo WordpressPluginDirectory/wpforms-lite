@@ -49,6 +49,15 @@ class Fields {
 				'order'   => '70',
 			],
 			[
+				'icon'    => 'fa-map-location-dot',
+				'name'    => esc_html__( 'Map', 'wpforms-lite' ),
+				'name_en' => 'Map',
+				'type'    => 'Map',
+				'group'   => 'fancy',
+				'addon'   => 'wpforms-geolocation',
+				'order'   => '75',
+			],
+			[
 				'icon'    => 'fa-calendar-o',
 				'name'    => esc_html__( 'Date / Time', 'wpforms-lite' ),
 				'name_en' => 'Date / Time',

@@ -89,12 +89,12 @@ trait ProField {
 		add_filter( 'wpforms_field_preview_class', [ $this, 'filter_field_preview_class' ], 10, 2 );
 		add_filter( 'wpforms_entry_save_data', [ $this, 'filter_entry_save_data' ], 10, 3 );
 		add_filter( 'wpforms_pro_admin_entries_table_facades_columns_get_field_columns_forbidden_fields', [ $this, 'filter_field_columns_forbidden_fields' ], 10, 2 );
-		add_filter( 'wpforms_pro_admin_entries_export_configuration', [ $this, 'filter_entries_export_configuration' ], 10, 1 );
+		add_filter( 'wpforms_pro_admin_entries_export_configuration', [ $this, 'filter_entries_export_configuration' ] );
 		add_filter( "wpforms_pro_admin_entries_edit_is_field_displayable_$this->type", [ $this, 'filter_is_field_displayable' ], 10, 3 );
 	}
 
 	/**
-	 * Init Pro field on `admin_init` hook.
+	 * Init Pro field on the ` admin_init ` hook.
 	 *
 	 * @since 1.9.4
 	 */
@@ -318,8 +318,9 @@ trait ProField {
 	 * Determine if the field is disabled.
 	 *
 	 * @since 1.9.4
+	 * @since 1.9.9.3 The method access modifier is changed from private to protected.
 	 */
-	private function is_disabled_field(): bool {
+	protected function is_disabled_field(): bool {
 
 		// It is a Pro field in Lite OR the addon is not initialized.
 		return ! ( $this->is_pro && ( empty( $this->addon_slug ) || $this->is_addon_initialized ) );
@@ -415,7 +416,8 @@ trait ProField {
 			return $field;
 		}
 
-		// If it's a Pro field in Lite OR the addon is not initialized,
+		// If it's a Pro field in Lite OR,
+		// the addon is not initialized,
 		// return an empty array to prevent rendering.
 		if ( ! empty( $this->is_disabled_field ) ) {
 			return [];
@@ -425,7 +427,7 @@ trait ProField {
 	}
 
 	/**
-	 * Disallow field preview "Duplicate" button.
+	 * Disallow the field preview "Duplicate" button.
 	 *
 	 * @since 1.9.4
 	 *
@@ -597,7 +599,7 @@ trait ProField {
 	}
 
 	/**
-	 * Filter if field is displayable in the Entry Edit page.
+	 * Filter if the field is displayable in the Entry Edit page.
 	 *
 	 * @since 1.9.5
 	 *

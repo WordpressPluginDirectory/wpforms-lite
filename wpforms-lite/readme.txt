@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.9
-Stable tag: 1.9.9.2
+Stable tag: 1.9.9.3
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -390,6 +390,9 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.9.9.3 =
+- Fixed: The Cloudflare Turnstile captcha rendered twice if a CF7 form was also added on the same page.
 
 = 1.9.9.2 =
 - Added: WordPress Abilities API integration for AI and automation-ready access to WPForms.

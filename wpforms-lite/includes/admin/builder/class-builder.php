@@ -881,6 +881,7 @@ class WPForms_Builder {
 			'operator_ends'                           => esc_html__( 'ends with', 'wpforms-lite' ),
 			'operator_greater_than'                   => esc_html__( 'greater than', 'wpforms-lite' ),
 			'operator_less_than'                      => esc_html__( 'less than', 'wpforms-lite' ),
+			'option_disabled'                         => esc_html__( 'Option Disabled', 'wpforms-lite' ),
 			'payments_entries_off'                    => esc_html__( 'Entry storage is currently disabled, but is required to accept payments. Please enable in your form settings.', 'wpforms-lite' ),
 			'payments_on_entries_off'                 => sprintf( /* translators: %s - marketing or gateway integration name. */
 				esc_html__( 'Some third-party integrations require entry storage. If you’d like to continue, you’ll first need to disable %s.', 'wpforms-lite' ),
@@ -1096,6 +1097,7 @@ class WPForms_Builder {
 			'UndoRedoInputSimple'               => "undo-redo/input-simple$min.js",
 			'UndoRedoInputToggle'               => "undo-redo/input-toggle$min.js",
 			'UndoRedoInputChoicesJS'            => "undo-redo/input-choicesjs$min.js",
+			'UndoRedoInputProviderConnection'   => "undo-redo/input-provider-connection$min.js",
 			'UndoRedoInputSmartTags'            => "undo-redo/input-smart-tags$min.js",
 			'UndoRedoInputCodeMirror'           => "undo-redo/input-codemirror$min.js",
 			'UndoRedoInputTinyMCE'              => "undo-redo/input-tinymce$min.js",

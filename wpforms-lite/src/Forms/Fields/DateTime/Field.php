@@ -60,7 +60,7 @@ class Field extends WPForms_Field {
 		$this->name  = esc_html__( 'Date / Time', 'wpforms-lite' );
 		$this->type  = 'date-time';
 		$this->icon  = 'fa-calendar-o';
-		$this->order = 80;
+		$this->order = 60;
 		$this->group = 'fancy';
 
 		$this->default_settings = self::DEFAULTS;

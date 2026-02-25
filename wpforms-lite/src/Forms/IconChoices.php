@@ -554,35 +554,12 @@ class IconChoices {
 	 */
 	private function get_icon( string $icon, string $style, $size ): string {
 
-		// Sanitize inputs.
-		$icon  = sanitize_key( $icon );
-		$style = sanitize_key( $style );
-		$size  = sanitize_key( (string) $size );
+		$size       = sanitize_key( (string) $size );
+		$icon_sizes = $this->get_icon_sizes();
 
-		$icon_sizes  = $this->get_icon_sizes();
-		$filename    = wp_normalize_path( (string) realpath( "{$this->cache_base_path}/svgs/{$style}/{$icon}.svg" ) );
-		$allowed_dir = wp_normalize_path( (string) realpath( $this->cache_base_path . '/svgs' ) );
+		$size = ! empty( $icon_sizes[ $size ]['size'] ) ? (int) $icon_sizes[ $size ]['size'] : (int) $icon_sizes['large']['size'];
 
-		// Verify the file is within the allowed directory.
-		if ( strpos( $filename, $allowed_dir ) !== 0 ) {
-			return '';
-		}
-
-		if ( ! is_file( $filename ) || ! is_readable( $filename ) ) {
-			return '';
-		}
-
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$svg = (string) file_get_contents( $filename );
-
-		if ( strpos( $svg, '<svg' ) === false ) {
-			return '';
-		}
-
-		$height = ! empty( $icon_sizes[ $size ]['size'] ) ? $icon_sizes[ $size ]['size'] : $icon_sizes['large']['size'];
-		$width  = $height * 1.25; // Icon width is equal or 25% larger/smaller than height. We force the largest value for all icons.
-
-		return str_replace( 'viewBox=', 'width="' . $width . '" height="' . $height . 'px" viewBox=', $svg );
+		return wpforms_get_icon_svg( $icon, $style, $size );
 	}
 
 	/**

@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.9.9.3 =
+- Fixed: The Cloudflare Turnstile captcha rendered twice if a CF7 form was also added on the same page.
+
 = 1.9.9.2 =
 - Added: WordPress Abilities API integration for AI and automation-ready access to WPForms.
 - Added: Ability to generate Quiz-enabled forms using the AI Form generator.

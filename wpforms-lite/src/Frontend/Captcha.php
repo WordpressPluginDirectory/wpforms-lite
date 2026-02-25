@@ -118,7 +118,7 @@ class Captcha {
 		$classes = [
 			'recaptcha' => 'g-recaptcha',
 			'hcaptcha'  => 'h-captcha',
-			'turnstile' => 'cf-turnstile',
+			'turnstile' => 'wpforms-turnstile',
 		];
 
 		return $classes[ $provider ] ?? 'g-recaptcha';
@@ -541,7 +541,7 @@ class Captcha {
 
 			$data .= /** @lang JavaScript */
 				'var wpformsRecaptchaLoad = function () {
-					Array.prototype.forEach.call(document.querySelectorAll(".cf-turnstile"), function (el) {
+					Array.prototype.forEach.call(document.querySelectorAll(".wpforms-turnstile"), function (el) {
 						let form = el.closest( "form" ),
 						formId = form.dataset.formid,
 						captchaID = turnstile.render(el, {
