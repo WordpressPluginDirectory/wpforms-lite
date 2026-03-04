@@ -168,6 +168,7 @@ class EditPost implements EducationInterface {
 	private function get_gutenberg_strings() {
 
 		$strings = [
+			'is_gutenberg'     => true,
 			'gutenberg_notice' => [
 				'template' => $this->get_gutenberg_notice_template(),
 				'button'   => __( 'Get Started', 'wpforms-lite' ),

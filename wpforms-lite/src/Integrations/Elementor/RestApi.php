@@ -24,15 +24,6 @@ class RestApi {
 	public const ROUTE_NAMESPACE = '/wpforms/v1/';
 
 	/**
-	 * FormSelector class instance.
-	 *
-	 * @since 1.9.6
-	 *
-	 * @var Widget
-	 */
-	private $widget_obj;
-
-	/**
 	 * ThemesData class instance.
 	 *
 	 * @since 1.9.6
@@ -55,7 +46,6 @@ class RestApi {
 			return;
 		}
 
-		$this->widget_obj  = $widget_obj;
 		$this->themes_data = $themes_data;
 
 		$this->hooks();
@@ -83,16 +73,6 @@ class RestApi {
 		 *
 		 * @see https://developer.wordpress.org/reference/functions/register_rest_route/
 		 */
-		register_rest_route(
-			self::ROUTE_NAMESPACE,
-			'/elementor/forms/',
-			[
-				'methods'             => 'GET',
-				'callback'            => [ $this, 'get_forms' ],
-				'permission_callback' => [ $this, 'permissions_check' ],
-			]
-		);
-
 		register_rest_route(
 			self::ROUTE_NAMESPACE,
 			'/elementor/themes/',
@@ -146,18 +126,6 @@ class RestApi {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Return form list protected WP_REST_Response object.
-	 *
-	 * @since 1.9.6
-	 *
-	 * @return WP_Error|WP_REST_Response
-	 */
-	public function get_forms() {
-
-		return rest_ensure_response( $this->widget_obj->get_forms() );
 	}
 
 	/**

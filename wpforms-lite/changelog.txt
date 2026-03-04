@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.9.9.4 =
+- Fixed: Gutenberg education notice incorrectly showing in Classic Editor when Classic Editor plugin is active.
+- Fixed: GDPR agreement field was truncated in the Form Builder.
+
 = 1.9.9.3 =
 - Fixed: The Cloudflare Turnstile captcha rendered twice if a CF7 form was also added on the same page.
 

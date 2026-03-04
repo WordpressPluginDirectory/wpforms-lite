@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.9.9.3\n"
+"Project-Id-Version: WPForms Lite 1.9.9.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-24T12:13:42+00:00\n"
+"POT-Creation-Date: 2026-03-03T12:15:53+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpforms-lite\n"
@@ -7593,7 +7593,7 @@ msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Admin/Education/Admin/EditPost.php:173
+#: src/Admin/Education/Admin/EditPost.php:174
 #: src/Admin/Splash/SplashTrait.php:129
 #: src/Integrations/Divi/Divi.php:308
 #: templates/admin/empty-states/payments/get-started.php:34
@@ -7611,34 +7611,34 @@ msgstr[1] ""
 msgid "Get Started"
 msgstr ""
 
-#: src/Admin/Education/Admin/EditPost.php:186
+#: src/Admin/Education/Admin/EditPost.php:187
 msgid "Easily add your contact form"
 msgstr ""
 
-#: src/Admin/Education/Admin/EditPost.php:187
+#: src/Admin/Education/Admin/EditPost.php:188
 msgid "Oh hey, it looks like you're working on a contact page. Don't forget to embed your contact form. Click the plus icon above and search for WPForms."
 msgstr ""
 
-#: src/Admin/Education/Admin/EditPost.php:191
+#: src/Admin/Education/Admin/EditPost.php:192
 msgid "Embed your form"
 msgstr ""
 
-#: src/Admin/Education/Admin/EditPost.php:192
+#: src/Admin/Education/Admin/EditPost.php:193
 msgid "Then click on the WPForms block to embed your desired contact form."
 msgstr ""
 
-#: src/Admin/Education/Admin/EditPost.php:209
+#: src/Admin/Education/Admin/EditPost.php:210
 msgid "Don't forget to embed your contact form. Simply click the Add Form button below."
 msgstr ""
 
 #. translators: %1$s - link to create a new form.
-#: src/Admin/Education/Admin/EditPost.php:211
-#: src/Admin/Education/Admin/EditPost.php:237
+#: src/Admin/Education/Admin/EditPost.php:212
+#: src/Admin/Education/Admin/EditPost.php:238
 #, php-format
 msgid "Did you know that with <a href=\"%1$s\" target=\"_blank\" rel=\"noopener noreferrer\">WPForms</a>, you can create an easy-to-use contact form in a matter of minutes?"
 msgstr ""
 
-#: src/Admin/Education/Admin/EditPost.php:235
+#: src/Admin/Education/Admin/EditPost.php:236
 msgid "You've already created a form, now add it to the page so your customers can get in touch."
 msgstr ""
 
@@ -13003,18 +13003,19 @@ msgstr ""
 msgid "Enter License Key"
 msgstr ""
 
-#: src/Integrations/Elementor/RestApi.php:128
+#: src/Integrations/Elementor/RestApi.php:108
 #: src/Integrations/Gutenberg/RestApi.php:129
+#: src/Integrations/Gutenberg/RestApi.php:146
 msgid "This route is private."
 msgstr ""
 
-#: src/Integrations/Elementor/RestApi.php:145
-#: src/Integrations/Gutenberg/RestApi.php:146
+#: src/Integrations/Elementor/RestApi.php:125
+#: src/Integrations/Gutenberg/RestApi.php:163
 msgid "This route is accessible only to administrators."
 msgstr ""
 
-#: src/Integrations/Elementor/RestApi.php:203
-#: src/Integrations/Gutenberg/RestApi.php:217
+#: src/Integrations/Elementor/RestApi.php:171
+#: src/Integrations/Gutenberg/RestApi.php:234
 msgid "Can't save theme data."
 msgstr ""
 
@@ -13210,7 +13211,7 @@ msgstr ""
 msgid "The form cannot be displayed."
 msgstr ""
 
-#: src/Integrations/Gutenberg/RestApi.php:203
+#: src/Integrations/Gutenberg/RestApi.php:220
 msgid "Can't create themes storage file."
 msgstr ""
 
