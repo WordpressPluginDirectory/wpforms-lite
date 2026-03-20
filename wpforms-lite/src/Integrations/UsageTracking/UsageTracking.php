@@ -64,7 +64,17 @@ class UsageTracking implements IntegrationInterface {
 	 *
 	 * @since 1.6.1
 	 */
-	public function load() { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	public function load() {
+
+		$this->hooks();
+	}
+
+	/**
+	 * Register hooks.
+	 *
+	 * @since 1.10.0
+	 */
+	private function hooks() {
 
 		add_filter( 'wpforms_settings_defaults', [ $this, 'settings_misc_option' ], 4 );
 
@@ -177,6 +187,7 @@ class UsageTracking implements IntegrationInterface {
 			'wpforms_license_status'         => $this->get_license_status(),
 			'wpforms_is_pro'                 => wpforms()->is_pro(),
 			'wpforms_entries_avg'            => $this->get_entries_avg( $forms_total, $entries_total ),
+			'wpforms_entries_median'         => $this->get_entries_median( $forms ),
 			'wpforms_entries_total'          => $entries_total,
 			'wpforms_entries_last_7days'     => $this->get_entries_total( '7days' ),
 			'wpforms_entries_last_30days'    => $this->get_entries_total( '30days' ),
@@ -204,6 +215,7 @@ class UsageTracking implements IntegrationInterface {
 			'wpforms_ai'                     => AIHelpers::is_used(),
 			'wpforms_ai_killswitch'          => AIHelpers::is_disabled(),
 			'wpforms_disabled_entries_count' => count( $this->get_forms_with_disabled_entries( $forms ) ),
+			'wpforms_addons_dates'           => $this->get_addons_dates_data(),
 		];
 
 		$data = $this->add_promotion_plugin_data( $data );
@@ -792,6 +804,156 @@ class UsageTracking implements IntegrationInterface {
 	}
 
 	/**
+	 * Median entries count.
+	 *
+	 * Provides a more accurate representation of typical form usage by reducing
+	 * the impact of outliers compared to the average.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @param array $forms List of forms.
+	 *
+	 * @return int
+	 */
+	private function get_entries_median( array $forms ): int {
+
+		// Bail early if no forms exist.
+		if ( empty( $forms ) ) {
+			return 0;
+		}
+
+		$form_ids = wp_list_pluck( $forms, 'ID' );
+
+		if ( empty( $form_ids ) ) {
+			return 0;
+		}
+
+		// For Pro, count entries from the entries table for each form.
+		if ( wpforms()->is_pro() ) {
+			return $this->get_entries_median_pro( $form_ids );
+		}
+
+		// For Lite, use entries count from postmeta.
+		return $this->get_entries_median_lite( $form_ids );
+	}
+
+	/**
+	 * Get median entries count for forms using a custom query.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @param array  $form_ids List of form IDs.
+	 * @param string $query    SQL query to get entry counts. Must use wpforms_wpdb_prepare_in().
+	 *
+	 * @return int
+	 */
+	private function get_entries_median_from_query( array $form_ids, string $query ): int {
+
+		global $wpdb;
+
+		// phpcs:disable
+		$entry_counts = $wpdb->get_col( $query );
+		$entry_counts = array_map( 'intval', $entry_counts );
+		// phpcs:enable
+
+		$forms_with_data = count( $entry_counts );
+		$total_forms     = count( $form_ids );
+
+		// Add 0 for forms without entries.
+		if ( $forms_with_data < $total_forms ) {
+			$entry_counts = array_merge(
+				$entry_counts,
+				array_fill( 0, $total_forms - $forms_with_data, 0 )
+			);
+		}
+
+		return $this->calculate_median( $entry_counts );
+	}
+
+	/**
+	 * Get median entries count for Pro version.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @param array $form_ids List of form IDs.
+	 *
+	 * @return int
+	 */
+	private function get_entries_median_pro( array $form_ids ): int {
+
+		global $wpdb;
+
+		/**
+		 * Note: We use a direct database query instead of get_entries() in a loop
+		 * for performance reasons. With 100+ forms, looping would create N queries.
+		 * A single SQL query with GROUP BY is much more efficient.
+		 * We also exclude spam entries from the count.
+		 */
+		$query = "SELECT COUNT(entry_id)
+			FROM {$wpdb->prefix}wpforms_entries
+			WHERE form_id IN (" . wpforms_wpdb_prepare_in( $form_ids, '%d' ) . ")
+			AND status NOT IN ( 'spam', 'trash' )
+			GROUP BY form_id";
+
+		return $this->get_entries_median_from_query( $form_ids, $query );
+	}
+
+	/**
+	 * Get median entries count for Lite version.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @param array $form_ids List of form IDs.
+	 *
+	 * @return int
+	 */
+	private function get_entries_median_lite( array $form_ids ): int {
+
+		global $wpdb;
+
+		/**
+		 * Note: We use a direct database query instead of get_post_meta() in a loop
+		 * for performance reasons. With many forms (e.g., 100+ forms), looping through
+		 * get_post_meta() would create N separate database queries. A single SQL query
+		 * with an IN clause is much more efficient for bulk operations.
+		 */
+		$query = "SELECT CAST(meta_value AS UNSIGNED) as count
+			FROM $wpdb->postmeta
+			WHERE post_id IN (" . wpforms_wpdb_prepare_in( $form_ids, '%d' ) . ")
+			AND meta_key = 'wpforms_entries_count'";
+
+		return $this->get_entries_median_from_query( $form_ids, $query );
+	}
+
+	/**
+	 * Calculate median from an array of numbers.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @param array $numbers Array of numeric values.
+	 *
+	 * @return int
+	 */
+	private function calculate_median( array $numbers ): int {
+
+		if ( empty( $numbers ) ) {
+			return 0;
+		}
+
+		sort( $numbers );
+		$count = count( $numbers );
+		$mid   = (int) floor( $count / 2 );
+
+		// If odd number of elements, return the middle one.
+		if ( $count % 2 !== 0 ) {
+			return (int) $numbers[ $mid ];
+		}
+
+		// If even number of elements, return average of two middle elements.
+		return (int) round( ( $numbers[ $mid - 1 ] + $numbers[ $mid ] ) / 2 );
+	}
+
+	/**
 	 * Get all forms.
 	 *
 	 * @since 1.6.1
@@ -997,8 +1159,14 @@ class UsageTracking implements IntegrationInterface {
 		}
 
 		// Count the list of keywords for the keyword filter.
-		$keyword_filter   = wpforms()->obj( 'antispam_keyword_filter' );
-		$keywords         = method_exists( $keyword_filter, 'get_keywords' ) ? $keyword_filter->get_keywords() : [];
+		$keyword_filter = wpforms()->obj( 'antispam_keyword_filter' );
+
+		$keywords = [];
+
+		if ( $keyword_filter && method_exists( $keyword_filter, 'get_keywords' ) ) {
+			$keywords = $keyword_filter->get_keywords();
+		}
+
 		$stat['keywords'] = count( $keywords );
 
 		return $stat;
@@ -1043,5 +1211,24 @@ class UsageTracking implements IntegrationInterface {
 		}
 
 		return $counter;
+	}
+
+	/**
+	 * Get addons dates data.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @return array
+	 */
+	private function get_addons_dates_data(): array {
+
+		/**
+		 * Filter addons dates data for usage tracking.
+		 *
+		 * @since 1.10.0
+		 *
+		 * @param array $addons_dates Addons dates data.
+		 */
+		return (array) apply_filters( 'wpforms_integrations_usage_tracking_usage_tracking_get_addons_dates', [] );
 	}
 }

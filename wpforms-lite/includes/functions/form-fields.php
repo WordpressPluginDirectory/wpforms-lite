@@ -618,6 +618,22 @@ function wpforms_get_choices_value( array $field, array $form_data ): string {
 }
 
 /**
+ * Check whether the field type is in the list of types that support the Show Values option.
+ *
+ * @since 1.10.0
+ *
+ * @param array $field Field data.
+ *
+ * @return bool True if the field type supports Show Values, false otherwise.
+ */
+function wpforms_is_support_show_values( array $field ): bool {
+
+	static $supported_types = [ 'select', 'radio', 'checkbox' ];
+
+	return in_array( $field['type'] ?? '', $supported_types, true );
+}
+
+/**
  * Determine if the field was repeated.
  *
  * @since 1.8.9
@@ -708,7 +724,7 @@ function wpforms_parse_field_id( $field_id ): array {
 /**
  * Get icon SVG by its name, style and size.
  *
- * @since 1.9.9.3
+ * @since 1.10.0
  *
  * @param string $icon  Icon name.
  * @param string $style Icon style.

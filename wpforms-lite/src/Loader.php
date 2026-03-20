@@ -329,6 +329,12 @@ class Loader {
 				'name' => 'Admin\Splash\SplashUpgrader',
 				'id'   => 'splash_upgrader',
 				'hook' => 'plugins_loaded',
+			],
+			[
+				'name' => 'Integrations\UsageTracking\AddonsDates',
+			],
+			[
+				'name' => 'Admin\Builder\PurgeEntries',
 			]
 		);
 	}

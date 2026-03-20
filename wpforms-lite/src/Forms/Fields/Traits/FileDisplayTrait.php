@@ -353,4 +353,76 @@ trait FileDisplayTrait {
 
 		return sprintf( 'wpforms_%d_%d', $this->form_id, $this->field_id );
 	}
+
+	/**
+	 * Format the field value for smart tags.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @param string $value     The field value.
+	 * @param int    $field_id  The field ID.
+	 * @param array  $fields    The form fields.
+	 * @param string $field_key The field key.
+	 *
+	 * @return string
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function smart_tags_formatted_field_value( $value, $field_id, $fields, $field_key ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		$value = (string) $value;
+		$field = $fields[ $field_id ] ?? [];
+
+		return $this->get_formatted_value( $value, $field );
+	}
+
+	/**
+	 * Get file URLs.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @param array $values Field values.
+	 *
+	 * @return array
+	 */
+	private function get_file_urls( array $values ): array {
+
+		$urls = [];
+
+		foreach ( $values as $file ) {
+			$urls[] = $this->get_file_url( $file );
+		}
+
+		return $urls;
+	}
+
+	/**
+	 * Get formatted value.
+	 *
+	 * @since 1.10.0
+	 *
+	 * @param string $value Field value.
+	 * @param array  $field Field settings.
+	 *
+	 * @return string
+	 */
+	private function get_formatted_value( string $value, array $field ): string {
+
+		$type = $field['type'] ?? '';
+
+		if ( $type !== $this->type ) {
+			return $value;
+		}
+
+		if ( empty( $field['style'] ) ) {
+			return $this->get_file_url( $field );
+		}
+
+		$values = (array) $field['value_raw'];
+		$values = array_filter( $values );
+
+		$urls = $this->get_file_urls( $values );
+
+		return empty( $urls ) ? $value : implode( "\n", $urls );
+	}
 }

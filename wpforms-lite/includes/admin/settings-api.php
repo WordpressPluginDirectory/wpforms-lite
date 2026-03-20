@@ -175,6 +175,7 @@ function wpforms_settings_license_callback( array $args ): string { // phpcs:ign
  * Settings text input field callback.
  *
  * @since 1.3.9
+ * @since 1.10.0 Adds the ability to make text input readonly.
  *
  * @param array $args Settings arguments.
  *
@@ -186,11 +187,12 @@ function wpforms_settings_text_callback( array $args ): string {
 		$args['type'] = 'text';
 	}
 
-	$default = isset( $args['default'] ) ? esc_html( $args['default'] ) : '';
-	$value   = wpforms_setting( $args['id'], $default );
-	$id      = wpforms_sanitize_key( $args['id'] );
+	$default  = isset( $args['default'] ) ? esc_html( $args['default'] ) : '';
+	$value    = wpforms_setting( $args['id'], $default );
+	$id       = wpforms_sanitize_key( $args['id'] );
+	$readonly = ! empty( $args['readonly'] ) ? ' readonly' : '';
 
-	$output = '<input type="' . esc_attr( $args['type'] ) . '" id="wpforms-setting-' . $id . '" name="' . $id . '" value="' . esc_attr( $value ) . '">';
+	$output = '<input type="' . esc_attr( $args['type'] ) . '" id="wpforms-setting-' . $id . '" name="' . $id . '" value="' . esc_attr( $value ) . ' " ' . $readonly . ' />';
 
 	if ( ! empty( $args['desc'] ) ) {
 		$output .= '<p class="desc">' . wp_kses_post( $args['desc'] ) . '</p>';

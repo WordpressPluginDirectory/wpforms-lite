@@ -75,14 +75,6 @@ class WPForms_Builder_Panel_Fields extends WPForms_Builder_Panel {
 		$min = wpforms_get_min_suffix();
 
 		wp_enqueue_script(
-			'wpforms-builder-drag-fields',
-			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/drag-fields{$min}.js",
-			[ 'wpforms-builder' ],
-			WPFORMS_VERSION,
-			true
-		);
-
-		wp_enqueue_script(
 			'wpforms-builder-search-fields',
 			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/search-fields{$min}.js",
 			[ 'wpforms-builder' ],
@@ -554,11 +546,7 @@ class WPForms_Builder_Panel_Fields extends WPForms_Builder_Panel {
 	 * @param array  $data Field array data.
 	 * @param string $name Input name prefix.
 	 */
-	private function generate_hidden_inputs( $data = [], string $name = '' ): void {
-
-		if ( ! is_array( $data ) || empty( $data ) ) {
-			return;
-		}
+	private function generate_hidden_inputs( array $data = [], string $name = '' ): void {
 
 		foreach ( $data as $key => $value ) {
 			if ( $key === 'id' ) {

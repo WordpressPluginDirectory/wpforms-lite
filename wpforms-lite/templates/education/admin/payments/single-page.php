@@ -19,9 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="wpforms-payment-single-education-notice-description">
 		<?php
 		if ( SquareHelpers::is_application_fee_supported() ) {
-			esc_html_e( 'Unlock conditional logic, coupons, lower Stripe and Square fees, and more.', 'wpforms-lite' );
+			esc_html_e( 'Unlock conditional logic, coupons, lower Stripe, PayPal and Square fees, and more.', 'wpforms-lite' );
 		} else {
-			esc_html_e( 'Unlock conditional logic, coupons, lower Stripe fee, and more.', 'wpforms-lite' );
+			esc_html_e( 'Unlock conditional logic, coupons, lower Stripe and PayPal fees, and more.', 'wpforms-lite' );
 		}
 		echo '&nbsp;';
 		printf(

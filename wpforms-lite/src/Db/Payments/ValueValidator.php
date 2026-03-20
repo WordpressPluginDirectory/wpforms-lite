@@ -123,6 +123,8 @@ class ValueValidator {
 			'cancelled'  => __( 'Cancelled', 'wpforms-lite' ),
 			'not-synced' => __( 'Not Synced', 'wpforms-lite' ),
 			'failed'     => __( 'Failed', 'wpforms-lite' ),
+			'pending'    => __( 'Pending', 'wpforms-lite' ),
+			'completed'  => __( 'Completed', 'wpforms-lite' ),
 		];
 	}
 

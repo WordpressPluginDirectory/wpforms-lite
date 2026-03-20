@@ -77,6 +77,10 @@ class LiteConnect extends \WPForms\Integrations\LiteConnect\LiteConnect {
 
 		// We always need to instance the Integration class as part of the load process for the Lite Connect integration.
 		$this->integration = new Integration();
+
+		if ( is_admin() ) {
+			new Admin();
+		}
 	}
 
 	/**
@@ -91,7 +95,6 @@ class LiteConnect extends \WPForms\Integrations\LiteConnect\LiteConnect {
 
 		// Automatically save the timestamp when Lite Connect was enabled first time.
 		add_filter( 'wpforms_update_settings', [ $this, 'update_enabled_settings' ] );
-
 	}
 
 	/**
@@ -116,7 +119,7 @@ class LiteConnect extends \WPForms\Integrations\LiteConnect\LiteConnect {
 				'input-attr'    => 'disabled',
 				'desc-on'       => sprintf(
 					wp_kses( /* translators: %s - upgrade to WPForms Pro landing page URL. */
-						__( '<strong>Your form entries are not being stored locally, but are backed up remotely.</strong> If you <a href="%s" target="_blank" rel="noopener noreferrer" class="wpforms-upgrade-modal">upgrade to WPForms PRO</a>, you can restore your entries and they’ll be available in the WordPress dashboard.', 'wpforms-lite' ),
+						__( '<strong>Your form entries are not being stored locally, but are backed up remotely.</strong> If you <a href="%s" target="_blank" rel="noopener noreferrer" class="wpforms-upgrade-modal">upgrade to WPForms PRO</a>, you can restore your entries and they’ll be available in the WordPress dashboard. Entry backups expire after 1 year.', 'wpforms-lite' ),
 						[
 							'a'      => [
 								'href'   => [],

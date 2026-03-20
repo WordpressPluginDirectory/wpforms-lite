@@ -31,7 +31,7 @@ abstract class Base {
 	 *
 	 * @since 1.7.5
 	 */
-	private const CURRENT_VERSION = WPFORMS_VERSION;
+	protected const CURRENT_VERSION = WPFORMS_VERSION;
 
 	/**
 	 * WP option name to store the upgraded from version number.
@@ -170,7 +170,7 @@ abstract class Base {
 
 			if (
 				( isset( $this->migrated[ $upgrade_version ] ) && $this->migrated[ $upgrade_version ] >= 0 ) ||
-				version_compare( $upgrade_version, self::CURRENT_VERSION, '>' ) ||
+				version_compare( $upgrade_version, static::CURRENT_VERSION, '>' ) ||
 				! class_exists( $class )
 			) {
 				continue;
@@ -216,7 +216,7 @@ abstract class Base {
 		 * Store the current version upgrade timestamp even if there were no migrations to it.
 		 * We need it in wpforms_get_upgraded_timestamp() for further usage in Event Driven Plugin Notifications.
 		 */
-		$migrated[ self::CURRENT_VERSION ] = $migrated[ self::CURRENT_VERSION ] ?? time();
+		$migrated[ static::CURRENT_VERSION ] = $migrated[ static::CURRENT_VERSION ] ?? time();
 
 		uksort( $last_migrated, 'version_compare' );
 		uksort( $migrated, 'version_compare' );
@@ -241,7 +241,7 @@ abstract class Base {
 		}
 
 		$this->log(
-			sprintf( 'Migration of %1$s to %2$s is fully completed.', static::PLUGIN_NAME, self::CURRENT_VERSION )
+			sprintf( 'Migration of %1$s to %2$s is fully completed.', static::PLUGIN_NAME, static::CURRENT_VERSION )
 		);
 	}
 
@@ -264,7 +264,7 @@ abstract class Base {
 
 		if (
 			$previous_core_version === self::INITIAL_FAKE_VERSION ||
-			version_compare( $previous_core_version, self::CURRENT_VERSION, '>=' )
+			version_compare( $previous_core_version, static::CURRENT_VERSION, '>=' )
 		) {
 			return;
 		}
@@ -433,7 +433,7 @@ abstract class Base {
 		);
 
 		$version        = $this->migrated === false ? self::INITIAL_FAKE_VERSION : (string) $this->migrated;
-		$timestamp      = $version === self::CURRENT_VERSION ? time() : 0;
+		$timestamp      = $version === static::CURRENT_VERSION ? time() : 0;
 		$this->migrated = [ $version => $timestamp ];
 		$max_version    = $this->get_max_version( $this->migrated );
 

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<img src="<?php echo esc_url( WPFORMS_PLUGIN_URL . 'assets/images/sullie-alt.png' ); ?>" alt="<?php esc_attr_e( 'Sullie the WPForms mascot', 'wpforms-lite' ); ?>" class="wpforms-mascot">
 		<h2><?php esc_html_e( 'Form Entry Backups', 'wpforms-lite' ); ?></h2>
 		<p>
-			<?php esc_html_e( 'If your email notifications aren\'t delivered, you’ll lose form entries. Turn on free backups now and restore your entries when you upgrade to Pro.', 'wpforms-lite' ); ?>
+			<?php esc_html_e( 'Free backups save every submission automatically, so when email notifications fail, your data is safe. Restore entries anytime with a Pro upgrade. Entry backups expire after 1 year.', 'wpforms-lite' ); ?>
 		</p>
 		<div class="wpforms-features">
 			<section>
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<aside>
 					<h4><?php esc_html_e( 'Backup & Restore', 'wpforms-lite' ); ?></h4>
 					<p>
-						<?php esc_html_e( 'When you upgrade to WPForms Pro, we\'ll automatically restore all of the entries that you collected in WPForms Lite.', 'wpforms-lite' ); ?>
+						<?php esc_html_e( 'When you upgrade to WPForms Pro, we\'ll automatically restore the entries that you collected in WPForms Lite.', 'wpforms-lite' ); ?>
 					</p>
 				</aside>
 			</section>

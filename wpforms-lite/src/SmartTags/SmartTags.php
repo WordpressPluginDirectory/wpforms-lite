@@ -227,30 +227,6 @@ class SmartTags {
 	}
 
 	/**
-	 * Get all smart tags in the content.
-	 *
-	 * @since 1.6.7
-	 *
-	 * @param string $content Content.
-	 *
-	 * @return array
-	 */
-	private function get_all_smart_tags( $content ) {
-
-		/**
-		 * A smart tag should start and end with a curly brace.
-		 * ([a-z0-9_]+) a smart tag name and also the first capturing group.
-		 * Lowercase letters, digits, and an underscore.
-		 * (|[ =][^\n}]*) - second capturing group:
-		 * | no characters at all or the following:
-		 * [ =][^\n}]* space or equal sign and any number of any characters except new line and closing curly brace.
-		 */
-		preg_match_all( '~{([a-z0-9_]+)(|[ =][^\n}]*)}~', $content, $smart_tags );
-
-		return array_combine( $smart_tags[0], $smart_tags[1] );
-	}
-
-	/**
 	 * Process smart tags.
 	 *
 	 * @since 1.6.7
@@ -272,7 +248,7 @@ class SmartTags {
 			return $content;
 		}
 
-		$smart_tags = $this->get_all_smart_tags( $content );
+		$smart_tags = wpforms_get_all_smart_tags( $content );
 
 		if ( empty( $smart_tags ) ) {
 			return $content;

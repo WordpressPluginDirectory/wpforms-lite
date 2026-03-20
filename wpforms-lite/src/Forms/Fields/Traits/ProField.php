@@ -318,7 +318,7 @@ trait ProField {
 	 * Determine if the field is disabled.
 	 *
 	 * @since 1.9.4
-	 * @since 1.9.9.3 The method access modifier is changed from private to protected.
+	 * @since 1.10.0 The method access modifier is changed from private to protected.
 	 */
 	protected function is_disabled_field(): bool {
 

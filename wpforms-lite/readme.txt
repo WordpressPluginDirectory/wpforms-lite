@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.9
-Stable tag: 1.9.9.4
+Stable tag: 1.10.0.1
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -33,7 +33,7 @@ Create custom contact forms in minutes with our easy-to-use [drag and drop onlin
 
 = Pre-built Form Templates =
 
-WPForms comes with [2000+ pre-built form templates](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
+WPForms comes with [2100+ pre-built form templates](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin).
 
 Whether you're looking to create a simple contact form, marketing form, request a quote form, donation form, payment order form, registration form, Stripe payment form, or a subscription form, we have a form template already prepared and ready to use.
 
@@ -225,7 +225,7 @@ WPForms drag & drop form builder combined with our addons is the most powerful W
 * Volunteer Registration Contact Form
 * Offline Contact Form
 
-To see a full list, visit our [Form Template Gallery](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin), which has over 2000+ pre-made contact form templates.
+To see a full list, visit our [Form Template Gallery](https://wpforms.com/templates/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin), which has over 2100+ pre-made contact form templates.
 
 = Which Form Fields Does WPForms offer? =
 
@@ -390,6 +390,21 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.10.0.1 =
+- Added: Users can connect their PayPal Commerce accounts and receive payments via their payment forms.
+- Changed: Refactored the Form Builder JavaScript into modular architecture for improved maintainability and performance.
+- Changed: Refactored and optimized drag fields JavaScript for more consistent field reordering and positioning.
+- Changed: The Lite Connect modals and settings description now include a notice that entry backups expire after 1 year.
+- Fixed: The "Preview" button on email templates didn't wrap text on the Settings > Email admin page.
+- Fixed: Compatibility with Sugar Calendar on the Tools > Export page.
+- Fixed: A conflict with Monolog was causing fatal errors on some sites.
+- Fixed: PHP warning for templates with an Internal Information Field.
+- Fixed: Reply-To email header was silently dropped when using the smart tag widget due to non-breaking space characters.
+- Fixed: Console errors could occur when the Icon Choices library was missing or corrupted.
+- Fixed: Missing Dependencies errors during new form creation.
+- Fixed: The icon library error pop-up was incorrectly shown after a successful icon library installation when interacting with the form builder before the page reloaded.
+- Fixed: Admin notice for Lite Connect backup failures was not shown on the WP Dashboard and was missing a direct link to Support for resolving scheduling issues.
 
 = 1.9.9.4 =
 - Fixed: Gutenberg education notice incorrectly showing in Classic Editor when Classic Editor plugin is active.

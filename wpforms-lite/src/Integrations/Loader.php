@@ -55,6 +55,7 @@ class Loader {
 			'Square\Square',
 			'MotoPress\MotoPress',
 			'Abilities\Abilities',
+			'PayPalCommerce\PayPalCommerce',
 		];
 
 		/**

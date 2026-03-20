@@ -842,7 +842,7 @@ class WPForms_Field_Radio extends WPForms_Field {
 		}
 
 		$other_value = $this->get_other_choice_value( $field );
-		$field_value = $other_value ?? $field['value'] ?? '';
+		$field_value = $other_value ?? $value ?? '';
 
 		return parent::field_html_value(
 			$field_value,

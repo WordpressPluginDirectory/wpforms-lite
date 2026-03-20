@@ -137,15 +137,33 @@ class System extends View {
 		$activated = get_option( 'wpforms_activated', [] );
 		$data      = '-- WPForms Info' . "\n\n";
 
+		$values = [];
+
 		if ( ! empty( $activated['pro'] ) ) {
-			$data .= 'Pro:                      ' . $this->get_formatted_datetime( $activated['pro'] ) . "\n";
+			$values['Pro'] = $this->get_formatted_datetime( $activated['pro'] );
 		}
 
 		if ( ! empty( $activated['lite'] ) ) {
-			$data .= 'Lite:                     ' . $this->get_formatted_datetime( $activated['lite'] ) . "\n";
+			$values['Lite'] = $this->get_formatted_datetime( $activated['lite'] );
 		}
 
-		$data .= 'Lite Connect:             ' . $this->get_lite_connect_info() . "\n";
+		$values['Lite Connect'] = $this->get_lite_connect_info();
+
+		/**
+		 * Filters the WPForms information values in the system info.
+		 *
+		 * Allows developers to add or modify information in the WPForms info section
+		 * that appears in the system information tool.
+		 *
+		 * @since 1.10.0
+		 *
+		 * @param array $values Associative array of WPForms information key-value pairs.
+		 */
+		$values = (array) apply_filters( 'wpforms_admin_tools_views_system_wpforms_info', $values );
+
+		foreach ( $values as $key => $value ) {
+			$data .= $key . ': ' . $value . "\n";
+		}
 
 		return $data;
 	}

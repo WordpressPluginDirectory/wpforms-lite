@@ -567,18 +567,12 @@ function wpforms_is_block_editor(): bool {
  */
 function wpforms_is_editor_page(): bool {
 
-	// phpcs:disable WordPress.Security.NonceVerification
 	$rest_request = defined( 'REST_REQUEST' ) && REST_REQUEST;
+	// phpcs:ignore WordPress.Security.NonceVerification
 	$context      = isset( $_REQUEST['context'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['context'] ) ) : '';
-	$post_action  = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : '';
-	$get_action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
-
 	$is_gutenberg = $rest_request && $context === 'edit';
-	$is_elementor = $post_action === 'elementor_ajax' || $get_action === 'elementor';
-	$is_divi      = wpforms_is_divi_editor();
-	// phpcs:enable WordPress.Security.NonceVerification
 
-	return $is_gutenberg || $is_elementor || $is_divi;
+	return $is_gutenberg || wpforms_is_elementor_editor() || wpforms_is_divi_editor();
 }
 
 /**
@@ -592,4 +586,17 @@ function wpforms_is_divi_editor(): bool {
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
 	return ! empty( $_GET['et_fb'] ) || ( isset( $_POST['action'] ) && sanitize_key( $_POST['action'] ) === 'wpforms_divi_preview' );
+}
+
+/**
+ * Determines whether the current request is being made within the Elementor editor.
+ *
+ * @since 1.10.0
+ *
+ * @return bool
+ */
+function wpforms_is_elementor_editor(): bool {
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	return ( ! empty( $_POST['action'] ) && $_POST['action'] === 'elementor_ajax' ) || ( ! empty( $_GET['action'] ) && $_GET['action'] === 'elementor' );
 }

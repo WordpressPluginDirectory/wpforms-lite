@@ -741,7 +741,7 @@ class WPForms_Lite {
 						<?php
 						printf( /* translators: %s - number of templates. */
 							esc_html__( '%s customizable form templates', 'wpforms-lite' ),
-							'2000+'
+							'2100+'
 						);
 						?>
 					</li>

@@ -58,7 +58,7 @@
 				);
 
 				if ( ! empty( $enabled_since ) ) {
-					echo ' ';
+					echo '<br>';
 					printf(
 						/* translators: %s - time when Lite Connect was enabled. */
 						esc_html__( 'since you enabled Lite Connect on %s', 'wpforms-lite' ),

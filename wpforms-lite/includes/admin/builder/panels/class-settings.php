@@ -57,9 +57,9 @@ class WPForms_Builder_Panel_Settings extends WPForms_Builder_Panel {
 		$sections = [
 			'general'       => esc_html__( 'General', 'wpforms-lite' ),
 			'anti_spam'     => esc_html__( 'Spam Protection and Security', 'wpforms-lite' ),
-			'themes'        => esc_html__( 'Themes', 'wpforms-lite' ),
-			'notifications' => esc_html__( 'Notifications', 'wpforms-lite' ),
 			'confirmation'  => esc_html__( 'Confirmations', 'wpforms-lite' ),
+			'notifications' => esc_html__( 'Notifications', 'wpforms-lite' ),
+			'themes'        => esc_html__( 'Themes', 'wpforms-lite' ),
 		];
 
 		/**

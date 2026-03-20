@@ -1083,6 +1083,10 @@ class Notifications extends Mailer {
 
 		if ( ! empty( $reply_to ) ) {
 
+			// \h: With the u modifier escape sequence matches any horizontal whitespace character,
+			// which includes the non-breaking and zero width spaces.
+			$reply_to = preg_replace( '/\h/u', ' ', $reply_to );
+
 			// Optional custom format with a Reply-to Name specified: John Doe <john@doe.com>
 			// - starts with anything,
 			// - followed by space,

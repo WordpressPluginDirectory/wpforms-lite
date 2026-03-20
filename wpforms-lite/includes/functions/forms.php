@@ -502,8 +502,8 @@ function wpforms_get_captcha_settings() {
  * Process smart tags.
  *
  * @since 1.7.1
- * @since 1.8.7     Added `$context` parameter.
- * @since 1.9.9.2 Added `$context` parameter.
+ * @since 1.8.7   Added `$context` parameter.
+ * @since 1.9.9.2 Added `$context_data` parameter.
  *
  * @param string $content      Content.
  * @param array  $form_data    Form data.
@@ -537,6 +537,31 @@ function wpforms_process_smart_tags( $content, $form_data, $fields = [], $entry_
 	 * @return string
 	 */
 	return (string) apply_filters( 'wpforms_process_smart_tags', $content, $form_data, $fields, $entry_id, $context, $context_data );
+}
+
+/**
+ * Get all smart tags in the content.
+ * This function has been moved from the existing \WPForms\SmartTags\SmartTags::class.
+ *
+ * @since 1.10.0
+ *
+ * @param string $content Content.
+ *
+ * @return array
+ */
+function wpforms_get_all_smart_tags( $content ) {
+
+	/**
+	 * A smart tag should start and end with a curly brace.
+	 * ([a-z0-9_]+) a smart tag name and also the first capturing group.
+	 * Lowercase letters, digits, and an underscore.
+	 * (|[ =][^\n}]*) - second capturing group:
+	 * | no characters at all or the following:
+	 * [ =][^\n}]* space or equal sign and any number of any characters except new line and closing curly brace.
+	 */
+	preg_match_all( '~{([a-z0-9_]+)(|[ =][^\n}]*)}~', $content, $smart_tags );
+
+	return array_combine( $smart_tags[0], $smart_tags[1] );
 }
 
 /**

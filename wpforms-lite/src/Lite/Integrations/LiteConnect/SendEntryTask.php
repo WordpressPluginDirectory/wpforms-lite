@@ -2,6 +2,7 @@
 
 namespace WPForms\Lite\Integrations\LiteConnect;
 
+use WPForms\Helpers\Transient;
 use WPForms\Integrations\LiteConnect\API;
 use WPForms\Tasks\Meta;
 
@@ -19,7 +20,14 @@ class SendEntryTask extends Integration {
 	 *
 	 * @var string
 	 */
-	const LITE_CONNECT_TASK = 'wpforms_lite_connect_send_entry';
+	public const LITE_CONNECT_TASK = 'wpforms_lite_connect_send_entry';
+
+	/**
+	 * Transient cache error key.
+	 *
+	 * @since 1.10.0.1
+	 */
+	public const SEND_ERROR_KEY = 'lite_connect_send_entry_error';
 
 	/**
 	 * SendEntryTask constructor.
@@ -85,9 +93,9 @@ class SendEntryTask extends Integration {
 		// Load task data.
 		$params = ( new Meta() )->get( (int) $meta_id );
 
-		list( $form_id, $entry_data ) = $params->data;
+		[ $form_id, $entry_data ] = $params->data;
 
-		// Grab current access token. If site key or access token is not available, then it recreates the task to run later.
+		// Grab the current access token. If a site key or access token is not available, then it recreates the task to run later.
 		$access_token = $this->get_access_token( $this->get_site_key() );
 
 		if ( ! $access_token ) {
@@ -96,15 +104,17 @@ class SendEntryTask extends Integration {
 			return;
 		}
 
-		// Submit entry to the Lite Connect API.
+		// Submit an entry to the Lite Connect API.
 		$response = ( new API() )->add_form_entry( $access_token, $form_id, $entry_data );
 
 		if ( $response ) {
 			$response = json_decode( $response, true );
 		}
 
+		$response = (array) $response;
+
 		if ( isset( $response['error'] ) && $response['error'] === 'Access token is invalid or expired.' ) {
-			// Force to re-generate access token in case it is invalid.
+			// Force to re-generate an access token in case it is invalid.
 			$this->get_access_token( $this->get_site_key(), true );
 		}
 
@@ -122,12 +132,28 @@ class SendEntryTask extends Integration {
 			);
 		}
 
-		// Recreate the task if the request to the API fail for any reasons.
-		if ( ! isset( $response['status'] ) || $response['status'] !== 'success' ) {
+		$entry_key                = hash( 'md5', $entry_data );
+		$lite_connect_send_errors = Transient::get( self::SEND_ERROR_KEY );
+		$lite_connect_send_errors = is_array( $lite_connect_send_errors ) ? $lite_connect_send_errors : [];
+		$status                   = $response['status'] ?? 'error';
+
+		// Recreate the task if the request to the API fails for any reasons.
+		if ( $status !== 'success' ) {
+			$lite_connect_send_errors[ $entry_key ][] = time();
+
+			// Keep only 5 last failed times to avoid a too long array.
+			$lite_connect_send_errors[ $entry_key ] = array_slice( $lite_connect_send_errors[ $entry_key ], -5 );
+
+			Transient::set( self::SEND_ERROR_KEY, $lite_connect_send_errors );
+
 			$this->create( $form_id, $entry_data );
 
 			return;
 		}
+
+		unset( $lite_connect_send_errors[ $entry_key ] );
+
+		Transient::set( self::SEND_ERROR_KEY, $lite_connect_send_errors );
 
 		// Increase the entries count if the entry has been added successfully.
 		$this->increase_entries_count( $form_id );
