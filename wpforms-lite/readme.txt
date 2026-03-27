@@ -1,9 +1,9 @@
 === WPForms - Easy Form Builder for WordPress - Contact Forms, Payment Forms, Surveys, & More ===
-Contributors: wpforms, jaredatch, smub, slaFFik
+Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.9
-Stable tag: 1.10.0.1
+Stable tag: 1.10.0.2
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -163,7 +163,7 @@ You can see why WPForms is the best WordPress contact form plugin on the market!
 
 = Credits =
 
-This plugin is created by [Jared Atchison](https://www.jaredatchison.com/) and [Syed Balkhi](https://syedbalkhi.com/).
+This plugin is created by [Syed Balkhi](https://syedbalkhi.com/).
 
 = Branding Guidelines =
 
@@ -390,6 +390,10 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.10.0.2 =
+- Fixed: Dropdown field with a choice label containing quote characters was causing a JavaScript error in the form builder, preventing fields from being added correctly.
+- Fixed: Compatibility with Divi Builder.
 
 = 1.10.0.1 =
 - Added: Users can connect their PayPal Commerce accounts and receive payments via their payment forms.

@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.10.0.2 =
+- Fixed: Dropdown field with a choice label containing quote characters was causing a JavaScript error in the form builder, preventing fields from being added correctly.
+- Fixed: Compatibility with Divi Builder.
+
 = 1.10.0.1 =
 - Added: Users can connect their PayPal Commerce accounts and receive payments via their payment forms.
 - Changed: Refactored the Form Builder JavaScript into modular architecture for improved maintainability and performance.

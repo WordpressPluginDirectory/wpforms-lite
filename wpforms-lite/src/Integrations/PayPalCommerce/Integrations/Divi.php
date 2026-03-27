@@ -91,7 +91,7 @@ class Divi implements IntegrationInterface {
 
 		wp_enqueue_style(
 			'wpforms-paypal-commerce-divi-frontend-integrations',
-			WPFORMS_PLUGIN_URL . "assets/css/integrations/divi-frontend-paypal-commerce{$min}.css",
+			WPFORMS_PLUGIN_URL . "assets/css/integrations/paypal-commerce/integrations/divi-frontend-paypal-commerce{$min}.css",
 			[],
 			WPFORMS_VERSION
 		);
