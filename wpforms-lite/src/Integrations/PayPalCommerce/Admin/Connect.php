@@ -47,6 +47,13 @@ class Connect {
 	private const SIGNUP_TRANSIENT_NAME = 'wpforms_paypal_commerce_signup_link_';
 
 	/**
+	 * Signup Site URL transient name.
+	 *
+	 * @since 1.10.0.3
+	 */
+	private const SIGNUP_SITE_URL_TRANSIENT_NAME = 'wpforms_paypal_commerce_signup_site_url';
+
+	/**
 	 * Lock Signup transient name.
 	 *
 	 * @since 1.10.0
@@ -518,9 +525,10 @@ class Connect {
 			return '';
 		}
 
-		$link = Transient::get( self::SIGNUP_TRANSIENT_NAME . $mode );
+		$link     = Transient::get( self::SIGNUP_TRANSIENT_NAME . $mode );
+		$site_url = remove_query_arg( self::REFRESH_SIGNUP_KEY, wpforms_current_url() );
 
-		if ( ! empty( $link ) ) {
+		if ( ! empty( $link ) && $site_url === Transient::get( self::SIGNUP_SITE_URL_TRANSIENT_NAME ) ) {
 			return (string) $link;
 		}
 
@@ -537,7 +545,7 @@ class Connect {
 			[
 				'body'    => [
 					'secret'    => $secret,
-					'site_url'  => remove_query_arg( self::REFRESH_SIGNUP_KEY, wpforms_current_url() ),
+					'site_url'  => $site_url,
 					'live_mode' => (int) ( $mode === Helpers::PRODUCTION ),
 				],
 				'timeout' => 15,
@@ -550,6 +558,7 @@ class Connect {
 
 			if ( $link ) {
 				Transient::set( self::SIGNUP_TRANSIENT_NAME . $mode, $link, $body['expires_in'] );
+				Transient::set( self::SIGNUP_SITE_URL_TRANSIENT_NAME, $site_url );
 
 				return $link;
 			}

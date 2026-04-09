@@ -3,7 +3,7 @@ Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.9
-Stable tag: 1.10.0.2
+Stable tag: 1.10.0.3
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -22,7 +22,7 @@ At WPForms, user experience is our #1 priority. Our pre-built form templates and
 > <strong>WPForms Pro</strong><br />
 > This plugin is the Lite version of WPForms Pro, which comes with email subscription forms, multi-page contact forms, file uploads, conditional logic, and extra payment integrations. [Click here to purchase the best premium WordPress contact form plugin now!](https://wpforms.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 
-https://www.youtube.com/watch?v=Ypl0XcGphw8&rel=0
+https://player.vimeo.com/video/1180577946
 
 = Drag & Drop Contact Form Builder =
 
@@ -390,6 +390,9 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.10.0.3 =
+- Fixed: PayPal Connection URL was cached and contains the old site URL after the site migration.
 
 = 1.10.0.2 =
 - Fixed: Dropdown field with a choice label containing quote characters was causing a JavaScript error in the form builder, preventing fields from being added correctly.

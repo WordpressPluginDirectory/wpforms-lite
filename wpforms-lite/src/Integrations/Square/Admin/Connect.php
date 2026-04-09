@@ -91,13 +91,36 @@ class Connect {
 
 		$this->schedule_refresh();
 
-		if (
-			! empty( $_GET['state'] ) &&
-			isset( $_GET['square_connect'] ) &&
-			$_GET['square_connect'] === 'complete'
-		) {
+		if ( $this->is_valid_connect_request() ) {
 			$this->handle_connected();
 		}
+	}
+
+	/**
+	 * Validate if the current connect request is valid.
+	 *
+	 * @since 1.10.0.3
+	 *
+	 * @return bool
+	 */
+	private function is_valid_connect_request(): bool {
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_GET['square_connect'] ) || sanitize_key( $_GET['square_connect'] ) !== 'complete' ) {
+			return false;
+		}
+
+		$state = isset( $_GET['state'] ) ? sanitize_text_field( wp_unslash( $_GET['state'] ) ) : '';
+
+		if ( empty( $state ) ) {
+			return false;
+		}
+
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ), 'wpforms_square_connect' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -785,12 +808,18 @@ class Connect {
 
 		$mode = Helpers::validate_mode( $mode );
 
+		$settings_url = add_query_arg(
+			'_wpnonce',
+			wp_create_nonce( 'wpforms_square_connect' ),
+			Helpers::get_settings_page_url()
+		);
+
 		return add_query_arg(
 			[
 				'action'    => 'init',
 				'live_mode' => absint( $mode === Environment::PRODUCTION ),
 				'state'     => uniqid( '', true ),
-				'site_url'  => rawurlencode( Helpers::get_settings_page_url() ),
+				'site_url'  => rawurlencode( $settings_url ),
 				'scopes'    => implode( ' ', $this->get_scopes() ),
 			],
 			$this->get_server_url() . '/oauth/square-connect'
