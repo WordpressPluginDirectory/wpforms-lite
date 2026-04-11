@@ -3,7 +3,7 @@ Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.9
-Stable tag: 1.10.0.3
+Stable tag: 1.10.0.4
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -390,6 +390,9 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.10.0.4 =
+- Fixed: Stripe payment with Link and a 3D Secure card did not trigger the authentication modal, leaving the payment incomplete on Stripe.
 
 = 1.10.0.3 =
 - Fixed: PayPal Connection URL was cached and contains the old site URL after the site migration.

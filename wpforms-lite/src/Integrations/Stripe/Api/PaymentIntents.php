@@ -707,11 +707,7 @@ class PaymentIntents extends Common implements ApiInterface {
 	 */
 	protected function request_3dsecure_ajax( $intent ) {
 
-		if ( ! isset( $intent->status, $intent->next_action->type ) ) {
-			return;
-		}
-
-		if ( $intent->status !== 'requires_action' || $intent->next_action->type !== 'use_stripe_sdk' ) {
+		if ( ! isset( $intent->status ) || $intent->status !== 'requires_action' ) {
 			return;
 		}
 
