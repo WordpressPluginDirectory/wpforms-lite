@@ -4187,6 +4187,508 @@ abstract class WPForms_Field {
 	}
 
 	/**
+	 * Determine whether the submission uses the associative "Other" form.
+	 *
+	 * The Other choice submits as an array with an `other` key carrying the free-text value.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param mixed $field_submit Submitted value.
+	 *
+	 * @return bool
+	 */
+	protected function is_other_submission( $field_submit ): bool {
+
+		return is_array( $field_submit ) && ! empty( $field_submit['other'] );
+	}
+
+	/**
+	 * Filter a choice-field submission to only include configured allowlist values.
+	 *
+	 * Provides a defense-in-depth layer for format() methods. When show_values is
+	 * enabled, submitted values are compared against choice values; otherwise against
+	 * labels (or the "Choice N" fallback). Dynamic-choice fields pass through
+	 * unchanged because format() already handles invalid IDs by skipping unmatched
+	 * posts or terms. The "other" free-text key in array submissions is preserved
+	 * only when the field has an Other choice.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $field        Field configuration.
+	 * @param array        $form_data    Form data.
+	 *
+	 * @return string|array Filtered submission containing only allowlist items.
+	 *
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	protected function sanitize_choices_submission( $field_submit, array $field, array $form_data ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		if ( $this->is_dynamic_choices( $field ) ) {
+			return $field_submit;
+		}
+
+		if ( $field_submit === '' || $field_submit === [] ) {
+			return $field_submit;
+		}
+
+		[ $allowlist, $has_other ] = $this->build_choices_allowlist( $field );
+
+		if ( ! is_array( $field_submit ) ) {
+			return in_array( $this->normalize_choice_comparable( $field_submit ), $allowlist, true )
+				? $field_submit
+				: '';
+		}
+
+		$other_value = $field_submit['other'] ?? null;
+		$list_items  = array_filter(
+			$field_submit,
+			static function ( $key ) {
+
+				return $key !== 'other';
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+
+		$filtered = array_values(
+			array_filter(
+				$list_items,
+				function ( $item ) use ( $allowlist ) {
+					return in_array( $this->normalize_choice_comparable( $item ), $allowlist, true );
+				}
+			)
+		);
+
+		if ( $other_value !== null && $has_other ) {
+			$filtered['other'] = $other_value;
+		}
+
+		return $filtered;
+	}
+
+	/**
+	 * Validate a choice-field submission against the configured choice allowlist.
+	 *
+	 * Rejects submissions whose values do not match any configured choice label, value,
+	 * or `Choice N` fallback. Dynamic-choice modes (post_type, taxonomy) are validated by
+	 * ID and existence. The associative `Other` submission form is accepted only when a
+	 * choice has `'other' => true`. Rejections are logged via `wpforms_log()` under
+	 * `type=[security, entry]` and surface a generic user-facing error.
+	 *
+	 * The `wpforms_field_choices_allow_unknown_value` filter (default false) short-circuits
+	 * enforcement for rare legitimate off-list workflows.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int          $field_id     Field ID.
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $form_data    Form data.
+	 *
+	 * @return void
+	 */
+	protected function validate_choices_allowlist( $field_id, $field_submit, array $form_data ): void {
+
+		$field_id = (int) $field_id;
+		$field    = isset( $form_data['fields'][ $field_id ] ) ? (array) $form_data['fields'][ $field_id ] : [];
+
+		if ( $this->should_skip_choices_allowlist( $field, $field_submit, $form_data ) ) {
+			return;
+		}
+
+		if ( $this->validate_dynamic_choice_submission( $field_id, $field_submit, $field, $form_data ) ) {
+			return;
+		}
+
+		[ $allowlist, $has_other ] = $this->build_choices_allowlist( $field );
+
+		if ( $this->is_other_submission( $field_submit ) ) {
+			$this->validate_other_shape_submission( $field_id, $field_submit, $field, $form_data, $allowlist, $has_other );
+
+			return;
+		}
+
+		$this->validate_flat_submission( $field_id, $field_submit, $field, $form_data, $allowlist );
+	}
+
+	/**
+	 * Check the early-return guards that suppress allowlist enforcement.
+	 *
+	 * Skips empty submissions (handled by the required-field check), dynamic choice
+	 * fields rendered without items, and sites that opt out via the
+	 * wpforms_field_choices_allow_unknown_value filter.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param array        $field        Field configuration.
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $form_data    Form data.
+	 *
+	 * @return bool
+	 */
+	private function should_skip_choices_allowlist( array $field, $field_submit, array $form_data ): bool {
+
+		if ( empty( $field ) ) {
+			return true;
+		}
+
+		if ( $field_submit === '' || $field_submit === null || $field_submit === [] ) {
+			return true;
+		}
+
+		if ( $this->is_dynamic_choices_empty( $field, $form_data ) ) {
+			return true;
+		}
+
+		/**
+		 * Allow submission of values that are not in the configured choice allowlist.
+		 *
+		 * Default false. Returning true skips allowlist enforcement for the current
+		 * submission. Use only for custom flows that intentionally accept off-list values.
+		 *
+		 * @since 1.10.0.5
+		 *
+		 * @param bool         $allow        Default false.
+		 * @param string|array $field_submit Submitted value.
+		 * @param array        $field        Field configuration.
+		 * @param array        $form_data    Full form data.
+		 */
+		return (bool) apply_filters( 'wpforms_field_choices_allow_unknown_value', false, $field_submit, $field, $form_data );
+	}
+
+	/**
+	 * Route a dynamic-choice submission to its ID-based validator.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int          $field_id     Field ID.
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $field        Field configuration.
+	 * @param array        $form_data    Form data.
+	 *
+	 * @return bool True when the dispatcher handled the submission, false otherwise.
+	 */
+	private function validate_dynamic_choice_submission( $field_id, $field_submit, array $field, array $form_data ): bool {
+
+		$dynamic = $this->is_dynamic_choices( $field ) ? $field['dynamic_choices'] : '';
+
+		if ( $dynamic === 'post_type' ) {
+			$this->validate_dynamic_post_type_submission( $field_id, $field_submit, $field, $form_data );
+
+			return true;
+		}
+
+		if ( $dynamic === 'taxonomy' ) {
+			$this->validate_dynamic_taxonomy_submission( $field_id, $field_submit, $field, $form_data );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Build the label/value allowlist for a static-choice field.
+	 *
+	 * Prefers choice values when show_values is enabled, falls back to labels, then to
+	 * the `Choice N` placeholder used by the render paths.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param array $field Field configuration.
+	 *
+	 * @return array Tuple of [ string[] $allowlist, bool $has_other ].
+	 */
+	private function build_choices_allowlist( array $field ): array {
+
+		$allowlist   = [];
+		$has_other   = false;
+		$show_values = ! empty( $field['show_values'] );
+		$choices     = ! empty( $field['choices'] ) && is_array( $field['choices'] ) ? $field['choices'] : [];
+
+		foreach ( $choices as $key => $choice ) {
+			if ( ! empty( $choice['other'] ) ) {
+				$has_other = true;
+			}
+
+			$allowlist[] = $this->get_choice_allowlist_value( $choice, $key, $show_values );
+		}
+
+		return [ $allowlist, $has_other ];
+	}
+
+	/**
+	 * Resolve the single allowlist entry for one configured choice.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param array      $choice      Choice configuration.
+	 * @param int|string $key         Choice key as stored in form_data.
+	 * @param bool       $show_values Whether the field uses explicit values.
+	 *
+	 * @return string
+	 */
+	private function get_choice_allowlist_value( $choice, $key, bool $show_values ): string {
+
+		if ( $show_values && isset( $choice['value'] ) && $choice['value'] !== '' ) {
+			return $this->normalize_choice_comparable( $choice['value'] );
+		}
+
+		if ( ! $show_values && isset( $choice['label'] ) && $choice['label'] !== '' ) {
+			return $this->normalize_choice_comparable( $choice['label'] );
+		}
+
+		/* translators: %s - choice number. */
+		return $this->normalize_choice_comparable( sprintf( esc_html__( 'Choice %s', 'wpforms-lite' ), $key ) );
+	}
+
+	/**
+	 * Normalize a choice label/value for allowlist comparison.
+	 *
+	 * Trims surrounding whitespace because render paths like the Select field's
+	 * get_choices_label() emit trimmed text while form_data retains the raw label.
+	 * Applied to both sides of the in_array check so stored vs. submitted strings
+	 * compare consistently.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param mixed $value Value to normalize.
+	 *
+	 * @return string
+	 */
+	private function normalize_choice_comparable( $value ): string {
+
+		return trim( (string) $value );
+	}
+
+	/**
+	 * Validate a submission that uses the associative "Other" shape.
+	 *
+	 * The shape is accepted only when the field has an Other choice. Non-`other`
+	 * array elements must still match the allowlist so mixed payloads like
+	 * `[ 'Label', 'other' => 'freetext' ]` cannot sneak in an off-list value.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int   $field_id     Field ID.
+	 * @param array $field_submit Submitted value.
+	 * @param array $field        Field configuration.
+	 * @param array $form_data    Form data.
+	 * @param array $allowlist    Allowlist built from configured choices.
+	 * @param bool  $has_other    Whether the field has an Other choice.
+	 *
+	 * @return void
+	 */
+	private function validate_other_shape_submission( int $field_id, array $field_submit, array $field, array $form_data, array $allowlist, bool $has_other ): void {
+
+		if ( ! $has_other ) {
+			$this->reject_choice_submission( $field_id, $field_submit, $field, $form_data );
+
+			return;
+		}
+
+		foreach ( $field_submit as $shape_key => $item ) {
+			if ( $shape_key === 'other' ) {
+				continue;
+			}
+
+			if ( $this->is_valueless_submission_item( $item ) ) {
+				continue;
+			}
+
+			if ( ! in_array( $this->normalize_choice_comparable( $item ), $allowlist, true ) ) {
+				$this->reject_choice_submission( $field_id, $field_submit, $field, $form_data );
+
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Validate a regular scalar or indexed-array submission against the allowlist.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int          $field_id     Field ID.
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $field        Field configuration.
+	 * @param array        $form_data    Form data.
+	 * @param array        $allowlist    Allowlist built from configured choices.
+	 *
+	 * @return void
+	 */
+	private function validate_flat_submission( $field_id, $field_submit, array $field, array $form_data, array $allowlist ): void {
+
+		$submitted = is_array( $field_submit ) ? $field_submit : [ $field_submit ];
+
+		foreach ( $submitted as $item ) {
+			if ( $this->is_valueless_submission_item( $item ) ) {
+				continue;
+			}
+
+			if ( ! in_array( $this->normalize_choice_comparable( $item ), $allowlist, true ) ) {
+				$this->reject_choice_submission( $field_id, $field_submit, $field, $form_data );
+
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Whether a single submission element carries no user input.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param mixed $item Single submission element.
+	 *
+	 * @return bool
+	 */
+	private function is_valueless_submission_item( $item ): bool {
+
+		return $item === '' || $item === null;
+	}
+
+	/**
+	 * Validate a dynamic post-type choice submission.
+	 *
+	 * Each submitted ID must cast to a positive integer AND map to a post of the
+	 * field's configured `dynamic_post_type`.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int          $field_id     Field ID.
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $field        Field configuration.
+	 * @param array        $form_data    Form data.
+	 *
+	 * @return void
+	 */
+	private function validate_dynamic_post_type_submission( $field_id, $field_submit, array $field, array $form_data ): void {
+
+		$post_type = ! empty( $field['dynamic_post_type'] ) ? $field['dynamic_post_type'] : '';
+
+		if ( $post_type === '' ) {
+			return;
+		}
+
+		$this->validate_dynamic_id_submission(
+			$field_id,
+			$field_submit,
+			$field,
+			$form_data,
+			static function ( $id ) use ( $post_type ) {
+
+				$post = get_post( $id );
+
+				return ! empty( $post ) && ! is_wp_error( $post ) && $post->post_type === $post_type;
+			}
+		);
+	}
+
+	/**
+	 * Validate a dynamic taxonomy choice submission.
+	 *
+	 * Each submitted ID must cast to a positive integer AND map to a term in the
+	 * field's configured `dynamic_taxonomy`.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int          $field_id     Field ID.
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $field        Field configuration.
+	 * @param array        $form_data    Form data.
+	 *
+	 * @return void
+	 */
+	private function validate_dynamic_taxonomy_submission( $field_id, $field_submit, array $field, array $form_data ): void {
+
+		$taxonomy = ! empty( $field['dynamic_taxonomy'] ) ? $field['dynamic_taxonomy'] : '';
+
+		if ( $taxonomy === '' ) {
+			return;
+		}
+
+		$this->validate_dynamic_id_submission(
+			$field_id,
+			$field_submit,
+			$field,
+			$form_data,
+			static function ( $id ) use ( $taxonomy ) {
+
+				$term = get_term( $id, $taxonomy );
+
+				return ! empty( $term ) && ! is_wp_error( $term );
+			}
+		);
+	}
+
+	/**
+	 * Iterate an ID-based submission and reject on the first invalid element.
+	 *
+	 * Shared scaffolding for dynamic post-type and taxonomy validation; the
+	 * type-specific existence check is passed as a callback.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int          $field_id     Field ID.
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $field        Field configuration.
+	 * @param array        $form_data    Form data.
+	 * @param callable     $is_valid_id  Receives an int ID, returns bool.
+	 *
+	 * @return void
+	 */
+	private function validate_dynamic_id_submission( $field_id, $field_submit, array $field, array $form_data, callable $is_valid_id ): void {
+
+		$submitted = is_array( $field_submit ) ? $field_submit : [ $field_submit ];
+
+		foreach ( $submitted as $item ) {
+			$id = (int) $item;
+
+			if ( $id <= 0 || ! $is_valid_id( $id ) ) {
+				$this->reject_choice_submission( $field_id, $field_submit, $field, $form_data );
+
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Record a rejected choice submission.
+	 *
+	 * Sets a generic per-field error and writes a structured entry to the WPForms log
+	 * so site operators can audit tampering attempts.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int          $field_id     Field ID.
+	 * @param string|array $field_submit Submitted value.
+	 * @param array        $field        Field configuration.
+	 * @param array        $form_data    Form data.
+	 *
+	 * @return void
+	 */
+	private function reject_choice_submission( $field_id, $field_submit, array $field, array $form_data ): void {
+
+		$form_id = isset( $form_data['id'] ) ? (int) $form_data['id'] : 0;
+
+		wpforms()->obj( 'process' )->errors[ $form_id ][ (int) $field_id ] = esc_html__( 'The selected option is invalid.', 'wpforms-lite' );
+
+		wpforms_log(
+			'Rejected out-of-range choice value.',
+			[
+				'form_id'    => $form_id,
+				'field_id'   => (int) $field_id,
+				'field_type' => $field['type'] ?? '',
+				'submitted'  => wp_json_encode( $field_submit ),
+			],
+			[
+				'type'    => [ 'security', 'entry' ],
+				'form_id' => $form_id,
+			]
+		);
+	}
+
+	/**
 	 * Get an empty dynamic choices message.
 	 *
 	 * @since 1.8.2

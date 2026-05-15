@@ -275,6 +275,9 @@ class Requirements {
 		'wpforms-hubspot/wpforms-hubspot.php'                           => [
 			self::LICENSE => self::TOP,
 		],
+		'wpforms-klaviyo/wpforms-klaviyo.php'                           => [
+			self::LICENSE => self::PLUS_PRO_AND_TOP,
+		],
 		'wpforms-lead-forms/wpforms-lead-forms.php'                     => [],
 		'wpforms-mailchimp/wpforms-mailchimp.php'                       => [
 			self::EXT     => 'curl',

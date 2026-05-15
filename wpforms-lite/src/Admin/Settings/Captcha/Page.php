@@ -104,6 +104,8 @@ class Page {
 		add_action( 'wpforms_settings_updated', [ $this, 'updated' ] );
 		add_action( 'wpforms_settings_enqueue', [ $this, 'enqueues' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'apply_noconflict' ], 9999 );
+
+		( new ActiveLayerCallout() )->hooks();
 	}
 
 	/**

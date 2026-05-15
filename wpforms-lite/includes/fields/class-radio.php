@@ -672,6 +672,8 @@ class WPForms_Field_Radio extends WPForms_Field {
 		}
 
 		parent::validate( $field_id, $field_submit, $form_data );
+
+		$this->validate_choices_allowlist( $field_id, $field_submit, $form_data );
 	}
 
 	/**
@@ -686,10 +688,11 @@ class WPForms_Field_Radio extends WPForms_Field {
 	 */
 	public function format( $field_id, $field_submit, $form_data ) {
 
-		$field     = $form_data['fields'][ $field_id ];
-		$dynamic   = ! empty( $field['dynamic_choices'] ) ? $field['dynamic_choices'] : false;
-		$name      = sanitize_text_field( $field['label'] );
-		$value_raw = sanitize_text_field( $field_submit );
+		$field        = $form_data['fields'][ $field_id ];
+		$field_submit = $this->sanitize_choices_submission( $field_submit, $field, $form_data );
+		$dynamic      = ! empty( $field['dynamic_choices'] ) ? $field['dynamic_choices'] : false;
+		$name         = sanitize_text_field( $field['label'] );
+		$value_raw    = is_array( $field_submit ) ? '' : $field_submit;
 
 		$data = [
 			'name'      => $name,

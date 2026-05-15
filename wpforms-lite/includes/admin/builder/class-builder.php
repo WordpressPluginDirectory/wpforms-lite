@@ -243,8 +243,28 @@ class WPForms_Builder {
 	 * Clear common wp-admin styles, keep only allowed.
 	 *
 	 * @since 1.6.8
+	 * @since 1.10.0.5 Allowed the 'wp-base-styles' style added in WP 7.0.
 	 */
 	public function deregister_common_wp_admin_styles(): void {
+
+		$allowed_styles = [
+			'wp-editor',
+			'wp-editor-font',
+			'editor-buttons',
+			'dashicons',
+			'media-views',
+			'imgareaselect',
+			'wp-mediaelement',
+			'mediaelement',
+			'buttons',
+			'admin-bar',
+		];
+
+		// Allow based styles added in WP 7.0.
+		// Otherwise, there is an issue with the Upload Media button.
+		if ( version_compare( $GLOBALS['wp_version'], '7.0-alpha', '>=' ) ) {
+			$allowed_styles[] = 'wp-base-styles';
+		}
 
 		/**
 		 * Filter the allowed common wp-admin styles.
@@ -255,18 +275,7 @@ class WPForms_Builder {
 		 */
 		$allowed_styles = (array) apply_filters( // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 			'wpforms_admin_builder_allowed_common_wp_admin_styles',
-			[
-				'wp-editor',
-				'wp-editor-font',
-				'editor-buttons',
-				'dashicons',
-				'media-views',
-				'imgareaselect',
-				'wp-mediaelement',
-				'mediaelement',
-				'buttons',
-				'admin-bar',
-			]
+			$allowed_styles
 		);
 
 		wp_styles()->registered = array_intersect_key( wp_styles()->registered, array_flip( $allowed_styles ) );
@@ -485,6 +494,7 @@ class WPForms_Builder {
 	 *
 	 * @since 1.0.0
 	 * @since 1.6.8 All the panel's stylesheets restructured and moved here.
+	 * @since 1.10.0.5 Enqueue the 'wp-base-styles' styles added in WP 7.0.
 	 */
 	public function enqueues(): void {
 
@@ -500,6 +510,12 @@ class WPForms_Builder {
 		do_action( 'wpforms_builder_enqueues_before', $this->view );
 
 		$min = wpforms_get_min_suffix();
+
+		// Make sure that base styles (added in WP 7.0) are enqueued.
+		// Otherwise, there is an issue with the Upload Media button.
+		if ( version_compare( $GLOBALS['wp_version'], '7.0-alpha', '>=' ) ) {
+			wp_enqueue_style( 'wp-base-styles' );
+		}
 
 		/*
 		 * Builder CSS.

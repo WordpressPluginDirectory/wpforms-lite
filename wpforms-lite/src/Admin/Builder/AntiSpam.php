@@ -2,6 +2,7 @@
 
 namespace WPForms\Admin\Builder;
 
+use WPForms\Education\ActiveLayer\Helper as ActiveLayer;
 use WPForms\Forms\Akismet;
 use WPForms_Builder_Panel_Settings;
 
@@ -39,6 +40,27 @@ class AntiSpam {
 	protected function hooks() {
 
 		add_action( 'wpforms_form_settings_panel_content', [ $this, 'panel_content' ], 10, 2 );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
+	}
+
+	/**
+	 * Enqueue stylesheet for the Also Available card (Recommended badge plus
+	 * shared ActiveLayer callout rules) on the form builder page only.
+	 *
+	 * @since 1.10.0.5
+	 */
+	public function enqueue_assets() {
+
+		if ( ! wpforms_is_admin_page( 'builder' ) ) {
+			return;
+		}
+
+		wp_enqueue_style(
+			'wpforms-activelayer-callout',
+			WPFORMS_PLUGIN_URL . 'assets/css/admin/activelayer-callout.css',
+			[],
+			WPFORMS_VERSION
+		);
 	}
 
 	/**
@@ -380,6 +402,7 @@ class AntiSpam {
 				'class'       => wpforms()->is_pro() ? 'wpforms-panel-content-also-available-item-add-captcha' : 'wpforms-panel-content-also-available-item-upgrade-to-pro',
 				'show'        => true,
 			],
+			'activelayer'    => $this->get_activelayer_block(),
 			'reCAPTCHA'      => [
 				'logo'        => WPFORMS_PLUGIN_URL . 'assets/images/anti-spam/recaptcha.svg',
 				'title'       => 'reCAPTCHA',
@@ -418,6 +441,38 @@ class AntiSpam {
 			'builder/antispam/also-available',
 			[ 'blocks' => $blocks ],
 			true
+		);
+	}
+
+	/**
+	 * Build the ActiveLayer entry for the Also Available block. Wraps
+	 * `Helper::get_modal_data()` and overrides the CTA text with copy
+	 * specific to the form builder surface.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @return array
+	 */
+	private function get_activelayer_block(): array {
+
+		$modal  = ActiveLayer::get_modal_data();
+		$action = $modal['attrs']['data-action'] ?? '';
+
+		if ( $action === 'install' ) {
+			$modal['link_text'] = __( 'Install & Activate', 'wpforms-lite' );
+		} elseif ( $action === 'activate' ) {
+			$modal['link_text'] = __( 'Activate', 'wpforms-lite' );
+		}
+
+		return array_merge(
+			[
+				'logo'        => WPFORMS_PLUGIN_URL . 'assets/images/anti-spam/activelayer.svg',
+				'title'       => 'ActiveLayer',
+				'description' => __( 'AI-powered spam protection. No friction for real visitors, higher form conversions.', 'wpforms-lite' ),
+				'badge'       => __( 'Recommended', 'wpforms-lite' ),
+				'show'        => true,
+			],
+			$modal
 		);
 	}
 }

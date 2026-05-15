@@ -155,6 +155,7 @@ abstract class Abilities implements IntegrationInterface {
 									'status'   => [ 'type' => 'string' ],
 									'created'  => [ 'type' => 'string' ],
 									'modified' => [ 'type' => 'string' ],
+									'author'   => [ 'type' => 'integer' ],
 								],
 							],
 						],
@@ -216,6 +217,9 @@ abstract class Abilities implements IntegrationInterface {
 						'id'       => [ 'type' => 'integer' ],
 						'title'    => [ 'type' => 'string' ],
 						'status'   => [ 'type' => 'string' ],
+						'created'  => [ 'type' => 'string' ],
+						'modified' => [ 'type' => 'string' ],
+						'author'   => [ 'type' => 'integer' ],
 						'settings' => [ 'type' => 'object' ],
 						'fields'   => [ 'type' => 'array' ],
 					],
@@ -307,8 +311,9 @@ abstract class Abilities implements IntegrationInterface {
 		$status = sanitize_text_field( $args['status'] ?? 'publish' );
 
 		// Get total count efficiently using the cached WordPress function.
+		// wp_count_posts() returns string counts; cast to int to match the integer output schema.
 		$counts = wp_count_posts( 'wpforms' );
-		$total  = $counts->{$status} ?? 0;
+		$total  = (int) ( $counts->{$status} ?? 0 );
 
 		// Get paginated forms with proper WordPress pagination.
 		$query_args = [

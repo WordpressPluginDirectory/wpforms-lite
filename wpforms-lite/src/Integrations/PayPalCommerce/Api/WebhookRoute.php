@@ -6,8 +6,8 @@ use Exception;
 use RuntimeException;
 use BadMethodCallException;
 use WPForms\Integrations\PayPalCommerce\Api\Webhooks\Exceptions\AmountMismatchException;
-use WPForms\Integrations\PayPalCommerce\Helpers;
 use WPForms\Integrations\PayPalCommerce\Connection;
+use WPForms\Integrations\PayPalCommerce\Helpers;
 use WPForms\Integrations\PayPalCommerce\WebhooksHealthCheck;
 
 /**
@@ -179,6 +179,11 @@ class WebhookRoute {
 
 			if ( empty( $this->payload ) ) {
 				throw new RuntimeException( 'Empty webhook payload.' );
+			}
+
+			// Verify the webhook signature before processing.
+			if ( ! $this->verify_webhook_signature( $this->payload ) ) {
+				throw new RuntimeException( 'Webhook signature verification failed.' );
 			}
 
 			$event = json_decode( $this->payload, false );
@@ -376,5 +381,80 @@ class WebhookRoute {
 	private function is_webhook_configured(): bool {
 
 		return $this->get_webhook_id() !== '';
+	}
+
+	/**
+	 * Verify webhook signature.
+	 *
+	 * Routes to the appropriate verification method based on connection type:
+	 * - Legacy (first-party) connections verify directly with PayPal API via the addon's WebhooksManager.
+	 * - Third-party connections verify the HMAC signature added by the Product API.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param string $payload Raw webhook payload body.
+	 *
+	 * @return bool True if signature is valid, false otherwise.
+	 */
+	private function verify_webhook_signature( string $payload ): bool {
+
+		if ( Helpers::is_legacy() ) {
+			// phpcs:ignore WPForms.PHP.BackSlash.UseShortSyntax
+			if ( ! method_exists( \WPFormsPaypalCommerce\Api\WebhooksManager::class, 'verify_webhook_signature' ) ) {
+				return false;
+			}
+
+			// phpcs:ignore WPForms.PHP.BackSlash.UseShortSyntax
+			return ( new \WPFormsPaypalCommerce\Api\WebhooksManager() )->verify_webhook_signature( $payload, $this->get_webhook_id() );
+		}
+
+		return $this->verify_product_api_webhook_signature( $payload );
+	}
+
+	/**
+	 * Verify the HMAC-SHA256 signature added by the Product API when forwarding webhooks.
+	 *
+	 * Checks the X-WPForms-Signature and X-WPForms-Timestamp headers against
+	 * the raw payload body using the shared secret established during onboarding.
+	 * Rejects payloads older than 5 minutes to prevent replay attacks.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param string $payload Raw webhook payload body.
+	 *
+	 * @return bool True if signature is valid, false otherwise.
+	 */
+	private function verify_product_api_webhook_signature( string $payload ): bool {
+
+		$signature = isset( $_SERVER['HTTP_X_WPFORMS_SIGNATURE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_WPFORMS_SIGNATURE'] ) ) : '';
+		$timestamp = isset( $_SERVER['HTTP_X_WPFORMS_TIMESTAMP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_WPFORMS_TIMESTAMP'] ) ) : '';
+
+		if ( empty( $signature ) || empty( $timestamp ) ) {
+			return false;
+		}
+
+		/**
+		 * Filter the maximum age (in seconds) for webhook signature timestamps.
+		 *
+		 * @since 1.10.0.5
+		 *
+		 * @param int $max_age Maximum allowed age in seconds. Default 300 (5 minutes).
+		 */
+		$max_age = (int) apply_filters( 'wpforms_integrations_pay_pal_commerce_api_webhook_route_signature_max_age', 5 * MINUTE_IN_SECONDS );
+
+		if ( abs( time() - (int) $timestamp ) > $max_age ) {
+			return false;
+		}
+
+		$connection = Connection::get();
+
+		if ( ! $connection ) {
+			return false;
+		}
+
+		$secret   = $connection->get_secret();
+		$expected = hash_hmac( 'sha256', $timestamp . '.' . $payload, $secret );
+
+		return hash_equals( $expected, $signature );
 	}
 }

@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.10.0.5 =
+- Fixed: Compatibility with WordPress 7.0.
+- Fixed: Improved validation of submitted values for Multiple Choice, Checkboxes, Dropdown, and GDPR Checkbox fields to ensure only configured options are accepted.
+
 = 1.10.0.4 =
 - Fixed: Stripe payment with Link and a 3D Secure card did not trigger the authentication modal, leaving the payment incomplete on Stripe.
 

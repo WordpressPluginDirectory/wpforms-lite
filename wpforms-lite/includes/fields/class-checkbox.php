@@ -623,7 +623,9 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 			return;
 		}
 
-		$field_submit = (array) $field_submit;
+		if ( ! is_array( $field_submit ) ) {
+			$field_submit = wpforms_is_empty_string( $field_submit ) ? [] : (array) $field_submit;
+		}
 
 		$this->validate_field_choice_limit( $field_id, $field_submit, $form_data );
 
@@ -644,6 +646,8 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 		if ( ! empty( $error ) ) {
 			wpforms()->obj( 'process' )->errors[ $form_data['id'] ][ $field_id ] = $error;
 		}
+
+		$this->validate_choices_allowlist( $field_id, $field_submit, $form_data );
 	}
 
 	/**
@@ -659,9 +663,11 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 
 		$field_submit = (array) $field_submit;
 		$field        = $form_data['fields'][ $field_id ];
+		$field_submit = (array) $this->sanitize_choices_submission( $field_submit, $field, $form_data );
 		$dynamic      = ! empty( $field['dynamic_choices'] ) ? $field['dynamic_choices'] : false;
 		$name         = sanitize_text_field( $field['label'] );
-		$value_raw    = wpforms_sanitize_array_combine( $field_submit );
+		$combined     = wpforms_sanitize_array_combine( $field_submit );
+		$value_raw    = is_string( $combined ) ? $combined : '';
 
 		$data = [
 			'name'      => $name,

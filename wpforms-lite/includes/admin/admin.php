@@ -57,6 +57,16 @@ function wpforms_admin_styles() {
 		'4.7.0'
 	);
 
+	// WordPress 7.0 UI compatibility overrides.
+	if ( version_compare( get_bloginfo( 'version' ), '7.0-alpha', '>=' ) ) {
+		wp_enqueue_style(
+			'wpforms-admin-wp7.0-compat',
+			WPFORMS_PLUGIN_URL . "assets/css/admin-wp7.0-compat{$min}.css",
+			[],
+			WPFORMS_VERSION
+		);
+	}
+
 	// Main admin styles.
 	wp_enqueue_style(
 		'wpforms-admin',

@@ -316,6 +316,11 @@ class Loader {
 				'hook' => 'admin_init',
 			],
 			[
+				'name' => 'Admin\PluginsCategory',
+				'id'   => 'plugins_category',
+				'hook' => 'admin_init',
+			],
+			[
 				'name' => 'Admin\Splash\SplashScreen',
 				'id'   => 'splash_screen',
 				'hook' => 'admin_init',
@@ -904,6 +909,10 @@ class Loader {
 				'name'     => 'Admin\Education\Pointers\Payment',
 				'hook'     => 'admin_init',
 				'priority' => 20,
+			],
+			[
+				'name' => 'Education\ActiveLayer\InstallTracker',
+				'id'   => 'activelayer_install_tracker',
 			]
 		);
 

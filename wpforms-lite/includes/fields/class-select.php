@@ -543,6 +543,8 @@ class WPForms_Field_Select extends WPForms_Field {
 		}
 
 		parent::validate( $field_id, $field_submit, $form_data );
+
+		$this->validate_choices_allowlist( $field_id, $field_submit, $form_data );
 	}
 
 	/**
@@ -568,7 +570,9 @@ class WPForms_Field_Select extends WPForms_Field {
 			$field_submit = [ $field_submit ];
 		}
 
-		$value_raw = wpforms_sanitize_array_combine( $field_submit );
+		$field_submit = $this->sanitize_choices_submission( $field_submit, $field, $form_data );
+		$combined     = wpforms_sanitize_array_combine( $field_submit );
+		$value_raw    = is_string( $combined ) ? $combined : '';
 
 		$data = [
 			'name'      => $name,

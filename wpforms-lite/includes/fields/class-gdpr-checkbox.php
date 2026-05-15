@@ -307,6 +307,27 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 	}
 
 	/**
+	 * Validate field.
+	 *
+	 * Delegates the required/empty check to the base class, then rejects any
+	 * submission whose value is not the configured consent-choice label.
+	 *
+	 * @since 1.10.0.5
+	 *
+	 * @param int          $field_id     Field ID.
+	 * @param string|array $field_submit Submitted field value.
+	 * @param array        $form_data    Form data and settings.
+	 *
+	 * @return void
+	 */
+	public function validate( $field_id, $field_submit, $form_data ) {
+
+		parent::validate( $field_id, $field_submit, $form_data );
+
+		$this->validate_choices_allowlist( $field_id, $field_submit, $form_data );
+	}
+
+	/**
 	 * Format and sanitize field.
 	 *
 	 * @since 1.4.6

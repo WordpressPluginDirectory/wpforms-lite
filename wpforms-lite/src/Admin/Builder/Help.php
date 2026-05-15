@@ -211,6 +211,7 @@ class Help {
 			'providers/sendinblue'                    => 'brevo',
 			'providers/slack'                         => 'slack',
 			'providers/hubspot'                       => 'hubspot',
+			'providers/klaviyo'                       => 'klaviyo',
 			'providers/twilio'                        => 'twilio',
 			'providers/pipedrive'                     => 'pipedrive',
 			'providers/zoho_crm'                      => 'zoho crm',
@@ -1210,6 +1211,9 @@ class Help {
 			],
 			'hubspot'                   => [
 				'/docs/how-to-install-and-use-the-hubspot-addon-in-wpforms/',
+			],
+			'klaviyo'                   => [
+				'/docs/klaviyo-addon/',
 			],
 			'twilio'                    => [
 				'/docs/twilio-addon/',

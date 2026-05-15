@@ -247,6 +247,7 @@ class UsageTracking implements IntegrationInterface {
 			'sugar-calendar',
 			'duplicator',
 			'uncannyautomator',
+			'activelayer',
 		];
 
 		foreach ( $plugins as $plugin ) {

@@ -3,7 +3,7 @@ Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 6.9
-Stable tag: 1.10.0.4
+Stable tag: 1.10.0.5
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -390,6 +390,10 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.10.0.5 =
+- Fixed: Compatibility with WordPress 7.0.
+- Fixed: Improved validation of submitted values for Multiple Choice, Checkboxes, Dropdown, and GDPR Checkbox fields to ensure only configured options are accepted.
 
 = 1.10.0.4 =
 - Fixed: Stripe payment with Link and a 3D Secure card did not trigger the authentication modal, leaving the payment incomplete on Stripe.
