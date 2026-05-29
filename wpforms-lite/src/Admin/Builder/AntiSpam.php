@@ -40,27 +40,6 @@ class AntiSpam {
 	protected function hooks() {
 
 		add_action( 'wpforms_form_settings_panel_content', [ $this, 'panel_content' ], 10, 2 );
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
-	}
-
-	/**
-	 * Enqueue stylesheet for the Also Available card (Recommended badge plus
-	 * shared ActiveLayer callout rules) on the form builder page only.
-	 *
-	 * @since 1.10.0.5
-	 */
-	public function enqueue_assets() {
-
-		if ( ! wpforms_is_admin_page( 'builder' ) ) {
-			return;
-		}
-
-		wp_enqueue_style(
-			'wpforms-activelayer-callout',
-			WPFORMS_PLUGIN_URL . 'assets/css/admin/activelayer-callout.css',
-			[],
-			WPFORMS_VERSION
-		);
 	}
 
 	/**

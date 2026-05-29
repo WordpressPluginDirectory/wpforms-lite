@@ -34,12 +34,13 @@ class Request {
 	 *
 	 * @param string $endpoint Endpoint to request.
 	 * @param array  $args     Request arguments.
+	 * @param array  $headers  Additional request headers.
 	 *
 	 * @return Response Response from the API.
 	 */
-	public function post( string $endpoint, array $args = [] ): Response {
+	public function post( string $endpoint, array $args = [], array $headers = [] ): Response {
 
-		return $this->request( 'POST', $endpoint, $args );
+		return $this->request( 'POST', $endpoint, $args, $headers );
 	}
 
 	/**
@@ -50,11 +51,12 @@ class Request {
 	 * @param string $method   Request method.
 	 * @param string $endpoint Endpoint to request.
 	 * @param array  $args     Arguments to send.
+	 * @param array  $headers  Additional request headers.
 	 *
 	 * @return Response Response from the API.
 	 * @noinspection PhpSameParameterValueInspection
 	 */
-	private function request( string $method, string $endpoint, array $args ): Response {
+	private function request( string $method, string $endpoint, array $args, array $headers = [] ): Response {
 
 		// Once mark AI features as used when making a first request.
 		Helpers::set_ai_used();
@@ -66,7 +68,7 @@ class Request {
 
 		$options = [
 			'method'  => $method,
-			'headers' => $this->get_headers(),
+			'headers' => $this->get_headers( $headers ),
 			'timeout' => $this->get_timeout(),
 			'body'    => wp_json_encode( $args ),
 		];
@@ -125,9 +127,11 @@ class Request {
 	 *
 	 * @since 1.9.1
 	 *
+	 * @param array $additional Additional request headers.
+	 *
 	 * @return array
 	 */
-	private function get_headers(): array {
+	private function get_headers( array $additional = [] ): array {
 
 		$headers = [
 			'Content-Type' => 'application/json',
@@ -137,7 +141,7 @@ class Request {
 			$headers['x-wpforms-licensekey'] = wpforms_get_license_key();
 		}
 
-		return $headers;
+		return array_merge( $headers, $additional );
 	}
 
 	/**

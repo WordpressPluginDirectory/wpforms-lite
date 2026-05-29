@@ -67,13 +67,13 @@ class Builder {
 	}
 
 	/**
-	 * Modifies and returns an array of JavaScript strings with additional data for Apple Pay.
+	 * Modifies and returns an array of JavaScript strings with additional data for Google Pay.
 	 *
 	 * @since 1.10.0
 	 *
 	 * @param array $strings An array of JavaScript strings to be modified.
 	 *
-	 * @return array The modified array of JavaScript strings including the Apple Pay data.
+	 * @return array The modified array of JavaScript strings including the Google Pay data.
 	 *
 	 * @noinspection PhpMissingParamTypeInspection
 	 */

@@ -2,8 +2,8 @@
 Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
-Tested up to: 6.9
-Stable tag: 1.10.0.5
+Tested up to: 7.0
+Stable tag: 1.10.1
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -148,6 +148,7 @@ We also know that our developer friends may want more control, so we added tons 
 * [MailerLite](https://wpforms.com/features/mailerlite-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [MailPoet](https://wpforms.com/features/mailpoet-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [ConvertKit](https://wpforms.com/features/convertkit-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Klaviyo](https://wpforms.com/features/klaviyo-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Salesforce](https://wpforms.com/features/salesforce-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Slack](https://wpforms.com/features/slack-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Dropbox](https://wpforms.com/features/dropbox-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
@@ -391,12 +392,28 @@ Syed Balkhi
 
 == Changelog ==
 
+= 1.10.1 =
+- Added: Secret key fields in the admin settings are now masked for improved privacy.
+- Added: Smart Form Editing allows modifying existing forms using natural language through an AI chat interface directly inside the form builder.
+- Changed: Updated `symfony/polyfill-mbstring` library to v1.37.0.
+- Changed: Updated `symfony/polyfill-iconv` library to v1.37.0.
+- Changed: Updated DOMPurify library to v3.4.1.
+- Fixed: The wrong PayPal Commerce connection status was displayed in certain cases.
+- Fixed: Form Builder was stuck loading when third-party plugins prevented WordPress footer scripts from rendering.
+- Fixed: Settings input values were saved with a trailing space, which could cause unexpected behavior.
+- Fixed: Smart tag parsing returned an invalid value when no smart tags were present in the content.
+- Fixed: Form Builder was not loading on sites with inconsistent URL configurations (e.g., www vs non-www mismatch or root-relative URL plugins).
+- Fixed: PHP fatal errors could occur in some cases on PHP 8.0+.
+- Fixed: The Allow/Deny list settings were being cleared when a form had more than one Email field.
+- Fixed: Outdated image asset paths were causing 404 errors on sites using the Divi theme.
+- Fixed: An incorrect error message was shown when the daily AI request limit was reached, referring to form generation instead of AI usage.
+
 = 1.10.0.5 =
 - Fixed: Compatibility with WordPress 7.0.
 - Fixed: Improved validation of submitted values for Multiple Choice, Checkboxes, Dropdown, and GDPR Checkbox fields to ensure only configured options are accepted.
 
 = 1.10.0.4 =
-- Fixed: Stripe payment with Link and a 3D Secure card did not trigger the authentication modal, leaving the payment incomplete on Stripe.
+Fixed: Stripe payment with Link and a 3D Secure card did not trigger the authentication modal, leaving the payment incomplete on Stripe.
 
 = 1.10.0.3 =
 - Fixed: PayPal Connection URL was cached and contains the old site URL after the site migration.

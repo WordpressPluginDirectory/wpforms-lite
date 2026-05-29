@@ -84,7 +84,7 @@ abstract class Base {
 	 *
 	 * @return mixed
 	 */
-	protected function get_post_data( string $key, string $type = 'text' ) {
+	protected function get_post_data( string $key, string $type = 'text' ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		switch ( $type ) {
 			case 'int':
@@ -101,6 +101,13 @@ abstract class Base {
 
 			case 'json':
 				$value = json_decode( filter_input( INPUT_POST, $key ), true );
+				break;
+
+			// Specific for the form_data.
+			case 'form_data':
+				$value = json_decode( filter_input( INPUT_POST, $key ), false );
+				$value = wpforms_prepare_form_data( $value );
+				$value = wpforms_sanitize_form_data( $value );
 				break;
 
 			default:

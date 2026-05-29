@@ -19,7 +19,14 @@ class Forms extends Base {
 	 *
 	 * @var array
 	 */
-	public const FORM_GENERATOR_REQUIRED_ADDONS = [ 'surveys-polls', 'signatures', 'coupons', 'calculations', 'quiz' ];
+	public const FORM_GENERATOR_REQUIRED_ADDONS = [
+		'surveys-polls',
+		'signatures',
+		'coupons',
+		'calculations',
+		'quiz',
+		'geolocation',
+	];
 
 	/**
 	 * The addon fields.
@@ -486,8 +493,77 @@ class Forms extends Base {
 			$outcomes[ $key ] = $outcome;
 		}
 
+		// Normalize outcome order for graded quizzes so the best grade (index 0) renders at the
+		// visual top. The outcomes panel uses CSS column-reverse, so the LAST entry in storage
+		// is the FIRST visually. We therefore sort DESCENDING by grade index here — worst grade
+		// (highest index) first in storage, best grade (index 0) last. Idempotent on already-
+		// sorted data. Weighted and personality types are left as the LLM emitted.
+		$quiz_type = $form_data['settings']['quiz']['type'] ?? '';
+
+		if ( $quiz_type === 'graded' ) {
+			uasort( $outcomes, [ $this, 'compare_graded_outcomes_by_index' ] );
+		}
+
 		$form_data['settings']['quiz']['outcomes'] = $outcomes;
 
 		return $form_data;
+	}
+
+	/**
+	 * Compare two graded outcomes by their first quiz_graded conditional rule value.
+	 *
+	 * Used by uasort() to sort graded-quiz outcomes DESCENDING by referenced grade
+	 * index, so the worst grade (highest index) ends up first in storage and the
+	 * best grade (index 0) ends up last. The outcomes panel uses CSS column-reverse,
+	 * which renders the LAST stored entry at the VISUAL TOP — so the user sees Grade A
+	 * on top. Outcomes without a quiz_graded rule sort to the visual bottom (storage top).
+	 *
+	 * @since 1.10.1
+	 *
+	 * @param array $a First outcome.
+	 * @param array $b Second outcome.
+	 *
+	 * @return int Negative if $a should sort first, positive if $b should sort first, zero if equal.
+	 */
+	private function compare_graded_outcomes_by_index( array $a, array $b ): int {
+
+		return $this->get_outcome_graded_index( $b ) <=> $this->get_outcome_graded_index( $a );
+	}
+
+	/**
+	 * Extract the grade index from an outcome's first quiz_graded conditional rule.
+	 *
+	 * Returns PHP_INT_MAX for outcomes without a quiz_graded rule. Under the
+	 * descending sort applied by compare_graded_outcomes_by_index(), PHP_INT_MAX
+	 * floats these outcomes to the top of storage — which renders at the visual
+	 * bottom thanks to CSS column-reverse on the outcomes panel.
+	 *
+	 * @since 1.10.1
+	 *
+	 * @param array $outcome Outcome data with a `conditionals` array of rule groups.
+	 *
+	 * @return int Grade index, or PHP_INT_MAX if no quiz_graded rule found.
+	 */
+	private function get_outcome_graded_index( array $outcome ): int {
+
+		$groups = $outcome['conditionals'] ?? [];
+
+		if ( ! is_array( $groups ) ) {
+			return PHP_INT_MAX;
+		}
+
+		foreach ( $groups as $group ) {
+			if ( ! is_array( $group ) ) {
+				continue;
+			}
+
+			foreach ( $group as $rule ) {
+				if ( ( $rule['field'] ?? '' ) === 'quiz_graded' && isset( $rule['value'] ) && is_numeric( $rule['value'] ) ) {
+					return (int) $rule['value'];
+				}
+			}
+		}
+
+		return PHP_INT_MAX;
 	}
 }

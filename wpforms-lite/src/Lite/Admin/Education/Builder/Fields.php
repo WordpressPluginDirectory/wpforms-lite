@@ -45,7 +45,7 @@ class Fields extends Education\Builder\Fields {
 			foreach ( $edu_fields as $edu_field ) {
 
 				// Skip if in the current group already exist field of this type.
-				if ( ! empty( wp_list_filter( $group_data, [ 'type' => $edu_field['type'] ] ) ) ) {
+				if ( ! empty( wp_list_filter( $group_data['fields'] ?? [], [ 'type' => $edu_field['type'] ] ) ) ) {
 					continue;
 				}
 

@@ -2,6 +2,8 @@
 
 namespace WPForms\Admin;
 
+use WPForms\Admin\Builder\PreviewDropdownEducationItems;
+use WPForms_Builder;
 use WP_Post;
 
 /**
@@ -99,10 +101,19 @@ class FormEmbedWizard {
 			);
 		}
 
+		// In the Form Builder the education cards delegate their "open preview"
+		// and "jump to settings section" actions to the Preview dropdown module,
+		// so we declare it as an explicit dependency there.
+		$deps = [ 'jquery', 'underscore' ];
+
+		if ( wpforms_is_admin_page( 'builder' ) ) {
+			$deps[] = 'wpforms-builder-preview-dropdown';
+		}
+
 		wp_enqueue_script(
 			'wpforms-admin-form-embed-wizard',
 			WPFORMS_PLUGIN_URL . "assets/js/admin/form-embed-wizard{$min}.js",
-			[ 'jquery', 'underscore' ],
+			$deps,
 			WPFORMS_VERSION,
 			false
 		);
@@ -113,12 +124,10 @@ class FormEmbedWizard {
 			[
 				'nonce'        => wp_create_nonce( 'wpforms_admin_form_embed_wizard_nonce' ),
 				'is_edit_page' => (int) $this->is_form_embed_page( 'edit' ),
-				'video_url'    => esc_url(
-					sprintf(
-						'https://youtube.com/embed/%s?rel=0&showinfo=0',
-						wpforms_is_gutenberg_active() ? '_29nTiDvmLw' : 'IxGVz3AjEe0'
-					)
-				),
+				'i18n'         => [
+					'add_to_page' => __( 'Add to Page', 'wpforms-lite' ),
+					'create_page' => __( 'Create Page', 'wpforms-lite' ),
+				],
 			]
 		);
 	}
@@ -148,6 +157,8 @@ class FormEmbedWizard {
 		if ( ! $this->is_form_embed_page() ) {
 			$args['user_can_edit_pages'] = current_user_can( 'edit_pages' );
 			$args['dropdown_pages']      = $this->get_select_dropdown_pages_html();
+			$args['education_items']     = $this->get_education_items();
+			$args['is_lite']             = ! wpforms()->is_pro();
 		}
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -385,6 +396,148 @@ class FormEmbedWizard {
 		}
 
 		return sprintf( $pattern, absint( $form_id ) );
+	}
+
+	/**
+	 * Get product education items shown in the embed wizard card grid.
+	 *
+	 * Reuses the canonical item list from `PreviewDropdownEducationItems`
+	 * and enriches each item with wizard-specific UTM content, demo URL,
+	 * card-body attributes, and (for Lite users) the upgrade URL.
+	 *
+	 * @since 1.10.1
+	 *
+	 * @return array
+	 */
+	private function get_education_items(): array {
+
+		$items = ( new PreviewDropdownEducationItems( $this->get_current_form() ) )->get_items();
+
+		if ( empty( $items ) ) {
+			return [];
+		}
+
+		// UTM content mapping keyed by item slug.
+		$utm_map = [
+			'conversational-forms' => [
+				'upgrade' => 'Conversational Forms - Upgrade to Pro Link',
+				'demo'    => 'Conversational Forms - Demo Link',
+			],
+			'form-pages'           => [
+				'upgrade' => 'Form Pages - Upgrade to Pro Link',
+				'demo'    => 'Form Pages - Demo Link',
+			],
+			'lead-forms'           => [
+				'upgrade' => 'Lead Forms - Upgrade to Pro Link',
+				'demo'    => 'Lead Forms - Demo Link',
+			],
+		];
+
+		$is_lite = ! wpforms()->is_pro();
+
+		foreach ( $items as &$item ) {
+			$slug_utm = $utm_map[ $item['slug'] ] ?? [];
+
+			// Override UTM medium and content for the embed wizard context.
+			$item['utm_medium']       = 'Builder Embed Modal';
+			$item['utm_content']      = $slug_utm['upgrade'] ?? $item['utm_content'];
+			$item['demo_utm_content'] = $slug_utm['demo'] ?? ( $item['demo_utm_content'] ?? $item['utm_content'] );
+
+			$item['demo_url']     = PreviewDropdownEducationItems::get_demo_url( $item );
+			$item['button_attrs'] = $this->get_education_item_attrs( $item, $is_lite );
+
+			if ( $is_lite ) {
+				$item['upgrade_url'] = wpforms_admin_upgrade_link( 'Builder Embed Modal', $item['utm_content'] );
+			}
+		}
+		unset( $item );
+
+		return $items;
+	}
+
+	/**
+	 * Build the CSS class and data attributes for an education card body.
+	 *
+	 * Mirrors the Preview dropdown's `print_preview_dropdown_item()` logic so
+	 * clicks on the card body are handled by the same JS flows already wired
+	 * to the Preview dropdown: education upgrade modal (Lite), Addons Required
+	 * modal (Pro without addon), or "active addon" preview handler (Pro with
+	 * addon installed and active).
+	 *
+	 * @since 1.10.1
+	 *
+	 * @param array $item    Education item.
+	 * @param bool  $is_lite Whether the current user is on Lite.
+	 *
+	 * @return array {
+	 *     Card body rendering data.
+	 *
+	 *     @type string $class CSS class for the card body.
+	 *     @type array  $data  Associative array of `data-*` attributes (name => value).
+	 * }
+	 */
+	private function get_education_item_attrs( array $item, bool $is_lite ): array {
+
+		if ( $is_lite ) {
+			// Lite user — card click opens the pricing page directly,
+			// bypassing the standard education upgrade modal.
+			return [
+				'class' => 'wpforms-admin-form-embed-wizard-card-education-lite',
+				'data'  => [
+					'name'        => $item['label'],
+					'utm-content' => $item['utm_content'],
+					'upgrade-url' => wpforms_admin_upgrade_link( 'Builder Embed Modal', $item['utm_content'] ),
+				],
+			];
+		}
+
+		$addon_slug = $item['addon_slug'] ?? '';
+
+		if ( PreviewDropdownEducationItems::is_addon_active( $addon_slug ) ) {
+			// Addon is installed and active — open preview URL in a new tab,
+			// scoped to the addon section via the `section` query param.
+			$preview_url = $item['preview_url'] ?? '';
+
+			return [
+				'class' => 'wpforms-admin-form-embed-wizard-card-education-active',
+				'data'  => [
+					'section'     => $item['section'] ?? '',
+					'toggle-id'   => $item['toggle_id'] ?? '',
+					'preview-url' => $preview_url,
+				],
+			];
+		}
+
+		// Pro user without the addon installed or active — open the
+		// Addons Required modal (same handler as the Preview dropdown).
+		return [
+			'class' => 'wpforms-addons-required-trigger',
+			'data'  => [
+				'license'     => 'pro',
+				'name'        => $item['label'],
+				'utm-content' => $item['utm_content'],
+				'demo-url'    => $item['demo_url'],
+				'addon-slug'  => $addon_slug,
+			],
+		];
+	}
+
+	/**
+	 * Resolve the current builder form from the Builder singleton.
+	 *
+	 * @since 1.10.1
+	 *
+	 * @return WP_Post|null
+	 */
+	private function get_current_form(): ?WP_Post {
+
+		if ( ! class_exists( WPForms_Builder::class ) ) {
+			return null;
+		}
+
+		$form = WPForms_Builder::instance()->form ?? null;
+
+		return $form instanceof WP_Post ? $form : null;
 	}
 
 	/**

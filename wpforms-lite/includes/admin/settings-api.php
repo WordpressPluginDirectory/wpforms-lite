@@ -192,7 +192,7 @@ function wpforms_settings_text_callback( array $args ): string {
 	$id       = wpforms_sanitize_key( $args['id'] );
 	$readonly = ! empty( $args['readonly'] ) ? ' readonly' : '';
 
-	$output = '<input type="' . esc_attr( $args['type'] ) . '" id="wpforms-setting-' . $id . '" name="' . $id . '" value="' . esc_attr( $value ) . ' " ' . $readonly . ' />';
+	$output = '<input type="' . esc_attr( $args['type'] ) . '" id="wpforms-setting-' . $id . '" name="' . $id . '" value="' . esc_attr( $value ) . '" ' . $readonly . ' />';
 
 	if ( ! empty( $args['desc'] ) ) {
 		$output .= '<p class="desc">' . wp_kses_post( $args['desc'] ) . '</p>';
@@ -213,6 +213,50 @@ function wpforms_settings_text_callback( array $args ): string {
 function wpforms_settings_password_callback( array $args ): string {
 
 	return wpforms_settings_text_callback( $args );
+}
+
+/**
+ * Settings masked text input field callback.
+ *
+ * Renders a masked display (dots + last 4 chars) for saved values.
+ * The real value is never sent to the browser.
+ *
+ * @since 1.10.1
+ *
+ * @param array $args Setting field arguments.
+ *
+ * @return string
+ */
+function wpforms_settings_masked_text_callback( array $args ): string {
+
+	$default = isset( $args['default'] ) ? esc_html( $args['default'] ) : '';
+	$value   = wpforms_setting( $args['id'], $default );
+	$id      = wpforms_sanitize_key( $args['id'] );
+
+	if ( ! empty( $value ) ) {
+		// Generate masked display: 14 dots + last 4 characters.
+		$visible_chars = mb_strlen( $value ) > 4 ? mb_substr( $value, -4 ) : '';
+		$masked_value  = str_repeat( '•', 14 ) . $visible_chars;
+		$placeholder   = ! empty( $args['masked_placeholder'] )
+			? $args['masked_placeholder']
+			: __( 'Paste new API key to replace', 'wpforms-lite' );
+
+		// No `name` attribute — JS adds it on focus so the field can submit a new value.
+		// `data-masked-value` stores the masked string so JS can restore it on blur.
+		$output  = '<div class="wpforms-masked-input-wrap">';
+		$output .= '<input type="text" id="wpforms-setting-' . $id . '" value="' . esc_attr( $masked_value ) . '" data-masked="1" data-masked-value="' . esc_attr( $masked_value ) . '" data-masked-placeholder="' . esc_attr( $placeholder ) . '" data-name="' . esc_attr( $id ) . '" readonly />';
+		$output .= '<button type="button" class="wpforms-masked-input-clear" title="' . esc_attr__( 'Remove Key', 'wpforms-lite' ) . '" aria-label="' . esc_attr__( 'Remove Key', 'wpforms-lite' ) . '"><i class="fa fa-times-circle" aria-hidden="true"></i></button>';
+		$output .= '<input type="hidden" name="' . $id . '-clear" value="0" class="wpforms-masked-input-clear-flag" />';
+		$output .= '</div>';
+	} else {
+		$output = '<input type="text" id="wpforms-setting-' . $id . '" name="' . $id . '" value="" />';
+	}
+
+	if ( ! empty( $args['desc'] ) ) {
+		$output .= '<p class="desc">' . wp_kses_post( $args['desc'] ) . '</p>';
+	}
+
+	return $output;
 }
 
 /**

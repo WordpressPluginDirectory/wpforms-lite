@@ -99,7 +99,7 @@ class Connect {
 	/**
 	 * Validate if the current connect request is valid.
 	 *
-	 * @since 1.10.0.3
+	 * @since 1.10.1
 	 *
 	 * @return bool
 	 */

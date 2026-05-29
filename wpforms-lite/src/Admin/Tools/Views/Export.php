@@ -2,10 +2,19 @@
 
 namespace WPForms\Admin\Tools\Views;
 
+use WPForms\Admin\Education\Admin\Tools\ExportEntries;
+// phpcs:ignore WPForms.PHP.UseStatement.UnusedUseStatement
+use WPForms\Admin\Tools\Export\Views\ExportViewsInterface;
+use WPForms\Admin\Tools\Export\Views\Forms\Page as FormsPage;
+use WPForms\Admin\Tools\Export\Views\Templates\Page as TemplatesPage;
+use WPForms\Admin\Tools\Tools;
+
 /**
  * Class Export.
+ * Handles the Export page with a tabbed interface for Entries, Forms, and Templates export.
  *
  * @since 1.6.6
+ * @since 1.10.1 More export blocks to separate tabs and handle independently.
  */
 class Export extends View {
 
@@ -19,31 +28,40 @@ class Export extends View {
 	protected $slug = 'export';
 
 	/**
-	 * Template code if generated.
+	 * Available sub-views (tabs).
 	 *
-	 * @since 1.6.6
+	 * @since 1.10.1
+	 *
+	 * @var array
+	 */
+	private $sub_views = [];
+
+	/**
+	 * The current tab slug.
+	 *
+	 * @since 1.10.1
 	 *
 	 * @var string
 	 */
-	private $template = '';
+	private $active_tab_slug;
 
 	/**
-	 * Existed forms.
+	 * The current tab view.
 	 *
-	 * @since 1.6.6
+	 * @since 1.10.1
 	 *
-	 * @var []
+	 * @var null|ExportViewsInterface
 	 */
-	private $forms = [];
+	private $active_view;
 
 	/**
 	 * Init view.
 	 *
-	 * @since 1.6.6
+	 * @since 1.10.1
 	 */
-	public function init() {
+	public function init(): void {
 
-		add_action( 'wpforms_tools_init', [ $this, 'process' ] );
+		$this->init_active_view();
 	}
 
 	/**
@@ -53,33 +71,9 @@ class Export extends View {
 	 *
 	 * @return string
 	 */
-	public function get_label() {
+	public function get_label(): string {
 
 		return esc_html__( 'Export', 'wpforms-lite' );
-	}
-
-	/**
-	 * Export process.
-	 *
-	 * @since 1.6.6
-	 */
-	public function process() {
-
-		if (
-			empty( $_POST['action'] ) || //phpcs:ignore WordPress.Security.NonceVerification
-			! isset( $_POST['submit-export'] ) || //phpcs:ignore WordPress.Security.NonceVerification
-			! $this->verify_nonce()
-		) {
-			return;
-		}
-
-		if ( $_POST['action'] === 'export_form' && ! empty( $_POST['forms'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification
-			$this->process_form();
-		}
-
-		if ( $_POST['action'] === 'export_template' && ! empty( $_POST['form'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification
-			$this->process_template();
-		}
 	}
 
 	/**
@@ -89,282 +83,165 @@ class Export extends View {
 	 *
 	 * @return bool
 	 */
-	public function check_capability() {
+	public function check_capability(): bool {
 
 		return wpforms_current_user_can( [ 'edit_forms', 'view_entries' ] );
 	}
 
 	/**
-	 * Get available forms.
-	 *
-	 * @since 1.6.6
-	 *
-	 * @return array
-	 */
-	public function get_forms() {
-
-		$forms = wpforms()->obj( 'form' )->get( '', [ 'orderby' => 'title' ] );
-
-		return ! empty( $forms ) ? $forms : [];
-	}
-
-	/**
-	 * Export view content.
+	 * Display view content.
 	 *
 	 * @since 1.6.6
 	 */
-	public function display() {
+	public function display(): void {
 
-		$this->forms = $this->get_forms();
-
-		if ( empty( $this->forms ) ) {
-
-			echo wpforms_render( 'admin/empty-states/no-forms' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
+		if ( empty( $this->active_view ) ) {
 			return;
 		}
 
 		do_action( 'wpforms_admin_tools_export_top' );
 
-		$this->forms_export_block();
+		$this->display_tabs();
 
-		$this->form_template_export_block();
+		$this->active_view->display();
 
 		do_action( 'wpforms_admin_tools_export_bottom' );
 	}
 
 	/**
-	 * Forms export block.
+	 * Initialize the active sub-view (tab).
 	 *
-	 * @since 1.6.6
+	 * @since 1.10.1
 	 */
-	private function forms_export_block() {
-		?>
+	private function init_active_view(): void {
 
-		<div class="wpforms-setting-row tools wpforms-settings-row-divider">
+		$view_ids = array_keys( $this->get_sub_views() );
 
-			<h4 id="form-export"><?php esc_html_e( 'Export Forms', 'wpforms-lite' ); ?></h4>
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$this->active_tab_slug = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : (string) reset( $view_ids );
 
-			<p><?php esc_html_e( 'Use form export files to create a backup of your forms or to import forms to another site.', 'wpforms-lite' ); ?></p>
+		// If the user tries to load an invalid view - fallback to the first available.
+		if ( ! in_array( $this->active_tab_slug, $view_ids, true ) ) {
+			$this->active_tab_slug = reset( $view_ids );
+		}
 
-			<?php if ( ! empty( $this->forms ) ) { ?>
+		if ( ! isset( $this->sub_views[ $this->active_tab_slug ] ) ) {
+			return;
+		}
 
-				<form method="post" action="<?php echo esc_attr( $this->get_link() ); ?>">
-					<?php $this->forms_select_html( 'wpforms-tools-form-export', 'forms[]', esc_html__( 'Select Form(s)', 'wpforms-lite' ) ); ?>
-					<input type="hidden" name="action" value="export_form">
-					<?php $this->nonce_field(); ?>
-					<button name="submit-export" class="wpforms-btn wpforms-btn-md wpforms-btn-orange" id="wpforms-export-form" aria-disabled="true">
-						<?php esc_html_e( 'Export', 'wpforms-lite' ); ?>
-					</button>
-				</form>
-			<?php } else { ?>
-				<p><?php esc_html_e( 'You need to create a form before you can use form export.', 'wpforms-lite' ); ?></p>
-			<?php } ?>
-		</div>
-	<?php
+		$this->active_view = $this->sub_views[ $this->active_tab_slug ];
+
+		$this->active_view->init();
 	}
 
 	/**
-	 * Forms export block.
+	 * Get available sub-views (tabs).
 	 *
-	 * @since 1.6.6
+	 * @since 1.10.1
+	 *
+	 * @return array
 	 */
-	private function form_template_export_block() {
-		?>
+	private function get_sub_views(): array {
 
-		<div class="wpforms-setting-row tools">
+		if ( ! empty( $this->sub_views ) ) {
+			return $this->sub_views;
+		}
 
-			<h4 id="template-export"><?php esc_html_e( 'Export a Form Template', 'wpforms-lite' ); ?></h4>
+		$views = [
+			'entries' => new ExportEntries(),
+		];
 
-			<?php
-			if ( $this->template ) {
+		/**
+		 * Allow extending export views.
+		 *
+		 * @since 1.10.1
+		 *
+		 * @param array $views Array of views where the key is slug.
+		 */
+		$this->sub_views = (array) apply_filters( 'wpforms_admin_tools_views_export_get_sub_views', $views );
 
-				$doc_link = sprintf(
-					wp_kses( /* translators: %s - WPForms.com docs URL. */
-						__( 'For more information <a href="%s" target="_blank" rel="noopener noreferrer">see our documentation</a>.', 'wpforms-lite' ),
-						[
-							'a' => [
-								'href'   => [],
-								'target' => [],
-								'rel'    => [],
-							],
-						]
-					),
-					'https://wpforms.com/docs/how-to-create-a-custom-form-template/'
-				);
-			?>
-			<p><?php esc_html_e( 'The following code can be used to register your custom form template. Copy and paste the following code to your theme\'s functions.php file or include it within an external file.', 'wpforms-lite' ); ?><p>
-			<p><?php echo $doc_link; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><p>
-			<textarea class="info-area" readonly><?php echo esc_textarea( $this->template ); ?></textarea>
-			<?php
+		// Forms and Templates are always available.
+		$this->sub_views['forms']     = new FormsPage();
+		$this->sub_views['templates'] = new TemplatesPage();
+
+		if ( wpforms()->is_pro() ) {
+			// Ensure entries is first in an array (default tab) for Pro users.
+			$this->sub_views = array_merge( [ 'entries' => $this->sub_views['entries'] ], $this->sub_views );
+		} else {
+			// For Lite users, put Forms and Templates first since the Entries tab is an upgrade pitch.
+			$this->sub_views = array_merge(
+				[
+					'forms'     => $this->sub_views['forms'],
+					'templates' => $this->sub_views['templates'],
+				],
+				$this->sub_views
+			);
+		}
+
+		$this->sub_views = array_filter(
+			$this->sub_views,
+			static function ( $view ) {
+
+				return $view->current_user_can();
 			}
-			?>
+		);
 
-			<p><?php esc_html_e( 'Select a form to generate PHP code that can be used to register a custom form template.', 'wpforms-lite' ); ?></p>
-
-			<?php if ( ! empty( $this->forms ) ) { ?>
-				<form method="post" action="<?php echo esc_attr( $this->get_link() ); ?>">
-					<?php $this->forms_select_html( 'wpforms-tools-form-template', 'form', esc_html__( 'Select a Template', 'wpforms-lite' ), false ); ?>
-					<input type="hidden" name="action" value="export_template">
-					<?php $this->nonce_field(); ?>
-					<button name="submit-export" class="wpforms-btn wpforms-btn-md wpforms-btn-orange" id="wpforms-export-template" aria-disabled="true">
-						<?php esc_html_e( 'Export Template', 'wpforms-lite' ); ?>
-					</button>
-				</form>
-			<?php } else { ?>
-				<p><?php esc_html_e( 'You need to create a form before you can generate a template.', 'wpforms-lite' ); ?></p>
-			<?php } ?>
-		</div>
-	<?php
+		return $this->sub_views;
 	}
 
 	/**
-	 * Forms selector.
+	 * Display tabs.
 	 *
-	 * @since 1.6.6
-	 *
-	 * @param string $select_id   Select id.
-	 * @param string $select_name Select name.
-	 * @param string $placeholder Placeholder.
-	 * @param bool   $multiple    Is multiple select.
+	 * @since 1.10.1
 	 */
-	private function forms_select_html( $select_id, $select_name, $placeholder, $multiple = true ) {
-		?>
+	private function display_tabs(): void {
 
-		<span class="choicesjs-select-wrap">
-			<select id="<?php echo esc_attr( $select_id ); ?>" class="choicesjs-select" name="<?php echo esc_attr( $select_name ); ?>" <?php if ( $multiple ) { //phpcs:ignore ?> multiple size="1" <?php } ?> data-search="<?php echo esc_attr( wpforms_choices_js_is_search_enabled( $this->forms ) ); ?>">
-				<option value=""><?php echo esc_attr( $placeholder ); ?></option>
-				<?php foreach ( $this->forms as $form ) { ?>
-					<option value="<?php echo absint( $form->ID ); ?>"><?php echo esc_html( $form->post_title ); ?></option>
-				<?php } ?>
-			</select>
-		</span>
+		$views = $this->get_sub_views();
+
+		// Remove views that should not be displayed as tabs.
+		$views = array_filter(
+			$views,
+			static function ( $view ) {
+
+				return ! empty( $view->get_tab_label() );
+			}
+		);
+
+		// If there is only one view - no need to display tabs.
+		if ( count( $views ) === 1 ) {
+			return;
+		}
+		?>
+		<div class="wpforms-tabs-wrapper">
+			<nav class="nav-tab-wrapper">
+				<?php foreach ( $views as $slug => $view ) : ?>
+					<a href="<?php echo esc_url( $this->get_tab_url( $slug ) ); ?>" class="nav-tab <?php echo $slug === $this->active_tab_slug ? 'nav-tab-active' : ''; ?>">
+						<?php echo esc_html( $view->get_tab_label() ); ?>
+					</a>
+				<?php endforeach; ?>
+			</nav>
+		</div>
 		<?php
 	}
 
 	/**
-	 * Export processing.
+	 * Get tab URL.
 	 *
-	 * @since 1.6.6
-	 */
-	private function process_form() {
-
-		$export = [];
-		$forms  = get_posts(
-			[
-				'post_type' => 'wpforms',
-				'nopaging'  => true,
-				'post__in'  => isset( $_POST['forms'] ) ? array_map( 'intval', $_POST['forms'] ) : [], //phpcs:ignore WordPress.Security.NonceVerification
-			]
-		);
-
-		foreach ( $forms as $form ) {
-			$export[] = wpforms_decode( $form->post_content );
-		}
-
-		ignore_user_abort( true );
-
-		wpforms_set_time_limit();
-
-		nocache_headers();
-		header( 'Content-Type: application/json; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename=wpforms-form-export-' . current_time( 'm-d-Y' ) . '.json' );
-		header( 'Expires: 0' );
-
-		echo wp_json_encode( $export );
-		exit;
-	}
-
-	/**
-	 * Export template processing.
+	 * @since 1.10.1
 	 *
-	 * @since 1.6.6
-	 */
-	private function process_template(): void {
-
-		// Nonce is checked in the caller: process() method.
-		//phpcs:ignore WordPress.Security.NonceVerification.Missing
-		$form_id  = isset( $_POST['form'] ) ? absint( $_POST['form'] ) : 0;
-		$form_obj = wpforms()->obj( 'form' );
-
-		if ( ! $form_obj || ! $form_id ) {
-			return;
-		}
-
-		$form_data = $form_obj->get( $form_id, [ 'content_only' => true ] );
-
-		// Define basic data with strict validation.
-		$name = sanitize_text_field( $form_data['settings']['form_title'] ?? '' );
-		$desc = sanitize_text_field( $form_data['settings']['form_desc'] ?? '' );
-		$slug = sanitize_key( str_replace( [ ' ', '-' ], '_', trim( $name ) ) );
-
-		if ( ! $slug ) {
-			// Slug is always empty when the $form_data is not valid.
-			return;
-		}
-
-		$class = 'WPForms_Template_' . $slug;
-		$data  = $this->get_template_data( $slug, $form_data );
-
-		// Build the final template string.
-		$this->template = <<<EOT
-if ( class_exists( 'WPForms_Template', false ) ) :
-/**
- * {$name}
- * Template for WPForms.
- */
-class {$class} extends WPForms_Template {
-
-	/**
-	 * Primary class constructor.
-	 *
-	 * @since 1.0.0
-	 */
-	public function init() {
-
-		// Template name
-		\$this->name = '{$name}';
-
-		// Template slug
-		\$this->slug = '{$slug}';
-
-		// Template description
-		\$this->description = '{$desc}';
-
-		// Template field and settings
-		\$this->data = {$data};
-	}
-}
-new {$class}();
-endif;
-EOT;
-	}
-
-	/**
-	 * Get template data.
-	 *
-	 * @since 1.9.5
-	 *
-	 * @param string      $slug      Template slug.
-	 * @param array|mixed $form_data Form data.
+	 * @param string $tab Tab slug.
 	 *
 	 * @return string
 	 */
-	private function get_template_data( string $slug, $form_data ): string {
+	private function get_tab_url( string $tab ): string {
 
-		// Format template field and settings data.
-		$data                     = [];
-		$data['meta']['template'] = $slug;
-		$data['fields']           = isset( $form_data['fields'] ) && is_array( $form_data['fields'] )
-			? wpforms_array_remove_empty_strings( $form_data['fields'] )
-			: [];
-		$data['settings']         = isset( $form_data['settings'] ) && is_array( $form_data['settings'] )
-			? wpforms_array_remove_empty_strings( $form_data['settings'] )
-			: [];
-
-		$template_data = (string) var_export( $data, true ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
-		$template_data = str_replace( '  ', "\t", $template_data );
-
-		return preg_replace( '/([\t\r\n]+?)array/', 'array', $template_data );
+		return add_query_arg(
+			[
+				'page' => Tools::SLUG,
+				'view' => 'export',
+				'tab'  => $tab,
+			],
+			admin_url( 'admin.php' )
+		);
 	}
 }

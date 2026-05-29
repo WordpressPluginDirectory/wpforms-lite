@@ -24,6 +24,7 @@ trait StringsTrait {
 		$strings['ok']               = esc_html__( 'Ok', 'wpforms-lite' );
 		$strings['cancel']           = esc_html__( 'Cancel', 'wpforms-lite' );
 		$strings['close']            = esc_html__( 'Close', 'wpforms-lite' );
+		$strings['view_demo']        = esc_html__( 'View Demo', 'wpforms-lite' );
 		$strings['ajax_url']         = admin_url( 'admin-ajax.php' );
 		$strings['nonce']            = wp_create_nonce( 'wpforms-education' );
 		$strings['activate_prompt']  = '<p>' . esc_html(

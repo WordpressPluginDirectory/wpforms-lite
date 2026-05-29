@@ -471,7 +471,7 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 				if ( wpforms_is_amp() && ( $using_image_choices || $using_icon_choices ) ) {
 					$choice['container']['attr']['[class]'] = sprintf(
 						'%s + ( %s[%s] ? " wpforms-selected" : "")',
-						wp_json_encode( implode( ' ', $choice['container']['class'] ) ),
+						wp_json_encode( wpforms_sanitize_classes( $choice['container']['class'], is_array( $choice['container']['class'] ) ) ),
 						$amp_state_id,
 						wp_json_encode( $choice['id'] )
 					);

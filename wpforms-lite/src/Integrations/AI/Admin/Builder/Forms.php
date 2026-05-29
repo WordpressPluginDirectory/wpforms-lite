@@ -274,7 +274,7 @@ class Forms {
 			'waiting'             => esc_html__( 'Just a minute...', 'wpforms-lite' ),
 			'errors'              => [
 				'default'    => esc_html__( 'An error occurred while generating form.', 'wpforms-lite' ),
-				'rate_limit' => esc_html__( 'Sorry, you\'ve reached your daily limit for generating forms.', 'wpforms-lite' ),
+				'rate_limit' => esc_html__( 'You\'ve hit your daily AI request limit.', 'wpforms-lite' ),
 			],
 			'footer'              => [
 				esc_html__( 'What do you think of the form I created for you? If you’re happy with it, you can use this form. Otherwise, make changes by entering additional prompts.', 'wpforms-lite' ),
@@ -305,7 +305,7 @@ class Forms {
 				),
 				'rate_limit' => sprintf(
 					wp_kses( /* translators: %s - WPForms contact support link. */
-						__( 'You may only generate forms 50 times per day. If you believe this is an error, <a href="%s" target="_blank" rel="noopener noreferrer">please contact WPForms support</a>.', 'wpforms-lite' ),
+						__( 'You can make up to 50 AI requests per day. If you believe this is an error, <a href="%s" target="_blank" rel="noopener noreferrer">please contact WPForms support</a>.', 'wpforms-lite' ),
 						[
 							'a' => [
 								'href'   => [],

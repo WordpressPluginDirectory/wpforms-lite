@@ -1137,14 +1137,16 @@ class PayPalCommerce extends WPForms_Field {
 	 *
 	 * @since 1.10.0
 	 *
-	 * @param array  $form_data Form data and settings.
-	 * @param string $button    Button type.
+	 * @param array|mixed $form_data Form data and settings.
+	 * @param string      $button    Button type.
 	 */
-	public function submit_button( array $form_data, string $button = '' ): void {
+	public function submit_button( $form_data, string $button = '' ): void {
 
 		if ( $button !== 'submit' ) {
 			return;
 		}
+
+		$form_data = (array) $form_data;
 
 		if ( wpforms_is_admin_page( 'builder' ) ) {
 			$this->builder_submit_button( $form_data );

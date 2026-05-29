@@ -8,21 +8,21 @@ use WPForms\Helpers\Transient;
 /**
  * Handles admin functionalities and setup for the application.
  *
- * @since 1.10.0.1
+ * @since 1.10.1
  */
 class Admin {
 
 	/**
 	 * Dismiss notice slug.
 	 *
-	 * @since 1.10.0.1
+	 * @since 1.10.1
 	 */
 	private const DISMISS_NOTICE_SLUG = 'lite_connect_send_error_alert';
 
 	/**
 	 * Initializes the constructor and setup hooks.
 	 *
-	 * @since 1.10.0.1
+	 * @since 1.10.1
 	 */
 	public function __construct() {
 
@@ -32,7 +32,7 @@ class Admin {
 	/**
 	 * Registers hooks to manage the display of notices on specific pages.
 	 *
-	 * @since 1.10.0.1
+	 * @since 1.10.1
 	 */
 	private function hooks(): void {
 
@@ -49,7 +49,7 @@ class Admin {
 	/**
 	 * Reset the dismissed notice if it was dismissed more than a week ago.
 	 *
-	 * @since 1.10.0.1
+	 * @since 1.10.1
 	 *
 	 * @param mixed $notices Dismissed notices option value.
 	 *
@@ -83,7 +83,7 @@ class Admin {
 	/**
 	 * Display error notices for entry backup failures.
 	 *
-	 * @since 1.10.0.1
+	 * @since 1.10.1
 	 *
 	 * @noinspection HtmlUnknownTarget
 	 */
@@ -125,7 +125,7 @@ class Admin {
 	/**
 	 * Checks if there are repeated errors in the cached error data.
 	 *
-	 * @since 1.10.0.1
+	 * @since 1.10.1
 	 *
 	 * @return bool
 	 */
@@ -149,7 +149,7 @@ class Admin {
 	/**
 	 * Determines if the current page is the target page for displaying a notice.
 	 *
-	 * @since 1.10.0.1
+	 * @since 1.10.1
 	 *
 	 * @return bool True if the current page is the target page, false otherwise.
 	 */

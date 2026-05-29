@@ -25,7 +25,7 @@ class SendEntryTask extends Integration {
 	/**
 	 * Transient cache error key.
 	 *
-	 * @since 1.10.0.1
+	 * @since 1.10.1
 	 */
 	public const SEND_ERROR_KEY = 'lite_connect_send_entry_error';
 

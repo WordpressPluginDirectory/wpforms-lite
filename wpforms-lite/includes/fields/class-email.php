@@ -1045,6 +1045,22 @@ class WPForms_Field_Email extends WPForms_Field {
 	}
 
 	/**
+	 * Check if the email address is allowed by the field filter (denylist/allowlist).
+	 *
+	 * @since 1.10.1
+	 *
+	 * @param string $email Email address to check.
+	 * @param array  $field Field configuration data.
+	 *
+	 * @return bool True if the email is allowed, false if it is restricted.
+	 */
+	public function is_email_allowed( string $email, array $field ): bool {
+
+		// is_restricted_email() returns true when the email is allowed (not blocked).
+		return $this->is_restricted_email( $email, $field );
+	}
+
+	/**
 	 * Sanitize from email patter a REGEX pattern.
 	 *
 	 * @since 1.6.3

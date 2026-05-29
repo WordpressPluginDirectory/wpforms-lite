@@ -13,27 +13,22 @@
  * @var array $info_block         Info block shown at the end of the email.
  */
 
+use WPForms\Integrations\LiteConnect\LiteConnect;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 // Used to separate strings in the email.
 $separator = '   |   ';
+$divider   = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 
-echo esc_html__( 'Hi there!', 'wpforms-lite' ) . "\n\n";
+echo esc_html__( 'Your Weekly WPForms Summary', 'wpforms-lite' ) . "\n\n";
 
-echo esc_html__( 'Let’s see how your forms performed in the past week.', 'wpforms-lite' ) . "\n\n";
-
-if ( ! wpforms()->is_pro() ) {
-	echo esc_html__( 'Below is the total number of submissions for each form, however actual entries are not stored in WPForms Lite.', 'wpforms-lite' ) . "\n\n";
-	echo esc_html__( 'To view future entries inside your WordPress dashboard, and get more detailed reports, consider upgrading to Pro:', 'wpforms-lite' );
-	echo '&nbsp;';
-	echo 'https://wpforms.com/lite-upgrade/?utm_source=WordPress&utm_medium=Weekly%20Summary%20Email&utm_campaign=liteplugin&utm_content=Upgrade&utm_locale=' . wpforms_sanitize_key( get_locale() );
-	echo "\n\n\n";
-}
+echo esc_html__( 'Here’s how your forms performed this past week. Below is a breakdown of submissions by form.', 'wpforms-lite' ) . "\n\n";
 
 if ( isset( $overview['total'] ) ) {
-	echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
+	echo $divider; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	printf( /* translators: %1$d - number of entries. */
 		esc_html__( '%1$d Total', 'wpforms-lite' ),
 		absint( $overview['total'] )
@@ -44,14 +39,14 @@ if ( isset( $overview['total'] ) ) {
 		echo wp_kses( _n( 'Entry This Week', 'Entries This Week', absint( $overview['total'] ), 'wpforms-lite' ), [] );
 	}
 
-	echo "\n\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
+	echo "\n\n" . $divider; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
-echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
+echo $divider; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 echo esc_html__( 'Form', 'wpforms-lite' ) . esc_html( $separator ) . esc_html__( 'Entries', 'wpforms-lite' );
 
-echo "\n\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
+echo "\n\n" . $divider; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 foreach ( $entries as $row ) {
 	echo ( isset( $row['title'] ) ? esc_html( $row['title'] ) : '' ) . esc_html( $separator ) . ( isset( $row['count'] ) ? absint( $row['count'] ) : '' );
@@ -67,8 +62,28 @@ if ( empty( $entries ) ) {
 	echo esc_html__( 'It appears you do not have any form entries yet.', 'wpforms-lite' ) . "\n\n";
 }
 
+if ( ! wpforms()->is_pro() ) {
+	echo $divider; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	if ( LiteConnect::is_enabled() ) {
+		echo esc_html__( 'Your entries are being backed up, but only for one year.', 'wpforms-lite' ) . "\n\n";
+		echo esc_html__( 'Lite Connect is saving your entries securely in the cloud. Upgrade to Pro to keep them permanently and manage all your entries right inside WordPress.', 'wpforms-lite' ) . "\n\n";
+		echo esc_html__( 'Upgrade to Pro', 'wpforms-lite' ) . ': ';
+		echo esc_url( wpforms_utm_link( 'https://wpforms.com/pricing-lite/', 'Weekly Summary Email', 'Upgrade - With LC' ) );
+	} else {
+		echo esc_html__( 'Your entries are not being backed up.', 'wpforms-lite' ) . "\n\n";
+		echo esc_html__( 'Enable Lite Connect today to start storing entries. When you’re ready to manage your entries inside WordPress, just upgrade to Pro and we’ll import them in seconds!', 'wpforms-lite' ) . "\n\n";
+		echo esc_html__( 'Enable Lite Connect', 'wpforms-lite' ) . ': ';
+		echo esc_url( wpforms_utm_link( 'https://wpforms.com/docs/how-to-use-lite-connect-for-wpforms/', 'Weekly Summary Email', 'Documentation#backup-with-lite-connect' ) ) . "\n\n";
+		echo esc_html__( 'Upgrade to Pro', 'wpforms-lite' ) . ': ';
+		echo esc_url( wpforms_utm_link( 'https://wpforms.com/pricing-lite/', 'Weekly Summary Email', 'Upgrade - Without LC' ) );
+	}
+
+	echo "\n\n";
+}
+
 if ( ! empty( $notification_block ) ) {
-	echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n\n";
+	echo $divider . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	if ( ! empty( $notification_block['title'] ) ) {
 		echo esc_html( $notification_block['title'] ) . "\n\n";
@@ -87,7 +102,7 @@ if ( ! empty( $notification_block ) ) {
 	}
 }
 
-echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n\n";
+echo $divider . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 if ( ! empty( $info_block['title'] ) ) {
 	echo esc_html( $info_block['title'] ) . "\n\n";

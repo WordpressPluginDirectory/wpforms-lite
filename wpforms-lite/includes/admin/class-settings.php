@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 use WPForms\Admin\Notice;
+use WPForms\Migrations\Base as MigrationsBase;
 use WPForms\Migrations\Migrations as LiteMigration;
 use WPForms\Pro\Migrations\Migrations;
 use WPForms\Admin\Settings\Payments;
@@ -45,6 +46,7 @@ class WPForms_Settings {
 
 		// Maybe load settings page.
 		add_action( 'admin_init', [ $this, 'init' ] );
+		add_action( 'wpforms_install', [ $this, 'set_default_settings' ] );
 	}
 
 	/**
@@ -256,6 +258,23 @@ class WPForms_Settings {
 						$value = $this->validate_field_with_options( $field, $value, $value_prev );
 						break;
 
+					case 'masked_text':
+						// Check if the clear flag was set.
+						$clear_key = $id . '-clear';
+						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+						$clear = isset( $_POST[ $clear_key ] ) ? absint( wp_unslash( $_POST[ $clear_key ] ) ) : 0;
+
+						if ( $clear === 1 && ( $value === false || $value === '' ) ) {
+							// Clear flag set and no new value entered — delete the key.
+							$value = '';
+						} elseif ( $value === false || $value === '' || ( is_string( $value ) && mb_strpos( $value, str_repeat( '•', 14 ) ) === 0 ) ) {
+							// Keep existing DB value if no new value was submitted, field is empty, or masked pattern was sent.
+							$value = $value_prev;
+						} else {
+							$value = sanitize_text_field( $value );
+						}
+						break;
+
 					case 'text':
 					default:
 						$value = sanitize_text_field( $value );
@@ -284,6 +303,16 @@ class WPForms_Settings {
 	 * @since 1.0.0
 	 */
 	public function enqueues() {
+
+		$min = wpforms_get_min_suffix();
+
+		wp_enqueue_script(
+			'wpforms-admin-settings-masked-input',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/settings/masked-input{$min}.js",
+			[ 'jquery' ],
+			WPFORMS_VERSION,
+			true
+		);
 
 		do_action( 'wpforms_settings_enqueue' );
 	}
@@ -814,6 +843,52 @@ class WPForms_Settings {
 	private function show_spam_entries_setting(): bool {
 
 		return ! defined( 'WPFORMS_DELETE_SPAM_ENTRIES' ) && wpforms()->is_pro();
+	}
+
+	/**
+	 * Set default settings on first WPForms install.
+	 *
+	 * Merges default values into `wpforms_settings` for keys that have never
+	 * been saved, so existing user choices are never overwritten.
+	 *
+	 * @since 1.10.1
+	 */
+	public function set_default_settings(): void {
+
+		// Skip if the plugin was installed before: wpforms_install fires on every activation.
+		if ( get_option( MigrationsBase::PREVIOUS_CORE_VERSION_OPTION_NAME ) ) {
+			return;
+		}
+
+		$settings = (array) get_option( 'wpforms_settings', [] );
+		$updated  = false;
+
+		foreach ( $this->get_default_settings() as $key => $value ) {
+			if ( array_key_exists( $key, $settings ) ) {
+				continue;
+			}
+
+			$settings[ $key ] = $value;
+			$updated          = true;
+		}
+
+		if ( $updated ) {
+			update_option( 'wpforms_settings', $settings );
+		}
+	}
+
+	/**
+	 * Get default settings for a first WPForms install.
+	 *
+	 * @since 1.10.1
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_default_settings(): array {
+
+		return [
+			'gdpr' => true,
+		];
 	}
 }
 

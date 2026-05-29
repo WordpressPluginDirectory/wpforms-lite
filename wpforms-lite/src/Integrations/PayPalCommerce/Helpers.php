@@ -508,6 +508,10 @@ class Helpers {
 		$mode        = self::get_mode();
 		$connections = (array) get_option( 'wpforms_paypal_commerce_connections', [] );
 
+		if ( ! isset( $connections[ $mode ] ) ) {
+			return false;
+		}
+
 		return ! isset( $connections[ $mode ]['type'] ) || $connections[ $mode ]['type'] !== Connection::TYPE_THIRD_PARTY;
 	}
 

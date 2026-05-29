@@ -219,7 +219,7 @@ class Connection {
 			$this->secret = $data['secret'];
 		}
 
-		$this->is_live_mode = Helpers::is_production_mode();
+		$this->is_live_mode = ! empty( $data['mode'] ) ? $data['mode'] === Helpers::PRODUCTION : Helpers::is_production_mode();
 
 		$this->set_status( empty( $data['status'] ) ? self::STATUS_VALID : $data['status'] );
 	}
@@ -250,7 +250,10 @@ class Connection {
 			$class = \WPFormsPaypalCommerce\Connection::class;
 		}
 
-		return new $class( (array) $connections[ $mode ] );
+		$connection_data         = (array) $connections[ $mode ];
+		$connection_data['mode'] = $mode;
+
+		return new $class( $connection_data );
 	}
 
 	/**

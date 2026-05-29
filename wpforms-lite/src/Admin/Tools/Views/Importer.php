@@ -100,6 +100,12 @@ class Importer extends View {
 	 */
 	public function display() {
 
+		if ( ! current_user_can( 'unfiltered_html' ) ) {
+			$this->error_unfiltered_html_import_message();
+
+			return;
+		}
+
 		$this->heading_block();
 
 		$this->forms_block();
@@ -107,6 +113,31 @@ class Importer extends View {
 		$this->analyze_block();
 
 		$this->process_block();
+	}
+
+	/**
+	 * Error message for users with no `unfiltered_html` permission.
+	 *
+	 * @since 1.10.1
+	 */
+	private function error_unfiltered_html_import_message(): void {
+
+		printf(
+			'<div class="notice notice-error"><p>%s</p></div>',
+			sprintf(
+				wp_kses( /* translators: %s - WPForms contact page URL. */
+					__( 'You can\'t import forms because you don\'t have unfiltered HTML permissions. Please contact your site administrator or <a href="%s" target="_blank" rel="noopener noreferrer">reach out to our support team</a>.', 'wpforms-lite' ),
+					[
+						'a' => [
+							'href'   => [],
+							'target' => [],
+							'rel'    => [],
+						],
+					]
+				),
+				esc_url( wpforms_utm_link( 'https://wpforms.com/contact/', 'Tools - Import', 'Support Link - Form Importer No Permissions' ) )
+			)
+		);
 	}
 
 	/**

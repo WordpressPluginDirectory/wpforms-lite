@@ -56,6 +56,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php endif; ?>
 
 					<div class='wpforms-revision-details'>
+						<?php if ( ! empty( $revision['ai_label'] ) ) : ?>
+							<p class='wpforms-revision-label'>
+								<span><?php echo esc_html( $revision['ai_label'] ); ?></span>
+							</p>
+						<?php endif; ?>
+
 						<p class='wpforms-revision-created'>
 							<strong><?php echo esc_html( $revision['time_diff'] ); ?></strong> (<?php echo esc_html( $revision['date_time'] ); ?>)
 						</p>

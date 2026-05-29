@@ -1165,18 +1165,21 @@ class WPForms_About {
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Complete Entry Management inside WordPress', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'View, Edit, Import, and Export', 'wpforms-lite' ),
 					],
 				],
 				'plus'  => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Complete Entry Management inside WordPress', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'View, Edit, Import, and Export', 'wpforms-lite' ),
 					],
 				],
 				'pro'   => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Complete Entry Management inside WordPress', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'View, Edit, Import, and Export', 'wpforms-lite' ),
 					],
 				],
 			],

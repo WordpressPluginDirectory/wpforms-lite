@@ -61,7 +61,7 @@ class HCaptcha extends Captcha {
 			'hcaptcha-secret-key' => [
 				'id'   => 'hcaptcha-secret-key',
 				'name' => esc_html__( 'Secret Key', 'wpforms-lite' ),
-				'type' => 'text',
+				'type' => 'masked_text',
 			],
 			'hcaptcha-fail-msg'   => [
 				'id'      => 'hcaptcha-fail-msg',

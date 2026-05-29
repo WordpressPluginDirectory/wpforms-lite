@@ -51,8 +51,29 @@ function wpforms_save_form() {
 	// Store tags labels in the form settings.
 	$data['settings']['form_tags'] = wp_list_pluck( $form_tags, 'label' );
 
-	// Update form data.
-	$form_id = (int) wpforms()->obj( 'form' )->update( $data['id'], $data, [ 'context' => 'save_form' ] );
+	// Track AI auto-save revisions so the Revisions panel can label them later.
+	// The source key identifies which AI feature triggered the checkpoint
+	// ('smart_edit', 'choices', etc.) — empty string means the save is not AI-driven.
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$ai_revision_source = isset( $_POST['ai_revision_source'] )
+		? sanitize_key( wp_unslash( $_POST['ai_revision_source'] ) )
+		: '';
+
+	$prev_latest_revision_id = $ai_revision_source
+		? wpforms_ai_revision_tracking_start( (int) $data['id'] )
+		: 0;
+
+	// Update form data. Initialize $form_id so _finalize() always receives a defined value
+	// even if update() throws before assigning it.
+	$form_id = 0;
+
+	try {
+		$form_id = (int) wpforms()->obj( 'form' )->update( $data['id'], $data, [ 'context' => 'save_form' ] );
+	} finally {
+		if ( $ai_revision_source ) {
+			wpforms_ai_revision_tracking_finalize( $form_id, $prev_latest_revision_id, $ai_revision_source );
+		}
+	}
 
 	/**
 	 * Fires after updating form data.
@@ -101,6 +122,90 @@ function wpforms_save_form() {
 }
 
 add_action( 'wp_ajax_wpforms_save_form', 'wpforms_save_form' );
+
+/**
+ * Begin AI auto-save revision tracking for a form save.
+ *
+ * Bypasses WP's revision dedup so the upcoming `wp_update_post` is guaranteed
+ * to produce a revision row, and captures the latest existing revision ID as
+ * the "before" marker. The companion `wpforms_ai_revision_tracking_finalize()`
+ * uses that marker to identify the freshly created revision after the save.
+ *
+ * @since 1.10.1
+ *
+ * @param int $form_id Form post ID.
+ *
+ * @return int Latest revision ID before the upcoming save (0 if none).
+ */
+function wpforms_ai_revision_tracking_start( int $form_id ): int {
+
+	add_filter( 'wp_save_post_revision_check_for_changes', '__return_false' );
+
+	$revision_ids = wp_get_post_revisions(
+		$form_id,
+		[
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		]
+	);
+
+	return ! empty( $revision_ids ) ? (int) reset( $revision_ids ) : 0;
+}
+
+/**
+ * Finalize AI auto-save revision tracking after a form save.
+ *
+ * Identifies the just-created revision (the difference between the latest
+ * revision ID before and after the save) and writes a `revision_id => source`
+ * entry into a map-style postmeta on the parent form. Storing the marker on
+ * the form post — rather than on the revision itself — sidesteps a WP quirk
+ * where the high-level meta API can silently no-op on revision posts.
+ *
+ * The map is pruned to currently-existing revision IDs so it doesn't grow
+ * unbounded as WP rotates out older revisions per `WP_POST_REVISIONS`.
+ *
+ * @since 1.10.1
+ *
+ * @param int    $form_id                 Saved form post ID.
+ * @param int    $prev_latest_revision_id Revision ID captured before the save.
+ * @param string $source                  Source key identifying which AI feature
+ *                                        triggered this checkpoint (e.g. `smart_edit`,
+ *                                        `choices`).
+ */
+function wpforms_ai_revision_tracking_finalize( int $form_id, int $prev_latest_revision_id, string $source ): void {
+
+	remove_filter( 'wp_save_post_revision_check_for_changes', '__return_false' );
+
+	if ( ! $form_id || $source === '' ) {
+		return;
+	}
+
+	// One revisions query covers two needs: the most-recent ID (first element,
+	// since WP returns DESC by date) and the full list used to prune stale
+	// entries from the tagged map.
+	$existing_revision_ids  = array_map( 'absint', wp_get_post_revisions( $form_id, [ 'fields' => 'ids' ] ) );
+	$new_latest_revision_id = ! empty( $existing_revision_ids ) ? (int) reset( $existing_revision_ids ) : 0;
+
+	if ( ! $new_latest_revision_id || $new_latest_revision_id === $prev_latest_revision_id ) {
+		return;
+	}
+
+	$tagged_revisions = (array) get_post_meta( $form_id, '_wpforms_ai_revisions', true );
+
+	// Compat: legacy flat list (unkeyed array of revision IDs) → convert to
+	// `revision_id => 'smart_edit'` map. Detected by integer values; the new
+	// shape stores string source keys as values.
+	if ( ! empty( $tagged_revisions ) && is_int( reset( $tagged_revisions ) ) ) {
+		$tagged_revisions = array_fill_keys( array_map( 'absint', $tagged_revisions ), 'smart_edit' );
+	}
+
+	$tagged_revisions[ $new_latest_revision_id ] = $source;
+
+	// Prune entries for revisions WP has rotated out.
+	$tagged_revisions = array_intersect_key( $tagged_revisions, array_flip( $existing_revision_ids ) );
+
+	update_post_meta( $form_id, '_wpforms_ai_revisions', $tagged_revisions );
+}
 
 /**
  * Prepare form data.

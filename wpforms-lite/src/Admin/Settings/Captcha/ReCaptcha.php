@@ -73,7 +73,7 @@ class ReCaptcha extends Captcha {
 			'recaptcha-secret-key'   => [
 				'id'   => 'recaptcha-secret-key',
 				'name' => esc_html__( 'Secret Key', 'wpforms-lite' ),
-				'type' => 'text',
+				'type' => 'masked_text',
 			],
 			'recaptcha-fail-msg'     => [
 				'id'      => 'recaptcha-fail-msg',

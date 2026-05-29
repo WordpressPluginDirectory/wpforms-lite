@@ -242,7 +242,7 @@ function wpforms_current_user_can( $caps = [], $id = 0 ): bool {
 	 * @param array|string $caps     Capability name(s).
 	 * @param int          $id       ID of the specific object to check against if capability is a "meta" cap.
 	 */
-	$results[ $hash ] = apply_filters( 'wpforms_current_user_can', $user_can, $caps, $id );
+	$results[ $hash ] = (bool) apply_filters( 'wpforms_current_user_can', $user_can, $caps, $id );
 
 	return $results[ $hash ];
 }

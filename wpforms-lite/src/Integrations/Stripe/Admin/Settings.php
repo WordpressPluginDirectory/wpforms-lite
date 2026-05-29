@@ -354,7 +354,7 @@ class Settings {
 		$output .= sprintf( '<div class="wpforms-connected"><p>%s</p></div>', $connected_status );
 		$output .= '<p>' . sprintf(
 			wp_kses( /* translators: %s - Stripe connect URL. */
-				__( '<a href="%s" class="wpforms-btn wpforms-btn-md wpforms-btn-light-grey" style="margin-right: 10px;">Switch Accounts</a>', 'wpforms-lite' ),
+				__( '<a href="%s" class="wpforms-btn wpforms-btn-md wpforms-btn-light-grey wpforms-stripe-switch-accounts-btn">Switch Accounts</a>', 'wpforms-lite' ),
 				[
 					'a' => [
 						'href'  => [],

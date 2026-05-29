@@ -21,6 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+$utm_medium = 'Weekly Summary Email';
+
 ?>
 
 <table class="summary-container" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
@@ -33,82 +35,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<td><!-- Deliberately empty to support consistent sizing and layout across multiple email clients. --></td>
 							<td class="summary-content-inner" align="center" valign="top" width="600">
 								<div class="summary-header" width="100%">
-									<h6 class="greeting"><?php esc_html_e( 'Hi there!', 'wpforms-lite' ); ?></h6>
-									<p><?php esc_html_e( 'Let’s see how your forms performed in the past week.', 'wpforms-lite' ); ?></p>
-									<?php if ( ! wpforms()->is_pro() ) : ?>
-										<p class="lite-disclaimer">
-											<?php esc_html_e( 'Below is the total number of submissions for each form. However, form entries are not stored by WPForms Lite.', 'wpforms-lite' ); ?>
-										</p>
-
-										<?php if ( LiteConnect::is_enabled() ) : ?>
-											<p class="lite-disclaimer">
-												<strong><?php esc_html_e( 'We’ve got you covered!', 'wpforms-lite' ); ?></strong><br/>
-												<?php
-												printf(
-													wp_kses( /* translators: %1$s - WPForms.com Upgrade page URL. */
-														__( 'Your entries are being backed up securely in the cloud. When you’re ready to manage your entries inside WordPress, just <a href="%1$s" target="_blank" rel="noopener noreferrer">upgrade to Pro</a> and we’ll automatically import them in seconds!', 'wpforms-lite' ),
-														[
-															'a' => [
-																'href'   => [],
-																'rel'    => [],
-																'target' => [],
-															],
-														]
-													),
-													esc_url( wpforms_utm_link( 'https://wpforms.com/lite-upgrade/', 'Weekly Summary Email', 'Upgrade' ) )
-												);
-												?>
-											</p>
-											<p class="lite-disclaimer">
-												<?php
-												printf(
-													'<a href="%1$s" target="_blank" rel="noopener noreferrer"><strong>%2$s</strong></a>',
-													esc_url( wpforms_utm_link( 'https://wpforms.com/lite-upgrade/', 'Weekly Summary Email', 'Upgrade' ) ),
-													esc_html__( 'Check out what else you’ll get with your Pro license.', 'wpforms-lite' )
-												);
-												?>
-											</p>
-										<?php else : ?>
-											<p class="lite-disclaimer">
-												<strong><?php esc_html_e( 'Note: Entry backups are not enabled.', 'wpforms-lite' ); ?></strong><br/>
-												<?php esc_html_e( 'We recommend that you enable entry backups to guard against lost entries.', 'wpforms-lite' ); ?>
-											</p>
-											<p class="lite-disclaimer">
-												<?php
-												printf(
-													wp_kses( /* translators: %1$s - WPForms.com Documentation page URL. */
-														__( 'Backups are completely free, 100%% secure, and you can turn them on in a few clicks! <a href="%1$s" target="_blank" rel="noopener noreferrer">Enable entry backups now.</a>', 'wpforms-lite' ),
-														[
-															'a' => [
-																'href'   => [],
-																'rel'    => [],
-																'target' => [],
-															],
-														]
-													),
-													esc_url( wpforms_utm_link( 'https://wpforms.com/docs/how-to-use-lite-connect-for-wpforms/', 'Weekly Summary Email', 'Documentation#backup-with-lite-connect' ) )
-												);
-												?>
-											</p>
-											<p class="lite-disclaimer">
-												<?php
-												printf(
-													wp_kses( /* translators: %1$s - WPForms.com Upgrade page URL. */
-														__( 'When you’re ready to manage your entries inside WordPress, <a href="%1$s" target="_blank" rel="noopener noreferrer">upgrade to Pro</a> to import your entries.', 'wpforms-lite' ),
-														[
-															'a' => [
-																'href'   => [],
-																'rel'    => [],
-																'target' => [],
-															],
-														]
-													),
-													esc_url( wpforms_utm_link( 'https://wpforms.com/lite-upgrade/', 'Weekly Summary Email', 'Upgrade' ) )
-												);
-												?>
-											</p>
-										<?php endif; ?>
-									<?php endif; ?>
+									<h2>
+										<?php esc_html_e( 'Your Weekly WPForms Summary', 'wpforms-lite' ); ?>
+									</h2>
+									<p>
+										<?php echo wp_kses_post( __( 'Here’s how your forms performed this past week.<br>Below is a breakdown of submissions by form.', 'wpforms-lite' ) ); ?>
+									</p>
 								</div>
 								<div class="email-summaries-overview-wrapper" width="100%">
 									<?php if ( isset( $overview['total'] ) ) : ?>
@@ -205,6 +137,86 @@ if ( ! defined( 'ABSPATH' ) ) {
 										</tbody>
 									</table>
 								</div>
+								<?php if ( ! wpforms()->is_pro() ) : ?>
+									<div class="summary-lite-upgrade-wrapper">
+										<table class="summary-lite-upgrade" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+											<tbody>
+												<tr>
+													<td class="summary-lite-upgrade-card">
+														<table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+															<tbody>
+																<?php if ( LiteConnect::is_enabled() ) : ?>
+																	<tr>
+																		<td align="center" valign="top" style="padding: 25px 30px 0 30px;">
+																			<h4>
+																				<?php esc_html_e( 'Your entries are being backed up, but only for one year.', 'wpforms-lite' ); ?>
+																			</h4>
+																			<p>
+																				<?php esc_html_e( 'Lite Connect is saving your entries securely in the cloud. Upgrade to Pro to keep them permanently and manage all your entries right inside WordPress.', 'wpforms-lite' ); ?>
+																			</p>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="middle" style="padding: 16px 30px 30px 30px;">
+																			<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: separate; margin: 0 auto;">
+																				<tr>
+																					<td class="button button-blue" align="center" border="1" valign="middle" style="background:#056aab; border:1px solid #056aab;">
+																						<a href="<?php echo esc_url( wpforms_utm_link( 'https://wpforms.com/pricing-lite/', $utm_medium, 'Upgrade - With LC' ) ); ?>" class="button-link" rel="noopener noreferrer" target="_blank" bgcolor="#056aab">
+																							<?php esc_html_e( 'Upgrade to Pro', 'wpforms-lite' ); ?>
+																						</a>
+																					</td>
+																				</tr>
+																			</table>
+																		</td>
+																	</tr>
+																<?php else : ?>
+																	<tr>
+																		<td align="center" valign="top" style="padding: 25px 30px 0 30px;">
+																			<h4>
+																				<?php esc_html_e( 'Your entries are not being backed up.', 'wpforms-lite' ); ?>
+																			</h4>
+																			<p>
+																				<?php
+																				printf(
+																					wp_kses(
+																						/* translators: %1$s - WPForms.com Pricing page URL. */
+																						__( 'Enable Lite Connect today to start storing entries. When you’re ready to manage your entries inside WordPress, just <a href="%1$s" target="_blank" rel="noopener noreferrer">Upgrade to Pro</a> and we’ll import them in seconds!', 'wpforms-lite' ),
+																						[
+																							'a' => [
+																								'href'   => [],
+																								'rel'    => [],
+																								'target' => [],
+																							],
+																						]
+																					),
+																					esc_url( wpforms_utm_link( 'https://wpforms.com/pricing-lite/', $utm_medium, 'Upgrade - Without LC' ) )
+																				);
+																				?>
+																			</p>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td align="center" valign="middle" style="padding: 16px 30px 30px 30px;">
+																			<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: separate; margin: 0 auto;">
+																				<tr>
+																					<td class="button button-blue" align="center" border="1" valign="middle" style="background:#056aab; border:1px solid #056aab;">
+																						<a href="<?php echo esc_url( wpforms_utm_link( 'https://wpforms.com/docs/how-to-use-lite-connect-for-wpforms/', $utm_medium, 'Documentation#backup-with-lite-connect' ) ); ?>" class="button-link" rel="noopener noreferrer" target="_blank" bgcolor="#056aab">
+																							<?php esc_html_e( 'Enable Lite Connect', 'wpforms-lite' ); ?>
+																						</a>
+																					</td>
+																				</tr>
+																			</table>
+																		</td>
+																	</tr>
+																<?php endif; ?>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								<?php endif; ?>
 							</td>
 							<td><!-- Deliberately empty to support consistent sizing and layout across multiple email clients. --></td>
 						</tr>

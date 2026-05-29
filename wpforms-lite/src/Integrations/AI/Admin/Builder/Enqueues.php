@@ -129,8 +129,10 @@ class Enqueues {
 			'ajaxurl'   => admin_url( 'admin-ajax.php' ),
 			'nonce'     => wp_create_nonce( 'wpforms-ai-nonce' ),
 			'min'       => wpforms_get_min_suffix(),
+			'like'      => esc_html__( 'Great response!', 'wpforms-lite' ),
 			'dislike'   => esc_html__( 'Bad response', 'wpforms-lite' ),
 			'refresh'   => esc_html__( 'Clear chat history', 'wpforms-lite' ),
+			'retry'     => esc_html__( 'Retry', 'wpforms-lite' ),
 			'btnYes'    => esc_html__( 'Yes, Continue', 'wpforms-lite' ),
 			'btnCancel' => esc_html__( 'Cancel', 'wpforms-lite' ),
 			'confirm'   => [
@@ -138,9 +140,10 @@ class Enqueues {
 				'refreshMessage' => esc_html__( 'Are you sure you want to clear the AI chat history and start over?', 'wpforms-lite' ),
 			],
 			'errors'    => [
-				'default' => esc_html__( 'An error occurred.', 'wpforms-lite' ),
-				'network' => esc_html__( 'There appears to be a network error.', 'wpforms-lite' ),
-				'empty'   => esc_html__( 'I\'m not sure what to do with that.', 'wpforms-lite' ),
+				'default'    => esc_html__( 'An error occurred.', 'wpforms-lite' ),
+				'network'    => esc_html__( 'There appears to be a network error.', 'wpforms-lite' ),
+				'empty'      => esc_html__( 'I\'m not sure what to do with that.', 'wpforms-lite' ),
+				'rate_limit' => esc_html__( 'You\'ve hit your daily AI request limit.', 'wpforms-lite' ),
 			],
 			'warnings'  => [
 				'prohibited_code' => esc_html__( 'Prohibited code has been removed.', 'wpforms-lite' ),
@@ -149,6 +152,19 @@ class Enqueues {
 				'default'         => esc_html__( 'Please try again.', 'wpforms-lite' ),
 				'empty'           => esc_html__( 'Please try a different prompt. You might need to be more descriptive.', 'wpforms-lite' ),
 				'prohibited_code' => esc_html__( 'Only basic styling tags are permitted. All other code deemed unsafe has been removed.', 'wpforms-lite' ),
+				'rate_limit'      => sprintf(
+					wp_kses( /* translators: %s - WPForms contact support link. */
+						__( 'You can make up to 50 AI requests per day. If you believe this is an error, <a href="%s" target="_blank" rel="noopener noreferrer">please contact WPForms support</a>.', 'wpforms-lite' ),
+						[
+							'a' => [
+								'href'   => [],
+								'target' => [],
+								'rel'    => [],
+							],
+						]
+					),
+					wpforms_utm_link( 'https://wpforms.com/account/support/', 'AI Feature' )
+				),
 			],
 			'choices'   => $this->get_choices_chat_data(),
 			'actions'   => [], // Additional actions for js/integrations/ai/modules/api.js.
@@ -179,6 +195,10 @@ class Enqueues {
 				'name' => 'forms',
 				'path' => "./modules/helpers-forms{$min}.js",
 			],
+			[
+				'name' => 'form-editor',
+				'path' => "./modules/helpers-form-editor{$min}.js",
+			],
 		];
 
 		/**
@@ -188,7 +208,7 @@ class Enqueues {
 		 *
 		 * @param array $strings Localize strings.
 		 */
-		return apply_filters( 'wpforms_integrations_ai_admin_builder_enqueues_localize_chat_strings', $strings );
+		return (array) apply_filters( 'wpforms_integrations_ai_admin_builder_enqueues_localize_chat_strings', $strings );
 	}
 
 	/**
@@ -220,12 +240,12 @@ class Enqueues {
 			'learnMoreUrl'  => wpforms_utm_link( 'https://wpforms.com/features/wpforms-ai/', 'Builder - Settings', 'Learn more - AI Choices modal' ),
 			'errors'        => [
 				'default'    => esc_html__( 'An error occurred while generating choices.', 'wpforms-lite' ),
-				'rate_limit' => esc_html__( 'Sorry, you\'ve reached your daily limit for generating choices.', 'wpforms-lite' ),
+				'rate_limit' => esc_html__( 'You\'ve hit your daily AI request limit.', 'wpforms-lite' ),
 			],
 			'reasons'       => [
 				'rate_limit' => sprintf(
 					wp_kses( /* translators: %s - WPForms contact support link. */
-						__( 'You may only generate choices 50 times per day. If you believe this is an error, <a href="%s" target="_blank" rel="noopener noreferrer">please contact WPForms support</a>.', 'wpforms-lite' ),
+						__( 'You can make up to 50 AI requests per day. If you believe this is an error, <a href="%s" target="_blank" rel="noopener noreferrer">please contact WPForms support</a>.', 'wpforms-lite' ),
 						[
 							'a' => [
 								'href'   => [],

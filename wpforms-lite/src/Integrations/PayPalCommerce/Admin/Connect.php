@@ -49,7 +49,7 @@ class Connect {
 	/**
 	 * Signup Site URL transient name.
 	 *
-	 * @since 1.10.0.3
+	 * @since 1.10.1
 	 */
 	private const SIGNUP_SITE_URL_TRANSIENT_NAME = 'wpforms_paypal_commerce_signup_site_url';
 

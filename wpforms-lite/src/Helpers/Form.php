@@ -10,6 +10,31 @@ namespace WPForms\Helpers;
 class Form {
 
 	/**
+	 * Get all available forms.
+	 *
+	 * @since 1.10.1
+	 *
+	 * @param array $args Optional. Arguments to pass to the form handler.
+	 *
+	 * @return array
+	 */
+	public static function get_all( array $args = [] ): array {
+
+		$form_handler = wpforms()->obj( 'form' );
+
+		if ( ! $form_handler ) {
+			return [];
+		}
+
+		$defaults = [ 'orderby' => 'title' ];
+		$args     = wp_parse_args( $args, $defaults );
+
+		$forms = $form_handler->get( '', $args );
+
+		return ! empty( $forms ) ? $forms : [];
+	}
+
+	/**
 	 * Get form pro-fields array.
 	 *
 	 * @since 1.9.4

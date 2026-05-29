@@ -3035,7 +3035,7 @@ abstract class WPForms_Field {
 
 				/*
 				 * Check to see if this field is configured for Dynamic Choices,
-				 * either auto populating from a post's type or a taxonomy.
+				 * either autopopulating from a post's type or a taxonomy.
 				 */
 				if ( ! empty( $field['dynamic_post_type'] ) || ! empty( $field['dynamic_taxonomy'] ) ) {
 
@@ -3442,6 +3442,44 @@ abstract class WPForms_Field {
 		 */
 		$field_required = (string) apply_filters( 'wpforms_field_new_required', '', $field );
 
+		// Field types that default to the required.
+		if ( ! empty( $field_required ) ) {
+			$field['required'] = '1';
+		}
+
+		$preview = $this->get_new_field_preview_html( $field );
+		$options = $this->get_new_field_options_html( $field );
+
+		// Prepare to return compiled results.
+		wp_send_json_success(
+			[
+				'form_id' => absint( $_POST['id'] ),
+				'field'   => $field,
+				'preview' => $preview,
+				'options' => $options,
+			]
+		);
+	}
+
+	/**
+	 * Get the preview panel HTML for a new field.
+	 *
+	 * Builds the same markup that field_new() produces for the preview panel,
+	 * so it can be reused outside the single-field AJAX handler.
+	 *
+	 * @since 1.10.1
+	 *
+	 * @param array $field Prepared field data (filters already applied).
+	 *
+	 * @return string Preview HTML.
+	 */
+	public function get_new_field_preview_html( array $field ): string {
+
+		$field_type = $field['type'];
+		$field_id   = wpforms_validate_field_id( $field['id'] );
+
+		$field_required = ! empty( $field['required'] ) ? 'required' : '';
+
 		/**
 		 * Filter the new field CSS class.
 		 *
@@ -3450,35 +3488,23 @@ abstract class WPForms_Field {
 		 * @param string $class Required attribute value.
 		 * @param array  $field Field settings.
 		 */
-		$field_class = (string) apply_filters( 'wpforms_field_new_class', '', $field );
+		$field_class = (string) apply_filters( 'wpforms_field_new_class', '', $field ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
-		$field_helper_hide = ! empty( $_COOKIE['wpforms_field_helper_hide'] );
-
-		// Field types that default to the required.
-		if ( ! empty( $field_required ) ) {
-			$field_required    = 'required';
-			$field['required'] = '1';
-		}
+		$field_helper_hide = ! empty( sanitize_text_field( wp_unslash( $_COOKIE['wpforms_field_helper_hide'] ?? '' ) ) );
 
 		// Build Preview.
 		ob_start();
-		/**
-		 * Fires after the field preview output in the Form Builder.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param array $field Field data.
-		 */
+
+		/** This action is documented in includes/admin/builder/panels/class-fields.php. */
 		do_action( "wpforms_builder_fields_previews_{$field_type}", $field ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		$prev    = ob_get_clean();
 		$preview = sprintf(
-			'<div class="wpforms-field wpforms-field-%1$s %2$s %3$s" id="wpforms-field-%4$s" data-field-id="%4$s" data-field-type="%5$s">',
+			'<div class="wpforms-field wpforms-field-%1$s %2$s %3$s" id="wpforms-field-%4$s" data-field-id="%4$s" data-field-type="%1$s">',
 			esc_attr( $field_type ),
 			esc_attr( $field_required ),
 			esc_attr( $field_class ),
-			wpforms_validate_field_id( $field['id'] ),
-			esc_attr( $field_type )
+			$field_id
 		);
 
 		/**
@@ -3489,11 +3515,17 @@ abstract class WPForms_Field {
 		 * @param bool  $display Whether to display the duplicate button. Default is true.
 		 * @param array $field   Field.
 		 */
-		if ( apply_filters( 'wpforms_field_new_display_duplicate_button', true, $field ) ) {
-			$preview .= sprintf( '<a href="#" class="wpforms-field-duplicate" title="%s"><i class="fa fa-files-o" aria-hidden="true"></i></a>', esc_attr__( 'Duplicate Field', 'wpforms-lite' ) );
+		if ( (bool) apply_filters( 'wpforms_field_new_display_duplicate_button', true, $field ) ) { // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+			$preview .= sprintf(
+				'<a href="#" class="wpforms-field-duplicate" title="%s"><i class="fa fa-files-o" aria-hidden="true"></i></a>',
+				esc_attr__( 'Duplicate Field', 'wpforms-lite' )
+			);
 		}
 
-		$preview .= sprintf( '<a href="#" class="wpforms-field-delete" title="%s"><i class="fa fa-trash-o"></i></a>', esc_attr__( 'Delete Field', 'wpforms-lite' ) );
+		$preview .= sprintf(
+			'<a href="#" class="wpforms-field-delete" title="%s"><i class="fa fa-trash-o"></i></a>',
+			esc_attr__( 'Delete Field', 'wpforms-lite' )
+		);
 
 		// Multi-field actions menu.
 		$preview .= $this->get_multi_field_menu_html();
@@ -3516,22 +3548,49 @@ abstract class WPForms_Field {
 		$preview .= $prev;
 		$preview .= '</div>';
 
-		// Build Options.
-		$class   = apply_filters( 'wpforms_builder_field_option_class', '', $field ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName, WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.Comments.SinceTagHooks.MissingSinceTag
+		return $preview;
+	}
+
+	/**
+	 * Get the options panel HTML for a new field.
+	 *
+	 * Builds the same markup that field_new() produces for the options panel,
+	 * so it can be reused outside the single-field AJAX handler.
+	 *
+	 * @since 1.10.1
+	 *
+	 * @param array $field Prepared field data (filters already applied).
+	 *
+	 * @return string Options HTML.
+	 */
+	public function get_new_field_options_html( array $field ): string {
+
+		$current_field_id = wpforms_validate_field_id( $field['id'] );
+
+		/**
+		 * Filters the CSS class for the field option container.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param string $class CSS class.
+		 * @param array  $field Field data.
+		 */
+		$class   = (string) apply_filters( 'wpforms_builder_field_option_class', '', $field ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 		$options = sprintf(
 			'<div class="wpforms-field-option wpforms-field-option-%1$s %2$s" id="wpforms-field-option-%3$s" data-field-id="%3$s">',
 			sanitize_html_class( $field['type'] ),
 			wpforms_sanitize_classes( $class ),
-			wpforms_validate_field_id( $field['id'] )
+			$current_field_id
 		);
 
 		$options .= sprintf(
 			'<input type="hidden" name="fields[%1$s][id]" value="%1$s" class="wpforms-field-option-hidden-id">',
-			wpforms_validate_field_id( $field['id'] )
+			$current_field_id
 		);
+
 		$options .= sprintf(
 			'<input type="hidden" name="fields[%s][type]" value="%s" class="wpforms-field-option-hidden-type">',
-			wpforms_validate_field_id( $field['id'] ),
+			$current_field_id,
 			esc_attr( $field['type'] )
 		);
 
@@ -3540,15 +3599,7 @@ abstract class WPForms_Field {
 		$options .= ob_get_clean();
 		$options .= '</div>';
 
-		// Prepare to return compiled results.
-		wp_send_json_success(
-			[
-				'form_id' => absint( $_POST['id'] ),
-				'field'   => $field,
-				'preview' => $preview,
-				'options' => $options,
-			]
-		);
+		return $options;
 	}
 
 	/**
@@ -4232,6 +4283,11 @@ abstract class WPForms_Field {
 			return $field_submit;
 		}
 
+		/** This filter is documented in includes/fields/class-base.php */
+		if ( (bool) apply_filters( 'wpforms_field_choices_allow_unknown_value', false, $field_submit, $field, $form_data ) ) {
+			return $field_submit;
+		}
+
 		[ $allowlist, $has_other ] = $this->build_choices_allowlist( $field );
 
 		if ( ! is_array( $field_submit ) ) {
@@ -4799,17 +4855,17 @@ abstract class WPForms_Field {
 			return;
 		}
 
-		$field_id  = wpforms_validate_field_id( $field['id'] );
-		$form_id   = absint( $this->form_data['id'] );
-		$container = [
-			'id'    => "wpforms-{$form_id}-field_{$field_id}-quantity",
+		$current_field_id = wpforms_validate_field_id( $field['id'] );
+		$form_id          = absint( $this->form_data['id'] );
+		$container        = [
+			'id'    => "wpforms-{$form_id}-field_{$current_field_id}-quantity",
 			'class' => [ 'wpforms-payment-quantity' ],
 			'attr'  => [
-				'name' => "wpforms[quantities][{$field_id}]",
+				'name' => "wpforms[quantities][{$current_field_id}]",
 			],
 			'data'  => [],
 		];
-		$is_modern = ! empty( $field['style'] ) && $field['style'] === 'modern';
+		$is_modern        = ! empty( $field['style'] ) && $field['style'] === 'modern';
 
 		// Add a class for Choices.js initialization.
 		if ( $is_modern ) {

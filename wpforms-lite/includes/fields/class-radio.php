@@ -492,7 +492,7 @@ class WPForms_Field_Radio extends WPForms_Field {
 				if ( wpforms_is_amp() && ( $using_image_choices || $using_icon_choices ) ) {
 					$choice['container']['attr']['[class]'] = sprintf(
 						'%s + ( %s == %s ? " wpforms-selected" : "")',
-						wp_json_encode( implode( ' ', $choice['container']['class'] ) ),
+						wp_json_encode( wpforms_sanitize_classes( $choice['container']['class'], is_array( $choice['container']['class'] ) ) ),
 						$amp_state_id,
 						wp_json_encode( $choice['attr']['value'] )
 					);
@@ -692,7 +692,7 @@ class WPForms_Field_Radio extends WPForms_Field {
 		$field_submit = $this->sanitize_choices_submission( $field_submit, $field, $form_data );
 		$dynamic      = ! empty( $field['dynamic_choices'] ) ? $field['dynamic_choices'] : false;
 		$name         = sanitize_text_field( $field['label'] );
-		$value_raw    = is_array( $field_submit ) ? '' : $field_submit;
+		$value_raw    = is_array( $field_submit ) ? '' : sanitize_text_field( $field_submit );
 
 		$data = [
 			'name'      => $name,

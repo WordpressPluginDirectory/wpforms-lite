@@ -314,6 +314,20 @@ class Revisions {
 		// Display the author of current version instead of a form author.
 		$args['author_id'] = $current_revision->post_author;
 
+		// Single read of the form-level map of AI-tagged revision IDs → source keys —
+		// written by `wpforms_ai_revision_tracking_finalize()` after each AI-driven save.
+		$ai_revision_map = (array) get_post_meta( $this->form_id, '_wpforms_ai_revisions', true );
+
+		// Compat: legacy flat list (unkeyed array of revision IDs) → treat as `smart_edit`.
+		if ( ! empty( $ai_revision_map ) && is_int( reset( $ai_revision_map ) ) ) {
+			$ai_revision_map = array_fill_keys( array_map( 'absint', $ai_revision_map ), 'smart_edit' );
+		}
+
+		$ai_labels = [
+			'smart_edit' => esc_html__( 'Auto-saved before Smart Edit', 'wpforms-lite' ),
+			'choices'    => esc_html__( 'Auto-saved before AI Choices', 'wpforms-lite' ),
+		];
+
 		foreach ( $revisions as $revision ) {
 			$time_diff = sprintf( /* translators: %s - relative time difference, e.g. "5 minutes", "12 days". */
 				__( '%s ago', 'wpforms-lite' ),
@@ -326,6 +340,8 @@ class Revisions {
 				$this->get_formatted_datetime( $revision->post_modified_gmt, 'time' )
 			);
 
+			$revision_source = $ai_revision_map[ $revision->ID ] ?? '';
+
 			$args['revisions'][] = [
 				'active_class' => $this->revision && $this->revision->ID === $revision->ID ? ' active' : '',
 				'url'          => $this->get_url(
@@ -336,6 +352,7 @@ class Revisions {
 				'author_id'    => $revision->post_author,
 				'time_diff'    => $time_diff,
 				'date_time'    => $date_time,
+				'ai_label'     => $ai_labels[ $revision_source ] ?? '',
 			];
 		}
 

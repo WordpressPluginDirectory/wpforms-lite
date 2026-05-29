@@ -119,6 +119,6 @@ class API {
 		$prompt = preg_replace( '/\s+/', ' ', $prompt );
 
 		// Remove any extra characters.
-		return trim( $prompt, ' .,!?;:' );
+		return trim( $prompt, ' .,!?:' );
 	}
 }

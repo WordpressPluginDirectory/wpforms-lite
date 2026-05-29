@@ -506,7 +506,7 @@ class WPForms_Field_Select extends WPForms_Field {
 				'<option value="%1$s" %2$s class="%3$s" %4$s %5$s>%6$s</option>',
 				esc_attr( $value ),
 				selected( true, ! empty( $choice['default'] ), false ),
-				esc_attr( implode( ' ', $choice['container']['class'] ) ),
+				esc_attr( wpforms_sanitize_classes( $choice['container']['class'], is_array( $choice['container']['class'] ) ) ),
 				$data_html,
 				$selected_html,
 				wp_kses(

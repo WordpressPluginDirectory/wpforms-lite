@@ -4,92 +4,189 @@
  * Embed popup HTML template.
  *
  * @since 1.6.2
+ * @since 1.10.1 Redesigned to a six-card grid that combines existing embed
+ *                  actions with product education items for Pro features.
+ *
+ * @var array $args Template arguments.
  */
 
-if ( ! \defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-$pages_exists = ! empty( $args['dropdown_pages'] ) ? 1 : 0;
+
+$user_can_edit_pages = ! empty( $args['user_can_edit_pages'] );
+$education_items     = ! empty( $args['education_items'] ) ? (array) $args['education_items'] : [];
+$is_lite             = ! empty( $args['is_lite'] );
+
+// Index education items by slug for easy access when interleaving with action cards.
+$education_by_slug = [];
+
+foreach ( $education_items as $item ) {
+	$education_by_slug[ $item['slug'] ] = $item;
+}
+
+/**
+ * Render an action card partial.
+ *
+ * @since 1.10.1
+ *
+ * @param array $card_args Partial arguments.
+ */
+$render_action_card = static function ( array $card_args ): void {
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpforms_render( 'admin/form-embed-wizard/partials/action-card', $card_args );
+};
+
+/**
+ * Render an education card partial.
+ *
+ * @since 1.10.1
+ *
+ * @param array $item    Education item data.
+ * @param bool  $is_lite Whether the current install is Lite.
+ */
+$render_education_card = static function ( array $item, bool $is_lite ): void {
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpforms_render(
+		'admin/form-embed-wizard/partials/education-card',
+		[
+			'item'    => $item,
+			'is_lite' => $is_lite,
+		]
+	);
+};
 ?>
 
 <div id="wpforms-admin-form-embed-wizard-container" class="wpforms-admin-popup-container">
-	<div id="wpforms-admin-form-embed-wizard" class="wpforms-admin-popup" data-pages-exists="<?php echo esc_attr( $pages_exists ); ?>">
+	<div id="wpforms-admin-form-embed-wizard" class="wpforms-admin-popup wpforms-admin-popup-wide">
 		<div class="wpforms-admin-popup-content">
-			<h3><?php esc_html_e( 'Embed in a Page', 'wpforms-lite' ); ?></h3>
 			<div id="wpforms-admin-form-embed-wizard-content-initial">
-				<p class="no-gap"><b><?php esc_html_e( 'We can help embed your form with just a few clicks!', 'wpforms-lite' ); ?></b></p>
+				<h3><?php esc_html_e( 'How Would You Like to Publish Your Form?', 'wpforms-lite' ); ?></h3>
 
-				<?php if ( ! empty( $args['user_can_edit_pages'] ) ) : ?>
-					<p><?php esc_html_e( 'Would you like to embed your form in an existing page, or create a new one?', 'wpforms-lite' ); ?></p>
-				<?php endif; ?>
+				<div class="wpforms-admin-form-embed-wizard-grid">
+					<?php // Row 1: Existing Page + Conversational Form. ?>
+					<?php if ( $user_can_edit_pages ) : ?>
+						<?php
+						$render_action_card(
+							[
+								'action'      => 'select-page',
+								'icon'        => 'fa-file-code-o',
+								'title'       => __( 'Existing Page', 'wpforms-lite' ),
+								'description' => __( 'Add to a page you\'ve already created.', 'wpforms-lite' ),
+							]
+						);
+						?>
+					<?php endif; ?>
+
+					<?php
+					if ( isset( $education_by_slug['conversational-forms'] ) ) {
+						$render_education_card( $education_by_slug['conversational-forms'], $is_lite );
+					}
+					?>
+
+					<?php // Row 2: New Page + Form Landing Page. ?>
+					<?php if ( $user_can_edit_pages ) : ?>
+						<?php
+						$render_action_card(
+							[
+								'action'      => 'create-page',
+								'icon'        => 'fa-plus-square-o',
+								'title'       => __( 'New Page', 'wpforms-lite' ),
+								'description' => __( 'Create a new page for your form.', 'wpforms-lite' ),
+							]
+						);
+						?>
+					<?php endif; ?>
+
+					<?php
+					if ( isset( $education_by_slug['form-pages'] ) ) {
+						$render_education_card( $education_by_slug['form-pages'], $is_lite );
+					}
+					?>
+
+					<?php // Row 3: Shortcode + Lead Form. ?>
+					<?php
+					$render_action_card(
+						[
+							'action'      => 'shortcode',
+							'icon'        => 'fa-files-o',
+							'title'       => __( 'Shortcode', 'wpforms-lite' ),
+							'description' => __( 'Copy a shortcode to use anywhere.', 'wpforms-lite' ),
+						]
+					);
+					?>
+
+					<?php
+					if ( isset( $education_by_slug['lead-forms'] ) ) {
+						$render_education_card( $education_by_slug['lead-forms'], $is_lite );
+					}
+					?>
+				</div>
 			</div>
 
-			<?php if ( ! empty( $args['user_can_edit_pages'] ) ) : ?>
+			<?php if ( $user_can_edit_pages ) : ?>
 				<div id="wpforms-admin-form-embed-wizard-content-select-page" style="display: none;">
+					<h3><?php esc_html_e( 'Embed in an Existing Page', 'wpforms-lite' ); ?></h3>
 					<p><?php esc_html_e( 'Select the page you would like to embed your form in.', 'wpforms-lite' ); ?></p>
 				</div>
 				<div id="wpforms-admin-form-embed-wizard-content-create-page" style="display: none;">
+					<h3><?php esc_html_e( 'Add to a New Page', 'wpforms-lite' ); ?></h3>
 					<p><?php esc_html_e( 'What would you like to call the new page?', 'wpforms-lite' ); ?></p>
-				</div>
-				<div id="wpforms-admin-form-embed-wizard-section-btns" class="wpforms-admin-popup-bottom">
-					<button type="button" data-action="select-page" class="wpforms-admin-popup-btn"><?php esc_html_e( 'Select Existing Page', 'wpforms-lite' ); ?></button>
-					<button type="button" data-action="create-page" class="wpforms-admin-popup-btn"><?php esc_html_e( 'Create New Page', 'wpforms-lite' ); ?></button>
 				</div>
 				<div id="wpforms-admin-form-embed-wizard-section-go" class="wpforms-admin-popup-bottom wpforms-admin-popup-flex" style="display: none;">
 					<?php echo $args['dropdown_pages']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<input type="text" id="wpforms-admin-form-embed-wizard-new-page-title" value="" placeholder="<?php esc_attr_e( 'Name Your Page', 'wpforms-lite' ); ?>">
-					<button type="button" data-action="go" class="wpforms-admin-popup-btn"><?php esc_html_e( 'Let’s Go!', 'wpforms-lite' ); ?></button>
+					<button type="button" data-action="go" class="wpforms-admin-popup-btn"><?php esc_html_e( 'Add to Page', 'wpforms-lite' ); ?></button>
 				</div>
 			<?php endif; ?>
+
+			<div id="wpforms-admin-form-embed-wizard-content-shortcode" style="display: none;">
+				<h3><?php esc_html_e( 'Copy the Form\'s Shortcode', 'wpforms-lite' ); ?></h3>
+				<p><?php esc_html_e( 'Copy the shortcode and use it in any page builder or template.', 'wpforms-lite' ); ?></p>
+				<div id="wpforms-admin-form-embed-wizard-shortcode-wrap">
+					<input type="text" id="wpforms-admin-form-embed-wizard-shortcode" class="wpforms-admin-popup-shortcode" disabled />
+					<button type="button" id="wpforms-admin-form-embed-wizard-shortcode-copy" class="wpforms-admin-popup-btn">
+						<i class="fa fa-files-o" aria-hidden="true"></i>
+					</button>
+					<div id="wpforms-admin-form-embed-wizard-shortcode-tooltip">
+						<div class="wpforms-shortcode-tooltip-content">
+							<span class="wpforms-shortcode-tooltip-default"><?php esc_html_e( 'Copy shortcode to clipboard', 'wpforms-lite' ); ?></span>
+							<span class="wpforms-shortcode-tooltip-copied"><?php esc_html_e( 'Shortcode copied to clipboard', 'wpforms-lite' ); ?></span>
+						</div>
+						<div class="wpforms-shortcode-tooltip-arrow"></div>
+					</div>
+				</div>
+			</div>
+
 			<div id="wpforms-admin-form-embed-wizard-section-toggles" class="wpforms-admin-popup-bottom">
 				<p class="secondary">
 					<?php
 					$allowed_tags = [
 						'a' => [
-							'href'  => [],
-							'class' => [],
+							'href'   => [],
+							'target' => [],
+							'rel'    => [],
 						],
 					];
 
-					if ( ! empty( $args['user_can_edit_pages'] ) ) {
-
-						printf(
-							wp_kses( /* translators: %1$s - video tutorial toggle CSS classes, %2$s - shortcode toggle CSS classes. */
-								__( 'You can also <a href="#" class="%1$s">embed your form manually</a> or <a href="#" class="%2$s">use a shortcode</a>', 'wpforms-lite' ),
-								$allowed_tags
-							),
-							'tutorial-toggle wpforms-admin-popup-toggle',
-							'shortcode-toggle wpforms-admin-popup-toggle'
-						);
-
-					} else {
-
-						printf(
-							wp_kses( /* translators: %1$s - video tutorial toggle CSS classes, %2$s - shortcode toggle CSS classes. */
-								__( 'You can embed your form using the <a href="#" class="%1$s">WPForms block</a> or <a href="#" class="%2$s">a shortcode</a>.', 'wpforms-lite' ),
-								$allowed_tags
-							),
-							'tutorial-toggle wpforms-admin-popup-toggle',
-							'shortcode-toggle wpforms-admin-popup-toggle'
-						);
-
-					}
+					printf(
+						wp_kses( /* translators: %s - link to the manual embed documentation. */
+							__( 'You can also <a href="%s" target="_blank" rel="noopener noreferrer">embed your form manually</a> in any page or post.', 'wpforms-lite' ),
+							$allowed_tags
+						),
+						esc_url( wpforms_utm_link( 'https://wpforms.com/docs/displaying-forms-on-your-site/', 'Builder Embed Modal', 'Embed Manually Documentation' ) )
+					);
 					?>
 				</p>
-				<iframe style="display: none;" src="about:blank" frameborder="0" id="wpforms-admin-form-embed-wizard-tutorial" allowfullscreen width="450" height="256"></iframe>
-				<div id="wpforms-admin-form-embed-wizard-shortcode-wrap" style="display: none;">
-					<input type="text" id="wpforms-admin-form-embed-wizard-shortcode" class="wpforms-admin-popup-shortcode" disabled />
-					<span id="wpforms-admin-form-embed-wizard-shortcode-copy" title="<?php esc_attr_e( 'Copy embed code to clipboard', 'wpforms-lite' ); ?>">
-						<i class="fa fa-files-o" aria-hidden="true"></i>
-					</span>
-				</div>
 			</div>
+
 			<div id="wpforms-admin-form-embed-wizard-section-goback" class="wpforms-admin-popup-bottom" style="display: none;">
 				<p class="secondary">
 					<a href="#" class="wpforms-admin-popup-toggle initialstate-toggle">« <?php esc_html_e( 'Go back', 'wpforms-lite' ); ?></a>
 				</p>
 			</div>
 		</div>
+		<i class="fa fa-arrow-left wpforms-admin-popup-back initialstate-toggle" style="display: none;" aria-hidden="true"></i>
 		<i class="fa fa-times wpforms-admin-popup-close"></i>
 	</div>
 </div>

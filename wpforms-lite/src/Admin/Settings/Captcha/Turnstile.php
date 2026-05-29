@@ -81,7 +81,7 @@ class Turnstile extends Captcha {
 			'turnstile-secret-key' => [
 				'id'   => 'turnstile-secret-key',
 				'name' => esc_html__( 'Secret Key', 'wpforms-lite' ),
-				'type' => 'text',
+				'type' => 'masked_text',
 			],
 			'turnstile-fail-msg'   => [
 				'id'      => 'turnstile-fail-msg',

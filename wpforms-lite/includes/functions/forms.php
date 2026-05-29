@@ -561,6 +561,10 @@ function wpforms_get_all_smart_tags( $content ) {
 	 */
 	preg_match_all( '~{([a-z0-9_]+)(|[ =][^\n}]*)}~', $content, $smart_tags );
 
+	if ( empty( $smart_tags[0] ) ) {
+		return [];
+	}
+
 	return array_combine( $smart_tags[0], $smart_tags[1] );
 }
 
