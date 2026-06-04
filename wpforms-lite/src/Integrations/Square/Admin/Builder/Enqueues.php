@@ -76,21 +76,13 @@ class Enqueues {
 
 		$strings = (array) $strings;
 
-		$strings['square_connection_required'] = wp_kses(
-			__( '<p>Square account connection is required when using the Square field.</p><p>To proceed, please go to <strong>WPForms Settings » Payments » Square</strong> and press <strong>Connect with Square</strong> button.</p>', 'wpforms-lite' ),
-			[
-				'p'      => [],
-				'strong' => [],
-			]
-		);
+		$strings['square_connection_required'] = '<p>' . esc_html__( 'Square account connection is required when using the Square field. Connect your Square account to start accepting payments.', 'wpforms-lite' ) . '</p>';
 
-		$strings['square_payments_enabled_required'] = wp_kses(
-			__( '<p>Square Payments must be enabled when using the Square field.</p><p>To proceed, please go to <strong>Payments » Square</strong> and check <strong>Enable Square Payments</strong>.</p>', 'wpforms-lite' ),
-			[
-				'p'      => [],
-				'strong' => [],
-			]
-		);
+		$strings['square_connect_button'] = esc_html__( 'Connect With Square', 'wpforms-lite' );
+
+		$strings['square_payments_enabled_required'] = '<p>' . esc_html__( 'Square Payments must be enabled when using the Square field. Enable Square Payments in this form to start accepting payments.', 'wpforms-lite' ) . '</p>';
+
+		$strings['square_enable_payments_button'] = esc_html__( 'Enable Square Payments', 'wpforms-lite' );
 
 		$strings['square_ajax_required'] = wp_kses(
 			__( '<p>AJAX form submissions are required when using the Square field.</p><p>To proceed, please go to <strong>Settings » General » Advanced</strong> and check <strong>Enable AJAX form submission</strong>.</p>', 'wpforms-lite' ),

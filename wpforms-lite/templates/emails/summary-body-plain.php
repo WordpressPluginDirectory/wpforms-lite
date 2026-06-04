@@ -11,6 +11,7 @@
  * @var array $entries            Form entries data to loop through.
  * @var array $notification_block Notification block shown before the Info block.
  * @var array $info_block         Info block shown at the end of the email.
+ * @var array $reengagement_alert Re-engagement alert args (Pro-only).
  */
 
 use WPForms\Integrations\LiteConnect\LiteConnect;
@@ -20,8 +21,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Used to separate strings in the email.
-$separator = '   |   ';
-$divider   = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
+$separator  = '   |   ';
+$divider    = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
+$utm_source = 'Weekly Summary Email';
 
 echo esc_html__( 'Your Weekly WPForms Summary', 'wpforms-lite' ) . "\n\n";
 
@@ -69,17 +71,24 @@ if ( ! wpforms()->is_pro() ) {
 		echo esc_html__( 'Your entries are being backed up, but only for one year.', 'wpforms-lite' ) . "\n\n";
 		echo esc_html__( 'Lite Connect is saving your entries securely in the cloud. Upgrade to Pro to keep them permanently and manage all your entries right inside WordPress.', 'wpforms-lite' ) . "\n\n";
 		echo esc_html__( 'Upgrade to Pro', 'wpforms-lite' ) . ': ';
-		echo esc_url( wpforms_utm_link( 'https://wpforms.com/pricing-lite/', 'Weekly Summary Email', 'Upgrade - With LC' ) );
+		echo esc_url( wpforms_utm_link( 'https://wpforms.com/pricing-lite/', $utm_source, 'Upgrade - With LC' ) );
 	} else {
 		echo esc_html__( 'Your entries are not being backed up.', 'wpforms-lite' ) . "\n\n";
 		echo esc_html__( 'Enable Lite Connect today to start storing entries. When you’re ready to manage your entries inside WordPress, just upgrade to Pro and we’ll import them in seconds!', 'wpforms-lite' ) . "\n\n";
 		echo esc_html__( 'Enable Lite Connect', 'wpforms-lite' ) . ': ';
-		echo esc_url( wpforms_utm_link( 'https://wpforms.com/docs/how-to-use-lite-connect-for-wpforms/', 'Weekly Summary Email', 'Documentation#backup-with-lite-connect' ) ) . "\n\n";
+		echo esc_url( wpforms_utm_link( 'https://wpforms.com/docs/how-to-use-lite-connect-for-wpforms/', $utm_source, 'Documentation#backup-with-lite-connect' ) ) . "\n\n";
 		echo esc_html__( 'Upgrade to Pro', 'wpforms-lite' ) . ': ';
-		echo esc_url( wpforms_utm_link( 'https://wpforms.com/pricing-lite/', 'Weekly Summary Email', 'Upgrade - Without LC' ) );
+		echo esc_url( wpforms_utm_link( 'https://wpforms.com/pricing-lite/', $utm_source, 'Upgrade - Without LC' ) );
 	}
 
 	echo "\n\n";
+}
+
+if ( ! empty( $reengagement_alert ) ) {
+	echo $divider; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo esc_html( $reengagement_alert['title'] ) . "\n\n";
+	echo esc_html( $reengagement_alert['content'] ) . "\n\n";
+	echo esc_html( $reengagement_alert['button_text'] ) . ': ' . esc_url( $reengagement_alert['button_url'] ) . "\n\n";
 }
 
 if ( ! empty( $notification_block ) ) {

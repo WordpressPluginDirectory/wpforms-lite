@@ -206,7 +206,7 @@ class SingleActionsHandler {
 					],
 				]
 			),
-			esc_url( admin_url( 'admin.php?page=wpforms-settings&view=payments#wpforms-setting-row-stripe-api-version' ) )
+			esc_url( Helpers::get_settings_page_url() . '#wpforms-setting-row-stripe-api-version' )
 		);
 
 		wp_send_json_error( [ 'modal_msg' => $message ] );

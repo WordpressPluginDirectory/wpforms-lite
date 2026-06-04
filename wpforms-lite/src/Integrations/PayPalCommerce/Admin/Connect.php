@@ -3,6 +3,7 @@
 namespace WPForms\Integrations\PayPalCommerce\Admin;
 
 use RuntimeException;
+use WPForms\Admin\Payments\BuilderReturnNotice;
 use WPForms\Helpers\Transient;
 use WPForms\Integrations\PayPalCommerce\Api\Api;
 use WPForms\Integrations\PayPalCommerce\Api\WebhooksManager;
@@ -108,6 +109,7 @@ class Connect {
 	public function hooks(): void {
 
 		add_action( 'admin_init', [ $this, 'handle_actions' ] );
+		add_action( 'admin_init', [ $this, 'maybe_queue_builder_return_notice' ], 20 );
 		add_action( 'update_option_wpforms_license', [ $this, 'update_license_option' ], 10, 3 );
 		add_action( 'add_option_wpforms_license', [ $this, 'add_license_option' ], 10, 2 );
 	}
@@ -163,6 +165,17 @@ class Connect {
 	}
 
 	/**
+	 * Queue the "Return to your form" success notice after the user completes
+	 * the PayPal Commerce Connect flow that they started from the form builder.
+	 *
+	 * @since 1.10.1.1
+	 */
+	public function maybe_queue_builder_return_notice(): void {
+
+		BuilderReturnNotice::maybe_queue_oauth( 'paypal_commerce', __( 'PayPal Commerce', 'wpforms-lite' ) );
+	}
+
+	/**
 	 * Update license for the connected customer.
 	 *
 	 * @since 1.10.0
@@ -211,8 +224,19 @@ class Connect {
 	 */
 	private function handle_connect(): void {
 
-		$mode          = Helpers::get_mode();
-		$settings_page = Helpers::get_settings_page_url();
+		$mode           = Helpers::get_mode();
+		$settings_page  = Helpers::get_settings_page_url();
+		$return_form_id = isset( $_GET['wpforms_return_form_id'] ) ? absint( $_GET['wpforms_return_form_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( $return_form_id > 0 ) {
+			$settings_page = add_query_arg(
+				[
+					'wpforms_connected'      => 'paypal_commerce',
+					'wpforms_return_form_id' => $return_form_id,
+				],
+				$settings_page
+			);
+		}
 
 		// If already processing, let the first request finish.
 		if ( ! add_option( self::LOCK_CONNECT_OPTION_NAME . $mode, time() ) ) {
@@ -506,12 +530,19 @@ class Connect {
 	 * Get Connect URL.
 	 *
 	 * @since 1.10.0
+	 * @since 1.10.1.1 Added `$site_url` parameter to override the default
+	 *                  post-OAuth callback URL.
 	 *
-	 * @param string $mode Connection mode.
+	 * @param string $mode     Connection mode.
+	 * @param string $site_url Optional. Absolute URL that PayPal will redirect
+	 *                         to after onboarding. Must point at a page where
+	 *                         the OAuth handshake handler is registered (the
+	 *                         Payments settings page). Defaults to the current
+	 *                         admin URL for backwards compatibility.
 	 *
 	 * @return string
 	 */
-	public function get_connect_url( string $mode ): string {
+	public function get_connect_url( string $mode, string $site_url = '' ): string {
 
 		$mode = Helpers::validate_mode( $mode );
 
@@ -526,7 +557,7 @@ class Connect {
 		}
 
 		$link     = Transient::get( self::SIGNUP_TRANSIENT_NAME . $mode );
-		$site_url = remove_query_arg( self::REFRESH_SIGNUP_KEY, wpforms_current_url() );
+		$site_url = $site_url !== '' ? $site_url : remove_query_arg( self::REFRESH_SIGNUP_KEY, wpforms_current_url() );
 
 		if ( ! empty( $link ) && $site_url === Transient::get( self::SIGNUP_SITE_URL_TRANSIENT_NAME ) ) {
 			return (string) $link;

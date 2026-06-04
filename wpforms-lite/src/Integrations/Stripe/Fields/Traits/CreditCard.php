@@ -214,21 +214,13 @@ trait CreditCard {
 			]
 		);
 
-		$strings['stripe_keys_required'] = wp_kses(
-			__( '<p>Stripe account connection is required when using the Stripe Credit Card field.</p><p>To proceed, please go to <strong>WPForms Settings » Payments » Stripe</strong> and press <strong>Connect with Stripe</strong> button.</p>', 'wpforms-lite' ),
-			[
-				'p'      => [],
-				'strong' => [],
-			]
-		);
+		$strings['stripe_keys_required'] = '<p>' . esc_html__( 'Stripe account connection is required when using the Stripe Credit Card field. Connect your Stripe account to start accepting payments.', 'wpforms-lite' ) . '</p>';
 
-		$strings['payments_enabled_required'] = wp_kses(
-			__( '<p>Stripe Payments must be enabled when using the Stripe Credit Card field.</p><p>To proceed, please go to <strong>Payments » Stripe</strong> and check <strong>Enable Stripe payments</strong>.</p>', 'wpforms-lite' ),
-			[
-				'p'      => [],
-				'strong' => [],
-			]
-		);
+		$strings['stripe_connect_button'] = esc_html__( 'Connect With Stripe', 'wpforms-lite' );
+
+		$strings['payments_enabled_required'] = '<p>' . esc_html__( 'Stripe Payments must be enabled when using the Stripe Credit Card field. Enable Stripe Payments in this form to start accepting payments.', 'wpforms-lite' ) . '</p>';
+
+		$strings['stripe_enable_payments_button'] = esc_html__( 'Enable Stripe Payments', 'wpforms-lite' );
 
 		return $strings;
 	}

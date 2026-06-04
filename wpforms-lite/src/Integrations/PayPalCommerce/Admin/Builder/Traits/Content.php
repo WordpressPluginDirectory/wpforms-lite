@@ -2,6 +2,7 @@
 
 namespace WPForms\Integrations\PayPalCommerce\Admin\Builder\Traits;
 
+use WPForms\Integrations\PayPalCommerce\Admin\Connect;
 use WPForms\Integrations\PayPalCommerce\Admin\Notices;
 use WPForms\Integrations\PayPalCommerce\Connection;
 use WPForms\Integrations\PayPalCommerce\Helpers;
@@ -56,6 +57,20 @@ trait Content {
 		$connection = Connection::get();
 
 		if ( ! $connection ) {
+			$form_id  = isset( $this->form_data['id'] ) ? absint( $this->form_data['id'] ) : 0;
+			$site_url = Helpers::get_settings_page_url();
+
+			if ( $form_id > 0 ) {
+				$site_url = add_query_arg( 'wpforms_return_form_id', $form_id, $site_url );
+			}
+
+			$connect_url = ( new Connect() )->get_connect_url( '', $site_url );
+
+			// Fall back to the settings anchor if the partner-referral lookup
+			// failed (rate limit, connectivity, locked transient).
+			if ( $connect_url === '' ) {
+				$connect_url = $site_url . '#wpforms-setting-row-paypal-commerce-heading';
+			}
 			?>
 
 			<?php $this->alert_icon(); ?>
@@ -64,10 +79,16 @@ trait Content {
 				<p class="wpforms-builder-payment-settings-learn-more"><?php echo $this->learn_more_link(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<?php
 				printf(
-					'<a href="%s" target="_blank" rel="noopener noreferrer" class="wpforms-btn wpforms-btn-md wpforms-btn-orange wpforms-paypal-commerce-auth">%s</a>',
-					esc_url( Helpers::get_settings_page_url() . '#wpforms-setting-row-paypal-commerce-heading' ),
-					esc_html__( 'Connect to PayPal', 'wpforms-lite' )
+					'<a href="%1$s" class="wpforms-btn wpforms-btn-md wpforms-btn-orange wpforms-payments-connect-btn wpforms-paypal-commerce-auth" data-gateway-label="%2$s">%3$s</a>',
+					esc_url( $connect_url ),
+					esc_attr__( 'PayPal Commerce', 'wpforms-lite' ),
+					esc_html__( 'Connect with PayPal', 'wpforms-lite' )
 				);
+
+				// The WPForms transaction fee applies to Lite only; Pro has no extra fees.
+				if ( ! wpforms()->is_pro() ) {
+					echo '<p class="wpforms-builder-payment-settings-fee-notice">' . esc_html__( 'No extra WPForms transaction fees on Pro.', 'wpforms-lite' ) . '</p>';
+				}
 				?>
 			</div>
 			<?php

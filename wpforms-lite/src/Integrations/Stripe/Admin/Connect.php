@@ -2,6 +2,7 @@
 
 namespace WPForms\Integrations\Stripe\Admin;
 
+use WPForms\Admin\Payments\BuilderReturnNotice;
 use WPForms\Integrations\Stripe\Api\DomainManager;
 use WPForms\Integrations\Stripe\Api\WebhooksManager;
 use WPForms\Integrations\Stripe\Helpers;
@@ -74,6 +75,18 @@ class Connect {
 	private function hooks() {
 
 		add_action( 'admin_init', [ $this, 'handle_oauth_handshake' ] );
+		add_action( 'admin_init', [ $this, 'maybe_queue_builder_return_notice' ], 20 );
+	}
+
+	/**
+	 * Queue the "Return to your form" success notice after the user completes
+	 * the Stripe Connect flow that they started from the form builder.
+	 *
+	 * @since 1.10.1.1
+	 */
+	public function maybe_queue_builder_return_notice(): void {
+
+		BuilderReturnNotice::maybe_queue_oauth( 'stripe', __( 'Stripe', 'wpforms-lite' ) );
 	}
 
 	/**
@@ -123,7 +136,18 @@ class Connect {
 		$this->webhooks_manager->connect();
 		$this->domain_manager->validate();
 
-		$settings_url = $this->get_payments_settings_url( false );
+		$settings_url   = $this->get_payments_settings_url( false );
+		$return_form_id = isset( $_GET['wpforms_return_form_id'] ) ? absint( $_GET['wpforms_return_form_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( $return_form_id > 0 ) {
+			$settings_url = add_query_arg(
+				[
+					'wpforms_connected'      => 'stripe',
+					'wpforms_return_form_id' => $return_form_id,
+				],
+				$settings_url
+			);
+		}
 
 		wp_safe_redirect( $settings_url );
 		exit;
@@ -452,15 +476,25 @@ class Connect {
 	 * Get Stripe Connect button URL.
 	 *
 	 * @since 1.8.2
+	 * @since 1.10.1.1 Added `$return_form_id` parameter to round-trip the
+	 *                  source form ID through the OAuth callback.
 	 *
-	 * @param string $mode Stripe mode (e.g. 'live' or 'test').
+	 * @param string $mode           Stripe mode (e.g. 'live' or 'test').
+	 * @param int    $return_form_id Optional. Form ID the user came from in the
+	 *                               builder. Carried through the OAuth callback
+	 *                               so the Payments settings page can show a
+	 *                               "Return to your form" notice.
 	 *
 	 * @return string
 	 */
-	public function get_connect_with_stripe_url( $mode = '' ) {
+	public function get_connect_with_stripe_url( $mode = '', int $return_form_id = 0 ) {
 
 		$mode         = Helpers::validate_stripe_mode( $mode );
 		$settings_url = $this->get_payments_settings_url();
+
+		if ( $return_form_id > 0 ) {
+			$settings_url = add_query_arg( 'wpforms_return_form_id', $return_form_id, $settings_url );
+		}
 
 		return add_query_arg(
 			[
@@ -486,16 +520,13 @@ class Connect {
 	 */
 	private function get_payments_settings_url( bool $include_nonce = true, string $action = 'wpforms_stripe_connect' ): string {
 
-		$args = [
-			'page' => 'wpforms-settings',
-			'view' => 'payments',
-		];
+		$url = Helpers::get_settings_page_url();
 
 		if ( $include_nonce ) {
-			$args['_wpnonce'] = wp_create_nonce( $action );
+			$url = add_query_arg( '_wpnonce', wp_create_nonce( $action ), $url );
 		}
 
-		return add_query_arg( $args, admin_url( 'admin.php' ) );
+		return $url;
 	}
 
 	/**

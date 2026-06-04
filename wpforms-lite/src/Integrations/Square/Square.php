@@ -27,6 +27,12 @@ final class Square implements IntegrationInterface {
 	 */
 	public function allow_load(): bool {
 
+		static $allow_load;
+
+		if ( $allow_load !== null ) {
+			return $allow_load;
+		}
+
 		// Determine whether the Square addon version is compatible with the WPForms plugin version.
 		$addon_compat = ( new AddonCompatibility() )->init();
 
@@ -34,7 +40,9 @@ final class Square implements IntegrationInterface {
 		if ( $addon_compat && ! $addon_compat->is_supported_version() ) {
 			$addon_compat->hooks();
 
-			return false;
+			$allow_load = false;
+
+			return $allow_load;
 		}
 
 		// Determine whether the cURL extension is enabled.
@@ -44,7 +52,9 @@ final class Square implements IntegrationInterface {
 		if ( $curl_compat ) {
 			$curl_compat->hooks();
 
-			return false;
+			$allow_load = false;
+
+			return $allow_load;
 		}
 
 		/**
@@ -54,7 +64,9 @@ final class Square implements IntegrationInterface {
 		 *
 		 * @param bool $is_allowed Integration loading state.
 		 */
-		return (bool) apply_filters( 'wpforms_integrations_square_allow_load', true );
+		$allow_load = (bool) apply_filters( 'wpforms_integrations_square_allow_load', true );
+
+		return $allow_load;
 	}
 
 	/**
@@ -82,6 +94,31 @@ final class Square implements IntegrationInterface {
 
 		$this->load_builder_settings();
 		$this->load_processing();
+	}
+
+	/**
+	 * Build the Square tile for the Payments Get Started empty state.
+	 *
+	 * @since 1.10.1.1
+	 *
+	 * @return array|null
+	 */
+	public static function get_started_gateway(): ?array {
+
+		if ( ! ( new self() )->allow_load() ) {
+			return null;
+		}
+
+		return [
+			'icon'        => WPFORMS_PLUGIN_URL . 'assets/images/addon-icon-square.png',
+			'name'        => __( 'Square', 'wpforms-lite' ),
+			'description' => __( 'Accept payments online and in person with unified Square reporting.', 'wpforms-lite' ),
+			'url'         => ( new Admin\Connect() )->get_connect_url( '' ),
+			'badge'       => '',
+			'cta'         => __( 'Connect', 'wpforms-lite' ),
+			'cta_target'  => '_self',
+			'cta_class'   => '',
+		];
 	}
 
 	/**

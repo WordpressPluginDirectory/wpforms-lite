@@ -3,7 +3,7 @@
         'name' => 'awesomemotive/wpforms',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '4ab0101c38b620de1da587a4d336dbd9b77952d4',
+        'reference' => '91fd5d83bdc4371e255c22f3b6cdb715826b853f',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -49,7 +49,7 @@
         'awesomemotive/wpforms' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '4ab0101c38b620de1da587a4d336dbd9b77952d4',
+            'reference' => '91fd5d83bdc4371e255c22f3b6cdb715826b853f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -61,6 +61,15 @@
             'reference' => '9bdb027d312b732515b884a341c0ad70372c6295',
             'type' => 'library',
             'install_path' => __DIR__ . '/../box/spout',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'enshrined/svg-sanitize' => array(
+            'pretty_version' => '0.22.0',
+            'version' => '0.22.0.0',
+            'reference' => '0afa95ea74be155a7bcd6c6fb60c276c39984500',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../enshrined/svg-sanitize',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -103,7 +112,7 @@
         'roave/security-advisories' => array(
             'pretty_version' => 'dev-latest',
             'version' => 'dev-latest',
-            'reference' => 'd6992473ee5e901c44ba7e8c82b3445692d04794',
+            'reference' => '45dcf8dcfe3ff6b2a5689e3a4c125732067ada3c',
             'type' => 'metapackage',
             'install_path' => null,
             'aliases' => array(

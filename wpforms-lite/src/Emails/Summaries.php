@@ -276,8 +276,21 @@ class Summaries {
 
 		$entries = $this->get_entries();
 
+		/**
+		 * Allows skipping the cron early return when there are no entries.
+		 *
+		 * Pro features (e.g. re-engagement alerts) need the weekly email to send
+		 * even when the site has zero entries.
+		 *
+		 * @since 1.10.1.1
+		 *
+		 * @param bool  $skip_empty Whether to skip sending when entries are empty. Default true.
+		 * @param array $entries    Form entries.
+		 */
+		$skip_empty = (bool) apply_filters( 'wpforms_emails_summaries_cron_skip_empty', true, $entries );
+
 		// Email won't be sent if there are no form entries.
-		if ( empty( $entries ) ) {
+		if ( empty( $entries ) && $skip_empty ) {
 			return;
 		}
 

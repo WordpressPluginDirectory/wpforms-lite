@@ -5,11 +5,16 @@
  * @since 1.8.2
  *
  * @var string $cta_url URL for the "Go To All Forms" CTA button.
+ * @var string $version Determine whether is pro or lite version.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$guide_url = $version === 'pro'
+	? 'https://wpforms.com/docs/how-to-install-and-use-the-stripe-addon-with-wpforms/'
+	: 'https://wpforms.com/docs/using-stripe-with-wpforms-lite/';
 
 ?>
 <div class="wpforms-admin-empty-state-container wpforms-admin-no-payments">
@@ -39,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			),
 			esc_url(
 				wpforms_utm_link(
-					'https://wpforms.com/docs/using-stripe-with-wpforms-lite/',
+					$guide_url,
 					'Payments Dashboard',
 					'Activated - Manage Payments Documentation'
 				)

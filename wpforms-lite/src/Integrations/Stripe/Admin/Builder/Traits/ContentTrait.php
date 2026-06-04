@@ -2,8 +2,9 @@
 
 namespace WPForms\Integrations\Stripe\Admin\Builder\Traits;
 
-use WPForms\Integrations\Stripe\Helpers;
+use WPForms\Integrations\Stripe\Admin\Connect;
 use WPForms\Integrations\Stripe\Admin\Notices;
+use WPForms\Integrations\Stripe\Helpers;
 
 /**
  * Payment builder settings content trait.
@@ -246,23 +247,43 @@ trait ContentTrait {
 			return false;
 		}
 
-		$this->alert_content(
-			__( 'Heads up! Stripe payments can\'t be enabled yet.', 'wpforms-lite' ),
-			sprintf(
-				wp_kses( /* translators: %1$s - admin area Payments settings page URL. */
-					__( 'First, please connect to your Stripe account on the <a href="%1$s" class="secondary-text">WPForms Settings</a> page.', 'wpforms-lite' ),
-					[
-						'a' => [
-							'href'  => [],
-							'class' => [],
-						],
-					]
-				),
-				esc_url( admin_url( 'admin.php?page=wpforms-settings&view=payments' ) )
-			)
-		);
+		$this->disconnected_alert();
 
 		return true;
+	}
+
+	/**
+	 * Display the disconnected-state alert with an inline Connect button.
+	 *
+	 * @since 1.10.1.1
+	 */
+	private function disconnected_alert(): void {
+
+		$form_id     = isset( $this->form_data['id'] ) ? absint( $this->form_data['id'] ) : 0;
+		$connect_url = ( new Connect() )->get_connect_with_stripe_url( '', $form_id );
+
+		$this->alert_icon();
+		?>
+		<div class="wpforms-builder-payment-settings-default-content">
+			<p><?php esc_html_e( 'Connect to your Stripe account and start accepting payments today.', 'wpforms-lite' ); ?></p>
+			<p class="wpforms-builder-payment-settings-learn-more">
+				<?php echo $this->learn_more_link(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</p>
+			<?php
+			printf(
+				'<a href="%1$s" class="wpforms-btn wpforms-btn-md wpforms-btn-orange wpforms-payments-connect-btn wpforms-stripe-connect" data-gateway-label="%2$s">%3$s</a>',
+				esc_url( $connect_url ),
+				esc_attr__( 'Stripe', 'wpforms-lite' ),
+				esc_html__( 'Connect with Stripe', 'wpforms-lite' )
+			);
+
+			// The WPForms transaction fee applies to Lite only; Pro has no extra fees.
+			if ( ! wpforms()->is_pro() ) {
+				echo '<p class="wpforms-builder-payment-settings-fee-notice">' . esc_html__( 'No extra WPForms transaction fees on Pro.', 'wpforms-lite' ) . '</p>';
+			}
+			?>
+		</div>
+		<?php
 	}
 
 	/**

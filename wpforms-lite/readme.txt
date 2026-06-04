@@ -3,7 +3,7 @@ Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 7.0
-Stable tag: 1.10.1
+Stable tag: 1.10.1.1
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -391,6 +391,11 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+
+= 1.10.1.1 =
+- Added: Inline Connect buttons in the Form Builder Payments panel, allowing users to connect their payment accounts without leaving the form editor.
+- Changed: The Payments page has a refreshed design when no payments have been received yet.
+- Fixed: Fatal error on form submission when the PayPal Commerce account was disconnected while the form still had the PayPal Commerce payment enabled.
 
 = 1.10.1 =
 - Added: Secret key fields in the admin settings are now masked for improved privacy.

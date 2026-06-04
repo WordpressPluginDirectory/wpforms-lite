@@ -519,4 +519,22 @@ class Helpers {
 
 		return get_option( "wpforms_stripe_{$mode}_account_country", '' );
 	}
+
+	/**
+	 * Get the WPForms Payments settings page URL.
+	 *
+	 * @since 1.10.1.1
+	 *
+	 * @return string
+	 */
+	public static function get_settings_page_url(): string {
+
+		return add_query_arg(
+			[
+				'page' => 'wpforms-settings',
+				'view' => 'payments',
+			],
+			admin_url( 'admin.php' )
+		);
+	}
 }

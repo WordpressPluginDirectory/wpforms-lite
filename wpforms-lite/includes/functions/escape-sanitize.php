@@ -14,6 +14,7 @@ use WPForms\Helpers\Templates;
 use WPForms\Vendor\HTMLPurifier;
 use WPForms\Vendor\HTMLPurifier_Config;
 use WPForms\Helpers\File;
+use WPForms\Vendor\enshrined\svgSanitize\Sanitizer;
 
 /**
  * Decode special characters, both alpha- (<) and numeric-based (').
@@ -630,4 +631,108 @@ function wpforms_get_html_purifier(): HTMLPurifier {
 	$purifier = new HTMLPurifier( $config );
 
 	return $purifier;
+}
+
+/**
+ * Sanitize an SVG file in place, stripping scripts, event handlers and other
+ * potentially malicious markup.
+ *
+ * Non-SVG files are left untouched. Sites that explicitly enable SVG support
+ * would otherwise store SVG uploads unsanitized, allowing stored XSS. To stay
+ * safe by default, this function fails closed: when the SVG sanitizer is
+ * unavailable or sanitization fails, it returns false so the caller can reject
+ * the file rather than store it unsanitized.
+ *
+ * Gzipped SVG variants (e.g. .svgz) cannot be parsed as plain XML, so they fail
+ * sanitization and are rejected rather than stored unsanitized.
+ *
+ * @since 1.10.1.1
+ *
+ * @param string $file_path Absolute path to the file to sanitize.
+ * @param string $file_name Optional. Original file name used to determine the extension when
+ *                          the path itself has none (e.g. a PHP upload temp file). Default ''.
+ *
+ * @return bool True if the file is not an SVG or was sanitized successfully, false on failure.
+ */
+function wpforms_sanitize_svg_file( string $file_path, string $file_name = '' ): bool {
+
+	if ( ! is_file( $file_path ) ) {
+		return false;
+	}
+
+	// Derive the extension from the original name when provided, otherwise from the path.
+	$name_for_ext = $file_name !== '' ? $file_name : $file_path;
+	$extension    = strtolower( pathinfo( $name_for_ext, PATHINFO_EXTENSION ) );
+
+	// Bail early for anything that is not an SVG. Nothing to sanitize.
+	if ( ! in_array( $extension, [ 'svg', 'svgz' ], true ) ) {
+		return true;
+	}
+
+	$contents = file_get_contents( $file_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+
+	if ( empty( $contents ) ) {
+		return false;
+	}
+
+	$sanitized = wpforms_sanitize_svg_markup( $contents );
+
+	if ( $sanitized === false ) {
+		return false;
+	}
+
+	// phpcs:ignore WordPress.WP.AlternativeFunctions
+	return file_put_contents( $file_path, $sanitized ) !== false;
+}
+
+/**
+ * Sanitize an SVG markup string, stripping scripts, event handlers and other
+ * potentially malicious markup.
+ *
+ * Fails closed: returns false when the sanitizer library is unavailable or when
+ * the markup cannot be sanitized (e.g. it is not valid SVG XML).
+ *
+ * @since 1.10.1.1
+ *
+ * @param string $markup SVG markup to sanitize.
+ *
+ * @return string|false Sanitized markup, or false on failure.
+ */
+function wpforms_sanitize_svg_markup( string $markup ) {
+
+	// Fail closed if the sanitizer library is not available.
+	if ( ! class_exists( Sanitizer::class ) ) {
+		return false;
+	}
+
+	$sanitizer = new Sanitizer();
+
+	// Block references to remote resources to prevent SSRF and data exfiltration.
+	$sanitizer->removeRemoteReferences( true );
+
+	$sanitized = $sanitizer->sanitize( $markup );
+
+	if ( $sanitized === false ) {
+		return false;
+	}
+
+	// The sanitizer library only strips remote references wrapped in quotes, e.g. url( 'http://...' ).
+	// Bare references such as fill="url(http://...)" slip through, so strip remote url() targets here.
+	// Local references like url(#gradient) and data: URIs have no // and are intentionally left intact.
+	$sanitized = (string) preg_replace(
+		'~url\(\s*[\'"]?\s*(?:(?:https?|ftp|file):)?//[^)]*\)~i',
+		'url()',
+		$sanitized
+	);
+
+	// The library's removeRemoteReferences() only matches url()-wrapped values, and its href allow-list
+	// explicitly permits bare http(s) URLs. So elements like <image>, <pattern> and <marker> keep a remote
+	// href/xlink:href and silently load the resource (tracking pixel risk) when the file is opened. Strip
+	// any href/xlink:href whose value is a remote reference (scheme://... or protocol-relative //...).
+	// Local fragment references (#id), relative paths (/path) and data: URIs have no // and are kept intact.
+	return (string) preg_replace(
+		'~\s(?:xlink:)?href\s*=\s*([\'"])\s*(?:(?:https?|ftp|file):)?//.*?\1~is',
+		'',
+		$sanitized
+	);
 }

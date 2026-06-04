@@ -72,27 +72,13 @@ class Enqueues {
 
 		$strings = (array) $strings;
 
-		$strings['paypal_commerce_connection_required'] = wp_kses(
-			__( '<p>You must connect to PayPal Commerce before using the PayPal Commerce field.</p><p>To connect your account, please go to <strong>WPForms Settings » Payments » PayPal Commerce</strong> and press <strong>Connect with PayPal Commerce</strong> button.</p>', 'wpforms-lite' ),
-			[
-				'p'      => [],
-				'strong' => [],
-			]
-		);
+		$strings['paypal_commerce_connection_required'] = '<p>' . esc_html__( 'PayPal account connection is required when using the PayPal field. Connect your PayPal account to start accepting payments.', 'wpforms-lite' ) . '</p>';
 
-		$strings['paypal_commerce_payments_enabled_required'] = wp_kses(
-			__( '<p>PayPal Commerce must be enabled for this form when using the PayPal Commerce field.</p><p>To proceed, go to <strong><a href="#" class="wpforms-no-fetch-link" data-panel="payments" data-section="paypal_commerce">Payments » PayPal Commerce</a></strong> and select <strong>payment type</strong>.</p>', 'wpforms-lite' ),
-			[
-				'p'      => [],
-				'strong' => [],
-				'a'      => [
-					'href'         => [],
-					'class'        => [],
-					'data-panel'   => [],
-					'data-section' => [],
-				],
-			]
-		);
+		$strings['paypal_commerce_connect_button'] = esc_html__( 'Connect With PayPal', 'wpforms-lite' );
+
+		$strings['paypal_commerce_payments_enabled_required'] = '<p>' . esc_html__( 'PayPal Payments must be enabled when using the PayPal Commerce field. Enable PayPal Payments in this form to start accepting payments.', 'wpforms-lite' ) . '</p>';
+
+		$strings['paypal_commerce_enable_payments_button'] = esc_html__( 'Enable PayPal Payments', 'wpforms-lite' );
 
 		$strings['paypal_commerce_ajax_required'] = wp_kses(
 			__( '<p>AJAX form submissions are required when using the PayPal Commerce field.</p><p>To proceed, please go to <strong>Settings » General</strong> and check <strong>Enable AJAX form submission</strong>.</p>', 'wpforms-lite' ),

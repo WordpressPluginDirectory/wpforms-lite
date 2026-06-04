@@ -20,13 +20,21 @@ final class Stripe implements IntegrationInterface {
 	 */
 	public function allow_load() {
 
+		static $allow_load;
+
+		if ( $allow_load !== null ) {
+			return $allow_load;
+		}
+
 		// Determine whether the Stripe addon version is compatible with the WPForms plugin version.
 		$addon_compat = ( new StripeAddonCompatibility() )->init();
 
 		if ( $addon_compat && ! $addon_compat->is_supported_version() ) {
 			$addon_compat->hooks();
 
-			return false;
+			$allow_load = false;
+
+			return $allow_load;
 		}
 
 		/**
@@ -36,7 +44,9 @@ final class Stripe implements IntegrationInterface {
 		 *
 		 * @param bool $is_allowed Integration loading state.
 		 */
-		return (bool) apply_filters( 'wpforms_integrations_stripe_allow_load', true );
+		$allow_load = (bool) apply_filters( 'wpforms_integrations_stripe_allow_load', true );
+
+		return $allow_load;
 	}
 
 	/**
@@ -77,5 +87,31 @@ final class Stripe implements IntegrationInterface {
 			( new Admin\Builder\Settings() )->init();
 			( new Admin\Builder\Notifications() )->init();
 		}
+	}
+
+	/**
+	 * Build the Stripe tile for the Payments Get Started empty state.
+	 *
+	 * @since 1.10.1.1
+	 *
+	 * @return array|null
+	 */
+	public static function get_started_gateway(): ?array {
+
+		if ( ! ( new self() )->allow_load() ) {
+			return null;
+		}
+
+		return [
+			'icon'        => WPFORMS_PLUGIN_URL . 'assets/images/empty-states/payments/stripe-icon.svg',
+			'icon_alt'    => __( 'Stripe', 'wpforms-lite' ),
+			'brand'       => WPFORMS_PLUGIN_URL . 'assets/images/empty-states/payments/stripe-brand-icon.svg',
+			'tagline'     => __( 'Securely Accept Credit Card Payments', 'wpforms-lite' ),
+			'name'        => __( 'Stripe', 'wpforms-lite' ),
+			'description' => __( 'Accept credit card payments, Apple Pay, Google Pay, ACH, and more with WPForms Stripe integration.', 'wpforms-lite' ),
+			'url'         => ( new Admin\Connect() )->get_connect_with_stripe_url(),
+			'btn_icon'    => WPFORMS_PLUGIN_URL . 'assets/images/empty-states/payments/stripe-connect-icon.svg',
+			'btn_text'    => __( 'Connect with Stripe', 'wpforms-lite' ),
+		];
 	}
 }

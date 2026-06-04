@@ -2,6 +2,7 @@
 
 namespace WPForms\Integrations\PayPalCommerce\Admin\Builder;
 
+use WPForms\Integrations\PayPalCommerce\Connection;
 use WPForms\Integrations\PayPalCommerce\Helpers;
 use WPForms\Integrations\PayPalCommerce\PayPalCommerce;
 
@@ -188,6 +189,10 @@ class Settings {
 	 * @return bool
 	 */
 	private function is_payments_enabled(): bool {
+
+		if ( ! Connection::get() ) {
+			return false;
+		}
 
 		return ! empty( $this->form_data['payments'][ $this->slug ]['enable'] ) || ! empty( $this->form_data['payments'][ $this->slug ]['enable_one_time'] );
 	}

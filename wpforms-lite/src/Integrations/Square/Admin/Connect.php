@@ -9,6 +9,7 @@ use WPForms\Vendor\Square\Models\LocationStatus;
 use WPForms\Vendor\Square\Environment;
 use WP_Error;
 use WPForms\Admin\Notice;
+use WPForms\Admin\Payments\BuilderReturnNotice;
 use WPForms\Helpers\Transient;
 use WPForms\Tasks\Tasks;
 use WPForms\Integrations\Square\Connection;
@@ -62,9 +63,21 @@ class Connect {
 	private function hooks() {
 
 		add_action( 'admin_init',                                [ $this, 'handle_actions' ] );
+		add_action( 'admin_init',                                [ $this, 'maybe_queue_builder_return_notice' ], 20 );
 		add_action( 'wpforms_square_refresh_connection',         [ $this, 'refresh_connection_schedule' ] );
 		add_action( 'wp_ajax_wpforms_square_refresh_connection', [ $this, 'refresh_connection_manual' ] );
 		add_action( 'wp_ajax_wpforms_square_create_webhook',     [ $this->webhooks_manager, 'connect' ] );
+	}
+
+	/**
+	 * Queue the "Return to your form" success notice after the user completes
+	 * the Square Connect flow that they started from the form builder.
+	 *
+	 * @since 1.10.1.1
+	 */
+	public function maybe_queue_builder_return_notice(): void {
+
+		BuilderReturnNotice::maybe_queue_oauth( 'square', __( 'Square', 'wpforms-lite' ) );
 	}
 
 	/**
@@ -180,8 +193,23 @@ class Connect {
 
 		$this->prepare_locations( $mode );
 
-		$redirect_url = Helpers::get_settings_page_url();
+		$redirect_url   = Helpers::get_settings_page_url();
+		$return_form_id = isset( $_GET['wpforms_return_form_id'] ) ? absint( $_GET['wpforms_return_form_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
+		// Round-trip the builder context regardless of usability, matching Stripe.
+		// Square may not be usable yet at this point (e.g. currency not matched
+		// until settings are saved), but the user still came from the builder.
+		if ( $return_form_id > 0 ) {
+			$redirect_url = add_query_arg(
+				[
+					'wpforms_connected'      => 'square',
+					'wpforms_return_form_id' => $return_form_id,
+				],
+				$redirect_url
+			);
+		}
+
+		// Append the anchor last so the query string stays before the fragment.
 		if ( ! $connection->is_usable() ) {
 			$redirect_url .= '#wpforms-setting-row-square-heading';
 		}
@@ -799,12 +827,18 @@ class Connect {
 	 * Retrieve the connect URL.
 	 *
 	 * @since 1.9.5
+	 * @since 1.10.1.1 Added `$return_form_id` parameter to round-trip the
+	 *                  source form ID through the OAuth callback.
 	 *
-	 * @param string $mode Square mode.
+	 * @param string $mode           Square mode.
+	 * @param int    $return_form_id Optional. Form ID the user came from in the
+	 *                               builder. Carried through the OAuth callback
+	 *                               so the Payments settings page can show a
+	 *                               "Return to your form" notice.
 	 *
 	 * @return string
 	 */
-	public function get_connect_url( string $mode ): string {
+	public function get_connect_url( string $mode, int $return_form_id = 0 ): string {
 
 		$mode = Helpers::validate_mode( $mode );
 
@@ -813,6 +847,10 @@ class Connect {
 			wp_create_nonce( 'wpforms_square_connect' ),
 			Helpers::get_settings_page_url()
 		);
+
+		if ( $return_form_id > 0 ) {
+			$settings_url = add_query_arg( 'wpforms_return_form_id', $return_form_id, $settings_url );
+		}
 
 		return add_query_arg(
 			[

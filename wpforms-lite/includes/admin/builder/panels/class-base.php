@@ -211,6 +211,8 @@ abstract class WPForms_Builder_Panel {
 			'payments_plan_placeholder'   => esc_html__( 'Plan Name', 'wpforms-lite' ),
 			'payments_disabled_recurring' => esc_html__( 'You can only use one payment type at a time. If you\'d like to enable Recurring Payments, please disable One-Time Payments.', 'wpforms-lite' ),
 			'payments_disabled_one_time'  => esc_html__( 'You can only use one payment type at a time. If you\'d like to enable One-Time Payments, please disable Recurring Payments.', 'wpforms-lite' ),
+			/* translators: %s - Payment gateway name, e.g. "Stripe". */
+			'connect_confirm_save'        => esc_html__( 'Your form must be saved before you can connect to %s. Save and continue?', 'wpforms-lite' ),
 		];
 
 		wp_localize_script(

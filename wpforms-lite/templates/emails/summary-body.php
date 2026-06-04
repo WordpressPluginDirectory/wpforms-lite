@@ -12,6 +12,7 @@
  * @var bool  $has_trends         Whether trends data is available.
  * @var array $notification_block Notification block shown before the Info block.
  * @var array $info_block         Info block shown at the end of the email.
+ * @var array $reengagement_alert Re-engagement alert block (Pro-only) shown inside the summary content.
  * @var array $icons              Icons used for the design purposes.
  */
 
@@ -209,6 +210,42 @@ $utm_medium = 'Weekly Summary Email';
 																		</td>
 																	</tr>
 																<?php endif; ?>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								<?php endif; ?>
+								<?php if ( ! empty( $reengagement_alert ) ) : ?>
+									<div class="summary-reengagement-wrapper">
+										<table class="summary-reengagement" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+											<tbody>
+												<tr>
+													<td class="summary-reengagement-card">
+														<table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+															<tbody>
+																<tr>
+																	<td align="center" valign="top" style="padding: 25px 30px 0 30px;">
+																		<h4><?php echo esc_html( $reengagement_alert['title'] ); ?></h4>
+																		<p><?php echo esc_html( $reengagement_alert['content'] ); ?></p>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="center" valign="middle" style="padding: 16px 30px 30px 30px;">
+																		<?php
+																		echo wpforms_render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+																			'emails/partials/summary-cta-button',
+																			[
+																				'cta_url'  => $reengagement_alert['button_url'],
+																				'cta_text' => $reengagement_alert['button_text'],
+																			],
+																			true
+																		);
+																		?>
+																	</td>
+																</tr>
 															</tbody>
 														</table>
 													</td>

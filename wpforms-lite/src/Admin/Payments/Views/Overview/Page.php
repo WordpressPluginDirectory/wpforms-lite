@@ -7,7 +7,12 @@ use WPForms\Db\Payments\ValueValidator;
 use WPForms\Admin\Payments\Payments;
 use WPForms\Admin\Payments\Views\PaymentsViewsInterface;
 use WPForms\Integrations\Stripe\Helpers as StripeHelpers;
+use WPForms\Integrations\Stripe\Stripe;
 use WPForms\Integrations\Square\Helpers as SquareHelpers;
+use WPForms\Integrations\Square\Square;
+use WPForms\Integrations\PayPalCommerce\Connection as PayPalCommerceConnection;
+use WPForms\Integrations\PayPalCommerce\PayPalCommerce;
+use WPFormsAuthorizeNet\Helpers as AuthorizeNetHelpers;
 
 /**
  * Payments Overview Page class.
@@ -343,6 +348,8 @@ class Page implements PaymentsViewsInterface {
 	 */
 	private function display_empty_state() {
 
+		$version = StripeHelpers::is_allowed_license_type() ? 'pro' : 'lite';
+
 		// If a payment gateway is configured, output no payments state.
 		if ( $this->is_gateway_configured() ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -355,6 +362,7 @@ class Page implements PaymentsViewsInterface {
 						],
 						'admin.php'
 					),
+					'version' => $version,
 				],
 				true
 			);
@@ -363,41 +371,76 @@ class Page implements PaymentsViewsInterface {
 		}
 
 		// Otherwise, output get started state.
-		$is_upgraded = StripeHelpers::is_allowed_license_type();
-		$message     = __( "First you need to set up a payment gateway. We've partnered with <strong>Stripe and Square</strong> to bring easy payment forms to everyone.&nbsp;", 'wpforms-lite' );
-		$message    .= $is_upgraded
-			? sprintf( /* translators: %s - WPForms Addons admin page URL. */
-				__( 'Other payment gateways such as <strong>PayPal</strong> and <strong>Authorize.Net</strong> can be installed from the <a href="%s">Addons screen</a>.', 'wpforms-lite' ),
-				esc_url(
-					add_query_arg(
-						[
-							'page' => 'wpforms-addons',
-						],
-						admin_url( 'admin.php' )
-					)
-				)
-			)
-			: sprintf( /* translators: %s - WPForms.com Upgrade page URL. */
-				__( "If you'd like to use another payment gateway, please consider <a href='%s'>upgrading to WPForms Pro</a>.", 'wpforms-lite' ),
-				esc_url( wpforms_admin_upgrade_link( 'Payments Dashboard', 'Splash - Upgrade to Pro Text' ) )
-			);
-
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo wpforms_render(
 			'admin/empty-states/payments/get-started',
 			[
-				'message' => $message,
-				'version' => $is_upgraded ? 'pro' : 'lite',
-				'cta_url' => add_query_arg(
-					[
-						'page' => 'wpforms-settings',
-						'view' => 'payments',
-					],
-					admin_url( 'admin.php' )
-				),
+				'version'  => $version,
+				'gateways' => $this->get_started_gateways(),
 			],
 			true
 		);
+	}
+
+	/**
+	 * Compose the gateway tiles shown on the Get Started empty state.
+	 *
+	 * @since 1.10.1.1
+	 *
+	 * @return array
+	 */
+	private function get_started_gateways(): array {
+
+		$gateways = array_filter(
+			[
+				'stripe'          => Stripe::get_started_gateway(),
+				'paypal-commerce' => PayPalCommerce::get_started_gateway(),
+				'square'          => Square::get_started_gateway(),
+			]
+		);
+
+		return $this->add_authorize_net_gateway( $gateways );
+	}
+
+	/**
+	 * Append the Authorize.Net tile to the Get Started gateway list.
+	 *
+	 * @since 1.10.1.1
+	 *
+	 * @param array $gateways Existing gateway entries.
+	 *
+	 * @return array
+	 */
+	private function add_authorize_net_gateway( array $gateways ): array {
+
+		$is_elite_tier           = in_array( wpforms_get_license_type(), [ 'elite', 'agency', 'ultimate' ], true );
+		$is_authorize_net_active = class_exists( '\WPFormsAuthorizeNet\Loader' );
+		$settings_payments_url   = admin_url( 'admin.php?page=wpforms-settings&view=payments' );
+		$addons_url              = admin_url( 'admin.php?page=wpforms-addons' );
+
+		if ( $is_authorize_net_active ) {
+			$url = $settings_payments_url . '#wpforms-setting-row-authorize_net-heading';
+			$cta = __( 'Connect', 'wpforms-lite' );
+		} elseif ( $is_elite_tier ) {
+			$url = $addons_url . '&search=authorize';
+			$cta = __( 'Install', 'wpforms-lite' );
+		} else {
+			$url = wpforms_admin_upgrade_link( 'Payments Dashboard', 'Splash - Authorize.Net Upgrade' );
+			$cta = __( 'Upgrade', 'wpforms-lite' );
+		}
+
+		$gateways['authorize-net'] = [
+			'icon'        => WPFORMS_PLUGIN_URL . 'assets/images/addon-icon-authorize-net.png',
+			'name'        => __( 'Authorize.Net', 'wpforms-lite' ),
+			'description' => __( 'Accept credit cards and eChecks with enterprise-grade fraud protection.', 'wpforms-lite' ),
+			'url'         => $url,
+			'badge'       => $is_elite_tier ? '' : __( 'Elite', 'wpforms-lite' ),
+			'cta'         => $cta,
+			'cta_target'  => $is_elite_tier ? '_self' : '_blank',
+			'cta_class'   => $is_elite_tier ? '' : 'wpforms-upgrade-modal',
+		];
+
+		return $gateways;
 	}
 
 	/**
@@ -409,14 +452,49 @@ class Page implements PaymentsViewsInterface {
 	 */
 	private function is_gateway_configured(): bool {
 
+		$is_configured = StripeHelpers::has_stripe_keys()
+			|| SquareHelpers::is_square_configured()
+			|| self::is_paypal_commerce_configured()
+			|| self::is_authorize_net_configured();
+
 		/**
-		 * Allow to modify a status whether Stripe or Square payment gateway is configured.
+		 * Allow to modify a status whether a payment gateway is configured.
 		 *
 		 * @since 1.8.2
 		 *
-		 * @param bool $is_configured True if Stripe or Square payment gateway is configured.
+		 * @param bool $is_configured True if any supported payment gateway is configured.
 		 */
-		return (bool) apply_filters( 'wpforms_admin_payments_views_overview_page_gateway_is_configured', StripeHelpers::has_stripe_keys() || SquareHelpers::is_square_configured() );
+		return (bool) apply_filters( 'wpforms_admin_payments_views_overview_page_gateway_is_configured', $is_configured );
+	}
+
+	/**
+	 * Determine whether the PayPal Commerce gateway has a saved connection.
+	 *
+	 * @since 1.10.1.1
+	 *
+	 * @return bool
+	 */
+	private static function is_paypal_commerce_configured(): bool {
+
+		$connection = PayPalCommerceConnection::get();
+
+		return $connection && $connection->is_configured();
+	}
+
+	/**
+	 * Determine whether the Authorize.Net addon is active and has API credentials saved.
+	 *
+	 * @since 1.10.1.1
+	 *
+	 * @return bool
+	 */
+	private static function is_authorize_net_configured(): bool {
+
+		if ( ! class_exists( AuthorizeNetHelpers::class ) ) {
+			return false;
+		}
+
+		return (bool) AuthorizeNetHelpers::has_authorize_net_keys();
 	}
 
 	/**
