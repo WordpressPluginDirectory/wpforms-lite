@@ -263,7 +263,7 @@ class WPForms_Builder {
 
 		// Allow based styles added in WP 7.0.
 		// Otherwise, there is an issue with the Upload Media button.
-		if ( version_compare( $GLOBALS['wp_version'], '7.0-alpha', '>=' ) ) {
+		if ( wpforms_is_wp_version_at_least( '7.0-alpha' ) ) {
 			$allowed_styles[] = 'wp-base-styles';
 		}
 
@@ -480,6 +480,8 @@ class WPForms_Builder {
 		// Force hide an admin side menu.
 		echo '<style>#adminmenumain { display: none !important }</style>';
 
+		$this->suppress_view_transition_abort_error();
+
 		/**
 		 * Form Builder admin head action.
 		 *
@@ -488,6 +490,25 @@ class WPForms_Builder {
 		 * @since 1.4.6
 		 */
 		do_action( 'wpforms_builder_admin_head', $this->view );
+	}
+
+	/**
+	 * Prevent the `AbortError: Transition was skipped` console error on WP 7.0+.
+	 *
+	 * @since 1.10.2
+	 */
+	private function suppress_view_transition_abort_error(): void {
+
+		// View Transitions in the admin are a WP 7.0+ feature, so there's nothing to do before that.
+		if ( ! wpforms_is_wp_version_at_least( '7.0-alpha' ) ) {
+			return;
+		}
+
+		// Opt the Builder into the transition (overrides the opt-out in builder-basic.css).
+		echo '<style>@view-transition { navigation: auto; }</style>';
+
+		// Skip the transition on both ends and resolve its promises so nothing stays unhandled.
+		echo '<script>(function(){var skip=function(event){var transition=event.viewTransition;if(!transition){return;}transition.skipTransition();transition.ready.catch(function(){});transition.finished.catch(function(){});};window.addEventListener("pagereveal",skip);window.addEventListener("pageswap",skip);})();</script>';
 	}
 
 	/**
@@ -514,7 +535,7 @@ class WPForms_Builder {
 
 		// Make sure that base styles (added in WP 7.0) are enqueued.
 		// Otherwise, there is an issue with the Upload Media button.
-		if ( version_compare( $GLOBALS['wp_version'], '7.0-alpha', '>=' ) ) {
+		if ( wpforms_is_wp_version_at_least( '7.0-alpha' ) ) {
 			wp_enqueue_style( 'wp-base-styles' );
 		}
 

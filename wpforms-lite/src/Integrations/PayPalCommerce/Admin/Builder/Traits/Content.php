@@ -542,7 +542,7 @@ trait Content {
 			?>
 			<div class="wpforms-panel-content-section-payment-recurring wpforms-panel-content-section-payment-toggled-body">
 				<?php
-				$this->builder_content_recurring_payment_before_content();
+				$this->builder_content_recurring_payment_before_content( $this->slug );
 
 				if ( empty( $this->form_data['payments'][ PayPalCommerce::SLUG ]['recurring'] ) ) {
 					$this->form_data['payments'][ PayPalCommerce::SLUG ]['recurring'][] = [];
@@ -571,8 +571,16 @@ trait Content {
 	 * Display content before the recurring payment area.
 	 *
 	 * @since 1.10.0
+	 * @since 1.10.2 Added the `$slug` parameter to scope the notice to the PayPal Commerce panel.
+	 *
+	 * @param string $slug Payment gateway slug.
 	 */
-	public function builder_content_recurring_payment_before_content(): void {
+	public function builder_content_recurring_payment_before_content( string $slug = '' ): void {
+
+		// Bail when the shared recurring-content action is fired for another gateway's panel.
+		if ( $this->slug !== $slug ) {
+			return;
+		}
 
 		printf(
 			'<p class="wpforms-alert wpforms-alert-warning">%s</p>',

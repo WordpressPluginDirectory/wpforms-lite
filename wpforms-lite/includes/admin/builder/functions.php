@@ -172,6 +172,12 @@ function wpforms_panel_field( $option, $panel, $field, $form_data, $label, $args
 
 		// Textarea.
 		case 'textarea':
+			// Guard against non-string values (e.g. corrupted form data) reaching esc_textarea(),
+			// which would throw a TypeError in htmlspecialchars() and crash the builder.
+			if ( ! is_string( $value ) ) {
+				$value = is_array( $value ) || is_object( $value ) ? (string) wp_json_encode( $value ) : (string) $value;
+			}
+
 			$output = sprintf(
 				'<textarea id="%s" name="%s" rows="%d" placeholder="%s" class="%s" %s>%s</textarea>',
 				$input_id,

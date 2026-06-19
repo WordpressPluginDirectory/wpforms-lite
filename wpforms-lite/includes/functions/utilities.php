@@ -251,12 +251,7 @@ function wpforms_utm_link( $link, $medium, $content = '', $term = '' ) {
  */
 function wpforms_wp_org_review_link(): string {
 
-	$link = 'https://wordpress.org/support/plugin/wpforms-lite/reviews/#new-post';
-
-	$link = add_query_arg(
-		[ 'filter' => 5 ],
-		$link
-	);
+	$link = 'https://wpforms.com/wpforms-wordpress-rating/';
 
 	return esc_url( $link );
 }

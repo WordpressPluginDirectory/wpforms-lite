@@ -583,6 +583,7 @@ class WPForms_Lite {
 						'input_class' => 'wpforms-panel-field-confirmations-page',
 						'parent'      => 'settings',
 						'subsection'  => $field_id,
+						'placeholder' => esc_html__( 'Search for a page', 'wpforms-lite' ),
 						'choicesjs'   => [
 							'use_ajax'    => true,
 							'callback_fn' => 'select_pages',

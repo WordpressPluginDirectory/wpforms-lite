@@ -143,9 +143,13 @@ class Geolocation extends AddonsItemBase {
 				'<p>%1$s</p>',
 				__( 'Do you want to learn more about visitors who fill out your online forms? Our geolocation addon allows you to collect and store your website visitors geolocation data along with their form submission. This insight can help you to be better informed and turn more leads into customers. Furthermore, add a smart address field that autocompletes using the Google Places API.', 'wpforms-lite' )
 			),
-			'badge'                => __( 'Pro', 'wpforms-lite' ),
 			'features_description' => __( 'Powerful location-based insights and features…', 'wpforms-lite' ),
 		];
+
+		// Only show the upgrade badge when the current license does not include the addon.
+		if ( empty( $addon['plugin_allow'] ) ) {
+			$params['badge'] = __( 'Pro', 'wpforms-lite' );
+		}
 
 		return array_merge( $params, $addon );
 	}

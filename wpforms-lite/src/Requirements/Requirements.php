@@ -310,6 +310,9 @@ class Requirements {
 		'wpforms-save-resume/wpforms-save-resume.php'                   => [
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
 		],
+		'wpforms-sendgrid/wpforms-sendgrid.php'                         => [
+			self::LICENSE => self::PLUS_PRO_AND_TOP,
+		],
 		'wpforms-sendinblue/wpforms-sendinblue.php'                     => [
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
 		],
@@ -600,6 +603,24 @@ class Requirements {
 
 		// No more actions on forks.
 		return $plugin_author === 'wpforms';
+	}
+
+	/**
+	 * Check whether a basename belongs to the core WPForms plugin (Lite or Pro).
+	 *
+	 * Only `wpforms/wpforms.php` and `wpforms-lite/wpforms.php` contain the `wpforms.php`
+	 * substring; addon basenames (e.g. `wpforms-entry-automation/wpforms-entry-automation.php`)
+	 * do not.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param string $basename Plugin basename.
+	 *
+	 * @return bool
+	 */
+	private function is_core_plugin( string $basename ): bool {
+
+		return strpos( $basename, 'wpforms.php' ) !== false;
 	}
 
 	/**
@@ -989,6 +1010,12 @@ class Requirements {
 		}
 
 		foreach ( $this->not_validated as $basename => $errors ) {
+			// Addon requirement notices are Pro-only. On Lite, addons cannot run regardless of
+			// their version, so the "requires WPForms X" notice is non-actionable and is suppressed.
+			if ( ! $this->is_core_plugin( $basename ) && ! wpforms_is_pro() ) {
+				continue;
+			}
+
 			$notice = $this->get_notice( $basename );
 
 			if ( ! $notice ) {

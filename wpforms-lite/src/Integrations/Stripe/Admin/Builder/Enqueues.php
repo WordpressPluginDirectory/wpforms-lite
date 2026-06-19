@@ -114,6 +114,7 @@ class Enqueues {
 				'field_slug'  => Helpers::get_field_slug(),
 				'field_slugs' => [ 'stripe-credit-card' ],
 				'is_pro'      => Helpers::is_pro(),
+				'has_keys'    => Helpers::has_stripe_keys(),
 				'cycles_max'  => Helpers::recurring_plan_cycles_max(),
 				'i18n'        => [
 					'cycles_default' => esc_html__( 'Unlimited', 'wpforms-lite' ),

@@ -788,6 +788,10 @@ class WPForms_Field_Email extends WPForms_Field {
 				break;
 
 			case self::EMAIL:
+				if ( $this->is_smart_tag_value( $content ) ) {
+					wp_send_json_success( $content );
+				}
+
 				list( $local, $domain ) = $this->parse_email_pattern( $content );
 
 				$local  = $this->sanitize_local_pattern( $local );
@@ -972,6 +976,20 @@ class WPForms_Field_Email extends WPForms_Field {
 	}
 
 	/**
+	 * Check if a value contains a smart tag token.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param mixed $value Value to check.
+	 *
+	 * @return bool
+	 */
+	private function is_smart_tag_value( $value ) {
+
+		return is_string( $value ) && ! empty( wpforms_get_all_smart_tags( $value ) );
+	}
+
+	/**
 	 * Sanitize restricted rules.
 	 *
 	 * @since 1.6.3
@@ -1100,9 +1118,32 @@ class WPForms_Field_Email extends WPForms_Field {
 					continue;
 				}
 
-				$form_data['fields'][ $key ]['allowlist']     = ! empty( $field['allowlist'] ) ? implode( PHP_EOL, $this->sanitize_restricted_rules( $field['allowlist'] ) ) : '';
-				$form_data['fields'][ $key ]['denylist']      = ! empty( $field['denylist'] ) ? implode( PHP_EOL, $this->sanitize_restricted_rules( $field['denylist'] ) ) : '';
-				$form_data['fields'][ $key ]['default_value'] = isset( $field['default_value'] ) ? wpforms_is_email( $field['default_value'] ) : '';
+				$form_data['fields'][ $key ]['allowlist'] = ! empty( $field['allowlist'] ) ? implode( PHP_EOL, $this->sanitize_restricted_rules( $field['allowlist'] ) ) : '';
+				$form_data['fields'][ $key ]['denylist']  = ! empty( $field['denylist'] ) ? implode( PHP_EOL, $this->sanitize_restricted_rules( $field['denylist'] ) ) : '';
+
+				$default = $field['default_value'] ?? '';
+
+				$form_data['fields'][ $key ]['default_value'] = $this->is_smart_tag_value( $default )
+					? $default
+					: (string) wpforms_is_email( $default );
+
+				/**
+				 * Filters the default value of an Email field when saving form arguments.
+				 *
+				 * @since 1.10.2
+				 *
+				 * @param string $default_value Processed default value.
+				 * @param string $default       Raw default value before processing.
+				 * @param array  $field         Field data.
+				 * @param array  $form_data     Full form data.
+				 */
+				$form_data['fields'][ $key ]['default_value'] = apply_filters(
+					'wpforms_field_email_save_form_args_default_value',
+					$form_data['fields'][ $key ]['default_value'],
+					$default,
+					$field,
+					$form_data
+				);
 			}
 		}
 

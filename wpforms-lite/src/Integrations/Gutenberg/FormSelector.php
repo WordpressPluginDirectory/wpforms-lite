@@ -412,7 +412,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 */
 	protected function is_legacy_block() {
 
-		return version_compare( $GLOBALS['wp_version'], '6.0', '<' );
+		return ! wpforms_is_wp_version_at_least( '6.0' );
 	}
 
 	/**
@@ -837,6 +837,7 @@ abstract class FormSelector implements IntegrationInterface {
 		$desc = (bool) apply_filters( 'wpforms_gutenberg_block_form_desc', $desc, $id );
 
 		$this->output_css_vars( $attr );
+		$this->output_form_custom_css( $id );
 		$this->output_custom_css( $attr );
 
 		wpforms_display( $id, $title, $desc );
@@ -1024,6 +1025,58 @@ abstract class FormSelector implements IntegrationInterface {
 	}
 
 	/**
+	 * Output form-level custom CSS styles loaded from the form settings.
+	 *
+	 * Mirrors the shortcode render path so custom CSS configured in
+	 * the Form Builder (Settings → Themes → Advanced) is also applied
+	 * when the form is embedded via the Gutenberg block.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param int $form_id Form ID.
+	 */
+	private function output_form_custom_css( int $form_id ): void {
+
+		static $outputted_forms = [];
+
+		if ( $this->render_engine === 'classic' || in_array( $form_id, $outputted_forms, true ) ) {
+			return;
+		}
+
+		$form_handler = wpforms()->obj( 'form' );
+
+		if ( ! $form_handler ) {
+			return;
+		}
+
+		$form_data = $form_handler->get( $form_id, [ 'content_only' => true ] );
+
+		if ( empty( $form_data ) ) {
+			return;
+		}
+
+		$custom_css = trim( $form_data['settings']['themes']['customCss'] ?? '' );
+
+		if ( empty( $custom_css ) ) {
+			return;
+		}
+
+		$outputted_forms[] = $form_id;
+		$style_id          = "wpforms-custom-css-{$form_id}-form";
+
+		printf(
+			'<style id="%1$s">
+				#wpforms-%2$d {
+					%3$s
+				}
+			</style>',
+			sanitize_key( $style_id ),
+			absint( $form_id ),
+			wp_strip_all_tags( $custom_css ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		);
+	}
+
+	/**
 	 * Disable loading media for the richtext editor for edit action to prevent script conflicts.
 	 *
 	 * @since 1.9.1
@@ -1057,6 +1110,6 @@ abstract class FormSelector implements IntegrationInterface {
 			return 1;
 		}
 
-		return version_compare( $GLOBALS['wp_version'], '6.3', '<' ) ? 2 : 3;
+		return wpforms_is_wp_version_at_least( '6.3' ) ? 3 : 2;
 	}
 }

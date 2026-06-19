@@ -887,6 +887,14 @@ class WPForms_Process {
 			return;
 		}
 
+		// Entry meta rows require a parent entry. Skip when entry_save() did not
+		// create one (e.g. the form has the `disable_entries` setting enabled),
+		// otherwise we accumulate orphaned rows with entry_id = 0 that the purge
+		// pipeline cannot reach.
+		if ( empty( $entry_id ) ) {
+			return;
+		}
+
 		$meta_data  = $this->form_data['entry_meta'];
 		$entry_meta = wpforms()->obj( 'entry_meta' );
 
@@ -1808,8 +1816,10 @@ class WPForms_Process {
 			$notifications = $form_data['settings']['notifications'];
 		}
 
-		$notifications_count = count( $notifications );
-		$is_pro              = wpforms()->is_pro();
+		// Keep first notification only for Lite.
+		if ( ! wpforms()->is_pro() ) {
+			$notifications = array_slice( $notifications, 0, 1, true );
+		}
 
 		foreach ( $notifications as $notification_id => $notification ) :
 
@@ -1817,10 +1827,27 @@ class WPForms_Process {
 				continue;
 			}
 
-			// You can disable the email notification for a specific notification only if there are more than one notification.
-			// BC: The notification should be enabled even when the `enabled` key doesn't exist.
-			// The key is missed for old forms or forms created using the Lite version.
-			if ( $is_pro && $notifications_count > 1 && isset( $notification['enable'] ) && (int) $notification['enable'] === 0 ) {
+			$is_active = ! isset( $notification['enable'] ) || (int) $notification['enable'] !== 0;
+
+			/**
+			 * Filter whether a notification is considered active and should be sent.
+			 *
+			 * @since 1.10.2
+			 *
+			 * @param bool  $is_active       Whether the notification is active.
+			 * @param array $notification    Notification settings array.
+			 * @param int   $notification_id Notification ID within the form settings.
+			 * @param array $form_data       Form data.
+			 */
+			$is_active = (bool) apply_filters(
+				'wpforms_process_entry_email_notification_is_active',
+				$is_active,
+				$notification,
+				$notification_id,
+				$form_data
+			);
+
+			if ( ! $is_active ) {
 				continue;
 			}
 

@@ -5,6 +5,7 @@ namespace WPForms\Integrations\Abilities;
 use WP_Error;
 use WP_Post;
 use WPForms\Integrations\IntegrationInterface;
+use WPForms\Integrations\AiMcp\AiMcp as AiMcpIntegration;
 
 /**
  * WordPress Abilities API Integration for WPForms.
@@ -100,6 +101,11 @@ abstract class Abilities implements IntegrationInterface {
 
 		$this->register_list_forms_ability();
 		$this->register_get_form_ability();
+		$this->register_describe_editing_schema_ability();
+		$this->register_create_form_ability();
+		$this->register_update_form_settings_ability();
+		$this->register_add_field_ability();
+		$this->register_update_field_ability();
 	}
 
 	/**
@@ -540,5 +546,502 @@ abstract class Abilities implements IntegrationInterface {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Determine whether write abilities are enabled.
+	 *
+	 * Reads the AiMcp::SETTING_KEY key from the shared wpforms_settings option
+	 * as the default, then runs it through the `wpforms_integrations_abilities_allow_write`
+	 * filter so developers can still override programmatically in either direction.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @return bool
+	 */
+	protected function write_enabled(): bool {
+
+		$default = (bool) wpforms_setting( AiMcpIntegration::SETTING_KEY );
+
+		/**
+		 * Filters whether the WPForms write abilities are enabled.
+		 *
+		 * @since 1.10.2
+		 *
+		 * @param bool $enabled Whether writes are enabled. Default is the value of
+		 *                      the AiMcp::SETTING_KEY key inside the shared
+		 *                      `wpforms_settings` option (false if absent).
+		 */
+		return (bool) apply_filters( 'wpforms_integrations_abilities_allow_write', $default );
+	}
+
+	/**
+	 * Get a configured FormMutator instance.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @return FormMutator
+	 */
+	protected function get_mutator(): FormMutator {
+
+		return new FormMutator( new FieldRegistry(), new SettingsRegistry() );
+	}
+
+	/**
+	 * Check the write gate and return true or a WP_Error 403.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @return bool|WP_Error
+	 */
+	private function check_write_gate() {
+
+		if ( ! $this->write_enabled() ) {
+			return new WP_Error(
+				'wpforms_writes_disabled',
+				__( 'Form write abilities are disabled.', 'wpforms-lite' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Permission gate shared by all write abilities.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param string   $cap     Capability to check.
+	 * @param int|null $form_id Optional form ID for per-form capabilities.
+	 *
+	 * @return bool|WP_Error
+	 */
+	protected function check_write_permission( string $cap, $form_id = null ) {
+
+		$gate = $this->check_write_gate();
+
+		if ( is_wp_error( $gate ) ) {
+			return $gate;
+		}
+
+		$allowed = $form_id === null
+			? wpforms_current_user_can( $cap )
+			: wpforms_current_user_can( $cap, $form_id );
+
+		if ( ! $allowed ) {
+			return new WP_Error(
+				'wpforms_forbidden',
+				__( 'You do not have permission to perform this action.', 'wpforms-lite' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Permission callback: create form.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param mixed $input Input data (unused).
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function check_create_form_permission( $input = null ) {
+
+		return $this->check_write_permission( 'create_forms' );
+	}
+
+	/**
+	 * Permission callback: edit a specific form.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param mixed $input Input data containing form_id.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function check_edit_form_permission( $input = null ) {
+
+		$gate = $this->check_write_gate();
+
+		if ( is_wp_error( $gate ) ) {
+			return $gate;
+		}
+
+		$input   = $this->normalize_input( $input );
+		$form_id = absint( $input['form_id'] ?? 0 );
+
+		if ( ! $form_id ) {
+			return new WP_Error(
+				'wpforms_invalid_form_id',
+				__( 'Invalid form ID.', 'wpforms-lite' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		return $this->check_write_permission( 'edit_form_single', $form_id );
+	}
+
+	/**
+	 * Ability callback: describe the editing schema (field types and form settings).
+	 *
+	 * @since 1.10.2
+	 *
+	 * @return array
+	 */
+	public function ability_describe_editing_schema(): array {
+
+		return [
+			'field_types'   => ( new FieldRegistry() )->describe(),
+			'form_settings' => ( new SettingsRegistry() )->describe(),
+		];
+	}
+
+	/**
+	 * Build the meta block for a write ability (MCP-public only when writes are enabled).
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param bool $destructive Whether the ability is destructive.
+	 * @param bool $idempotent  Whether the ability is idempotent.
+	 *
+	 * @return array
+	 */
+	protected function write_meta( bool $destructive, bool $idempotent ): array {
+
+		return [
+			'annotations'  => [
+				'readonly'    => false,
+				'destructive' => $destructive,
+				'idempotent'  => $idempotent,
+			],
+			'show_in_rest' => true,
+			'mcp'          => [ 'public' => $this->write_enabled() ],
+		];
+	}
+
+	/**
+	 * Register the describe-editing-schema ability.
+	 *
+	 * @since 1.10.2
+	 */
+	protected function register_describe_editing_schema_ability(): void {
+
+		wp_register_ability(
+			self::ABILITY_NAMESPACE . '/describe-editing-schema',
+			[
+				'label'               => __( 'Describe Editing Schema', 'wpforms-lite' ),
+				'description'         => __( 'Describe which field types, field properties and form settings can be created or edited.', 'wpforms-lite' ),
+				'category'            => self::CATEGORY_SLUG,
+				'execute_callback'    => [ $this, 'ability_describe_editing_schema' ],
+				'permission_callback' => [ $this, 'check_view_forms_permission' ],
+				'input_schema'        => [
+					'type'       => 'object',
+					'properties' => [],
+				],
+				'output_schema'       => [
+					'type'       => 'object',
+					'properties' => [
+						'field_types'   => [ 'type' => 'array' ],
+						'form_settings' => [ 'type' => 'array' ],
+					],
+				],
+				'meta'                => [
+					'annotations'  => [
+						'readonly'    => true,
+						'destructive' => false,
+						'idempotent'  => true,
+					],
+					'show_in_rest' => true,
+					// Mirror the 4 write abilities: hide the editing schema describer from MCP
+					// when writes are gated off so agents do not see an editing surface they
+					// cannot act on. REST exposure is unaffected (gated by view_forms cap).
+					'mcp'          => [ 'public' => $this->write_enabled() ],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Register the create-form ability.
+	 *
+	 * @since 1.10.2
+	 */
+	protected function register_create_form_ability(): void {
+
+		$registry          = new FieldRegistry();
+		$settings_registry = new SettingsRegistry();
+
+		wp_register_ability(
+			self::ABILITY_NAMESPACE . '/create-form',
+			[
+				'label'               => __( 'Create Form', 'wpforms-lite' ),
+				'description'         => __( 'Create a new WPForms form with an optional set of fields and settings.', 'wpforms-lite' ),
+				'category'            => self::CATEGORY_SLUG,
+				'execute_callback'    => [ $this, 'ability_create_form' ],
+				'permission_callback' => [ $this, 'check_create_form_permission' ],
+				'input_schema'        => [
+					'type'                 => 'object',
+					'properties'           => [
+						'title'    => [
+							'type'        => 'string',
+							'description' => __( 'The form title.', 'wpforms-lite' ),
+						],
+						'fields'   => [
+							'type'        => 'array',
+							'description' => __( 'Optional initial fields.', 'wpforms-lite' ),
+							'items'       => $registry->field_item_schema(),
+						],
+						'settings' => [
+							'type'        => 'object',
+							'description' => __( 'Optional initial settings.', 'wpforms-lite' ),
+							'properties'  => $settings_registry->input_properties_schema(),
+						],
+					],
+					'required'             => [ 'title' ],
+					'additionalProperties' => false,
+				],
+				'output_schema'       => [
+					'type'       => 'object',
+					'properties' => [
+						'form_id' => [ 'type' => 'integer' ],
+						'fields'  => [ 'type' => 'array' ],
+					],
+				],
+				'meta'                => $this->write_meta( false, false ),
+			]
+		);
+	}
+
+	/**
+	 * Register the update-form-settings ability.
+	 *
+	 * @since 1.10.2
+	 */
+	protected function register_update_form_settings_ability(): void {
+
+		$settings_registry = new SettingsRegistry();
+
+		wp_register_ability(
+			self::ABILITY_NAMESPACE . '/update-form-settings',
+			[
+				'label'               => __( 'Update Form Settings', 'wpforms-lite' ),
+				'description'         => __( 'Update safe form settings (title, description, submit button text).', 'wpforms-lite' ),
+				'category'            => self::CATEGORY_SLUG,
+				'execute_callback'    => [ $this, 'ability_update_form_settings' ],
+				'permission_callback' => [ $this, 'check_edit_form_permission' ],
+				'input_schema'        => [
+					'type'                 => 'object',
+					'properties'           => [
+						'form_id'  => [
+							'type'    => 'integer',
+							'minimum' => 1,
+						],
+						'settings' => [
+							// Lenient on purpose: unknown setting keys reach the callback and are
+							// reported in `ignored` (settings have no per-type dimension, unlike fields).
+							'type'       => 'object',
+							'properties' => $settings_registry->input_properties_schema(),
+						],
+					],
+					'required'             => [ 'form_id', 'settings' ],
+					'additionalProperties' => false,
+				],
+				'output_schema'       => [
+					'type'       => 'object',
+					'properties' => [
+						'form_id' => [ 'type' => 'integer' ],
+						'updated' => [ 'type' => 'array' ],
+						'ignored' => [ 'type' => 'array' ],
+					],
+				],
+				'meta'                => $this->write_meta( false, true ),
+			]
+		);
+	}
+
+	/**
+	 * Register the add-field ability.
+	 *
+	 * @since 1.10.2
+	 */
+	protected function register_add_field_ability(): void {
+
+		$registry = new FieldRegistry();
+
+		wp_register_ability(
+			self::ABILITY_NAMESPACE . '/add-field',
+			[
+				'label'               => __( 'Add Field', 'wpforms-lite' ),
+				'description'         => __( 'Add a new field to a form. Call describe-editing-schema for supported types and properties.', 'wpforms-lite' ),
+				'category'            => self::CATEGORY_SLUG,
+				'execute_callback'    => [ $this, 'ability_add_field' ],
+				'permission_callback' => [ $this, 'check_edit_form_permission' ],
+				'input_schema'        => [
+					'type'                 => 'object',
+					'properties'           => array_merge(
+						[
+							'form_id' => [
+								'type'    => 'integer',
+								'minimum' => 1,
+							],
+							// The type is intentionally an unconstrained string so the
+							// FormMutator callback owns every "this type is not supported here"
+							// response with HTTP 422 `wpforms_field_type_unavailable`, covering
+							// both Pro-on-Lite and entirely unknown types under one contract.
+							// Discoverable types are advertised via describe-editing-schema.
+							'type'    => [
+								'type' => 'string',
+							],
+						],
+						$registry->input_properties_schema()['properties']
+					),
+					'required'             => [ 'form_id', 'type' ],
+					'additionalProperties' => false,
+				],
+				'output_schema'       => [
+					'type'       => 'object',
+					'properties' => [
+						'form_id'  => [ 'type' => 'integer' ],
+						'field_id' => [ 'type' => 'integer' ],
+						'type'     => [ 'type' => 'string' ],
+					],
+				],
+				'meta'                => $this->write_meta( false, false ),
+			]
+		);
+	}
+
+	/**
+	 * Register the update-field ability.
+	 *
+	 * @since 1.10.2
+	 */
+	protected function register_update_field_ability(): void {
+
+		$registry = new FieldRegistry();
+
+		wp_register_ability(
+			self::ABILITY_NAMESPACE . '/update-field',
+			[
+				'label'               => __( 'Update Field', 'wpforms-lite' ),
+				'description'         => __( 'Update properties of an existing field. Call describe-editing-schema for supported properties.', 'wpforms-lite' ),
+				'category'            => self::CATEGORY_SLUG,
+				'execute_callback'    => [ $this, 'ability_update_field' ],
+				'permission_callback' => [ $this, 'check_edit_form_permission' ],
+				'input_schema'        => [
+					'type'                 => 'object',
+					'properties'           => array_merge(
+						[
+							'form_id'  => [
+								'type'    => 'integer',
+								'minimum' => 1,
+							],
+							'field_id' => [
+								'type'    => 'integer',
+								'minimum' => 1,
+							],
+						],
+						$registry->input_properties_schema()['properties']
+					),
+					'required'             => [ 'form_id', 'field_id' ],
+					'additionalProperties' => false,
+				],
+				'output_schema'       => [
+					'type'       => 'object',
+					'properties' => [
+						'form_id'  => [ 'type' => 'integer' ],
+						'field_id' => [ 'type' => 'integer' ],
+						'updated'  => [ 'type' => 'array' ],
+						'ignored'  => [ 'type' => 'array' ],
+					],
+				],
+				'meta'                => $this->write_meta( false, true ),
+			]
+		);
+	}
+
+	/**
+	 * Ability callback: create form.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param mixed $input Input data.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function ability_create_form( $input = null ) {
+
+		$args = $this->normalize_input( $input );
+
+		return $this->get_mutator()->create_form(
+			[
+				'title'    => $args['title'] ?? '',
+				'fields'   => $args['fields'] ?? [],
+				'settings' => $args['settings'] ?? [],
+			]
+		);
+	}
+
+	/**
+	 * Ability callback: update form settings.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param mixed $input Input data.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function ability_update_form_settings( $input = null ) {
+
+		$args = $this->normalize_input( $input );
+
+		return $this->get_mutator()->update_settings( absint( $args['form_id'] ?? 0 ), (array) ( $args['settings'] ?? [] ) );
+	}
+
+	/**
+	 * Ability callback: add field.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param mixed $input Input data.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function ability_add_field( $input = null ) {
+
+		$args  = $this->normalize_input( $input );
+		$type  = sanitize_text_field( $args['type'] ?? '' );
+		$props = $args;
+
+		unset( $props['form_id'], $props['type'] );
+
+		return $this->get_mutator()->add_field( absint( $args['form_id'] ?? 0 ), $type, $props );
+	}
+
+	/**
+	 * Ability callback: update field.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param mixed $input Input data.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function ability_update_field( $input = null ) {
+
+		$args  = $this->normalize_input( $input );
+		$props = $args;
+
+		unset( $props['form_id'], $props['field_id'] );
+
+		return $this->get_mutator()->update_field(
+			absint( $args['form_id'] ?? 0 ),
+			absint( $args['field_id'] ?? 0 ),
+			$props
+		);
 	}
 }

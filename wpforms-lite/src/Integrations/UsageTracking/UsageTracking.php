@@ -248,6 +248,7 @@ class UsageTracking implements IntegrationInterface {
 			'duplicator',
 			'uncannyautomator',
 			'activelayer',
+			'wpvibe',
 		];
 
 		foreach ( $plugins as $plugin ) {

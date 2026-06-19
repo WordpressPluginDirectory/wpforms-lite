@@ -420,4 +420,32 @@ class Meta extends WPForms_DB {
 		);
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 	}
+
+	/**
+	 * Get Payment ID by meta key and value.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param string $meta_key   Meta key value.
+	 * @param string $meta_value Meta value.
+	 *
+	 * @return int
+	 */
+	public function get_payment_id_by_meta( string $meta_key, string $meta_value ): int {
+
+		// Check if the meta key or value are empty.
+		if ( empty( $meta_key ) || empty( $meta_value ) ) {
+			return 0;
+		}
+
+		global $wpdb;
+
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT payment_id FROM {$this->table_name} WHERE meta_key = %s AND meta_value = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$meta_key,
+				$meta_value
+			)
+		);
+	}
 }

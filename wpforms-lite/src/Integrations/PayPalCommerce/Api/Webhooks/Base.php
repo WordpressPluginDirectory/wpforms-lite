@@ -84,6 +84,36 @@ abstract class Base {
 		$transaction_id = $this->get_transaction_id_from_data();
 
 		$this->db_payment = wpforms()->obj( 'payment' )->get_by( 'transaction_id', $transaction_id );
+
+		// Async funding sources (Pay Later, PayPal Credit) can leave the DB
+		// transaction_id empty because the capture id is not yet available when the form is submitted.
+		if ( ! $this->db_payment ) {
+			$this->db_payment = $this->find_payment_by_order_id();
+		}
+	}
+
+	/**
+	 * Find the DB payment by the PayPal order id stored in payment_meta.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @return object|null
+	 */
+	private function find_payment_by_order_id(): ?object {
+
+		$order_id = $this->data->supplementary_data->related_ids->order_id ?? '';
+
+		if ( $order_id === '' ) {
+			return null;
+		}
+
+		$payment_id = wpforms()->obj( 'payment_meta' )->get_payment_id_by_meta( PayPalCommerce::PAYPAL_ORDER_ID_META_KEY, $order_id );
+
+		if ( $payment_id === 0 ) {
+			return null;
+		}
+
+		return wpforms()->obj( 'payment' )->get( $payment_id );
 	}
 
 	/**

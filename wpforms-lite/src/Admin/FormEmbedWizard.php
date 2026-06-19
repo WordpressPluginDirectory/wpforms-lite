@@ -574,12 +574,14 @@ class FormEmbedWizard {
 		// Include so we can use `\wpforms_settings_select_callback()`.
 		require_once WPFORMS_PLUGIN_DIR . 'includes/admin/settings-api.php';
 
+		$options = [ '' => esc_html__( 'Search for a page', 'wpforms-lite' ) ] + wp_list_pluck( $dropdown_pages, 'post_title', 'ID' );
+
 		return wpforms_settings_select_callback(
 			[
 				'id'        => 'form-embed-wizard-choicesjs-select-pages',
 				'type'      => 'select',
 				'choicesjs' => true,
-				'options'   => wp_list_pluck( $dropdown_pages, 'post_title', 'ID' ),
+				'options'   => $options,
 				'data'      => [
 					'use_ajax' => $total_pages > self::MAX_SEARCH_RESULTS_DROPDOWN_PAGES_COUNT,
 				],

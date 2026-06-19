@@ -184,7 +184,8 @@ class PaymentIntents extends Common implements ApiInterface {
 
 		$min = wpforms_get_min_suffix();
 
-		$this->config['local_js_url'] = WPFORMS_PLUGIN_URL . "assets/js/integrations/stripe/wpforms-stripe-elements{$min}.js";
+		$this->config['local_js_url']  = WPFORMS_PLUGIN_URL . "assets/js/integrations/stripe/wpforms-stripe-elements{$min}.js";
+		$this->config['local_css_url'] = WPFORMS_PLUGIN_URL . "assets/css/integrations/stripe/wpforms-stripe{$min}.css";
 	}
 
 	/**

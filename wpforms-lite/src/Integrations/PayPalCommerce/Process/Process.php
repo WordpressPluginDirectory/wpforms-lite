@@ -574,6 +574,8 @@ class Process extends Base {
 				)
 			);
 
+			$payment_meta[ PayPalCommerce::PAYPAL_ORDER_ID_META_KEY ] = sanitize_text_field( $order_data['id'] ?? '' );
+
 			return $payment_meta;
 		}
 
@@ -638,8 +640,7 @@ class Process extends Base {
 		$subscription_processor_data = $this->get_subscription_processor_data();
 
 		if ( ! empty( $subscription_processor_data ) ) {
-
-			$this->add_processed_log( $payment_id, $subscription_processor_data['purchase_units'][0]['payments']['captures'][0]['id'] );
+			$this->maybe_add_processed_log( $payment_id, $subscription_processor_data );
 
 			return;
 		}
@@ -651,7 +652,26 @@ class Process extends Base {
 			return;
 		}
 
-		$this->add_processed_log( $payment_id, $order_data['purchase_units'][0]['payments']['captures'][0]['id'] );
+		$this->maybe_add_processed_log( $payment_id, $order_data );
+	}
+
+	/**
+	 * Add the processed payment log when the capture id is available.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @param int   $payment_id Payment ID.
+	 * @param array $order      Order data containing the capture array.
+	 */
+	private function maybe_add_processed_log( int $payment_id, array $order ): void {
+
+		$capture_id = $order['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
+
+		if ( $capture_id === '' ) {
+			return;
+		}
+
+		$this->add_processed_log( (string) $payment_id, $capture_id );
 	}
 
 	/**

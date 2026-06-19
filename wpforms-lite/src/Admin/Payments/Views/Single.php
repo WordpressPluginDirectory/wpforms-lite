@@ -555,8 +555,8 @@ class Single implements PaymentsViewsInterface {
 	private function get_renewal_date() {
 
 		if (
-			$this->payment->subscription_status === 'cancelled'
-			|| $this->is_renewal_of_cancelled_subscription()
+			$this->is_renewal_of_finished_subscription()
+			|| in_array( $this->payment->subscription_status, $this->get_finished_subscription_statuses(), true )
 		) {
 			return Helpers::get_placeholder_na_text( false );
 		}
@@ -578,16 +578,29 @@ class Single implements PaymentsViewsInterface {
 	}
 
 	/**
-	 * Is renewal of cancelled subscription.
+	 * Is renewal of a finished (cancelled or completed) subscription.
 	 *
 	 * @since 1.8.4
 	 *
 	 * @return bool
 	 */
-	private function is_renewal_of_cancelled_subscription() {
+	private function is_renewal_of_finished_subscription(): bool {
 
 		return $this->payment->type === 'renewal'
-			&& $this->subscription->subscription_status === 'cancelled';
+			&& ! empty( $this->subscription )
+			&& in_array( $this->subscription->subscription_status, $this->get_finished_subscription_statuses(), true );
+	}
+
+	/**
+	 * Get subscription statuses that represent a finished subscription with no future renewal.
+	 *
+	 * @since 1.10.2
+	 *
+	 * @return string[]
+	 */
+	private function get_finished_subscription_statuses(): array {
+
+		return [ 'cancelled', 'completed' ];
 	}
 
 	/**

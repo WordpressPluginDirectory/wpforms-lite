@@ -600,3 +600,17 @@ function wpforms_is_elementor_editor(): bool {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	return ( ! empty( $_POST['action'] ) && $_POST['action'] === 'elementor_ajax' ) || ( ! empty( $_GET['action'] ) && $_GET['action'] === 'elementor' );
 }
+
+/**
+ * Determine whether the current WordPress version is at least the given version.
+ *
+ * @since 1.10.2
+ *
+ * @param string $version Minimum WordPress version to compare against.
+ *
+ * @return bool
+ */
+function wpforms_is_wp_version_at_least( string $version ): bool {
+
+	return version_compare( $GLOBALS['wp_version'], $version, '>=' );
+}

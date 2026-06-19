@@ -29,7 +29,7 @@ class PageUrl extends SmartTag {
 		}
 
 		// phpcs:disable WordPress.Security.NonceVerification
-		$page_url = ! empty( $_POST['page_url'] )
+		$page_url = ! empty( $_POST['page_url'] ) && ! is_array( $_POST['page_url'] )
 			? esc_url_raw( wp_unslash( $_POST['page_url'] ) )
 			: wpforms_current_url();
 		$page_url = urldecode( $page_url );

@@ -187,6 +187,12 @@ class PaymentSaleCompleted extends Base {
 			$payment_data
 		);
 
+		$log_message = ! empty( $payment_data['transaction_id'] )
+			? sprintf( 'PayPal Commerce Payment was completed. (Transaction ID: %s)', $payment_data['transaction_id'] )
+			: 'PayPal Commerce payment was completed.';
+
+		wpforms()->obj( 'payment_meta' )->add_log( $original_subscription->id, $log_message );
+
 		return true;
 	}
 }

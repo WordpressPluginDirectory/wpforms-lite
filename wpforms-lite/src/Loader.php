@@ -181,6 +181,10 @@ class Loader {
 				'id'   => 'notice',
 			],
 			[
+				'name' => 'Admin\MediaLibrary',
+				'hook' => 'admin_init',
+			],
+			[
 				'name' => 'Admin\Revisions',
 				'id'   => 'revisions',
 				'hook' => 'admin_init',

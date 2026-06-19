@@ -33,6 +33,13 @@ final class PayPalCommerce implements IntegrationInterface {
 	public const SLUG = 'paypal_commerce';
 
 	/**
+	 * Payment meta key that stores the PayPal Order ID for a one-time payment.
+	 *
+	 * @since 1.10.2
+	 */
+	public const PAYPAL_ORDER_ID_META_KEY = 'paypal_order_id';
+
+	/**
 	 * Determine if the integration is allowed to load.
 	 *
 	 * @since 1.10.0

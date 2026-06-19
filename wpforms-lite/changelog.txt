@@ -1,5 +1,18 @@
 == Changelog ==
 
+= 1.10.2 =
+- Added: The Abilities API now supports creating new forms, editing existing form fields, and editing form settings.
+- Changed: Stripe subscriptions that finish all configured billing cycles are now marked as Completed.
+- Fixed: Delete icon overlapped form name in the Bulk Edit Tags field during bulk edits.
+- Fixed: Custom CSS configured in the Form Builder was not applied when the form was embedded via the Gutenberg block.
+- Fixed: An AbortError: Transition was skipped console error appeared in the Form Builder on WordPress 7.0.
+- Fixed: PayPal Credit payment status was not being synchronized in WPForms > Payments.
+- Fixed: The Query String Variable smart tag key was unexpectedly reset when the Email field default value was cleared and re-configured in the Form Builder.
+- Fixed: Stripe block-editor CSS and JS assets no longer load unconditionally on every Block Editor screen. They now load only when the `wpforms/form-selector` block is present.
+- Fixed: The `wpforms_emails_send_email_data` filter silently discarded any changes to the headers key before sending the email.
+- Fixed: PHP fatal error when submitting a form with the {page_url} smart tag if the page_url POST field was sent as an array.
+- Fixed: An invalid notice about Fastlane and alternative payment methods appeared in Stripe and Square subscription payment settings in the Form Builder.
+
 = 1.10.1.1 =
 - Added: Inline Connect buttons in the Form Builder Payments panel, allowing users to connect their payment accounts without leaving the form editor.
 - Changed: The Payments page has a refreshed design when no payments have been received yet.

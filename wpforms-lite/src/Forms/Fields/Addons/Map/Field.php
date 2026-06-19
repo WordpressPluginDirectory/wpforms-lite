@@ -552,18 +552,15 @@ class Field extends WPForms_Field {
 	 *
 	 * @since 1.10.0
 	 *
-	 * @param string $size     Field size.
-	 * @param int    $field_id Field ID.
-	 *
-	 * @noinspection UnnecessaryCastingInspection
-	 * @noinspection PhpCastIsUnnecessaryInspection
+	 * @param string     $size     Field size.
+	 * @param int|string $field_id Field ID. May be a string for Repeater child fields (e.g. "5_0").
 	 */
-	protected function print_map( string $size, int $field_id ): void {
+	protected function print_map( string $size, $field_id ): void {
 
 		printf(
-			'<div class="wpforms-field-row wpforms-field-%1$s wpforms-geolocation-map" id="wpforms-field-%2$d-map"></div>',
+			'<div class="wpforms-field-row wpforms-field-%1$s wpforms-geolocation-map" id="wpforms-field-%2$s-map"></div>',
 			esc_attr( $size ),
-			(int) $field_id
+			esc_attr( wpforms_validate_field_id( $field_id ) )
 		);
 	}
 

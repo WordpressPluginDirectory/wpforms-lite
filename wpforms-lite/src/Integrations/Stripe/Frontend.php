@@ -52,9 +52,10 @@ class Frontend {
 
 		add_action( 'wpforms_frontend_container_class', [ $this, 'form_container_class' ], 10, 2 );
 		add_action( 'wpforms_wp_footer', [ $this, 'enqueues' ] );
-		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_assets' ] );
 		add_action( 'elementor/frontend/after_enqueue_styles', [ $this, 'elementor_enqueues' ] );
-		add_action( 'enqueue_block_assets', [ $this, 'enqueue_block_assets' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_block_editor_styles' ] );
+
+		// Block editor_style is the only way to reach the iframed editor canvas.
 		add_filter( 'register_block_type_args', [ $this, 'register_block_type_args' ], 20, 2 );
 
 		if ( wpforms_is_divi_editor() ) {
@@ -109,17 +110,62 @@ class Frontend {
 	}
 
 	/**
-	 * Enqueue block editor assets.
+	 * Enqueue Stripe styles into the outer block-editor document when the block is present.
 	 *
-	 * @since 1.8.6
+	 * @since 1.10.2
 	 */
-	public function enqueue_block_assets() {
+	public function enqueue_block_editor_styles(): void {
 
-		if ( ! is_admin() ) {
+		$post = get_post();
+
+		if ( ! $post || ! has_block( 'wpforms/form-selector', $post ) ) {
 			return;
 		}
 
 		$this->enqueue_styles();
+	}
+
+	/**
+	 * Set the Stripe editor style on the form-selector block so it reaches the editor canvas.
+	 *
+	 * @since 1.8.2
+	 *
+	 * @param array  $args       Array of arguments for registering a block type.
+	 * @param string $block_type Block type name including namespace.
+	 *
+	 * @return array
+	 *
+	 * @noinspection PhpMissingParamTypeInspection
+	 */
+	public function register_block_type_args( $args, string $block_type ): array {
+
+		$args = (array) $args;
+
+		if ( $block_type !== 'wpforms/form-selector' || ! is_admin() ) {
+			return $args;
+		}
+
+		// Do not include styles if the "Include Form Styling > No Styles" is set.
+		if ( (int) wpforms_setting( 'disable-css', '1' ) === 3 ) {
+			return $args;
+		}
+
+		$config = $this->api->get_config();
+
+		if ( ! isset( $config['local_css_url'] ) ) {
+			return $args;
+		}
+
+		wp_register_style(
+			self::HANDLE,
+			$config['local_css_url'],
+			[ $args['editor_style'] ],
+			WPFORMS_VERSION
+		);
+
+		$args['editor_style'] = self::HANDLE;
+
+		return $args;
 	}
 
 	/**
@@ -181,38 +227,6 @@ class Frontend {
 	}
 
 	/**
-	 * Set editor style for block type editor.
-	 *
-	 * @since 1.8.2
-	 *
-	 * @param array  $args       Array of arguments for registering a block type.
-	 * @param string $block_type Block type name including namespace.
-	 */
-	public function register_block_type_args( $args, $block_type ) {
-
-		if ( $block_type !== 'wpforms/form-selector' || ! is_admin() ) {
-			return $args;
-		}
-
-		$config = $this->api->get_config();
-
-		if ( ! isset( $config['local_css_url'] ) ) {
-			return $args;
-		}
-
-		wp_register_style(
-			'wpforms-stripe',
-			$config['local_css_url'],
-			[ $args['editor_style'] ],
-			WPFORMS_VERSION
-		);
-
-		$args['editor_style'] = self::HANDLE;
-
-		return $args;
-	}
-
-	/**
 	 * Enqueue styles for Elementor preview.
 	 *
 	 * @since 1.8.4.1
@@ -221,6 +235,7 @@ class Frontend {
 	 */
 	public function elementor_enqueues() {
 
+		// Elementor uses its own widget, not the block, so gate on preview mode, not has_block().
 		if (
 			! class_exists( Plugin::class ) ||
 			empty( Plugin::instance()->preview ) ||
@@ -261,6 +276,7 @@ class Frontend {
 	 */
 	public function enqueue_divi_styles(): void {
 
+		// Divi uses its own module, not the block; editor context is gated in hooks().
 		if ( (int) wpforms_setting( 'disable-css', '1' ) === 3 ) {
 			return;
 		}

@@ -208,6 +208,7 @@ class Help {
 			'providers/n8n'                           => 'n8n',
 			'providers/zapier'                        => 'zapier',
 			'providers/salesforce'                    => 'salesforce',
+			'providers/sendgrid'                      => 'sendgrid',
 			'providers/sendinblue'                    => 'brevo',
 			'providers/slack'                         => 'slack',
 			'providers/hubspot'                       => 'hubspot',
@@ -1202,6 +1203,9 @@ class Help {
 			],
 			'salesforce'                => [
 				'/docs/how-to-install-and-use-the-salesforce-addon-with-wpforms/',
+			],
+			'sendgrid'                  => [
+				'/docs/sendgrid-addon/',
 			],
 			'sendinblue'                => [
 				'/docs/how-to-install-and-use-the-sendinblue-addon-with-wpforms/',
