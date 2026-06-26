@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 1.10.2\n"
+"Project-Id-Version: WPForms Lite 1.10.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-18T12:12:37+00:00\n"
+"POT-Creation-Date: 2026-06-25T11:33:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpforms-lite\n"
@@ -603,7 +603,7 @@ msgid "Incorrect usage of this operation."
 msgstr ""
 
 #: includes/admin/ajax-actions.php:1039
-#: includes/admin/builder/functions.php:758
+#: includes/admin/builder/functions.php:761
 msgid "Back to Previous Page (Referrer) "
 msgstr ""
 
@@ -1023,7 +1023,7 @@ msgid "--- Select Choice ---"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:983
-#: includes/admin/builder/functions.php:925
+#: includes/admin/builder/functions.php:928
 #: includes/admin/settings-api.php:578
 #: includes/fields/class-base.php:1630
 #: includes/fields/class-base.php:1799
@@ -1106,7 +1106,7 @@ msgstr ""
 
 #: includes/admin/builder/class-builder.php:1010
 #: includes/admin/builder/panels/class-fields.php:271
-#: includes/admin/builder/panels/class-settings.php:206
+#: includes/admin/builder/panels/class-settings.php:207
 #: includes/class-form.php:616
 #: includes/class-form.php:708
 #: includes/templates/class-simple-contact-form.php:59
@@ -1120,7 +1120,7 @@ msgid "Submit"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:1012
-#: includes/admin/builder/functions.php:857
+#: includes/admin/builder/functions.php:860
 #: src/Forms/Fields/Richtext/Field.php:129
 msgid "Full"
 msgstr ""
@@ -1231,7 +1231,7 @@ msgstr ""
 #: src/Admin/Education/Admin/Tools/ExportEntries.php:83
 #: src/Admin/Education/Admin/Tools/ImportEntries.php:84
 #: src/Lite/Admin/Settings/Access.php:167
-#: templates/admin/tools/ai-mcp.php:234
+#: templates/admin/tools/ai-mcp.php:245
 msgid "Pro"
 msgstr ""
 
@@ -1314,7 +1314,7 @@ msgstr ""
 msgid "Field #%d"
 msgstr ""
 
-#: includes/admin/builder/functions.php:858
+#: includes/admin/builder/functions.php:861
 #: includes/fields/class-base.php:1923
 #: includes/fields/class-base.php:2272
 #: src/Admin/Builder/Settings/Themes.php:104
@@ -1331,7 +1331,7 @@ msgstr ""
 msgid "Large"
 msgstr ""
 
-#: includes/admin/builder/functions.php:859
+#: includes/admin/builder/functions.php:862
 #: includes/fields/class-base.php:1922
 #: includes/fields/class-base.php:2271
 #: src/Admin/Builder/Settings/Themes.php:103
@@ -1349,7 +1349,7 @@ msgstr ""
 msgid "Medium"
 msgstr ""
 
-#: includes/admin/builder/functions.php:860
+#: includes/admin/builder/functions.php:863
 #: includes/fields/class-base.php:1921
 #: includes/fields/class-base.php:2270
 #: src/Admin/Builder/Settings/Themes.php:102
@@ -1366,30 +1366,30 @@ msgstr ""
 msgid "Small"
 msgstr ""
 
-#: includes/admin/builder/functions.php:865
+#: includes/admin/builder/functions.php:868
 #: src/Forms/Fields/Pagebreak/Field.php:580
 msgid "Left"
 msgstr ""
 
-#: includes/admin/builder/functions.php:866
+#: includes/admin/builder/functions.php:869
 #: src/Forms/Fields/Pagebreak/Field.php:582
 msgid "Center"
 msgstr ""
 
-#: includes/admin/builder/functions.php:867
+#: includes/admin/builder/functions.php:870
 #: src/Forms/Fields/Pagebreak/Field.php:581
 msgid "Right"
 msgstr ""
 
-#: includes/admin/builder/functions.php:885
+#: includes/admin/builder/functions.php:888
 msgid "Preview of selected image"
 msgstr ""
 
-#: includes/admin/builder/functions.php:885
+#: includes/admin/builder/functions.php:888
 msgid "No image selected"
 msgstr ""
 
-#: includes/admin/builder/functions.php:891
+#: includes/admin/builder/functions.php:894
 #: src/Admin/Builder/Settings/Themes.php:532
 #: src/Admin/Builder/Settings/Themes.php:663
 #: src/Admin/Builder/Settings/Themes.php:744
@@ -1402,18 +1402,18 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: includes/admin/builder/functions.php:904
+#: includes/admin/builder/functions.php:907
 #: src/Admin/Builder/Settings/Themes.php:1034
 #: src/Integrations/Elementor/WidgetModern.php:585
 #: src/Integrations/Gutenberg/FormSelector.php:461
 msgid "Position"
 msgstr ""
 
-#: includes/admin/builder/functions.php:918
+#: includes/admin/builder/functions.php:921
 msgid "Upload an image"
 msgstr ""
 
-#: includes/admin/builder/functions.php:919
+#: includes/admin/builder/functions.php:922
 #: includes/admin/settings-api.php:581
 #: includes/fields/class-base.php:1640
 #: includes/fields/class-base.php:1809
@@ -1421,7 +1421,7 @@ msgstr ""
 msgid "Upload Image"
 msgstr ""
 
-#: includes/admin/builder/functions.php:924
+#: includes/admin/builder/functions.php:927
 msgid "Remove the selected image"
 msgstr ""
 
@@ -1461,7 +1461,7 @@ msgid "If the issue persists, <a href=\"%s\" target=\"_blank\" rel=\"noopener no
 msgstr ""
 
 #: includes/admin/builder/panels/class-fields.php:31
-#: templates/admin/tools/ai-mcp.php:43
+#: templates/admin/tools/ai-mcp.php:46
 msgid "Fields"
 msgstr ""
 
@@ -1711,15 +1711,15 @@ msgstr ""
 msgid "You’re currently viewing a form revision from %1$s at %2$s. %3$s or %4$s."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:29
+#: includes/admin/builder/panels/class-settings.php:30
 #: includes/admin/class-menu.php:151
 #: includes/admin/class-menu.php:402
 #: src/Admin/AdminBarMenu.php:538
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:58
-#: includes/admin/builder/panels/class-settings.php:155
+#: includes/admin/builder/panels/class-settings.php:59
+#: includes/admin/builder/panels/class-settings.php:156
 #: includes/admin/class-settings.php:331
 #: includes/admin/class-settings.php:408
 #: includes/fields/class-base.php:1287
@@ -1728,25 +1728,25 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:59
+#: includes/admin/builder/panels/class-settings.php:60
 #: includes/admin/class-about.php:1767
 #: src/Admin/Builder/AntiSpam.php:58
 msgid "Spam Protection and Security"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:60
+#: includes/admin/builder/panels/class-settings.php:61
 #: lite/wpforms-lite.php:493
 msgid "Confirmations"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:61
+#: includes/admin/builder/panels/class-settings.php:62
 #: lite/wpforms-lite.php:136
 #: src/Admin/AdminBarMenu.php:457
 #: templates/admin/notifications.php:23
 msgid "Notifications"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:62
+#: includes/admin/builder/panels/class-settings.php:63
 #: src/Admin/Builder/Settings/Themes.php:252
 #: src/Admin/Builder/Settings/Themes.php:446
 #: src/Integrations/Elementor/Elementor.php:257
@@ -1755,98 +1755,108 @@ msgstr ""
 msgid "Themes"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:120
+#: includes/admin/builder/panels/class-settings.php:121
 #: src/Admin/Forms/Tags.php:258
 msgid "Press Enter or \",\" key to add new tag"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:136
+#: includes/admin/builder/panels/class-settings.php:137
 msgid "You need to <a href=\"#\" class=\"wpforms-panel-switch\" data-panel=\"setup\">setup your form</a> before you can manage the settings."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:163
+#: includes/admin/builder/panels/class-settings.php:164
 #: src/Integrations/Elementor/Widget.php:244
 #: src/SmartTags/SmartTags.php:117
 msgid "Form Name"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:173
+#: includes/admin/builder/panels/class-settings.php:174
 #: src/Integrations/Elementor/Widget.php:258
 msgid "Form Description"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:175
+#: includes/admin/builder/panels/class-settings.php:176
 msgid "Enter descriptive text or instructions to help your users understand the requirements of your form."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:190
+#: includes/admin/builder/panels/class-settings.php:191
 msgid "Template Description"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:192
+#: includes/admin/builder/panels/class-settings.php:193
 msgid "Describe the use case for your template. Only displayed internally."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:204
+#: includes/admin/builder/panels/class-settings.php:205
 msgid "Submit Button Text"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:214
+#: includes/admin/builder/panels/class-settings.php:215
 msgid "Submit Button Processing Text"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:216
+#: includes/admin/builder/panels/class-settings.php:217
 msgid "Enter the submit button text you would like the button display while the form submit is processing."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:294
+#: includes/admin/builder/panels/class-settings.php:297
 #: src/Admin/Forms/Table/Facades/Columns.php:70
 msgid "Tags"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:299
+#: includes/admin/builder/panels/class-settings.php:302
 msgid "Mark form with the tags. To create a new tag, simply type it and press Enter."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:320
+#: includes/admin/builder/panels/class-settings.php:323
 msgid "Form CSS Class"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:322
+#: includes/admin/builder/panels/class-settings.php:325
 msgid "Enter CSS class names for the form wrapper. Multiple class names should be separated with spaces."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:331
+#: includes/admin/builder/panels/class-settings.php:334
 msgid "Submit Button CSS Class"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:333
+#: includes/admin/builder/panels/class-settings.php:336
 msgid "Enter CSS class names for the form submit button. Multiple names should be separated with spaces."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:342
+#: includes/admin/builder/panels/class-settings.php:345
 msgid "Enable Prefill by URL"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:347
+#: includes/admin/builder/panels/class-settings.php:350
 msgid "How to use Prefill by URL"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:357
+#: includes/admin/builder/panels/class-settings.php:360
 msgid "Enable AJAX form submission"
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:359
+#: includes/admin/builder/panels/class-settings.php:362
 msgid "Enables form submission without page reload."
 msgstr ""
 
-#: includes/admin/builder/panels/class-settings.php:379
+#: includes/admin/builder/panels/class-settings.php:382
 #: includes/fields/class-base.php:2330
 #: src/Admin/Builder/Settings/Themes.php:409
 #: src/Integrations/Elementor/WidgetModern.php:744
 #: src/Integrations/Gutenberg/FormSelector.php:481
 #: src/Lite/Admin/Education/Builder/Notifications.php:130
 msgid "Advanced"
+msgstr ""
+
+#: includes/admin/builder/panels/class-settings.php:417
+#: src/Admin/Tools/Views/AiMcp.php:43
+msgid "AI MCP"
+msgstr ""
+
+#: includes/admin/builder/panels/class-settings.php:418
+#: src/Admin/Education/Helpers.php:104
+msgid "New"
 msgstr ""
 
 #: includes/admin/builder/panels/class-setup.php:33
@@ -2688,7 +2698,7 @@ msgstr ""
 #: src/Admin/Forms/Views.php:570
 #: src/Lite/Admin/DashboardWidget.php:170
 #: src/Logger/Log.php:103
-#: templates/admin/tools/ai-mcp.php:54
+#: templates/admin/tools/ai-mcp.php:57
 #: templates/emails/summary-body-plain.php:49
 #: templates/emails/summary-body.php:92
 msgid "Entries"
@@ -3609,13 +3619,13 @@ msgctxt "Widget"
 msgid "Display form description"
 msgstr ""
 
-#: includes/emails/class-emails.php:393
+#: includes/emails/class-emails.php:446
 msgid "You cannot send emails with WPForms_WP_Emails() until init/admin_init has been reached."
 msgstr ""
 
-#: includes/emails/class-emails.php:620
+#: includes/emails/class-emails.php:673
 #: src/Admin/Education/Fields.php:118
-#: src/Emails/Notifications.php:1064
+#: src/Emails/Notifications.php:1065
 #: src/Forms/Fields/Pagebreak/Field.php:46
 #: src/Forms/Fields/Pagebreak/Field.php:651
 #: src/Integrations/Elementor/WidgetModern.php:723
@@ -3623,24 +3633,24 @@ msgstr ""
 msgid "Page Break"
 msgstr ""
 
-#: includes/emails/class-emails.php:624
-#: src/Emails/Notifications.php:1069
+#: includes/emails/class-emails.php:677
+#: src/Emails/Notifications.php:1070
 #: src/Forms/Fields/Html/Field.php:194
 msgid "HTML / Code Block"
 msgstr ""
 
-#: includes/emails/class-emails.php:628
+#: includes/emails/class-emails.php:681
 #: includes/integrations.php:52
 #: src/Admin/Education/Fields.php:142
-#: src/Emails/Notifications.php:1074
+#: src/Emails/Notifications.php:1075
 #: src/Forms/Fields/Content/Field.php:27
 #: src/Forms/Fields/Content/Field.php:108
 #: src/Integrations/AI/API/Forms.php:290
 msgid "Content"
 msgstr ""
 
-#: includes/emails/class-emails.php:657
-#: includes/emails/class-emails.php:731
+#: includes/emails/class-emails.php:710
+#: includes/emails/class-emails.php:784
 #: src/Emails/Notifications.php:643
 #: src/Emails/Notifications.php:819
 #: src/SmartTags/SmartTag/FieldHtmlId.php:38
@@ -3648,13 +3658,13 @@ msgid "(empty)"
 msgstr ""
 
 #. translators: %d - field ID.
-#: includes/emails/class-emails.php:663
-#: includes/emails/class-emails.php:736
+#: includes/emails/class-emails.php:716
+#: includes/emails/class-emails.php:789
 #, php-format
 msgid "Field ID #%s"
 msgstr ""
 
-#: includes/emails/class-emails.php:748
+#: includes/emails/class-emails.php:801
 #: src/Emails/Notifications.php:480
 msgid "An empty form was submitted."
 msgstr ""
@@ -3797,7 +3807,7 @@ msgstr ""
 #: includes/fields/class-base.php:2035
 #: includes/fields/class-base.php:2196
 #: includes/fields/class-select.php:329
-#: src/Emails/Notifications.php:1384
+#: src/Emails/Notifications.php:1388
 #: src/Forms/Fields/Addons/LikertScale/Field.php:253
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:123
 #: src/Forms/Fields/FileUpload/Field.php:258
@@ -3808,7 +3818,7 @@ msgstr ""
 #: includes/fields/class-base.php:2036
 #: includes/fields/class-base.php:2197
 #: includes/fields/class-select.php:328
-#: src/Emails/Notifications.php:1374
+#: src/Emails/Notifications.php:1378
 #: src/Forms/Fields/Addons/LikertScale/Field.php:254
 #: src/Forms/Fields/Addons/NetPromoterScore/Field.php:124
 #: src/Forms/Fields/FileUpload/Field.php:259
@@ -8339,10 +8349,6 @@ msgstr ""
 msgid "captcha, spam, antispam"
 msgstr ""
 
-#: src/Admin/Education/Helpers.php:104
-msgid "New"
-msgstr ""
-
 #: src/Admin/Education/Helpers.php:108
 msgid "Featured"
 msgstr ""
@@ -8827,7 +8833,7 @@ msgid "Trash"
 msgstr ""
 
 #: src/Admin/Forms/Views.php:95
-#: templates/admin/tools/ai-mcp.php:32
+#: templates/admin/tools/ai-mcp.php:35
 msgid "Forms"
 msgstr ""
 
@@ -10594,10 +10600,6 @@ msgstr ""
 msgid "Search results for <strong>%s</strong>"
 msgstr ""
 
-#: src/Admin/Tools/Views/AiMcp.php:43
-msgid "AI MCP"
-msgstr ""
-
 #: src/Admin/Tools/Views/Importer.php:168
 msgid "Form Import"
 msgstr ""
@@ -10918,47 +10920,47 @@ msgid "New Email Submit"
 msgstr ""
 
 #. translators: %1$s - namespaced class name, %2$s - invalid email.
-#: src/Emails/Mailer.php:502
+#: src/Emails/Mailer.php:544
 #, php-format
 msgid "%1$s Invalid email address %2$s."
 msgstr ""
 
 #. translators: %s - namespaced class name.
-#: src/Emails/Mailer.php:511
+#: src/Emails/Mailer.php:553
 #, php-format
 msgid "%s Empty subject line."
 msgstr ""
 
 #. translators: %s - namespaced class name.
-#: src/Emails/Mailer.php:518
+#: src/Emails/Mailer.php:560
 #, php-format
 msgid "%s Empty message."
 msgstr ""
 
-#: src/Emails/Mailer.php:564
+#: src/Emails/Mailer.php:606
 msgid "You cannot send emails with WPForms\\Emails\\Mailer until init/admin_init has been reached."
 msgstr ""
 
 #. translators: %1$d - field ID.
-#: src/Emails/Notifications.php:1241
+#: src/Emails/Notifications.php:1245
 #, php-format
 msgid "Field ID #%1$s"
 msgstr ""
 
-#: src/Emails/Notifications.php:1379
+#: src/Emails/Notifications.php:1383
 #: src/Forms/Fields/EntryPreview/Field.php:268
 msgid "Compact"
 msgstr ""
 
-#: src/Emails/Notifications.php:1389
+#: src/Emails/Notifications.php:1393
 msgid "Elegant"
 msgstr ""
 
-#: src/Emails/Notifications.php:1394
+#: src/Emails/Notifications.php:1398
 msgid "Tech"
 msgstr ""
 
-#: src/Emails/Notifications.php:1399
+#: src/Emails/Notifications.php:1403
 msgid "Plain Text"
 msgstr ""
 
@@ -13480,15 +13482,19 @@ msgstr ""
 msgid "API response: %1$s %2$s"
 msgstr ""
 
-#: src/Integrations/AiMcp/AiMcp.php:213
+#: src/Integrations/AiMcp/AiMcp.php:207
 msgid "Saved"
 msgstr ""
 
-#: src/Integrations/AiMcp/AiMcp.php:214
+#: src/Integrations/AiMcp/AiMcp.php:208
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: src/Integrations/AiMcp/AiMcp.php:237
+#: src/Integrations/AiMcp/AiMcp.php:209
+msgid "Your form must be saved before you can go to WPVibe. Save and continue?"
+msgstr ""
+
+#: src/Integrations/AiMcp/AiMcp.php:293
 msgid "You do not have permission to change this setting."
 msgstr ""
 
@@ -17588,109 +17594,113 @@ msgstr ""
 msgid "New Feature"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:34
+#: templates/admin/tools/ai-mcp.php:37
 msgid "Create a brand new form using plain English"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:35
+#: templates/admin/tools/ai-mcp.php:38
 msgid "Update form settings and submit button text"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:36
+#: templates/admin/tools/ai-mcp.php:39
 msgid "Get a form's full configuration, including every field"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:45
+#: templates/admin/tools/ai-mcp.php:48
 msgid "Add a field to an existing form"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:46
+#: templates/admin/tools/ai-mcp.php:49
 msgid "Update an existing field (label, required, options…)"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:47
+#: templates/admin/tools/ai-mcp.php:50
 msgid "Discover which field types are available"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:56
+#: templates/admin/tools/ai-mcp.php:59
 msgid "Browse entries for any form, with pagination"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:57
+#: templates/admin/tools/ai-mcp.php:60
 msgid "Search entries by date range, field value & status"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:58
+#: templates/admin/tools/ai-mcp.php:61
 msgid "Get a single entry's full details"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:67
+#: templates/admin/tools/ai-mcp.php:70
 msgid "Claude"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:71
+#: templates/admin/tools/ai-mcp.php:74
 msgid "ChatGPT"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:75
+#: templates/admin/tools/ai-mcp.php:78
 msgid "Cursor"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:86
+#: templates/admin/tools/ai-mcp.php:92
 msgid "WordPress Abilities API + WPForms"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:87
+#: templates/admin/tools/ai-mcp.php:93
 msgid "Use WPForms With Your Favorite AI"
 msgstr ""
 
 #. translators: %s: WPVibe.ai inline link.
-#: templates/admin/tools/ai-mcp.php:93
+#: templates/admin/tools/ai-mcp.php:99
 #, php-format
 msgid "Connect your WordPress site and WPForms to AI assistants like Claude, ChatGPT, Cursor, and more. Ask them to find submissions, build forms, or edit fields in plain English. No copy-pasting, no exports. Connect them with the free %s plugin."
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:120
+#: templates/admin/tools/ai-mcp.php:126
 msgid "Install & Activate WPVibe"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:127
+#: templates/admin/tools/ai-mcp.php:133
 msgid "Install from WordPress.org →"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:135
+#: templates/admin/tools/ai-mcp.php:141
 msgid "Activate WPVibe"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:144
+#: templates/admin/tools/ai-mcp.php:150
 msgid "Go To WPVibe"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:145
+#: templates/admin/tools/ai-mcp.php:151
 msgid "Set Up WPVibe"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:161
+#: templates/admin/tools/ai-mcp.php:167
 msgid "Enable MCP Write Access"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:169
+#: templates/admin/tools/ai-mcp.php:172
+msgid "In order for the AI MCP to be able to make changes to your form, Write Access must be enabled."
+msgstr ""
+
+#: templates/admin/tools/ai-mcp.php:182
 msgid "Your site is configured to disallow plugin installation from the dashboard."
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:175
+#: templates/admin/tools/ai-mcp.php:188
 msgid "Supported AI clients"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:188
+#: templates/admin/tools/ai-mcp.php:201
 msgid "+ Any MCP Client"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:196
+#: templates/admin/tools/ai-mcp.php:209
 msgid "Everything WPForms Can Do With AI"
 msgstr ""
 
-#: templates/admin/tools/ai-mcp.php:203
+#: templates/admin/tools/ai-mcp.php:216
 msgid "View Abilities API Documentation"
 msgstr ""
 

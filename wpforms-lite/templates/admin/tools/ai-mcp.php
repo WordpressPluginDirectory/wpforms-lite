@@ -18,6 +18,9 @@
  * @var string $wpvibe_setup_url    WPVibe admin page URL — anchor for the active-state CTA.
  * @var bool   $has_visited_wpvibe  True if the user has been on the WPVibe admin page before.
  * @var string $docs_url            URL for the "View Abilities API Documentation" link.
+ * @var string $docs_utm_medium     utm_medium for the docs link, per surface (Tools - AI MCP / Builder - AI MCP).
+ * @var string $docs_utm_content    utm_content for the docs link, per surface.
+ * @var string $context_class       Optional extra root class to adapt the layout per surface (e.g. the builder variant).
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -75,9 +78,12 @@ $ai_clients = [
 		'label' => __( 'Cursor', 'wpforms-lite' ),
 	],
 ];
+
+// In the builder every WPVibe button state is blue; the Tools page keeps orange for install/activate.
+$wpvibe_button_color = $context_class !== '' ? 'wpforms-btn-blue' : 'wpforms-btn-orange';
 ?>
 
-<div class="wpforms-ai-mcp-page">
+<div class="wpforms-ai-mcp-page <?php echo esc_attr( $context_class ); ?>">
 
 	<section class="wpforms-ai-mcp-hero">
 
@@ -114,14 +120,14 @@ $ai_clients = [
 					<?php if ( $can_install ) : ?>
 						<button
 							type="button"
-							class="wpforms-btn wpforms-btn-orange wpforms-ai-mcp-wpvibe-button"
+							class="wpforms-btn <?php echo esc_attr( $wpvibe_button_color ); ?> wpforms-ai-mcp-wpvibe-button"
 							data-action="install"
 							data-plugin="<?php echo esc_attr( $wpvibe_download_url ); ?>"
 						><?php esc_html_e( 'Install & Activate WPVibe', 'wpforms-lite' ); ?></button>
 					<?php else : ?>
 						<a
 							href="https://wordpress.org/plugins/vibe-ai/"
-							class="wpforms-btn wpforms-btn-orange wpforms-ai-mcp-wpvibe-button"
+							class="wpforms-btn <?php echo esc_attr( $wpvibe_button_color ); ?> wpforms-ai-mcp-wpvibe-button"
 							target="_blank"
 							rel="noopener noreferrer"
 						><?php esc_html_e( 'Install from WordPress.org →', 'wpforms-lite' ); ?></a>
@@ -129,13 +135,13 @@ $ai_clients = [
 				<?php elseif ( $state === 'installed_inactive' && $can_activate ) : ?>
 					<button
 						type="button"
-						class="wpforms-btn wpforms-btn-orange wpforms-ai-mcp-wpvibe-button"
+						class="wpforms-btn <?php echo esc_attr( $wpvibe_button_color ); ?> wpforms-ai-mcp-wpvibe-button"
 						data-action="activate"
 						data-plugin="<?php echo esc_attr( $wpvibe_basename ); ?>"
 					><?php esc_html_e( 'Activate WPVibe', 'wpforms-lite' ); ?></button>
 				<?php elseif ( $state === 'active' ) : ?>
 					<a
-						class="wpforms-btn wpforms-btn-blue wpforms-ai-mcp-wpvibe-button"
+						class="wpforms-btn wpforms-btn-blue wpforms-ai-mcp-wpvibe-button wpforms-ai-mcp-wpvibe-go"
 						href="<?php echo esc_url( $wpvibe_setup_url ); ?>"
 					>
 						<?php
@@ -160,6 +166,13 @@ $ai_clients = [
 					<label class="wpforms-ai-mcp-toggle-label" for="wpforms-ai-mcp-write-toggle">
 						<?php esc_html_e( 'Enable MCP Write Access', 'wpforms-lite' ); ?>
 					</label>
+					<?php if ( $context_class !== '' ) : ?>
+						<i
+							class="fa fa-question-circle-o wpforms-help-tooltip wpforms-ai-mcp-toggle-help"
+							title="<?php esc_attr_e( 'In order for the AI MCP to be able to make changes to your form, Write Access must be enabled.', 'wpforms-lite' ); ?>"
+							aria-hidden="true"
+						></i>
+					<?php endif; ?>
 				</span>
 
 			</div>
@@ -196,7 +209,7 @@ $ai_clients = [
 			<h2 class="wpforms-ai-mcp-capabilities-title"><?php esc_html_e( 'Everything WPForms Can Do With AI', 'wpforms-lite' ); ?></h2>
 			<a
 				class="wpforms-ai-mcp-docs-link"
-				href="<?php echo esc_url( wpforms_utm_link( $docs_url, 'Tools - AI MCP', 'Learn More - Abilities API Documentation' ) ); ?>"
+				href="<?php echo esc_url( wpforms_utm_link( $docs_url, $docs_utm_medium, $docs_utm_content ) ); ?>"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
@@ -211,7 +224,27 @@ $ai_clients = [
 
 					<header class="wpforms-ai-mcp-card-head">
 						<span class="wpforms-ai-mcp-card-icon fa-solid fa-<?php echo esc_attr( $card['icon'] ); ?>" aria-hidden="true"></span>
-						<h3 class="wpforms-ai-mcp-card-title"><?php echo esc_html( $card['title'] ); ?></h3>
+						<span class="wpforms-ai-mcp-card-title-group">
+							<h3 class="wpforms-ai-mcp-card-title"><?php echo esc_html( $card['title'] ); ?></h3>
+							<?php if ( $card['pro'] && ! $is_pro ) : ?>
+								<?php
+								// In the builder the badge uses the shared .wpforms-badge system; the Tools page keeps its own styling.
+								$pro_badge_class = 'wpforms-ai-mcp-pro-badge education-modal';
+
+								if ( $context_class !== '' ) {
+									$pro_badge_class = 'wpforms-badge wpforms-badge-sm wpforms-badge-inline wpforms-badge-rounded wpforms-badge-silver ' . $pro_badge_class;
+								}
+								?>
+								<span
+									class="<?php echo esc_attr( $pro_badge_class ); ?>"
+									data-name="<?php echo esc_attr( $card['title'] ); ?>"
+									data-plural="1"
+									data-action="upgrade"
+									role="button"
+									tabindex="0"
+								><?php esc_html_e( 'Pro', 'wpforms-lite' ); ?></span>
+							<?php endif; ?>
+						</span>
 					</header>
 
 					<ul class="wpforms-ai-mcp-card-bullets">
@@ -222,17 +255,6 @@ $ai_clients = [
 							</li>
 						<?php endforeach; ?>
 					</ul>
-
-					<?php if ( $card['pro'] && ! $is_pro ) : ?>
-						<span
-							class="wpforms-ai-mcp-pro-badge education-modal"
-							data-name="<?php echo esc_attr( $card['title'] ); ?>"
-							data-plural="1"
-							data-action="upgrade"
-							role="button"
-							tabindex="0"
-						><?php esc_html_e( 'Pro', 'wpforms-lite' ); ?></span>
-					<?php endif; ?>
 
 				</article>
 			<?php endforeach; ?>

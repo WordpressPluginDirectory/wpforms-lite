@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.10.2.1 =
+- Added: AI MCP settings section in the Form Builder with the MCP write-access toggle.
+- Fixed: Forms scrolled back to the first text input when adjusting a Number Slider in Chrome on Android.
+- Fixed: Email notification header sanitization was improved for better security.
+
 = 1.10.2 =
 - Added: The Abilities API now supports creating new forms, editing existing form fields, and editing form settings.
 - Changed: Stripe subscriptions that finish all configured billing cycles are now marked as Completed.

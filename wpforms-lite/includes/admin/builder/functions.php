@@ -684,7 +684,8 @@ function wpforms_builder_preview_get_allowed_tags(): array {
  * @since 1.6.6
  *
  * @param string $inner   Inner HTML to wrap.
- * @param array  $args    Array of arguments.
+ * @param array  $args    Array of arguments. Supports `group`, `unfoldable`, `default`, `class`,
+ *                        `borders`, `title`, `title_badge` (trusted HTML shown after the title), `description`.
  * @param bool   $do_echo Flag to display.
  *
  * @return string|null
@@ -711,7 +712,9 @@ function wpforms_panel_fields_group( $inner, $args = [], $do_echo = true ): ?str
 
 	if ( ! empty( $args['title'] ) ) {
 		$chevron = $unfoldable ? '<i class="fa fa-chevron-circle-right"></i>' : '';
-		$output .= '<div class="wpforms-panel-fields-group-title">' . esc_html( $args['title'] ) . $chevron . '</div>';
+		// Caller-controlled trusted markup (e.g. a "New" badge) shown after the title.
+		$title_badge = ! empty( $args['title_badge'] ) ? $args['title_badge'] : '';
+		$output     .= '<div class="wpforms-panel-fields-group-title">' . esc_html( $args['title'] ) . $title_badge . $chevron . '</div>';
 	}
 
 	if ( ! empty( $args['description'] ) ) {

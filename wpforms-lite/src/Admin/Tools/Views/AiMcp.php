@@ -74,48 +74,10 @@ class AiMcp extends View {
 	 */
 	public function display(): void {
 
-		$user_id = get_current_user_id();
-
 		echo wpforms_render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			'admin/tools/ai-mcp',
-			[
-				'state'               => $this->resolve_wpvibe_state(),
-				'is_write_enabled'    => (bool) wpforms_setting( AiMcpIntegration::SETTING_KEY, false ),
-				'is_pro'              => wpforms()->is_pro(),
-				'wpvibe_download_url' => AiMcpIntegration::WPVIBE_DOWNLOAD_URL,
-				'wpvibe_basename'     => AiMcpIntegration::WPVIBE_BASENAME,
-				'wpvibe_setup_url'    => admin_url( 'admin.php?page=' . AiMcpIntegration::WPVIBE_PAGE_SLUG ),
-				'has_visited_wpvibe'  => $user_id && (bool) get_user_meta( $user_id, AiMcpIntegration::USER_META_VISITED_WPVIBE, true ),
-				'docs_url'            => 'https://wpforms.com/docs/using-wpforms-with-ai-assistants/',
-			],
+			AiMcpIntegration::get_template_data(),
 			true
 		);
-	}
-
-	/**
-	 * Detect whether WPVibe is not installed, installed but inactive, or active.
-	 *
-	 * @since 1.10.2
-	 *
-	 * @return string One of 'not_installed', 'installed_inactive', 'active'.
-	 */
-	private function resolve_wpvibe_state(): string {
-
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			include_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		$basename = AiMcpIntegration::WPVIBE_BASENAME;
-		$plugins  = get_plugins();
-
-		if ( ! array_key_exists( $basename, $plugins ) ) {
-			return 'not_installed';
-		}
-
-		if ( ! is_plugin_active( $basename ) ) {
-			return 'installed_inactive';
-		}
-
-		return 'active';
 	}
 }

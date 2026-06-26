@@ -167,54 +167,110 @@ class AiMcp implements IntegrationInterface {
 	}
 
 	/**
-	 * Detect whether the current request is rendering the AI MCP tab.
-	 *
-	 * @since 1.10.2
-	 *
-	 * @return bool
-	 */
-	private function is_ai_mcp_tab(): bool {
-
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		$page = isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
-		$view = isset( $_GET['view'] ) ? sanitize_key( $_GET['view'] ) : '';
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-
-		return $page === 'wpforms-tools' && $view === 'ai-mcp';
-	}
-
-	/**
 	 * Enqueue the page JS and localize handler config. Only fires on the AI MCP tab.
 	 *
 	 * @since 1.10.2
 	 */
 	public function enqueue_scripts() {
 
-		if ( ! $this->is_ai_mcp_tab() ) {
+		$is_builder    = wpforms_is_admin_page( 'builder' );
+		$is_ai_mcp_tab = wpforms_is_admin_page( 'tools', 'ai-mcp' );
+
+		if ( ! $is_builder && ! $is_ai_mcp_tab ) {
 			return;
 		}
 
 		$min = wpforms_get_min_suffix();
 
+		// admin-utils.js (the `wpf` global) is registered under different handles per screen:
+		// `wpforms-utils` in the form builder, `wpforms-admin-utils` everywhere else.
+		$utils_handle = $is_builder ? 'wpforms-utils' : 'wpforms-admin-utils';
+
 		wp_enqueue_script(
 			'wpforms-ai-mcp',
 			WPFORMS_PLUGIN_URL . "assets/js/admin/tools/ai-mcp{$min}.js",
-			[ 'jquery', 'wpforms-admin-utils' ],
+			[ 'jquery', $utils_handle ],
 			WPFORMS_VERSION,
 			true
 		);
 
+		// The `wpforms_admin` global is absent in the builder, so the AJAX URL and the
+		// install/activate nonce are passed here instead — keeping one JS path for both screens.
 		wp_localize_script(
 			'wpforms-ai-mcp',
 			'wpformsAiMcpVars',
 			[
+				'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
+				'nonce'       => wp_create_nonce( 'wpforms-admin' ),
 				'toggleNonce' => wp_create_nonce( 'wpforms_ai_mcp_toggle' ),
 				'i18n'        => [
 					'saved'        => __( 'Saved', 'wpforms-lite' ),
 					'genericError' => __( 'Something went wrong. Please try again.', 'wpforms-lite' ),
+					'confirmSave'  => __( 'Your form must be saved before you can go to WPVibe. Save and continue?', 'wpforms-lite' ),
 				],
 			]
 		);
+	}
+
+	/**
+	 * Build the shared render args for the AI MCP UI.
+	 *
+	 * Used by both the Tools → AI MCP tab and the Form Builder settings section so the
+	 * promo content, WPVibe state, and write-toggle value stay identical across surfaces.
+	 *
+	 * @since 1.10.2.1
+	 *
+	 * @param string $context_class Optional root class that adapts the layout per surface (e.g. the builder variant).
+	 *
+	 * @return array
+	 */
+	public static function get_template_data( string $context_class = '' ): array {
+
+		$user_id = get_current_user_id();
+
+		// The same template renders on Tools → AI MCP and inside the Form Builder; each surface
+		// gets its own UTM medium/content so doc-link clicks are attributed to the right place.
+		$is_builder = $context_class !== '';
+
+		return [
+			'state'               => self::resolve_wpvibe_state(),
+			'is_write_enabled'    => (bool) wpforms_setting( self::SETTING_KEY, false ),
+			'is_pro'              => wpforms()->is_pro(),
+			'wpvibe_download_url' => self::WPVIBE_DOWNLOAD_URL,
+			'wpvibe_basename'     => self::WPVIBE_BASENAME,
+			'wpvibe_setup_url'    => admin_url( 'admin.php?page=' . self::WPVIBE_PAGE_SLUG ),
+			'has_visited_wpvibe'  => $user_id && (bool) get_user_meta( $user_id, self::USER_META_VISITED_WPVIBE, true ),
+			'docs_url'            => 'https://wpforms.com/docs/using-wpforms-with-ai-assistants/',
+			'docs_utm_medium'     => $is_builder ? 'Builder - AI MCP' : 'Tools - AI MCP',
+			'docs_utm_content'    => $is_builder ? 'View Abilities API Documentation' : 'Learn More - Abilities API Documentation',
+			'context_class'       => $context_class,
+		];
+	}
+
+	/**
+	 * Detect whether WPVibe is not installed, installed but inactive, or active.
+	 *
+	 * @since 1.10.2.1
+	 *
+	 * @return string One of 'not_installed', 'installed_inactive', 'active'.
+	 */
+	private static function resolve_wpvibe_state(): string {
+
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$plugins = get_plugins();
+
+		if ( ! array_key_exists( self::WPVIBE_BASENAME, $plugins ) ) {
+			return 'not_installed';
+		}
+
+		if ( ! is_plugin_active( self::WPVIBE_BASENAME ) ) {
+			return 'installed_inactive';
+		}
+
+		return 'active';
 	}
 
 	/**

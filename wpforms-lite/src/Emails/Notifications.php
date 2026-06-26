@@ -961,6 +961,7 @@ class Notifications extends Mailer {
 		// In these contexts, we need to check if the smart tag is allowed.
 		$address_context = [
 			'notification-from',
+			'notification-reply-to',
 		];
 
 		// Check if the smart tag is allowed AND if the context is allowed.
@@ -1111,6 +1112,9 @@ class Notifications extends Mailer {
 			$matches = [];
 
 			if ( preg_match( $regex, $reply_to, $matches ) ) {
+				// The display name accepts any field value and is made header-safe by
+				// sanitize_email_header_name() below, so it must not run through the
+				// address-field validation that the 'notification-reply-to' context applies.
 				$reply_to_name = $this->sanitize( $matches[1] );
 				$reply_to      = trim( $matches[2], '<> ' );
 			}
@@ -1124,7 +1128,7 @@ class Notifications extends Mailer {
 		}
 
 		if ( $reply_to_name ) {
-			$reply_to = "$reply_to_name <{$reply_to}>";
+			$reply_to = $this->sanitize_email_header_name( $reply_to_name ) . " <{$reply_to}>";
 		}
 
 		/**
