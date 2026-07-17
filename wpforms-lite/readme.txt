@@ -3,7 +3,7 @@ Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 7.0
-Stable tag: 1.10.2.1
+Stable tag: 2.0.0.2
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -150,6 +150,7 @@ We also know that our developer friends may want more control, so we added tons 
 * [MailPoet](https://wpforms.com/features/mailpoet-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [ConvertKit](https://wpforms.com/features/convertkit-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Klaviyo](https://wpforms.com/features/klaviyo-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [SendGrid](https://wpforms.com/features/sendgrid-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Salesforce](https://wpforms.com/features/salesforce-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Slack](https://wpforms.com/features/slack-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Dropbox](https://wpforms.com/features/dropbox-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
@@ -391,6 +392,32 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+= 2.0.0.2 =
+- Fixed: Form submissions could still be blocked by stricter web application firewall configurations that flagged the JSON structure of the Form Analytics data; the data attached to each submission is now base64-encoded.
+- Fixed: A cross-site scripting vulnerability when a page combined a WPForms captcha with a specially crafted OptinMonster campaign.
+
+= 2.0.0.1 =
+- Fixed: Form submissions could be blocked by a web application firewall, such as Cloudflare's OWASP ruleset, because of the format of the Form Analytics data attached to each submission.
+
+= 2.0.0 =
+- Added: New Onboarding Wizard and Setup Checklist page in the WPForms admin menu to guide users through essential configuration steps.
+- Added: New Reconnect button for invalid payment connections in the Form Builder Payments Settings panel.
+- Changed: The Form Builder Setup panel now opens significantly faster.
+- Changed: Updated DOMPurify library to 3.4.11.
+- Changed: The AI Chat button in the Form Builder is now shown in grey and displays a tooltip explaining that WPForms AI is not available on local sites.
+- Changed: Updated woocommerce/action-scheduler library to 4.0.0.
+- Changed: Stripe payment security is enhanced with automatic detection and blocking of card testing attacks and other fraudulent activity.
+- Fixed: Randomize the position of the correct answer in AI-generated graded quizzes.
+- Fixed: Admin notices about incompatible WPForms versions are now shown only to users who can update plugins.
+- Fixed: A choice deleted in the Form Builder could still appear as an empty option on the front-end and triggered PHP warnings on the form view.
+- Fixed: The settings gear icon on the Payments, and Dashboard pages was displayed in the wrong color and oversized when Elementor plugin was active.
+- Fixed: Form elements could appear disabled after a Stripe 3D Secure authentication failure, even though they remained editable.
+- Fixed: The connection icon was displayed in the Builder settings for payment methods even when no account was connected.
+- Fixed: Stripe subscription renewals could remain in the Pending status and display an outdated renewal date on the Payment Single page.
+- Fixed: Connected payment methods checkmark could still appear in the Form Builder Payments panel after switching to a template without a payment field.
+- Fixed: The Weekly Email Summary email content was displayed right-aligned instead of centered in the web version of Gmail.
+- Fixed: The Themes panel in the Form Builder Settings did not re-open when its menu item was clicked again after navigating away and back.
+- Fixed: A PHP warning was logged when restoring a trashed form on PHP 8.3 and higher.
 
 = 1.10.2.1 =
 - Added: AI MCP settings section in the Form Builder with the MCP write-access toggle.

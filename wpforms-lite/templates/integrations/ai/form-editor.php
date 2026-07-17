@@ -13,9 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<script type="text/html" id="tmpl-wpforms-smart-edit-fab">
-	<button id="wpforms-smart-edit-fab"
-	        class="wpforms-smart-edit-fab wpforms-smart-edit-fab-hidden"
+<script type="text/html" id="tmpl-wpforms-ai-chat-fab">
+	<button id="wpforms-ai-chat-fab"
+	        class="wpforms-ai-chat-fab wpforms-ai-chat-fab-hidden"
 	        type="button"
 	        title="<?php esc_attr_e( 'Make changes with WPForms AI', 'wpforms-lite' ); ?>">
 		<svg width="22" height="22" fill="#fff" viewBox="0 0 16 16" aria-hidden="true">
@@ -25,17 +25,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</button>
 </script>
 
-<script type="text/html" id="tmpl-wpforms-smart-edit-modal">
-	<div id="wpforms-smart-edit-modal" class="wpforms-smart-edit-modal wpforms-smart-edit-modal-initial">
+<script type="text/html" id="tmpl-wpforms-ai-chat-modal">
+	<div id="wpforms-ai-chat-modal" class="wpforms-ai-chat-modal wpforms-ai-chat-modal-initial">
 
 		<!-- Header — drag handle. -->
-		<div class="wpforms-smart-edit-modal-header">
-			<span class="wpforms-smart-edit-modal-title">
+		<div class="wpforms-ai-chat-modal-header">
+			<span class="wpforms-ai-chat-modal-title">
 				<?php esc_html_e( 'WPForms AI', 'wpforms-lite' ); ?>
 			</span>
 
-			<div class="wpforms-smart-edit-modal-controls">
-				<button class="js-wpforms-smart-edit-close wpforms-smart-edit-modal-btn"
+			<div class="wpforms-ai-chat-modal-controls">
+				<button class="js-wpforms-ai-chat-close wpforms-ai-chat-modal-btn"
 				        title="<?php esc_attr_e( 'Hide', 'wpforms-lite' ); ?>">
 					<i class="fa fa-chevron-down"></i>
 				</button>
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 
 		<!-- Body — hosts the chat web component. -->
-		<div class="wpforms-smart-edit-modal-body">
+		<div class="wpforms-ai-chat-modal-body">
 			<wpforms-ai-chat class="wpforms-ai-chat-light" mode="form-editor" field-id="form-editor"></wpforms-ai-chat>
 		</div>
 

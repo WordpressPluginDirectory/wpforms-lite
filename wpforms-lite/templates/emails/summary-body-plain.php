@@ -87,7 +87,7 @@ if ( ! wpforms()->is_pro() ) {
 if ( ! empty( $reengagement_alert ) ) {
 	echo $divider; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo esc_html( $reengagement_alert['title'] ) . "\n\n";
-	echo esc_html( $reengagement_alert['content'] ) . "\n\n";
+	echo esc_html( $reengagement_alert['content_plain'] ?? $reengagement_alert['content'] ) . "\n\n";
 	echo esc_html( $reengagement_alert['button_text'] ) . ': ' . esc_url( $reengagement_alert['button_url'] ) . "\n\n";
 }
 

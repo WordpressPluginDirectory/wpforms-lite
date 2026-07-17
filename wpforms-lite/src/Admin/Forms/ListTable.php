@@ -525,6 +525,28 @@ class ListTable extends WP_List_Table {
 				'total_pages' => (int) ceil( $count_current_view / $per_page ),
 			]
 		);
+
+		$items    = is_array( $this->items ) ? $this->items : [];
+		$form_ids = array_map(
+			static function ( $form ) {
+
+				return (int) $form->ID;
+			},
+			$items
+		);
+
+		/**
+		 * Fires after the Forms Overview list table has prepared its items.
+		 *
+		 * Provides the IDs of all forms shown on the current page, allowing
+		 * subscribers to bulk-fetch related per-form data in a single query
+		 * (avoiding per-row N+1 queries during column rendering).
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param int[] $form_ids IDs of forms on the current page.
+		 */
+		do_action( 'wpforms_admin_forms_list_table_prepare_items_after', $form_ids );
 	}
 
 	/**

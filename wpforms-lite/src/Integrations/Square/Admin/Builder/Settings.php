@@ -185,6 +185,10 @@ class Settings {
 	 */
 	private function is_payments_enabled(): bool {
 
+		if ( ! Helpers::is_square_configured() ) {
+			return false;
+		}
+
 		return ! empty( $this->form_data['payments'][ $this->slug ]['enable'] ) || ! empty( $this->form_data['payments'][ $this->slug ]['enable_one_time'] );
 	}
 

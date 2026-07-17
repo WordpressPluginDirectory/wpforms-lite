@@ -29,6 +29,13 @@ class Helper {
 	const INSTALL_ZIP_URL = 'https://downloads.wordpress.org/plugin/activelayer-anti-spam-spam-protection-for-forms-comments.zip';
 
 	/**
+	 * Canonical plugin basename ( 'folder/main-file.php' ) used as the install identity.
+	 *
+	 * @since 2.0.0
+	 */
+	const FILE = self::SLUG . '/' . self::SLUG . '.php';
+
+	/**
 	 * Admin page slug ActiveLayer registers as its top-level dashboard menu.
 	 *
 	 * @since 1.10.0.5
@@ -76,6 +83,24 @@ class Helper {
 		}
 
 		return is_plugin_active( $basename );
+	}
+
+	/**
+	 * Whether ActiveLayer is set up — active with a connected API key.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return bool
+	 */
+	public static function is_set_up(): bool {
+
+		if ( ! self::is_activated() ) {
+			return false;
+		}
+
+		$settings_helper = 'ActiveLayer\Helpers\SettingsHelper';
+
+		return class_exists( $settings_helper ) && $settings_helper::has_api_key();
 	}
 
 	/**

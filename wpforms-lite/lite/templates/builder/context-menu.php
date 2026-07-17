@@ -71,6 +71,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<li class="wpforms-context-menu-list-item education-modal"
 			data-action="upgrade"
 			data-license="pro"
+			data-name="Analytics"
+			data-utm-content="Upgrade to Pro - Analytics Context Menu Item"
+		>
+			<span class="wpforms-context-menu-list-item-icon">
+				<i class="fa fa-bar-chart"></i>
+			</span>
+
+			<span class="wpforms-context-menu-list-item-text">
+				<?php esc_html_e( 'View Analytics', 'wpforms-lite' ); ?>
+			</span>
+
+			<?php Helpers::print_badge( 'Pro', 'sm', 'inline', 'stone' ); ?>
+		</li>
+
+		<li class="wpforms-context-menu-list-item education-modal"
+			data-action="upgrade"
+			data-license="pro"
 			data-name="Entries"
 			data-utm-content="Upgrade to Pro - Entries Context Menu Item"
 		>

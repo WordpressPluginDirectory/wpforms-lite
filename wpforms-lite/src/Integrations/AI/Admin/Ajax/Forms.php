@@ -348,6 +348,7 @@ class Forms extends Base {
 		// Prepare the new form data.
 		$form_data['fields']   = $this->prepare_fields_data( $form_data );
 		$form_data['settings'] = $this->prepare_form_settings( $form_data );
+		$form_data             = $this->randomize_graded_quiz_choices( $form_data );
 		$form_data['field_id'] = count( $form_data['fields'] ) + 1;
 
 		$meta               = [];
@@ -507,6 +508,95 @@ class Forms extends Base {
 		$form_data['settings']['quiz']['outcomes'] = $outcomes;
 
 		return $form_data;
+	}
+
+	/**
+	 * Randomize the correct-answer position among choices of graded-quiz answer fields.
+	 *
+	 * AI-generated graded quizzes tend to place the correct choice first. Shuffle the
+	 * choices of each radio, checkbox, or select field that has exactly one default
+	 * (correct) choice so the correct answer no longer always lands first.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $form_data Form data.
+	 *
+	 * @return array
+	 */
+	private function randomize_graded_quiz_choices( array $form_data ): array {
+
+		// Only graded quizzes need their correct-answer position randomized.
+		if ( ( $form_data['settings']['quiz']['type'] ?? '' ) !== 'graded' ) {
+			return $form_data;
+		}
+
+		/**
+		 * Allow disabling graded-quiz correct-answer randomization.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param bool  $randomize Whether to randomize the correct-answer position.
+		 * @param array $form_data Form data.
+		 */
+		if ( ! apply_filters( 'wpforms_integrations_ai_admin_ajax_forms_randomize_graded_quiz_choices', true, $form_data ) ) {
+			return $form_data;
+		}
+
+		foreach ( $form_data['fields'] ?? [] as $id => $field ) {
+			$form_data['fields'][ $id ] = $this->maybe_shuffle_field_choices( $field );
+		}
+
+		return $form_data;
+	}
+
+	/**
+	 * Shuffle the choices of a single field if it qualifies for randomization.
+	 *
+	 * A field qualifies when it is a radio, checkbox, or select type, has at least
+	 * two choices, and has exactly one choice marked as the correct answer (default).
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $field Field data.
+	 *
+	 * @return array Field data, with choices shuffled and 1-based re-indexed if applicable.
+	 */
+	private function maybe_shuffle_field_choices( array $field ): array {
+
+		// Only choice-based fields can have a correct answer to randomize.
+		if ( ! in_array( $field['type'] ?? '', [ 'radio', 'checkbox', 'select' ], true ) ) {
+			return $field;
+		}
+
+		$choices = $field['choices'] ?? [];
+
+		// Need at least two choices to randomize their order.
+		if ( ! is_array( $choices ) || count( $choices ) < 2 ) {
+			return $field;
+		}
+
+		// Count the choices flagged as the correct answer.
+		$correct_count = 0;
+
+		foreach ( $choices as $choice ) {
+			if ( ! empty( $choice['default'] ) ) {
+				++$correct_count;
+			}
+		}
+
+		// Only randomize when there is exactly one correct answer.
+		if ( $correct_count !== 1 ) {
+			return $field;
+		}
+
+		$choices = array_values( $choices );
+
+		shuffle( $choices );
+
+		// Re-key the shuffled choices starting from 1, matching FormsAPI::fix_choices().
+		$field['choices'] = array_combine( range( 1, count( $choices ) ), $choices );
+
+		return $field;
 	}
 
 	/**

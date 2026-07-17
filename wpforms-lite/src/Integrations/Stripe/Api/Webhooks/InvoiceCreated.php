@@ -5,6 +5,7 @@ namespace WPForms\Integrations\Stripe\Api\Webhooks;
 use RuntimeException;
 use Exception;
 use WPForms\Vendor\Stripe\Invoice;
+use WPForms\Vendor\Stripe\Subscription;
 use WPForms\Integrations\Stripe\Helpers;
 use WPForms\Db\Payments\Queries;
 
@@ -58,7 +59,16 @@ class InvoiceCreated extends Base {
 			)
 		);
 
-		$this->finalize_invoice();
+		$this->maybe_flag_final_renewal( $original_subscription );
+
+		$invoice = $this->finalize_invoice();
+
+		// For short-interval or limited-cycle (scheduled) subscriptions Stripe can collect the
+		// payment before this webhook runs, so invoice.payment_succeeded may have arrived before
+		// the renewal existed and bailed.
+		if ( ! empty( $invoice->paid ) ) {
+			( new InvoicePaymentSucceeded() )->complete_renewal( $invoice );
+		}
 
 		return true;
 	}
@@ -117,6 +127,40 @@ class InvoiceCreated extends Base {
 	}
 
 	/**
+	 * Flag the subscription when this renewal is its final billing cycle.
+	 *
+	 * Limited-cycle (scheduled) subscriptions stay active until Stripe cancels them at the end of the
+	 * last period, so the next renewal date would otherwise show a phantom future date. The cycle count
+	 * is not stored locally, so the final cycle is detected from the subscription's cancel_at and marked
+	 * on the subscription meta for the admin view to read.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param object $original_subscription Original subscription payment.
+	 */
+	private function maybe_flag_final_renewal( $original_subscription ) {
+
+		try {
+			$subscription = Subscription::retrieve( $this->data->object->subscription, Helpers::get_auth_opts() );
+		} catch ( Exception $e ) {
+			return; // Leave the flag unset; the renewal date keeps its default behaviour.
+		}
+
+		if ( empty( $subscription->cancel_at ) ) {
+			return; // Open-ended subscription; more renewals will follow.
+		}
+
+		$period_end = $this->data->object->lines->data[0]->period->end ?? 0;
+
+		// Only the final cycle has the subscription cancelling at or before this billing period's end.
+		if ( ! $period_end || (int) $subscription->cancel_at > $period_end ) {
+			return;
+		}
+
+		wpforms()->obj( 'payment_meta' )->update_or_add( $original_subscription->id, 'subscription_final_renewal', '1' );
+	}
+
+	/**
 	 * Copy meta from original subscription.
 	 *
 	 * @since 1.8.4
@@ -152,6 +196,8 @@ class InvoiceCreated extends Base {
 	 * @since 1.8.4
 	 *
 	 * @throws RuntimeException If invoice not finalized.
+	 *
+	 * @return Invoice The retrieved (and, when needed, finalized) invoice.
 	 */
 	private function finalize_invoice() {
 
@@ -160,11 +206,13 @@ class InvoiceCreated extends Base {
 			$invoice = $invoice->retrieve( $this->data->object->id, Helpers::get_auth_opts() );
 
 			if ( empty( $invoice->finalized_at ) ) {
-				$invoice->finalizeInvoice();
+				$invoice = $invoice->finalizeInvoice();
 			}
 		} catch ( Exception $e ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			throw new RuntimeException( esc_html( $e->getMessage() ) );
 		}
+
+		return $invoice;
 	}
 }

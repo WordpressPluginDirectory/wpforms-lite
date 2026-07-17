@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WPForms\Admin\Builder\TemplatesCache;
+use WPForms\Db\Analytics\Forms;
+use WPForms\Db\Analytics\Snapshots;
 use WPForms\Db\Payments\Meta as PaymentsMeta;
 use WPForms\Db\Payments\Payment;
 use WPForms\Lite\Integrations\LiteConnect\Integration as LiteConnectIntegration;
@@ -33,10 +35,12 @@ class WPForms_Lite {
 	 * @since 1.9.0
 	 */
 	public const CUSTOM_TABLES = [
-		'wpforms_payments'     => Payment::class,
-		'wpforms_payment_meta' => PaymentsMeta::class,
-		'wpforms_tasks_meta'   => TasksMeta::class,
-		'wpforms_logs'         => Repository::class,
+		'wpforms_payments'            => Payment::class,
+		'wpforms_payment_meta'        => PaymentsMeta::class,
+		'wpforms_tasks_meta'          => TasksMeta::class,
+		'wpforms_logs'                => Repository::class,
+		'wpforms_analytics_snapshots' => Snapshots::class,
+		'wpforms_analytics_forms'     => Forms::class,
 	];
 
 	/**
@@ -1093,10 +1097,10 @@ class WPForms_Lite {
 	private function get_entries_utm(): array {
 
 		return [
-			'entries_list_button' => 'https://wpforms.com/lite-upgrade/?utm_campaign=liteplugin&utm_source=WordPress&utm_medium=entries&utm_content=Upgrade%20Now%20-%20Entries%20list',
-			'entries_list_link'   => 'https://wpforms.com/lite-upgrade/?utm_campaign=liteplugin&utm_source=WordPress&utm_medium=entries&utm_content=Upgrade%20to%20Pro%20-%20Entries%20list',
-			'entry_single_button' => 'https://wpforms.com/lite-upgrade/?utm_campaign=liteplugin&utm_source=WordPress&utm_medium=entries&utm_content=Upgrade%20to%20Pro%20-%20Single%20Entry',
-			'entry_single_link'   => 'https://wpforms.com/lite-upgrade/?utm_campaign=liteplugin&utm_source=WordPress&utm_medium=entries&utm_content=Upgrade%20to%20Pro%20-%20Single%20Entry',
+			'entries_list_button' => wpforms_admin_upgrade_link( 'entries', 'Upgrade Now - Entries list' ),
+			'entries_list_link'   => wpforms_admin_upgrade_link( 'entries', 'Upgrade to Pro - Entries list' ),
+			'entry_single_button' => wpforms_admin_upgrade_link( 'entries', 'Upgrade to Pro - Single Entry' ),
+			'entry_single_link'   => wpforms_admin_upgrade_link( 'entries', 'Upgrade to Pro - Single Entry' ),
 		];
 	}
 

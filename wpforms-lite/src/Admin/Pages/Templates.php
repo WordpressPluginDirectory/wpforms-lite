@@ -3,6 +3,7 @@
 namespace WPForms\Admin\Pages;
 
 use WPForms\Admin\Traits\FormTemplates;
+use WPForms\Admin\Builder\Templates as BuilderTemplates;
 
 /**
  * Main Templates page class.
@@ -71,7 +72,7 @@ class Templates {
 		wp_enqueue_script(
 			'wpforms-admin-form-templates',
 			WPFORMS_PLUGIN_URL . "assets/js/admin/pages/form-templates{$min}.js",
-			[ 'underscore', 'wp-util' ],
+			[ 'underscore', 'wp-util', 'wpforms-form-templates' ],
 			WPFORMS_VERSION,
 			true
 		);
@@ -95,8 +96,13 @@ class Templates {
 			'wpforms-admin-form-templates',
 			'wpforms_admin_form_templates',
 			[
-				'nonce'         => wp_create_nonce( 'wpforms-builder' ),
-				'openAIFormUrl' => admin_url( 'admin.php?page=wpforms-builder&view=setup&ai-form' ),
+				'ajaxurl'                 => admin_url( 'admin-ajax.php' ),
+				'nonce'                   => wp_create_nonce( 'wpforms-builder' ),
+				'templates_nonce'         => wp_create_nonce( 'wpforms-form-templates' ),
+				'heads_up'                => esc_html__( 'Heads Up!', 'wpforms-lite' ),
+				'infinite_scroll_enabled' => BuilderTemplates::is_infinite_scroll_enabled(),
+				'openAIFormUrl'           => admin_url( 'admin.php?page=wpforms-builder&view=setup&ai-form' ),
+				'infiniteScrollModuleUrl' => WPFORMS_PLUGIN_URL . "assets/js/admin/builder/modules/templates-infinite-scroll{$min}.js",
 			]
 		);
 	}

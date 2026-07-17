@@ -4,6 +4,7 @@ namespace WPForms\Admin\Builder;
 
 use WPForms\Helpers\CacheBase;
 use WPForms\Helpers\File;
+use WPForms\Helpers\Transient;
 
 /**
  * Form templates cache handler.
@@ -19,10 +20,46 @@ class TemplatesCache extends CacheBase {
 	 *
 	 * @var array
 	 */
-	const CONTENT_CACHE_FILES = [
+	public const CONTENT_CACHE_FILES = [
 		'admin-page' => 'templates-admin-page.html',
 		'builder'    => 'templates-builder.html',
 	];
+
+	/**
+	 * Cache key for prepared templates' data.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var string
+	 */
+	private const PREPARED_DATA_KEY = 'wpforms_prepared_templates_data';
+
+	/**
+	 * Cache key prefix for rendered HTML batches.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var string
+	 */
+	private const HTML_BATCH_PREFIX = 'wpforms_template_batch_';
+
+	/**
+	 * Registry key for tracking active HTML batch cache keys.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var string
+	 */
+	private const HTML_BATCH_REGISTRY = 'wpforms_template_batch_registry';
+
+	/**
+	 * Registry key for tracking active prepared templates cache keys.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var string
+	 */
+	private const PREPARED_DATA_REGISTRY = 'wpforms_prepared_templates_registry';
 
 	/**
 	 * List of plugins that can use the templates cache.
@@ -31,7 +68,7 @@ class TemplatesCache extends CacheBase {
 	 *
 	 * @var array
 	 */
-	const PLUGINS = [
+	public const PLUGINS = [
 		'wpforms',
 		'wpforms-lite',
 	];
@@ -67,7 +104,7 @@ class TemplatesCache extends CacheBase {
 	 *
 	 * @since 1.8.7
 	 */
-	public function init() { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	public function init(): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		parent::init();
 
@@ -82,7 +119,7 @@ class TemplatesCache extends CacheBase {
 	 *
 	 * @param object $upgrader WP_Upgrader instance.
 	 */
-	public function upgrade_templates( $upgrader ) {
+	public function upgrade_templates( $upgrader ): void {
 
 		if ( $this->allow_update_cache( $upgrader ) ) {
 			$this->update( true );
@@ -102,7 +139,7 @@ class TemplatesCache extends CacheBase {
 
 		$result = $upgrader->result ?? null;
 
-		// Check if plugin was updated.
+		// Check if the plugin was updated.
 		if ( ! $result ) {
 			return false;
 		}
@@ -122,15 +159,15 @@ class TemplatesCache extends CacheBase {
 	 *
 	 * @return array Settings array.
 	 */
-	protected function setup() {
+	protected function setup(): array {
 
 		return [
 
 			// Remote source URL.
-			'remote_source' => 'https://wpforms.com/templates/api/get/',
+			'remote_source'  => 'https://wpforms.com/templates/api/get/',
 
 			// Cache file.
-			'cache_file'    => 'templates.json',
+			'cache_file'     => 'templates.json',
 
 			/**
 			 * Time-to-live of the templates cache files in seconds.
@@ -143,10 +180,22 @@ class TemplatesCache extends CacheBase {
 			 * @param integer $cache_ttl Cache time-to-live, in seconds.
 			 *                           Default value: WEEK_IN_SECONDS.
 			 */
-			'cache_ttl'     => (int) apply_filters( 'wpforms_admin_builder_templates_cache_ttl', WEEK_IN_SECONDS ),
+			'cache_ttl'      => (int) apply_filters( 'wpforms_admin_builder_templates_cache_ttl', WEEK_IN_SECONDS ),
+
+			/**
+			 * Time-to-live of AJAX-related cache (prepared templates and HTML batches) in seconds.
+			 *
+			 * This applies to prepared templates cache, HTML batch cache, and their registries.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param int $ajax_cache_ttl AJAX cache time-to-live, in seconds.
+			 *                            Default value: DAY_IN_SECONDS.
+			 */
+			'ajax_cache_ttl' => (int) apply_filters( 'wpforms_admin_builder_templates_cache_ajax_cache_ttl', DAY_IN_SECONDS ),
 
 			// Scheduled update action.
-			'update_action' => 'wpforms_admin_builder_templates_cache_update',
+			'update_action'  => 'wpforms_admin_builder_templates_cache_update',
 		];
 	}
 
@@ -186,7 +235,7 @@ class TemplatesCache extends CacheBase {
 	 *
 	 * @since 1.8.6
 	 *
-	 * @param bool $force Whether to force update the cache.
+	 * @param bool $force Whether to force cache update.
 	 *
 	 * @return bool
 	 */
@@ -199,8 +248,10 @@ class TemplatesCache extends CacheBase {
 		}
 
 		$this->wipe_content_cache();
+		$this->clear_prepared_templates_cache();
+		$this->clear_html_batch_cache();
 
-		return $result;
+		return true;
 	}
 
 	/**
@@ -235,7 +286,7 @@ class TemplatesCache extends CacheBase {
 	 *
 	 * @since 1.8.6
 	 */
-	public function wipe_content_cache() {
+	public function wipe_content_cache(): void {
 
 		$cache_dir = $this->get_cache_dir();
 
@@ -263,5 +314,198 @@ class TemplatesCache extends CacheBase {
 		$context = wpforms_is_admin_page( 'templates' ) ? 'admin-page' : 'builder';
 
 		return File::get_cache_dir() . self::CONTENT_CACHE_FILES[ $context ];
+	}
+
+	/**
+	 * Get prepared templates data from the cache.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array Cached templates data or empty array.
+	 */
+	public function get_prepared_templates_cache(): array {
+
+		$cache = Transient::get( $this->get_prepared_cache_key() );
+
+		if ( ! is_array( $cache ) || empty( $cache ) ) {
+			return [];
+		}
+
+		if ( ! isset( $cache['templates'], $cache['version'], $cache['timestamp'] ) ) {
+			return [];
+		}
+
+		if ( $cache['version'] !== WPFORMS_VERSION ) {
+			$this->clear_prepared_templates_cache();
+
+			return [];
+		}
+
+		return $cache['templates'];
+	}
+
+	/**
+	 * Save prepared templates data to cache.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array|mixed $templates Prepared templates data.
+	 *
+	 * @return bool True on success.
+	 */
+	public function save_prepared_templates_cache( $templates ): bool {
+
+		if ( ! is_array( $templates ) ) {
+			return false;
+		}
+
+		$cache_key  = $this->get_prepared_cache_key();
+		$cache_data = [
+			'templates' => $templates,
+			'version'   => WPFORMS_VERSION,
+			'timestamp' => time(),
+		];
+
+		$result = Transient::set( $cache_key, $cache_data, $this->settings['ajax_cache_ttl'] );
+
+		// Register the key for bulk clearing.
+		$this->register_cache_key( self::PREPARED_DATA_REGISTRY, $cache_key );
+
+		return $result;
+	}
+
+	/**
+	 * Clear prepared templates cache.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return bool True on success.
+	 */
+	public function clear_prepared_templates_cache(): bool {
+
+		$keys = Transient::get( self::PREPARED_DATA_REGISTRY );
+
+		if ( is_array( $keys ) ) {
+			foreach ( $keys as $key ) {
+				Transient::delete( $key );
+			}
+		}
+
+		Transient::delete( self::PREPARED_DATA_REGISTRY );
+
+		return true;
+	}
+
+	/**
+	 * Get user-specific prepared templates cache key.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return string Transient key.
+	 */
+	private function get_prepared_cache_key(): string {
+
+		return self::PREPARED_DATA_KEY . '_' . get_current_user_id();
+	}
+
+	/**
+	 * Get rendered HTML batch from cache.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $cache_key Unique cache key for this batch.
+	 *
+	 * @return array|false Cached batch data or false.
+	 */
+	public function get_html_batch_cache( string $cache_key ) {
+
+		$transient_key = self::HTML_BATCH_PREFIX . md5( $cache_key );
+
+		return Transient::get( $transient_key );
+	}
+
+	/**
+	 * Save a rendered HTML batch to cache.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $cache_key  Unique cache key for this batch.
+	 * @param array  $batch_data Batch response data.
+	 *
+	 * @return bool True on success.
+	 */
+	public function save_html_batch_cache( string $cache_key, array $batch_data ): bool {
+
+		$transient_key = self::HTML_BATCH_PREFIX . md5( $cache_key );
+
+		$result = Transient::set( $transient_key, $batch_data, $this->settings['ajax_cache_ttl'] );
+
+		// Register the key for bulk clearing.
+		$this->register_cache_key( self::HTML_BATCH_REGISTRY, $transient_key );
+
+		return $result;
+	}
+
+	/**
+	 * Clear all HTML batch caches.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return int Number of deleted transients.
+	 */
+	private function clear_html_batch_cache(): int {
+
+		$keys    = Transient::get( self::HTML_BATCH_REGISTRY );
+		$deleted = 0;
+
+		if ( is_array( $keys ) ) {
+			foreach ( $keys as $key ) {
+				if ( Transient::delete( $key ) ) {
+					++$deleted;
+				}
+			}
+		}
+
+		Transient::delete( self::HTML_BATCH_REGISTRY );
+
+		return $deleted;
+	}
+
+	/**
+	 * Register a cache key in a registry transient for bulk clearing.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $registry_key Registry transient key.
+	 * @param string $cache_key    Cache key to register.
+	 */
+	private function register_cache_key( string $registry_key, string $cache_key ): void {
+
+		$keys = Transient::get( $registry_key );
+
+		if ( ! is_array( $keys ) ) {
+			$keys = [];
+		}
+
+		if ( in_array( $cache_key, $keys, true ) ) {
+			return;
+		}
+
+		$keys[] = $cache_key;
+
+		// Set expiration matching the AJAX cache TTL to prevent indefinite growth.
+		Transient::set( $registry_key, $keys, $this->settings['ajax_cache_ttl'] );
+	}
+
+	/**
+	 * Clear all caches.
+	 *
+	 * @since 2.0.0
+	 */
+	public function clear_all(): void {
+
+		$this->clear_prepared_templates_cache();
+		$this->clear_html_batch_cache();
+		$this->wipe_content_cache();
 	}
 }

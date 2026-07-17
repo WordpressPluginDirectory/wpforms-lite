@@ -461,6 +461,7 @@ abstract class Page {
 			'activating'               => esc_html__( 'Activating...', 'wpforms-lite' ),
 			'activated'                => $this->get_installed_activated_text(),
 			'activated_pro'            => $this->get_pro_installed_activated_text(),
+			'setup_completed'          => $this->get_setup_completed_text(),
 			'install_now'              => esc_html__( 'Install Now', 'wpforms-lite' ),
 			'activate_now'             => esc_html__( 'Activate Now', 'wpforms-lite' ),
 			'download_now'             => esc_html__( 'Download Now', 'wpforms-lite' ),

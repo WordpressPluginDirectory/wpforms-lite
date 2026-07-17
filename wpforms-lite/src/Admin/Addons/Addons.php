@@ -2,6 +2,8 @@
 
 namespace WPForms\Admin\Addons;
 
+use WPForms\SetupWizard\RestApi;
+
 /**
  * Addons data handler.
  *
@@ -96,15 +98,26 @@ class Addons {
 	 */
 	public function allow_load() {
 
-		global $pagenow;
+		// The Setup Wizard installation request authenticates later, inside the REST
+		// permission callback, so no user is set this early, and the capability
+		// gate below would always reject it. The endpoint guards the installation
+		// itself (session token plus manage_options), so let the data load here.
+		if ( RestApi::is_install_request() ) {
+			return true;
+		}
 
 		$has_permissions = wpforms_current_user_can( [ 'create_forms', 'edit_forms' ] );
-		$allowed_pages   = in_array( $pagenow ?? '', [ 'plugins.php', 'update-core.php', 'plugin-install.php' ], true );
-		$allowed_ajax    = $pagenow === 'admin-ajax.php' && isset( $_POST['action'] ) && $_POST['action'] === 'update-plugin'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-		$allowed_requests = $allowed_pages || $allowed_ajax || wpforms_is_admin_ajax() || wpforms_is_admin_page() || wpforms_is_admin_page( 'builder' );
+		if ( ! $has_permissions ) {
+			return false;
+		}
 
-		return $has_permissions && $allowed_requests;
+		global $pagenow;
+
+		$allowed_pages = in_array( $pagenow ?? '', [ 'plugins.php', 'update-core.php', 'plugin-install.php' ], true );
+		$allowed_ajax  = $pagenow === 'admin-ajax.php' && isset( $_POST['action'] ) && $_POST['action'] === 'update-plugin'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+		return $allowed_pages || $allowed_ajax || wpforms_is_admin_ajax() || wpforms_is_admin_page() || wpforms_is_admin_page( 'builder' );
 	}
 
 	/**
@@ -383,6 +396,24 @@ class Addons {
 		$addon = $this->get_addon( $slug );
 
 		return isset( $addon['status'] ) && $addon['status'] === 'active';
+	}
+
+	/**
+	 * Return the download URL for an addon.
+	 *
+	 * Lite has no license and therefore no addon download URLs, so the base
+	 * implementation always returns an empty string. The Pro subclass overrides this
+	 * with the license-keyed URL resolved from the WPForms.com API.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $slug Addon slug.
+	 *
+	 * @return string
+	 */
+	public function get_url( string $slug ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+
+		return '';
 	}
 
 	/**

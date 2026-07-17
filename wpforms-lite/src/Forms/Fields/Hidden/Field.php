@@ -25,7 +25,7 @@ class Field extends WPForms_Field {
 		$this->name            = esc_html__( 'Hidden Field', 'wpforms-lite' );
 		$this->type            = 'hidden';
 		$this->icon            = 'fa-eye-slash';
-		$this->order           = 98;
+		$this->order           = 305;
 		$this->group           = 'fancy';
 		$this->allow_read_only = false;
 

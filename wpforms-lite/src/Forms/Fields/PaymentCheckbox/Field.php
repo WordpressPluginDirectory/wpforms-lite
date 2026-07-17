@@ -116,7 +116,7 @@ class Field extends WPForms_Field {
 		foreach ( $choices as $key => $choice ) {
 
 			// Choice labels should not be left blank, but if they are, we provide a basic value.
-			$label = $choice['label'];
+			$label = $choice['label'] ?? '';
 
 			if ( $label === '' ) {
 				if ( 1 === count( $choices ) ) {
@@ -149,7 +149,7 @@ class Field extends WPForms_Field {
 				],
 				'class'      => [ 'wpforms-payment-price' ],
 				'data'       => [
-					'amount' => wpforms_format_amount( wpforms_sanitize_amount( $choice['value'] ) ),
+					'amount' => wpforms_format_amount( wpforms_sanitize_amount( $choice['value'] ?? '' ) ),
 				],
 				'id'         => "wpforms-{$form_id}-field_{$field_id}_{$key}",
 				'icon'       => $choice['icon'] ?? '',
@@ -552,7 +552,7 @@ class Field extends WPForms_Field {
 						continue;
 					}
 
-					$value = (float) wpforms_sanitize_amount( $choice['value'] );
+					$value = (float) wpforms_sanitize_amount( $choice['value'] ?? '' );
 
 					// Increase the total amount.
 					$amount += $value;

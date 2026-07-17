@@ -115,6 +115,23 @@ function wpforms_get_license_key(): string {
 }
 
 /**
+ * Determine whether the current site has a valid (active, non-error) WPForms license.
+ *
+ * @since 2.0.0
+ *
+ * @return bool True when a license key is present and the license is not expired, disabled, or invalid.
+ */
+function wpforms_is_license_valid(): bool {
+
+	$license = (array) get_option( 'wpforms_license', [] );
+
+	return ! empty( wpforms_get_license_key() ) &&
+		empty( $license['is_expired'] ) &&
+		empty( $license['is_disabled'] ) &&
+		empty( $license['is_invalid'] );
+}
+
+/**
  * Get when WPForms was first installed.
  *
  * @since 1.6.0

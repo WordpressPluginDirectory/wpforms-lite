@@ -136,12 +136,12 @@ class Field extends WPForms_Field {
 					'class' => [ 'wpforms-field-label-inline' ],
 					'data'  => [],
 					'id'    => '',
-					'text'  => $choice['label'],
+					'text'  => $this->get_choices_label( $choice['label'] ?? '', $key, $field ),
 				],
 				'attr'      => [
-					'value' => $choice['value'],
+					'value' => $choice['value'] ?? '',
 					'data'  => [
-						'amount' => wpforms_format_amount( wpforms_sanitize_amount( $choice['value'] ) ),
+						'amount' => wpforms_format_amount( wpforms_sanitize_amount( $choice['value'] ?? '' ) ),
 					],
 				],
 				'class'     => [],

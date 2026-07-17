@@ -2,7 +2,8 @@
 
 namespace WPForms\Admin\Education\Builder;
 
-use \WPForms\Admin\Education\EducationInterface;
+use WPForms\Admin\Education\EducationInterface;
+use WPForms\Education\ActiveLayer\Helper as ActiveLayer;
 
 /**
  * Builder/ReCaptcha Education feature.
@@ -154,25 +155,33 @@ class Captcha implements EducationInterface {
 			wp_send_json_error( esc_html__( 'Something wrong. Please, try again later.', 'wpforms-lite' ) );
 		}
 
+		$not_configured_content = sprintf(
+			wp_kses( /* translators: %1$s - CAPTCHA settings page URL, %2$s - WPForms.com doc URL. */
+				__( 'Please complete the setup in your <a href="%1$s" target="_blank">WPForms Settings</a>, and check out <a href="%2$s" target="_blank" rel="noopener noreferrer">our guide</a> to learn about available CAPTCHA solutions.', 'wpforms-lite' ),
+				[
+					'a' => [
+						'href'   => true,
+						'rel'    => true,
+						'target' => true,
+					],
+				]
+			),
+			esc_url( admin_url( 'admin.php?page=wpforms-settings&view=captcha' ) ),
+			esc_url( wpforms_utm_link( 'https://wpforms.com/docs/setup-captcha-wpforms/', 'builder-modal', 'Captcha Documentation' ) )
+		);
+
+		// The success modal is only reachable through the footer's install CTA,
+		// so only ship its data when the footer actually renders.
+		$footer = $this->get_activelayer_footer_html();
+
 		return [
 			'current'  => false,
 			'cases'    => [
 				'not_configured'         => [
-					'title'   => esc_html__( 'Heads up!', 'wpforms-lite' ),
-					'content' => sprintf(
-						wp_kses( /* translators: %1$s - CAPTCHA settings page URL, %2$s - WPForms.com doc URL. */
-							__( 'Please complete the setup in your <a href="%1$s" target="_blank">WPForms Settings</a>, and check out <a href="%2$s" target="_blank" rel="noopener noreferrer">our guide</a> to learn about available CAPTCHA solutions.', 'wpforms-lite' ),
-							[
-								'a' => [
-									'href'   => true,
-									'rel'    => true,
-									'target' => true,
-								],
-							]
-						),
-						esc_url( admin_url( 'admin.php?page=wpforms-settings&view=captcha' ) ),
-						esc_url( wpforms_utm_link( 'https://wpforms.com/docs/setup-captcha-wpforms/', 'builder-modal', 'Captcha Documentation' ) )
-					),
+					'title'         => esc_html__( 'Heads up!', 'wpforms-lite' ),
+					'content'       => $not_configured_content,
+					'footer'        => $footer,
+					'success_modal' => $footer === '' ? null : $this->get_activelayer_success_modal_data(),
 				],
 				'configured_not_enabled' => [
 					'title'   => false,
@@ -187,6 +196,70 @@ class Captcha implements EducationInterface {
 				],
 			],
 			'provider' => $settings['provider'],
+		];
+	}
+
+	/**
+	 * ActiveLayer cross-promo footer for the captcha not_configured modal.
+	 * Empty when ActiveLayer is already active or the user cannot install plugins.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return string
+	 */
+	private function get_activelayer_footer_html(): string {
+
+		if ( ActiveLayer::is_activated() || ! wpforms_can_install( 'plugin' ) ) {
+			return '';
+		}
+
+		$modal      = ActiveLayer::get_modal_data();
+		$attrs_html = '';
+
+		foreach ( $modal['attrs'] as $key => $value ) {
+			$attrs_html .= sprintf( ' %s="%s"', esc_attr( $key ), esc_attr( $value ) );
+		}
+
+		// Body copy with "ActiveLayer" linking to the marketing site in a new tab.
+		$body = sprintf(
+			wp_kses( /* translators: %1$s - ActiveLayer marketing site URL. */
+				__( 'Captchas can reduce form completions by up to 40%%. <a href="%1$s" target="_blank" rel="noopener noreferrer">ActiveLayer</a> catches bots invisibly, without asking your visitors to prove they\'re human.', 'wpforms-lite' ),
+				[
+					'a' => [
+						'href'   => true,
+						'target' => true,
+						'rel'    => true,
+					],
+				]
+			),
+			esc_url( wpforms_utm_link( 'https://activelayer.com/', 'builder-modal', 'ActiveLayer Captcha Footer' ) )
+		);
+
+		// The install CTA drives the bespoke flow in captcha.js (direct install,
+		// no confirm modal); it deliberately does NOT use the `education-modal` class.
+		return sprintf(
+			'<div class="wpforms-captcha-activelayer-footer"><p>%1$s <a href="#" class="wpforms-captcha-activelayer-install"%2$s>%3$s</a></p></div>',
+			$body, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped via wp_kses and esc_url.
+			$attrs_html, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- attrs escaped above.
+			esc_html__( 'Install Now', 'wpforms-lite' )
+		);
+	}
+
+	/**
+	 * Copy and target for the "Installation Successful" confirmation modal
+	 * shown by captcha.js after ActiveLayer is installed from the footer CTA.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array
+	 */
+	private function get_activelayer_success_modal_data(): array {
+
+		return [
+			'title'      => esc_html__( 'Installation Successful', 'wpforms-lite' ),
+			'content'    => esc_html__( 'ActiveLayer has been installed and is ready to be configured. Would you like to set it up now?', 'wpforms-lite' ),
+			'setup_text' => esc_html__( 'Yes, Go to Setup', 'wpforms-lite' ),
+			'setup_url'  => ActiveLayer::get_dashboard_url(),
 		];
 	}
 }

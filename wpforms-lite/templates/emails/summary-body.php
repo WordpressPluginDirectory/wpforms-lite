@@ -229,7 +229,7 @@ $utm_medium = 'Weekly Summary Email';
 																<tr>
 																	<td align="center" valign="top" style="padding: 25px 30px 0 30px;">
 																		<h4><?php echo esc_html( $reengagement_alert['title'] ); ?></h4>
-																		<p><?php echo esc_html( $reengagement_alert['content'] ); ?></p>
+																		<p><?php echo wp_kses( $reengagement_alert['content'], [ 'a' => [ 'href' => [] ] ] ); ?></p>
 																	</td>
 																</tr>
 																<tr>

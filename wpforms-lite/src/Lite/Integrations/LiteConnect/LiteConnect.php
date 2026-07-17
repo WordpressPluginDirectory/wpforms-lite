@@ -59,6 +59,10 @@ class LiteConnect extends \WPForms\Integrations\LiteConnect\LiteConnect {
 
 		parent::load();
 
+		// Register outside the cap check — wizard REST calls have no current user
+		// at plugins_loaded, so this stamping filter must always be attached.
+		add_filter( 'wpforms_update_settings', [ $this, 'update_enabled_settings' ] );
+
 		// Do not load if user doesn't have permissions to update settings.
 		if ( ! wpforms_current_user_can( wpforms_get_capability_manage_options() ) ) {
 			return;
@@ -92,9 +96,6 @@ class LiteConnect extends \WPForms\Integrations\LiteConnect\LiteConnect {
 
 		// Add Lite Connect option to settings.
 		add_filter( 'wpforms_settings_defaults', [ $this, 'settings_option' ] );
-
-		// Automatically save the timestamp when Lite Connect was enabled first time.
-		add_filter( 'wpforms_update_settings', [ $this, 'update_enabled_settings' ] );
 	}
 
 	/**

@@ -3,6 +3,7 @@
 namespace WPForms\Integrations\Stripe;
 
 use WPForms\Integrations\IntegrationInterface;
+use WPForms\Integrations\Stripe\Protections\LowAmountSurgeDetector;
 
 /**
  * Integration of the Stripe payment gateway.
@@ -67,6 +68,7 @@ final class Stripe implements IntegrationInterface {
 		( new WebhooksHealthCheck() )->init();
 		( new DomainHealthCheck() )->init();
 		( new Admin\Payments\SingleActionsHandler() )->init( $api );
+		( new LowAmountSurgeDetector() )->init()->hooks();
 
 		// Bail early for paid users with active Stripe addon.
 		if ( Helpers::is_pro() ) {

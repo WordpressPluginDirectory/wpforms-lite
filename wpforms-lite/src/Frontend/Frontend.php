@@ -1929,6 +1929,7 @@ class Frontend {
 			 */
 			'mailcheck_toplevel_domains' => array_map( 'sanitize_text_field', (array) apply_filters( 'wpforms_mailcheck_toplevel_domains', [ 'dev' ] ) ), // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 			'is_ssl'                     => is_ssl(),
+			'nonce'                      => wp_create_nonce( 'wpforms' ),
 		];
 
 		// Include payment-related strings if needed.

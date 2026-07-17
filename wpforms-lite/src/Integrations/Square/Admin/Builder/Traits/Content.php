@@ -424,6 +424,13 @@ trait Content {
 
 		if ( ! $connection->is_usable() ) {
 
+			// The invalid status requires re-connecting the account; other non-usable reasons (e.g. currency mismatch) do not.
+			if ( ! $connection->is_valid() ) {
+				$this->reconnect_alert();
+
+				return true;
+			}
+
 			$this->alert_content(
 				__( 'Square payments can\'t be processed because there\'s a problem with the account connection.', 'wpforms-lite' ),
 				sprintf(
@@ -558,8 +565,7 @@ trait Content {
 	 */
 	private function disconnected_alert(): void {
 
-		$form_id     = isset( $this->form_data['id'] ) ? absint( $this->form_data['id'] ) : 0;
-		$connect_url = ( new Connect() )->get_connect_url( '', $form_id );
+		$connect_url = $this->get_builder_connect_url();
 
 		$this->alert_icon();
 		?>
@@ -569,12 +575,7 @@ trait Content {
 				<?php echo $this->learn_more_link(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</p>
 			<?php
-			printf(
-				'<a href="%1$s" class="wpforms-btn wpforms-btn-md wpforms-btn-orange wpforms-payments-connect-btn wpforms-square-connect" data-gateway-label="%2$s">%3$s</a>',
-				esc_url( $connect_url ),
-				esc_attr__( 'Square', 'wpforms-lite' ),
-				esc_html__( 'Connect with Square', 'wpforms-lite' )
-			);
+			$this->connect_button( $connect_url, __( 'Connect with Square', 'wpforms-lite' ) );
 
 			// The WPForms transaction fee applies to Lite only; Pro has no extra fees.
 			if ( ! wpforms()->is_pro() ) {
@@ -583,5 +584,60 @@ trait Content {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Display the invalid-connection alert with an inline Reconnect button.
+	 *
+	 * @since 2.0.0
+	 */
+	private function reconnect_alert(): void {
+
+		$connect_url = $this->get_builder_connect_url();
+
+		$this->alert_icon();
+		?>
+		<div class="wpforms-builder-payment-settings-default-content">
+			<p class="wpforms-builder-payment-settings-error-title">
+				<?php esc_html_e( 'Heads up! Square payments can\'t be processed because there\'s a problem with the account connection.', 'wpforms-lite' ); ?>
+			</p>
+			<p class="wpforms-builder-payment-settings-learn-more">
+				<?php echo $this->learn_more_link(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</p>
+			<?php $this->connect_button( $connect_url, __( 'Reconnect with Square', 'wpforms-lite' ) ); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Build the OAuth connect URL for the Form Builder, scoped to the current form.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return string
+	 */
+	private function get_builder_connect_url(): string {
+
+		$form_id = isset( $this->form_data['id'] ) ? absint( $this->form_data['id'] ) : 0;
+
+		return ( new Connect() )->get_connect_url( '', $form_id );
+	}
+
+	/**
+	 * Render an inline Square connect/reconnect button.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $connect_url The OAuth connect URL.
+	 * @param string $label       The button label.
+	 */
+	private function connect_button( string $connect_url, string $label ): void {
+
+		printf(
+			'<a href="%1$s" class="wpforms-btn wpforms-btn-md wpforms-btn-orange wpforms-payments-connect-btn wpforms-square-connect" data-gateway-label="%2$s">%3$s</a>',
+			esc_url( $connect_url ),
+			esc_attr__( 'Square', 'wpforms-lite' ),
+			esc_html( $label )
+		);
 	}
 }

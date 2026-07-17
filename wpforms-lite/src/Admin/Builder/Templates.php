@@ -3,6 +3,7 @@
 namespace WPForms\Admin\Builder;
 
 use WP_Query;
+use WPForms\Integrations\Stripe\Helpers as StripeHelpers;
 
 /**
  * Templates class.
@@ -99,7 +100,7 @@ class Templates {
 	 *
 	 * @return bool
 	 */
-	private function allow_load() {
+	private function allow_load(): bool {
 
 		$has_permissions  = wpforms_current_user_can( [ 'create_forms', 'edit_forms' ] );
 		$allowed_requests = wpforms_is_admin_ajax() || wpforms_is_admin_page( 'builder' ) || wpforms_is_admin_page( 'templates' );
@@ -120,7 +121,7 @@ class Templates {
 	 *
 	 * @since 1.6.8
 	 */
-	public function init() {
+	public function init(): void {
 
 		if ( ! $this->allow_load() ) {
 			return;
@@ -136,12 +137,15 @@ class Templates {
 	 *
 	 * @since 1.6.8
 	 */
-	protected function hooks() {
+	protected function hooks(): void {
 
 		add_action( 'admin_init', [ $this, 'create_form_on_request' ], 100 );
 		add_filter( 'wpforms_form_templates_core', [ $this, 'add_templates_to_setup_panel' ], 20 );
 		add_filter( 'wpforms_create_form_args', [ $this, 'apply_to_new_form' ], 10, 2 );
 		add_filter( 'wpforms_save_form_args', [ $this, 'apply_to_existing_form' ], 10, 3 );
+
+		// Late priority so this runs after every handler that preserves or re-adds payments (e.g. Addons::preserve_payments).
+		add_filter( 'wpforms_save_form_args', [ $this, 'reconcile_payments_on_template_apply' ], 1000, 3 );
         add_action( 'admin_print_scripts', [ $this, 'upgrade_banner_template' ] );
         add_action( 'admin_print_scripts', [ $this, 'upgrade_lite_banner_template' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueues' ] );
@@ -154,7 +158,7 @@ class Templates {
 	 *
 	 * @since 1.7.7
 	 */
-	public function enqueues() {
+	public function enqueues(): void {
 
 		$min = wpforms_get_min_suffix();
 
@@ -174,6 +178,28 @@ class Templates {
 			true
 		);
 
+		wp_localize_script(
+			'wpforms-form-templates',
+			'wpforms_form_templates',
+			$this->get_localized_data()
+		);
+
+		wp_localize_script(
+			'wpforms-form-templates',
+			'wpforms_addons',
+			$this->get_localized_addons()
+		);
+	}
+
+	/**
+	 * Get localized data for JavaScript.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array Localized data.
+	 */
+	private function get_localized_data(): array {
+
 		$strings = [
 			'ajaxurl'                 => admin_url( 'admin-ajax.php' ),
 			'admin_nonce'             => wp_create_nonce( 'wpforms-admin' ),
@@ -190,6 +216,7 @@ class Templates {
 			'delete_template'         => esc_html__( 'Yes, Delete', 'wpforms-lite' ),
 			'delete_template_title'   => esc_html__( 'Delete Form Template', 'wpforms-lite' ),
 			'delete_template_content' => esc_html__( 'Are you sure you want to delete this form template? This cannot be undone.', 'wpforms-lite' ),
+			'infinite_scroll_enabled' => self::is_infinite_scroll_enabled(),
 		];
 
 		if ( $strings['can_install_addons'] ) {
@@ -208,17 +235,26 @@ class Templates {
 			$strings['template_addons_prompt'] = esc_html( sprintf( __( "To use all of the features in this template, you'll need the %s. Contact your site administrator to install them, then try opening this template again.", 'wpforms-lite' ), '%addons%' ) );
 		}
 
-		wp_localize_script(
-			'wpforms-form-templates',
-			'wpforms_form_templates',
-			$strings
-		);
+		return $strings;
+	}
 
-		wp_localize_script(
-			'wpforms-form-templates',
-			'wpforms_addons',
-			$this->get_localized_addons()
-		);
+	/**
+	 * Whether to enable infinite scroll for templates.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return bool True when infinite scroll is enabled, false otherwise.
+	 */
+	public static function is_infinite_scroll_enabled(): bool {
+
+		/**
+		 * Whether to enable infinite scroll for templates.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param bool $enabled True or false.
+		 */
+		return (bool) apply_filters( 'wpforms_admin_builder_templates_infinite_scroll_enabled', true );
 	}
 
 	/**
@@ -228,11 +264,17 @@ class Templates {
 	 *
 	 * @return array
 	 */
-	private function get_localized_addons() {
+	private function get_localized_addons(): array {
 
-		return wpforms_chain( wpforms()->obj( 'addons' )->get_available() )
+		$addons_obj = wpforms()->obj( 'addons' );
+
+		if ( ! $addons_obj ) {
+			return [];
+		}
+
+		return wpforms_chain( $addons_obj->get_available() )
 			->map(
-				static function( $addon ) {
+				static function ( $addon ) {
 
 					return [
 						'title'  => $addon['title'],
@@ -358,7 +400,7 @@ class Templates {
 
 		$user_id = get_current_user_id();
 
-		return isset( $favorites_list[ $user_id ] ) ? $favorites_list[ $user_id ] : [];
+		return $favorites_list[ $user_id ] ?? [];
 	}
 
 	/**
@@ -423,7 +465,7 @@ class Templates {
 		$templates_cache_obj = wpforms()->obj( 'builder_templates_cache' );
 
 		if ( $templates_cache_obj ) {
-			$templates_cache_obj->wipe_content_cache();
+			$templates_cache_obj->clear_all();
 		}
 
 		wp_send_json_success();
@@ -827,6 +869,58 @@ class Templates {
 
 		// Update the form with new data.
 		$form['post_content'] = wpforms_encode( $new );
+
+		return $form;
+	}
+
+	/**
+	 * Disconnect payment gateways the form's new template can no longer use.
+	 *
+	 * Runs only when a template is applied to a form (online or offline) and after
+	 * all other save handlers — including addon payment preservation — so a stale
+	 * "connected" checkmark and enabled state are not carried over to a template
+	 * without the payment field. A gateway is kept only when the form still has a
+	 * field that gateway can use; gateways without a dedicated field (e.g. PayPal
+	 * Standard) fall back to the generic payment field types.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array|mixed $form Form post data.
+	 * @param array       $data Form data.
+	 * @param array       $args Save arguments. Contains `template` on template apply.
+	 *
+	 * @return array
+	 */
+	public function reconcile_payments_on_template_apply( $form, $data, $args ): array {
+
+		$form = (array) $form;
+
+		if ( empty( $args['template'] ) ) {
+			return $form;
+		}
+
+		$form_data = wpforms_decode( wp_unslash( $form['post_content'] ?? '' ) );
+
+		if ( empty( $form_data['payments'] ) ) {
+			return $form;
+		}
+
+		$gateway_fields = [
+			'stripe'          => [ StripeHelpers::get_field_slug() ],
+			'square'          => [ 'square' ],
+			'paypal_commerce' => [ 'paypal-commerce' ],
+			'authorize_net'   => [ 'authorize_net' ],
+		];
+
+		foreach ( array_keys( $form_data['payments'] ) as $gateway ) {
+			$required_fields = $gateway_fields[ $gateway ] ?? wpforms_payment_fields();
+
+			if ( ! wpforms_has_field_type( $required_fields, $form_data ) ) {
+				unset( $form_data['payments'][ $gateway ] );
+			}
+		}
+
+		$form['post_content'] = wpforms_encode( $form_data );
 
 		return $form;
 	}

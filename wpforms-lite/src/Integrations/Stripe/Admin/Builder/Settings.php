@@ -166,6 +166,10 @@ class Settings {
 	 */
 	private function is_payments_enabled(): bool {
 
+		if ( ! Helpers::has_stripe_keys() ) {
+			return false;
+		}
+
 		return ! empty( $this->form_data['payments'][ $this->slug ]['enable'] ) ||
 			! empty( $this->form_data['payments'][ $this->slug ]['enable_one_time'] ) ||
 			! empty( $this->form_data['payments'][ $this->slug ]['enable_recurring'] );

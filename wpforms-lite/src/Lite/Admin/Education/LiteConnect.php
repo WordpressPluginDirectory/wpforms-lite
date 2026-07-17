@@ -48,6 +48,7 @@ class LiteConnect implements Education\EducationInterface {
 			wpforms_is_admin_page( 'settings' ) ||
 			wpforms_is_admin_page( 'overview' ) ||
 			wpforms_is_admin_page( 'entries' ) ||
+			wpforms_is_admin_page( 'setup-checklist' ) ||
 			$this->is_dashboard() ||
 			$this->is_embed_page();
 	}

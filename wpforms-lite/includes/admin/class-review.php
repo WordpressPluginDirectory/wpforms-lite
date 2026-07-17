@@ -32,11 +32,13 @@ class WPForms_Review {
 	private const PAGES = [
 		'wpforms-about',
 		'wpforms-addons',
+		'wpforms-analytics',
 		'wpforms-community',
 		'wpforms-entries',
 		'wpforms-overview',
 		'wpforms-payments',
 		'wpforms-settings',
+		'wpforms-setup-checklist',
 		'wpforms-smtp',
 		'wpforms-templates',
 		'wpforms-tools',

@@ -2,7 +2,6 @@
 
 namespace WPForms\Integrations\Stripe\Api\Webhooks;
 
-use RuntimeException;
 use Stripe\Exception\ApiErrorException;
 use WPForms\Db\Payments\Queries;
 use WPForms\Integrations\Stripe\Helpers;
@@ -20,8 +19,6 @@ class InvoicePaymentSucceeded extends Base {
 	 *
 	 * @since 1.8.4
 	 *
-	 * @throws RuntimeException       If subscription not found or not updated.
-	 *
 	 * @return bool
 	 */
 	public function handle() {
@@ -34,14 +31,33 @@ class InvoicePaymentSucceeded extends Base {
 			return false; // Subscription not paid, so we are not going to proceed with update.
 		}
 
-		$db_renewal = ( new Queries() )->get_renewal_by_invoice_id( $this->data->object->id );
+		return $this->complete_renewal( $this->data->object );
+	}
+
+	/**
+	 * Mark the renewal that belongs to the given paid invoice as completed.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param object $invoice Stripe invoice object (event payload or live API object).
+	 *
+	 * @return bool
+	 */
+	public function complete_renewal( object $invoice ): bool {
+
+		$db_renewal = ( new Queries() )->get_renewal_by_invoice_id( $invoice->id );
 
 		if ( is_null( $db_renewal ) ) {
-			return false; // Newest renewal not found.
+			return false; // Renewal not created yet; the other webhook will complete it.
 		}
 
-		$currency = strtoupper( $this->data->object->currency );
-		$amount   = $this->data->object->amount_paid / wpforms_get_currency_multiplier( $currency );
+		// Already processed: stay idempotent for duplicate or racing webhooks.
+		if ( $db_renewal->status === 'completed' ) {
+			return true;
+		}
+
+		$currency = strtoupper( $invoice->currency );
+		$amount   = $invoice->amount_paid / wpforms_get_currency_multiplier( $currency );
 
 		wpforms()->obj( 'payment' )->update(
 			$db_renewal->id,
@@ -49,17 +65,17 @@ class InvoicePaymentSucceeded extends Base {
 				'total_amount'    => $amount,
 				'subtotal_amount' => $amount,
 				'status'          => 'completed',
-				'transaction_id'  => $this->data->object->payment_intent,
+				'transaction_id'  => $invoice->payment_intent,
 			]
 		);
 
-		$this->copy_meta_from_payment_intent( $db_renewal->id );
+		$this->copy_meta_from_payment_intent( $db_renewal->id, $invoice->payment_intent );
 
 		wpforms()->obj( 'payment_meta' )->add_log(
 			$db_renewal->id,
 			sprintf(
 				'Stripe renewal was successfully paid. (Payment Intent ID: %1$s)',
-				$this->data->object->payment_intent
+				$invoice->payment_intent
 			)
 		);
 
@@ -71,14 +87,15 @@ class InvoicePaymentSucceeded extends Base {
 	 *
 	 * @since 1.8.4
 	 *
-	 * @param int $renewal_id Renewal ID.
+	 * @param int    $renewal_id        Renewal ID.
+	 * @param string $payment_intent_id Payment Intent ID.
 	 *
 	 * @noinspection PhpMissingParamTypeInspection
 	 */
-	private function copy_meta_from_payment_intent( $renewal_id ) {
+	private function copy_meta_from_payment_intent( $renewal_id, $payment_intent_id ) {
 
 		try {
-			$payment_intent = PaymentIntent::retrieve( $this->data->object->payment_intent, Helpers::get_auth_opts() );
+			$payment_intent = PaymentIntent::retrieve( $payment_intent_id, Helpers::get_auth_opts() );
 		} catch ( ApiErrorException $e ) {
 			$payment_intent = null;
 		}

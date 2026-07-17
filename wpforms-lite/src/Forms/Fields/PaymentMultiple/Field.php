@@ -123,7 +123,7 @@ class Field extends WPForms_Field {
 					'class' => [ 'wpforms-field-label-inline' ],
 					'data'  => [],
 					'id'    => '',
-					'text'  => $choice['label'],
+					'text'  => $this->get_choices_label( $choice['label'] ?? '', $key, $field ),
 				],
 				'attr'       => [
 					'name'  => "wpforms[fields][{$field_id}]",
@@ -131,7 +131,7 @@ class Field extends WPForms_Field {
 				],
 				'class'      => [ 'wpforms-payment-price' ],
 				'data'       => [
-					'amount' => wpforms_format_amount( wpforms_sanitize_amount( $choice['value'] ) ),
+					'amount' => wpforms_format_amount( wpforms_sanitize_amount( $choice['value'] ?? '' ) ),
 				],
 				'id'         => "wpforms-{$form_id}-field_{$field_id}_{$key}",
 				'icon'       => $choice['icon'] ?? '',
@@ -507,7 +507,7 @@ class Field extends WPForms_Field {
 
 		if ( ! empty( $field_submit ) && ! empty( $field['choices'][ $field_submit ] ) ) {
 
-			$amount = wpforms_sanitize_amount( $field['choices'][ $field_submit ]['value'] );
+			$amount = wpforms_sanitize_amount( $field['choices'][ $field_submit ]['value'] ?? '' );
 			$value  = wpforms_format_amount( $amount, true );
 
 			if ( ! empty( $field['choices'][ $field_submit ]['label'] ) ) {

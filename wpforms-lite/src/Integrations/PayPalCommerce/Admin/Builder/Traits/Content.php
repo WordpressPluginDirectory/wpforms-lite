@@ -57,20 +57,7 @@ trait Content {
 		$connection = Connection::get();
 
 		if ( ! $connection ) {
-			$form_id  = isset( $this->form_data['id'] ) ? absint( $this->form_data['id'] ) : 0;
-			$site_url = Helpers::get_settings_page_url();
-
-			if ( $form_id > 0 ) {
-				$site_url = add_query_arg( 'wpforms_return_form_id', $form_id, $site_url );
-			}
-
-			$connect_url = ( new Connect() )->get_connect_url( '', $site_url );
-
-			// Fall back to the settings anchor if the partner-referral lookup
-			// failed (rate limit, connectivity, locked transient).
-			if ( $connect_url === '' ) {
-				$connect_url = $site_url . '#wpforms-setting-row-paypal-commerce-heading';
-			}
+			$connect_url = $this->get_builder_connect_url();
 			?>
 
 			<?php $this->alert_icon(); ?>
@@ -78,12 +65,7 @@ trait Content {
 				<p><?php esc_html_e( 'Connect to your PayPal account and start receiving payments today.', 'wpforms-lite' ); ?></p>
 				<p class="wpforms-builder-payment-settings-learn-more"><?php echo $this->learn_more_link(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<?php
-				printf(
-					'<a href="%1$s" class="wpforms-btn wpforms-btn-md wpforms-btn-orange wpforms-payments-connect-btn wpforms-paypal-commerce-auth" data-gateway-label="%2$s">%3$s</a>',
-					esc_url( $connect_url ),
-					esc_attr__( 'PayPal Commerce', 'wpforms-lite' ),
-					esc_html__( 'Connect with PayPal', 'wpforms-lite' )
-				);
+				$this->connect_button( $connect_url, __( 'Connect with PayPal', 'wpforms-lite' ) );
 
 				// The WPForms transaction fee applies to Lite only; Pro has no extra fees.
 				if ( ! wpforms()->is_pro() ) {
@@ -99,6 +81,13 @@ trait Content {
 		$connection = $connection->is_valid() ? $connection->refresh_expired_tokens() : $connection;
 
 		if ( ! $connection->is_usable() ) {
+
+			// The invalid status requires re-connecting the account; other non-usable reasons do not.
+			if ( ! $connection->is_valid() ) {
+				$this->reconnect_alert();
+
+				return true;
+			}
 
 			echo '<p class="wpforms-alert wpforms-alert-info">';
 			printf(
@@ -122,6 +111,72 @@ trait Content {
 		$this->alert_paypal_standard();
 
 		return false;
+	}
+
+	/**
+	 * Display the invalid-connection alert with an inline Reconnect button.
+	 *
+	 * @since 2.0.0
+	 */
+	private function reconnect_alert(): void {
+
+		$connect_url = $this->get_builder_connect_url();
+
+		$this->alert_icon();
+		?>
+		<div class="wpforms-builder-payment-settings-default-content">
+			<p class="wpforms-builder-payment-settings-error-title">
+				<?php esc_html_e( 'Heads up! PayPal Commerce payments can\'t be processed because there\'s a problem with the account connection.', 'wpforms-lite' ); ?>
+			</p>
+			<p class="wpforms-builder-payment-settings-learn-more"><?php echo $this->learn_more_link(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+			<?php $this->connect_button( $connect_url, __( 'Reconnect with PayPal', 'wpforms-lite' ) ); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Build the OAuth connect URL for the Form Builder, scoped to the current form.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return string
+	 */
+	private function get_builder_connect_url(): string {
+
+		$form_id  = isset( $this->form_data['id'] ) ? absint( $this->form_data['id'] ) : 0;
+		$site_url = Helpers::get_settings_page_url();
+
+		if ( $form_id > 0 ) {
+			$site_url = add_query_arg( 'wpforms_return_form_id', $form_id, $site_url );
+		}
+
+		$connect_url = ( new Connect() )->get_connect_url( '', $site_url );
+
+		// Fall back to the settings anchor if the partner-referral lookup
+		// failed (rate limit, connectivity, locked transient).
+		if ( $connect_url === '' ) {
+			$connect_url = $site_url . '#wpforms-setting-row-paypal-commerce-heading';
+		}
+
+		return $connect_url;
+	}
+
+	/**
+	 * Render an inline PayPal connect/reconnect button.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $connect_url The OAuth connect URL.
+	 * @param string $label       The button label.
+	 */
+	private function connect_button( string $connect_url, string $label ): void {
+
+		printf(
+			'<a href="%1$s" class="wpforms-btn wpforms-btn-md wpforms-btn-orange wpforms-payments-connect-btn wpforms-paypal-commerce-auth" data-gateway-label="%2$s">%3$s</a>',
+			esc_url( $connect_url ),
+			esc_attr__( 'PayPal Commerce', 'wpforms-lite' ),
+			esc_html( $label )
+		);
 	}
 
 	/**

@@ -39,6 +39,10 @@ class AddonCompatibility {
 
 		// Warn the user about the fact that the not supported addon has been installed.
 		add_action( 'admin_notices', [ $this, 'display_legacy_addon_notice' ] );
+
+		// Also surface it on the Network Admin dashboard, where the super admin (the only
+		// multisite user who can update plugins) can act on it. Mirrors Requirements::show_notices().
+		add_action( 'network_admin_notices', [ $this, 'display_legacy_addon_notice' ] );
 	}
 
 	/**
@@ -59,6 +63,14 @@ class AddonCompatibility {
 	 * @since 1.9.5
 	 */
 	public function display_legacy_addon_notice() {
+
+		// Only users who can update plugins can act on this "out of date" notice.
+		// This notice renders via its own `admin_notices` hook (see hooks()), independently of
+		// Requirements::show_notices(), so this gate is the only thing hiding it from other users.
+		// Do not remove it as "redundant".
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return;
+		}
 
 		echo '<div class="notice notice-error"><p>';
 			esc_html_e( 'The WPForms Square addon is out of date. To avoid payment processing issues, please upgrade the Square addon to the latest version.', 'wpforms-lite' );

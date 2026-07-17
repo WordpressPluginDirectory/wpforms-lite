@@ -733,7 +733,7 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 						// Check if the submitted value is the same as the choice value or if the value is empty and the key matches.
 						// Skip if the submitted value is empty.
 						if ( ( ! empty( $item ) && $item === $choice['value'] ) || ( empty( $choice['value'] ) && (int) str_replace( 'Choice ', '', $item ) === $key ) ) {
-							$value[]       = $choice['label'];
+							$value[]       = isset( $choice['label'] ) ? $choice['label'] : '';
 							$choice_keys[] = $key;
 
 							break;
@@ -750,8 +750,10 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 				// Determine choices keys, this is needed for image choices.
 				foreach ( $field_submit as $item ) {
 					foreach ( $field['choices'] as $key => $choice ) {
+						$label = isset( $choice['label'] ) ? $choice['label'] : '';
+
 						/* translators: %s - choice number. */
-						if ( $item === $choice['label'] || $item === sprintf( esc_html__( 'Choice %s', 'wpforms-lite' ), $key ) ) {
+						if ( $item === $label || $item === sprintf( esc_html__( 'Choice %s', 'wpforms-lite' ), $key ) ) {
 							$choice_keys[] = $key;
 
 							break;

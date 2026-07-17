@@ -20,9 +20,11 @@
  */
 
 // Exit if accessed directly.
+use WPForms\Db\Analytics\DB as AnalyticsDB;
 use WPForms\Db\Payments\Meta as PaymentsMeta;
 use WPForms\Db\Payments\Payment;
 use WPForms\Logger\Repository;
+use WPForms\Pro\Db\Analytics\DB as ProAnalyticsDB;
 use WPForms\Tasks\Meta as TasksMeta;
 use WPForms\Tasks\Tasks;
 
@@ -85,6 +87,20 @@ $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpforms_file_restrictio
 // Delete protected files table.
 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpforms_protected_files' );
+
+// Delete analytics tables. The Lite snapshot/forms tables are always present;
+// the Pro field tables are dropped only when the Pro DB class is loadable.
+// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+$wpdb->query( 'DROP TABLE IF EXISTS ' . AnalyticsDB::snapshots_table() );
+// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+$wpdb->query( 'DROP TABLE IF EXISTS ' . AnalyticsDB::forms_table() );
+
+if ( class_exists( ProAnalyticsDB::class ) ) {
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . ProAnalyticsDB::snapshot_fields_table() );
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . ProAnalyticsDB::fields_table() );
+}
 
 /**
  * Delete tables that might be created by "Add-ons".

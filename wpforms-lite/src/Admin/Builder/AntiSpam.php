@@ -350,7 +350,6 @@ class AntiSpam {
 		$get_started_button_text = __( 'Get Started &rarr;', 'wpforms-lite' );
 		$upgrade_to_pro_text     = __( 'Upgrade to Pro', 'wpforms-lite' );
 		$captcha_settings        = wpforms_get_captcha_settings();
-		$upgrade_url             = 'https://wpforms.com/lite-upgrade/';
 		$utm_medium              = 'Builder Settings';
 
 		$blocks = [
@@ -358,7 +357,7 @@ class AntiSpam {
 				'logo'        => WPFORMS_PLUGIN_URL . 'assets/images/anti-spam/country-filter.svg',
 				'title'       => __( 'Country Filter', 'wpforms-lite' ),
 				'description' => __( 'Stop spam at its source. Allow or deny entries from specific countries.', 'wpforms-lite' ),
-				'link'        => wpforms_utm_link( $upgrade_url, $utm_medium, 'Country Filter Feature' ),
+				'link'        => wpforms_admin_upgrade_link( $utm_medium, 'Country Filter Feature' ),
 				'link_text'   => $upgrade_to_pro_text,
 				'class'       => 'wpforms-panel-content-also-available-item-upgrade-to-pro',
 				'show'        => ! wpforms()->is_pro(),
@@ -367,7 +366,7 @@ class AntiSpam {
 				'logo'        => WPFORMS_PLUGIN_URL . 'assets/images/anti-spam/keyword-filter.svg',
 				'title'       => __( 'Keyword Filter', 'wpforms-lite' ),
 				'description' => __( 'Block form entries that contain specific words or phrases that you define.', 'wpforms-lite' ),
-				'link'        => wpforms_utm_link( $upgrade_url, $utm_medium, 'Keyword Filter Feature' ),
+				'link'        => wpforms_admin_upgrade_link( $utm_medium, 'Keyword Filter Feature' ),
 				'link_text'   => $upgrade_to_pro_text,
 				'class'       => 'wpforms-panel-content-also-available-item-upgrade-to-pro',
 				'show'        => ! wpforms()->is_pro(),
@@ -376,7 +375,7 @@ class AntiSpam {
 				'logo'        => WPFORMS_PLUGIN_URL . 'assets/images/anti-spam/custom-captcha.svg',
 				'title'       => __( 'Custom Captcha', 'wpforms-lite' ),
 				'description' => __( 'Ask custom questions or require your visitor to answer a random math puzzle.', 'wpforms-lite' ),
-				'link'        => wpforms()->is_pro() ? '#' : wpforms_utm_link( $upgrade_url, $utm_medium, 'Custom Captcha Addon' ),
+				'link'        => wpforms()->is_pro() ? '#' : wpforms_admin_upgrade_link( $utm_medium, 'Custom Captcha Addon' ),
 				'link_text'   => wpforms()->is_pro() ? __( 'Add to Form', 'wpforms-lite' ) : $upgrade_to_pro_text,
 				'class'       => wpforms()->is_pro() ? 'wpforms-panel-content-also-available-item-add-captcha' : 'wpforms-panel-content-also-available-item-upgrade-to-pro',
 				'show'        => true,

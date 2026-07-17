@@ -75,6 +75,7 @@ class Integration extends API {
 	private function hooks() {
 
 		add_action( 'admin_init', [ $this, 'max_attempts_notice' ], 10 );
+		add_filter( 'wpforms_upgrade_link', [ $this, 'add_lite_connect_site_id_param' ] );
 	}
 
 	/**
@@ -268,6 +269,7 @@ class Integration extends API {
 	 * Maybe restart the import flag (for when the user re-upgrades to pro).
 	 *
 	 * @since 1.7.4
+	 * @since 2.0.0 Bails out while an import is scheduled or running.
 	 */
 	public static function maybe_restart_import_flag() {
 
@@ -278,6 +280,15 @@ class Integration extends API {
 		}
 
 		$status = isset( $settings['import']['status'] ) ? $settings['import']['status'] : false;
+
+		// A queued or in-progress import must not be interrupted: unsetting its
+		// status makes ImportEntriesTask::process() skip the import silently,
+		// with no retry and no log. The deferred Pro install routine hits this
+		// right after the Onboarding Wizard schedules the restore (#17996).
+		// Restarting is only meaningful for a finished or absent import.
+		if ( in_array( $status, [ 'scheduled', 'running' ], true ) ) {
+			return;
+		}
 
 		if ( $status === 'done' ) {
 			$previous_imported_entries                   = Transient::get( 'lite_connect_imported_entries' );
@@ -324,6 +335,41 @@ class Integration extends API {
 	public static function get_enabled_email() {
 
 		return wpforms_setting( LiteConnect::SETTINGS_SLUG . '-email' );
+	}
+
+	/**
+	 * Append the Lite Connect site ID as a referral arg on lite-upgrade URLs.
+	 *
+	 * Hooked into the `wpforms_upgrade_link` filter so every URL built through
+	 * `wpforms_admin_upgrade_link()` carries an opaque `ref` value that lets the
+	 * marketing side attribute upgrade traffic back to the originating site
+	 * without exposing a recognisable identifier in the URL.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $url Upgrade URL produced by `wpforms_admin_upgrade_link()`.
+	 *
+	 * @return string URL with the `ref` arg appended when applicable.
+	 */
+	public function add_lite_connect_site_id_param( $url ) {
+
+		// Affiliates can override the upgrade link.
+		if ( ! is_string( $url ) || strpos( $url, 'https://wpforms.com/lite-upgrade' ) !== 0 ) {
+			return $url;
+		}
+
+		// Lite Connect must be enabled.
+		if ( ! LiteConnect::is_enabled() ) {
+			return $url;
+		}
+
+		// The site ID should be defined here.
+		// Also, respect debug settings for testing purposes.
+		if ( $this->site_id === '' ) {
+			return $url;
+		}
+
+		return add_query_arg( 'ref', rawurlencode( $this->site_id ), $url );
 	}
 
 	/**

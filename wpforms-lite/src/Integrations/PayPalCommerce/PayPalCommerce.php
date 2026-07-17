@@ -93,6 +93,7 @@ final class PayPalCommerce implements IntegrationInterface {
 		$this->load_admin_entries();
 		$this->load_connect();
 		$this->load_field();
+		$this->load_analytics();
 		$this->load_builder();
 		$this->load_settings();
 		$this->load_payment_methods();
@@ -208,6 +209,16 @@ final class PayPalCommerce implements IntegrationInterface {
 	private function load_field(): void {
 
 		( new Fields\PayPalCommerce() );
+	}
+
+	/**
+	 * Load Form Analytics integration ( composite subfield tracking ).
+	 *
+	 * @since 2.0.0
+	 */
+	private function load_analytics(): void {
+
+		( new Analytics() )->hooks();
 	}
 
 	/**

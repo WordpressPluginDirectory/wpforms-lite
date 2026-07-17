@@ -63,7 +63,7 @@ class Fields {
 				'name_en' => 'Date / Time',
 				'type'    => 'date-time',
 				'group'   => 'fancy',
-				'order'   => '80',
+				'order'   => '60',
 			],
 			[
 				'icon'    => 'fa-link',
@@ -175,7 +175,7 @@ class Fields {
 				'name_en' => 'Hidden Field',
 				'type'    => 'hidden',
 				'group'   => 'fancy',
-				'order'   => '98',
+				'order'   => '305',
 			],
 			[
 				'icon'     => 'fa-question-circle',

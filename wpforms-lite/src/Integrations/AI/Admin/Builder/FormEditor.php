@@ -56,7 +56,18 @@ class FormEditor {
 			return;
 		}
 
+		$min = wpforms_get_min_suffix();
+
 		wp_enqueue_script( 'jquery-ui-resizable' );
+
+		// Shared modal drag/resize utility (WPForms.Admin.AIChatModal) — also used by the admin chat.
+		wp_enqueue_script(
+			'wpforms-admin-chat-modal',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/share/chat-modal$min.js",
+			[],
+			WPFORMS_VERSION,
+			true
+		);
 
 		wp_localize_script(
 			'wpforms-builder',
@@ -173,12 +184,14 @@ class FormEditor {
 			$sorted_scopes[] = [ 'key' => $key ];
 		}
 
-		return [
+		$is_lite_connect_allowed = LiteConnect::is_allowed();
+
+		$data = [
 			'nonce'                 => wp_create_nonce( 'wpforms-ai-nonce' ),
 			'ajaxUrl'               => admin_url( 'admin-ajax.php' ),
 			'isPro'                 => wpforms()->is_pro(),
 			'isLicenseActive'       => Helpers::is_license_active(),
-			'liteConnectAllowed'    => LiteConnect::is_allowed(),
+			'liteConnectAllowed'    => $is_lite_connect_allowed,
 			'liteConnectEnabled'    => LiteConnect::is_enabled(),
 			'scopes'                => $sorted_scopes,
 			'revisionToastTitle'    => esc_html__( 'Changes Saved', 'wpforms-lite' ),
@@ -194,6 +207,12 @@ class FormEditor {
 			'checkpointError'       => esc_html__( 'Restore point not saved', 'wpforms-lite' ),
 			'checkpointErrorReason' => esc_html__( "Your AI edit didn't run because the form couldn't be saved. Please try again.", 'wpforms-lite' ),
 		];
+
+		if ( ! $is_lite_connect_allowed ) {
+			$data['liteConnectNotAllowed'] = esc_html__( 'WPForms AI is not available on local sites.', 'wpforms-lite' );
+		}
+
+		return $data;
 	}
 
 	/**

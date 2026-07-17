@@ -130,6 +130,7 @@ class WPForms_Field_Select extends WPForms_Field {
 
 			// Used for dynamic choices.
 			$depth = isset( $choice['depth'] ) ? absint( $choice['depth'] ) : 1;
+			$label = isset( $choice['label'] ) ? $choice['label'] : '';
 
 			$properties['inputs'][ $key ] = [
 				'container' => [
@@ -145,11 +146,11 @@ class WPForms_Field_Select extends WPForms_Field {
 					'class' => [ 'wpforms-field-label-inline' ],
 					'data'  => [],
 					'id'    => '',
-					'text'  => $choice['label'],
+					'text'  => $label,
 				],
 				'attr'      => [
 					'name'  => "wpforms[fields][{$field_id}]",
-					'value' => isset( $field['show_values'] ) ? $choice['value'] : $choice['label'],
+					'value' => isset( $field['show_values'] ) ? $choice['value'] : $label,
 				],
 				'class'     => [],
 				'data'      => [],
@@ -633,7 +634,7 @@ class WPForms_Field_Select extends WPForms_Field {
 				foreach ( $field_submit as $item ) {
 					foreach ( $field['choices'] as $choice ) {
 						if ( $item === $choice['value'] ) {
-							$value[] = $choice['label'];
+							$value[] = isset( $choice['label'] ) ? $choice['label'] : '';
 
 							break;
 						}

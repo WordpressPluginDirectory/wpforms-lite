@@ -177,7 +177,8 @@ class WPForms_Field_Radio extends WPForms_Field {
 			// Used for dynamic choices.
 			$depth = isset( $choice['depth'] ) ? absint( $choice['depth'] ) : 1;
 
-			$value = ! empty( $field['show_values'] ) ? $choice['value'] : $choice['label'];
+			$label = isset( $choice['label'] ) ? $choice['label'] : '';
+			$value = ! empty( $field['show_values'] ) ? $choice['value'] : $label;
 			/* translators: %s - choice number. */
 			$value = ( $value === '' ) ? sprintf( esc_html__( 'Choice %s', 'wpforms-lite' ), $key ) : $value;
 
@@ -198,7 +199,7 @@ class WPForms_Field_Radio extends WPForms_Field {
 					'class' => [ 'wpforms-field-label-inline' ],
 					'data'  => [],
 					'id'    => '',
-					'text'  => $choice['label'],
+					'text'  => $label,
 				],
 				'attr'       => [
 					'name'  => "wpforms[fields][{$field_id}]",
@@ -735,7 +736,7 @@ class WPForms_Field_Radio extends WPForms_Field {
 			if ( ! empty( $field['show_values'] ) ) {
 				foreach ( $field['choices'] as $key => $choice ) {
 					if ( ! empty( $field_submit ) && $choice['value'] === $field_submit ) {
-						$data['value'] = sanitize_text_field( $choice['label'] );
+						$data['value'] = sanitize_text_field( isset( $choice['label'] ) ? $choice['label'] : '' );
 						$choice_key    = $key;
 						break;
 					}
@@ -747,7 +748,10 @@ class WPForms_Field_Radio extends WPForms_Field {
 				// Determine choice key, this is needed for image choices.
 				foreach ( $field['choices'] as $key => $choice ) {
 					/* translators: %s - choice number. */
-					if ( $field_submit === $choice['label'] || $value_raw === sprintf( esc_html__( 'Choice %s', 'wpforms-lite' ), $key ) ) {
+					$label = isset( $choice['label'] ) ? $choice['label'] : '';
+
+					/* translators: %s is the choice number. */
+					if ( $field_submit === $label || $value_raw === sprintf( esc_html__( 'Choice %s', 'wpforms-lite' ), $key ) ) {
 						$choice_key = $key;
 
 						break;
@@ -771,7 +775,7 @@ class WPForms_Field_Radio extends WPForms_Field {
 			foreach ( $field['choices'] as $choice ) {
 
 				if ( isset( $choice['other'] ) ) {
-					$data['value_raw'] = $choice['label'];
+					$data['value_raw'] = isset( $choice['label'] ) ? $choice['label'] : '';
 					$data['image']     = ! empty( $field['choices_images'] ) && ! empty( $choice['image'] ) ? esc_url_raw( $choice['image'] ) : '';
 
 					break;

@@ -4,6 +4,8 @@ namespace WPForms\Integrations\Stripe;
 
 use Stripe\Exception\ApiErrorException;
 use WPForms\Helpers\Transient;
+use WPForms\Integrations\Stripe\Protections\LowAmountSurgeDetector;
+use WPForms\Integrations\Stripe\Protections\RateLimit;
 use WPForms\Vendor\Stripe\SubscriptionSchedule;
 
 /**
@@ -66,6 +68,24 @@ class Process {
 	 * @var RateLimit
 	 */
 	private $rate_limit;
+
+	/**
+	 * Global Rate Limit object (site-wide).
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var RateLimit
+	 */
+	private $global_rate_limit;
+
+	/**
+	 * Low-amount surge detector object.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var LowAmountSurgeDetector
+	 */
+	private $surge_detector;
 
 	/**
 	 * Api interface.
@@ -148,16 +168,19 @@ class Process {
 			return;
 		}
 
-		$this->form_id    = (int) $form_data['id'];
-		$this->fields     = $fields;
-		$this->form_data  = $form_data;
-		$this->settings   = $form_data['payments']['stripe'];
-		$this->amount     = wpforms_get_total_payment( $this->fields );
-		$this->rate_limit = new RateLimit();
+		$this->form_id           = (int) $form_data['id'];
+		$this->fields            = $fields;
+		$this->form_data         = $form_data;
+		$this->settings          = $form_data['payments']['stripe'];
+		$this->amount            = wpforms_get_total_payment( $this->fields );
+		$this->rate_limit        = new RateLimit( 'ip' );
+		$this->global_rate_limit = new RateLimit( 'global' );
+		$this->surge_detector    = ( new LowAmountSurgeDetector() )->init();
 
 		$this->rate_limit->init();
+		$this->global_rate_limit->init();
 
-		if ( $this->is_process_entry_error() ) {
+		if ( $this->is_process_entry_error( $entry ) ) {
 			return;
 		}
 
@@ -175,6 +198,15 @@ class Process {
 			$this->display_error( $error );
 
 			return;
+		}
+
+		// Track this low-amount attempt before charging Stripe. Skip the confirmation re-submission.
+		if ( empty( $entry['payment_intent_id'] ) ) {
+			$this->surge_detector->track_attempt(
+				(float) $this->amount,
+				$this->form_id,
+				$this->form_data['settings']['form_title'] ?? ''
+			);
 		}
 
 		$this->process_payment();
@@ -206,17 +238,26 @@ class Process {
 	 *
 	 * @since 1.8.2
 	 *
+	 * @param array $entry Entry data.
+	 *
 	 * @return bool
 	 */
-	protected function is_process_entry_error() {
+	protected function is_process_entry_error( array $entry = [] ) {
 
 		// Check for processing errors.
 		if ( ! empty( wpforms()->obj( 'process' )->errors[ $this->form_id ] ) || ! $this->is_card_field_visibility_ok() ) {
 			return true;
 		}
 
-		// Check rate limit.
-		if ( ! $this->is_rate_limit_ok() ) {
+		// Check low-amount surge block. Skip it for a confirmation re-submission.
+		if ( empty( $entry['payment_intent_id'] ) && $this->surge_detector->is_blocked( (float) $this->amount ) ) {
+			wpforms()->obj( 'process' )->errors[ $this->form_id ]['footer'] = esc_html__( 'Payment processing is temporarily unavailable. Please try again later or contact the site owner.', 'wpforms-lite' );
+
+			return true;
+		}
+
+		// Check per-IP and global rate limits.
+		if ( ! $this->is_rate_limit_ok() || ! $this->global_rate_limit->is_ok() ) {
 			wpforms()->obj( 'process' )->errors[ $this->form_id ]['footer'] = esc_html__( 'Unable to process payment, please try again later.', 'wpforms-lite' );
 
 			return true;
@@ -1087,7 +1128,7 @@ class Process {
 	 */
 	public function process_card_error( $e ) {
 
-		if ( Helpers::get_stripe_mode() === 'test' ) {
+		if ( ! Helpers::should_apply_protections() ) {
 			return;
 		}
 
@@ -1107,6 +1148,7 @@ class Process {
 		}
 
 		$this->rate_limit->increment_attempts();
+		$this->global_rate_limit->increment_attempts();
 	}
 
 	/**

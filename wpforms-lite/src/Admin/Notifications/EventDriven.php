@@ -8,6 +8,7 @@ use WPForms\Migrations\Base as MigrationsBase;
  * Class EventDriven.
  *
  * @since 1.7.5
+ * @since 1.9.1 Not used anymore, but still exists for using it in the future.
  */
 class EventDriven {
 
@@ -615,13 +616,7 @@ class EventDriven {
 					'main' => [
 						'license' => [
 							'lite'  => [
-								'url'  => $this->add_query_arg(
-									[
-										'utm_content' => 'Surveys and Polls Upgrade Lite',
-										'utm_locale'  => wpforms_sanitize_key( get_locale() ),
-									],
-									'https://wpforms.com/lite-upgrade/'
-								),
+								'url'  => wpforms_admin_upgrade_link( 'Event Notification', 'Surveys and Polls Upgrade Lite' ),
 								'text' => esc_html__( 'Upgrade Now', 'wpforms-lite' ),
 							],
 							'basic' => [
@@ -668,13 +663,7 @@ class EventDriven {
 					'main' => [
 						'license' => [
 							'lite'  => [
-								'url'  => $this->add_query_arg(
-									[
-										'utm_content' => 'Form Abandonment Upgrade Lite',
-										'utm_locale'  => wpforms_sanitize_key( get_locale() ),
-									],
-									'https://wpforms.com/lite-upgrade/'
-								),
+								'url'  => wpforms_admin_upgrade_link( 'Event Notification', 'Form Abandonment Upgrade Lite' ),
 								'text' => esc_html__( 'Upgrade Now', 'wpforms-lite' ),
 							],
 							'basic' => [
@@ -735,13 +724,7 @@ class EventDriven {
 					'main' => [
 						'license' => [
 							'lite'  => [
-								'url'  => $this->add_query_arg(
-									[
-										'utm_content' => 'User Journey Upgrade Lite',
-										'utm_locale'  => wpforms_sanitize_key( get_locale() ),
-									],
-									'https://wpforms.com/lite-upgrade/'
-								),
+								'url'  => wpforms_admin_upgrade_link( 'Event Notification', 'User Journey Upgrade Lite' ),
 								'text' => esc_html__( 'Upgrade Now', 'wpforms-lite' ),
 							],
 							'basic' => [

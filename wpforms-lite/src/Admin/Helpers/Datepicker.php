@@ -408,7 +408,7 @@ class Datepicker {
 	 *
 	 * @return array
 	 */
-	private static function get_date_filter_choices( $key = null ) {
+	public static function get_date_filter_choices( $key = null ) {
 
 		// Available date filters.
 		$choices = [

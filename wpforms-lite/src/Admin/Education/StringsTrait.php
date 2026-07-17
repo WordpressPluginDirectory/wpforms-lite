@@ -99,15 +99,54 @@ trait StringsTrait {
 			'elite' => $this->get_upgrade_strings( 'Elite', $name, $upgrade_utm_medium ),
 		];
 
+		// Shared bonus body — reused by `upgrade_bonus` and `upgrade_banner.bonus`
+		// so translators see this sentence exactly once.
+		$bonus_body = __(
+			'WPForms Lite users get <span>50% off</span> regular price, automatically applied at checkout.',
+			'wpforms-lite'
+		);
+
 		$strings['upgrade_bonus'] = wpautop(
 			wp_kses(
-				__( '<strong>Bonus:</strong> WPForms Lite users get <span>50% off</span> regular price, automatically applied at checkout.', 'wpforms-lite' ),
+				'<strong>' . esc_html__( 'Bonus:', 'wpforms-lite' ) . '</strong> ' . $bonus_body,
 				[
 					'strong' => [],
 					'span'   => [],
 				]
 			)
 		);
+
+		$activate_license_link = sprintf(
+			'<a href="%1$s" class="js-activate-license">%2$s</a>',
+			esc_url( admin_url( 'admin.php?page=wpforms-settings' ) ),
+			esc_html__( 'Activate your license', 'wpforms-lite' )
+		);
+
+		// Banner upgrade modal copy — activated when the trigger carries `data-banner-src`.
+		// The activate anchor's `href="#"` is a placeholder; JS overwrites it at runtime.
+		$strings['upgrade_banner'] = [
+			'message' => esc_html__(
+				'Understand how your forms are performing with detailed analytics on views, conversions, and field-level activity, so you can identify friction and improve completion rates.',
+				'wpforms-lite'
+			),
+			'button'  => esc_html__( 'Upgrade to WPForms Pro', 'wpforms-lite' ),
+			'bonus'   => wp_kses(
+				'<strong>' . esc_html__( 'Bonus!', 'wpforms-lite' ) . '</strong> ' . $bonus_body .
+				'<span class="banner-activate">' . sprintf(
+					/* translators: %s - "Activate your license" link HTML. */
+					__( 'Already purchased? %s to unlock this feature.', 'wpforms-lite' ),
+					$activate_license_link
+				) . '</span>',
+				[
+					'strong' => [],
+					'span'   => [ 'class' => [] ],
+					'a'      => [
+						'href'  => [],
+						'class' => [],
+					],
+				]
+			),
+		];
 
 		$strings['thanks_for_interest'] = esc_html__( 'Thanks for your interest in WPForms Pro!', 'wpforms-lite' );
 

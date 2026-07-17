@@ -2,6 +2,10 @@
 
 namespace WPForms;
 
+use WPForms\Analytics\Analytics;
+use WPForms\Db\Analytics\DB as AnalyticsDB;
+use WPForms\Pro\Analytics\Analytics as ProAnalytics;
+
 /**
  * WPForms Class Loader.
  *
@@ -55,6 +59,8 @@ class Loader {
 		$this->populate_education();
 		$this->populate_robots();
 		$this->populate_anti_spam();
+		$this->populate_setup_wizard();
+		$this->populate_analytics();
 	}
 
 	/**
@@ -71,6 +77,31 @@ class Loader {
 
 		$this->classes[] = [
 			'name' => 'Emails\Summaries',
+		];
+
+		$this->classes[] = [
+			'name' => 'Helpers\Plugin',
+			'id'   => 'plugin',
+		];
+	}
+
+	/**
+	 * Populate the Setup Wizard class.
+	 *
+	 * @since 2.0.0
+	 */
+	private function populate_setup_wizard(): void {
+
+		$this->classes[] = [
+			'name' => 'SetupWizard\SetupWizard',
+			'id'   => 'setup_wizard',
+			'hook' => 'init',
+		];
+
+		$this->classes[] = [
+			'name' => 'SetupChecklist\SetupChecklist',
+			'id'   => 'setup_checklist',
+			'hook' => 'init',
 		];
 	}
 
@@ -376,6 +407,15 @@ class Loader {
 	 * @noinspection ClassConstantCanBeUsedInspection
 	 */
 	private function populate_fields(): void {
+
+		// Field objects registry. Must listen before any field constructs on `init`,
+		// so instantiate it immediately (no hook) and wire its action listener now.
+		$this->classes[] = [
+			'name' => 'Forms\Fields\Registry',
+			'id'   => 'fields_registry',
+			'hook' => false,
+			'run'  => 'hooks',
+		];
 
 		// Fancy fields.
 		$this->classes[] = [
@@ -727,6 +767,9 @@ class Loader {
 				'id'   => 'builder_save_form',
 			],
 			[
+				'name' => 'Admin\Builder\Ajax\TemplatesLoader',
+			],
+			[
 				'name' => 'Admin\Builder\Payments',
 				'hook' => 'wpforms_builder_init',
 				'id'   => 'builder_payments',
@@ -900,6 +943,12 @@ class Loader {
 				'id'   => 'education',
 			],
 			[
+				'name' => 'Admin\Education\FeatureTooltip',
+				'id'   => 'education_feature_tooltip',
+				'hook' => false,
+				'run'  => 'init',
+			],
+			[
 				'name' => 'Admin\Education\Fields',
 				'id'   => 'education_fields',
 			],
@@ -931,6 +980,18 @@ class Loader {
 			[
 				'name' => 'Education\ActiveLayer\InstallTracker',
 				'id'   => 'activelayer_install_tracker',
+			],
+			[
+				'name' => 'Education\WPConsent\InstallTracker',
+				'id'   => 'wpconsent_install_tracker',
+			],
+			[
+				'name' => 'Admin\\Education\\Builder\\Gdpr',
+				'id'   => 'education_builder_gdpr',
+			],
+			[
+				'name' => 'Admin\\Settings\\Gdpr\\WPConsentCallout',
+				'id'   => 'gdpr_wpconsent_callout',
 			]
 		);
 
@@ -1003,5 +1064,92 @@ class Loader {
 				'hook' => 'init',
 			]
 		);
+	}
+
+	/**
+	 * Register Form Analytics classes.
+	 *
+	 * @since 2.0.0
+	 */
+	private function populate_analytics(): void {
+
+		// Aggregation task registers unconditionally so that init() can clean
+		// up a stale recurring schedule when the kill switch flips off after having been on.
+		// Runs on `init` because the task's constructor needs the `tasks` service,
+		// which is itself registered on `init`.
+		$this->classes[] = [
+			'name'     => 'Tasks\Actions\AnalyticsAggregationTask',
+			'id'       => 'analytics_aggregation_task',
+			'hook'     => 'init',
+			'priority' => 20,
+			'run'      => false,
+		];
+
+		if ( ! Analytics::is_enabled() ) {
+			return;
+		}
+
+		// Tables are created by Upgrade2_0_0 migration.
+		// Skip runtime analytics until the migration has run; they become active
+		// on the next request after table creation.
+		if ( ! AnalyticsDB::tables_exist() ) {
+			return;
+		}
+
+		$this->classes[] = [
+			'name' => 'Analytics\Analytics',
+			'id'   => 'analytics',
+		];
+
+		$this->classes[] = [
+			'name' => 'Db\Analytics\DB',
+			'id'   => 'analytics_db',
+			'hook' => false,
+			'run'  => false,
+		];
+
+		$this->classes[] = [
+			'name'      => 'Analytics\Stats',
+			'id'        => 'analytics_stats',
+			'hook'      => false,
+			'run'       => false,
+			'condition' => wpforms()->is_pro() && ProAnalytics::is_allowed(),
+		];
+
+		$this->classes[] = [
+			'name' => 'Analytics\Aggregation',
+			'id'   => 'analytics_aggregation',
+			'hook' => false,
+			'run'  => false,
+		];
+
+		$this->classes[] = [
+			'name' => 'Analytics\Process',
+			'id'   => 'analytics_process',
+		];
+
+		$this->classes[] = [
+			'name' => 'Frontend\Analytics',
+			'id'   => 'analytics_frontend',
+		];
+
+		$this->classes[] = [
+			'name' => 'Admin\Forms\Analytics',
+			'id'   => 'admin_forms_analytics',
+			'hook' => 'admin_init',
+		];
+
+		$this->classes[] = [
+			'name'      => 'Admin\Analytics\Page',
+			'id'        => 'analytics_page',
+			'condition' => wpforms()->is_pro() && ProAnalytics::is_allowed(),
+		];
+
+		$this->classes[] = [
+			'name'      => 'Admin\Analytics\Ajax',
+			'id'        => 'analytics_ajax',
+			'hook'      => 'admin_init',
+			'condition' => wpforms()->is_pro() && ProAnalytics::is_allowed() && wpforms_is_admin_ajax(),
+		];
 	}
 }

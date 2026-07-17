@@ -109,8 +109,23 @@ class PaymentIntents extends Common implements ApiInterface {
 	 */
 	public function set_config() {
 
+		/**
+		 * Filter whether to enable the Stripe Radar Session for behavioral fraud signals.
+		 *
+		 * When true, the frontend calls `stripe.createRadarSession()` on the form load and
+		 * passes the session id to `createPaymentMethod()`/`confirmPayment()`. This
+		 * enriches Stripe Radar with mouse, keyboard, and dwell telemetry and compounds
+		 * with the server-side risk gate.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param bool $enabled Whether the Radar Session API is active.
+		 */
+		$radar_session_enabled = (bool) apply_filters( 'wpforms_stripe_radar_session_enabled', true ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+
 		$localize_script = [
-			'element_locale' => $this->filter_config_element_locale(),
+			'element_locale'        => $this->filter_config_element_locale(),
+			'radar_session_enabled' => $radar_session_enabled,
 		];
 
 		$this->config = [

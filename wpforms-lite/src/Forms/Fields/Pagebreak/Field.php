@@ -396,10 +396,18 @@ class Field extends WPForms_Field {
 			'text',
 			$field,
 			[
-				'slug'  => 'progress_text',
-				'value' => ! empty( $field['progress_text'] ) ? esc_html( $field['progress_text'] ) : 'Step {current_page} of {last_page}',
-				'after' => esc_html__( 'Enter text to show the user\'s progress. You can use {current_page} and {last_page} to indicate the current and last steps.', 'wpforms-lite' ),
-				'class' => [ 'wpforms-pagebreak-progress-text' ],
+				'slug'      => 'progress_text',
+				'value'     => ! empty( $field['progress_text'] ) ? esc_html( $field['progress_text'] ) : 'Step {current_page} of {last_page}',
+				'after'     => esc_html__( 'Enter text to show the user\'s progress. You can use {current_page} and {last_page} to indicate the current and last steps.', 'wpforms-lite' ),
+				'class'     => [ 'wpforms-pagebreak-progress-text', 'wpforms-smart-tags-enabled' ],
+				'smarttags' => [
+					'type'   => 'other',
+					// Field-local shortlist of the two page tokens for the Smart Tags picker.
+					'custom' => [
+						'current_page' => esc_html__( 'Current Page', 'wpforms-lite' ),
+						'last_page'    => esc_html__( 'Last Page', 'wpforms-lite' ),
+					],
+				],
 			],
 			false
 		);

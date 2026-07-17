@@ -31,7 +31,8 @@ class Field extends WPForms_Field {
 		$this->addon_slug = 'signatures';
 
 		$this->default_settings = [
-			'size' => 'large',
+			'size'         => 'large',
+			'input_method' => 'draw',
 		];
 
 		$this->init_pro_field();
@@ -44,6 +45,26 @@ class Field extends WPForms_Field {
 	 * @since 1.9.4
 	 */
 	protected function hooks() {
+
+		add_action( 'wpforms_builder_enqueues', [ $this, 'builder_enqueues' ] );
+	}
+
+	/**
+	 * Enqueue builder assets.
+	 *
+	 * @since 2.0.0
+	 */
+	public function builder_enqueues(): void {
+
+		$min = wpforms_get_min_suffix();
+
+		wp_enqueue_script(
+			'wpforms-signature-field',
+			WPFORMS_PLUGIN_URL . "assets/js/admin/builder/fields/signature{$min}.js",
+			[ 'wpforms-builder', 'wpforms-utils' ],
+			WPFORMS_VERSION,
+			false
+		);
 	}
 
 	/**
@@ -100,6 +121,43 @@ class Field extends WPForms_Field {
 			]
 		);
 
+		// Input method selector.
+		$lbl = $this->field_element(
+			'label',
+			$field,
+			[
+				'slug'    => 'input_method',
+				'value'   => esc_html__( 'Input Method', 'wpforms-lite' ),
+				'tooltip' => esc_html__( 'Select how users provide their signature.', 'wpforms-lite' ),
+			],
+			false
+		);
+
+		$input_method = isset( $field['input_method'] ) ? sanitize_key( $field['input_method'] ) : 'draw';
+
+		$fld = $this->field_element(
+			'select',
+			$field,
+			[
+				'slug'    => 'input_method',
+				'value'   => $input_method,
+				'options' => [
+					'draw' => esc_html__( 'Draw', 'wpforms-lite' ),
+					'type' => esc_html__( 'Type', 'wpforms-lite' ),
+				],
+			],
+			false
+		);
+
+		$this->field_element(
+			'row',
+			$field,
+			[
+				'slug'    => 'input_method',
+				'content' => $lbl . $fld,
+			]
+		);
+
 		// Ink color picker.
 		$lbl = $this->field_element(
 			'label',
@@ -134,6 +192,7 @@ class Field extends WPForms_Field {
 			[
 				'slug'    => 'ink_color',
 				'content' => $lbl . $fld,
+				// The builder script ( signature.js ) hides this row in Type mode, where ink color does not apply.
 				'class'   => 'color-picker-row',
 			]
 		);

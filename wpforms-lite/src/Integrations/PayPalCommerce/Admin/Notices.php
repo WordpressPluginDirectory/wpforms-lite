@@ -202,7 +202,7 @@ class Notices {
 
 		$utm_content  = 'PayPal Commerce Pro - Remove Fees';
 		$utm_medium   = wpforms_is_admin_page( 'builder' ) ? 'Payment Settings' : 'Settings - Payments';
-		$upgrade_link = wpforms()->is_pro() ? wpforms_admin_upgrade_link( $utm_medium, $utm_content ) : wpforms_utm_link( 'https://wpforms.com/lite-upgrade/', $utm_medium, $utm_content );
+		$upgrade_link = wpforms_admin_upgrade_link( $utm_medium, $utm_content );
 
 		return sprintf(
 			wp_kses( /* translators: %s - WPForms.com Upgrade page URL. */

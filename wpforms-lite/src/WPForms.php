@@ -210,6 +210,9 @@ namespace WPForms {
 
 			$this->error_handler();
 
+			// Compatibility shims for WordPress functions that bundled libraries may call on older WordPress versions.
+			require_once WPFORMS_PLUGIN_DIR . 'includes/compat.php';
+
 			// Action Scheduler requires a special loading procedure.
 			require_once WPFORMS_PLUGIN_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
 

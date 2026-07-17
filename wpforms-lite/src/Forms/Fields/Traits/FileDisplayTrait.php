@@ -222,20 +222,43 @@ trait FileDisplayTrait {
 		$files = array_filter( array_map( 'sanitize_file_name', $files ) );
 
 		if ( ! empty( $files ) ) {
-			$field['value_raw'] = array_map(
-				static function ( $file ) {
+			$value_raw = [];
 
-					return [
-						'value'         => '', // No public URL available.
-						'file_original' => $file,
-						'ext'           => strtolower( pathinfo( $file, PATHINFO_EXTENSION ) ),
-					];
-				},
-				$files
-			);
+			foreach ( $files as $index => $file ) {
+				$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
+
+				$value_raw[] = [
+					'value'         => $this->get_entry_preview_classic_file_src( $input_name, $index, $ext ),
+					'file_original' => $file,
+					'ext'           => $ext,
+				];
+			}
+
+			$field['value_raw'] = $value_raw;
 		}
 
 		return $field;
+	}
+
+	/**
+	 * Get the inline image source for a classic-uploaded file in the entry preview.
+	 *
+	 * Classic uploads have no public URL before submission, so the base
+	 * implementation returns an empty string and the file renders as text.
+	 * Field types that can safely inline a preview ( Camera ) override this.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string     $input_name Field input name.
+	 * @param int|string $index      File index within the upload.
+	 * @param string     $ext        Lowercased file extension.
+	 *
+	 * @return string
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	protected function get_entry_preview_classic_file_src( string $input_name, $index, string $ext ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		return '';
 	}
 
 	/**
@@ -312,11 +335,11 @@ trait FileDisplayTrait {
 	 */
 	private function entry_preview_file_link_html( array $file, string $src ): string {
 
-		$filename = esc_html( $this->get_file_name( $file ) );
+		$filename = esc_html( $file['file_original'] ?? $this->get_file_name( $file ) );
 		$is_image = in_array( $file['ext'] ?? '', wp_get_ext_types()['image'], true );
 
-		// If we have a URL, display an inline thumbnail preview.
-		if ( $is_image && ! empty( $src ) ) {
+		// Render an inline thumbnail only for non-protected images.
+		if ( $is_image && ! empty( $src ) && ! $this->is_file_protected( $file ) ) {
 			return sprintf(
 				'<span class="wpforms-entry-preview-file is-image"><img src="%1$s" alt="%2$s"/><span class="wpforms-entry-preview-filename">%2$s</span></span>',
 				esc_url( $src ),

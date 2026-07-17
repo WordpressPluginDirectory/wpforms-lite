@@ -53,22 +53,38 @@ trait FormTemplates {
 	 *
 	 * @since 1.7.7
 	 */
-	private function output_templates_content() {
+	private function output_templates_content(): void {
 
-		$templates_hash        = wpforms()->obj( 'builder_templates' )->get_hash();
+		$templates_obj = wpforms()->obj( 'builder_templates' );
+
+		if ( ! $templates_obj ) {
+			return;
+		}
+
+		$templates_hash        = $templates_obj->get_hash();
 		$templates_hash_option = get_option( Templates::TEMPLATES_HASH_OPTION, '' );
+		$cache_obj             = wpforms()->obj( 'builder_templates_cache' );
 
 		// Compare the current hash and the previous one to detect changes in the template list.
-		if ( $templates_hash !== $templates_hash_option ) {
+		if ( $cache_obj && $templates_hash !== $templates_hash_option ) {
 			// Update the hash in the option.
 			update_option( Templates::TEMPLATES_HASH_OPTION, $templates_hash );
 
-			// Wipe both caches - for the admin page and for the Form Builder.
-			wpforms()->obj( 'builder_templates_cache' )->wipe_content_cache();
+			// Wipe all caches - for the admin page, Form Builder, and infinite scroll.
+			$cache_obj->clear_all();
+		}
+
+		// Check if infinite scroll is enabled.
+		if ( Templates::is_infinite_scroll_enabled() ) {
+			// Generate content with the initial batch only.
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $this->generate_templates_content_with_infinite_scroll();
+
+			return;
 		}
 
 		// Attempt to get cached content.
-		$content = wpforms()->obj( 'builder_templates_cache' )->get_content_cache();
+		$content = $cache_obj ? $cache_obj->get_content_cache() : '';
 
 		if ( empty( $content ) ) {
 			$content = $this->generate_templates_content_cache();
@@ -79,15 +95,17 @@ trait FormTemplates {
 	}
 
 	/**
-	 * Generate and save cached templates content.
+	 * Get the templates wrapper HTML with shared sidebar and structure.
 	 *
-	 * @since 1.8.6
+	 * @since 2.0.0
 	 *
-	 * @retur string
+	 * @param string $list_content    Inner HTML for the .list div.
+	 * @param string $list_attributes Optional data attributes string for #wpforms-setup-templates-list.
+	 * @param bool   $include_loading Whether to include the loading indicator.
+	 *
+	 * @return string HTML content.
 	 */
-	public function generate_templates_content_cache() {
-
-		$this->prepare_templates_data();
+	private function get_templates_wrapper_html( string $list_content, string $list_attributes = '', bool $include_loading = false ): string {
 
 		ob_start();
 		?>
@@ -108,10 +126,18 @@ trait FormTemplates {
 
 			</div>
 
-			<div id="wpforms-setup-templates-list">
+			<div id="wpforms-setup-templates-list"<?php echo $list_attributes !== '' ? ' ' . $list_attributes : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 				<div class="list">
-					<?php $this->template_select_options(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<?php echo $list_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</div>
+				<?php if ( $include_loading ) : ?>
+					<div class="wpforms-templates-loading" style="display:none;">
+						<p>
+							<i class="wpforms-loading-spinner wpforms-loading-inline" aria-hidden="true"></i>
+							<?php esc_html_e( 'Loading more templates...', 'wpforms-lite' ); ?>
+						</p>
+					</div>
+				<?php endif; ?>
 				<div class="wpforms-templates-no-results">
 					<p>
 						<?php esc_html_e( "Sorry, we didn't find any templates that match your criteria.", 'wpforms-lite' ); ?>
@@ -124,7 +150,25 @@ trait FormTemplates {
 		</div>
 		<?php
 
-		$content = ob_get_clean();
+		return ob_get_clean();
+	}
+
+	/**
+	 * Generate and save cached templates content.
+	 *
+	 * @since 1.8.6
+	 *
+	 * @retur string
+	 */
+	public function generate_templates_content_cache() {
+
+		$this->prepare_templates_data();
+
+		ob_start();
+		$this->template_select_options(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$list_content = ob_get_clean();
+
+		$content = $this->get_templates_wrapper_html( $list_content );
 
 		wpforms()->obj( 'builder_templates_cache' )->save_content_cache( $content );
 
@@ -684,5 +728,169 @@ trait FormTemplates {
 		}
 
 		return array_count_values( $all_subcategories );
+	}
+
+	/**
+	 * Generate templates content with infinite scroll support.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return string HTML content.
+	 */
+	private function generate_templates_content_with_infinite_scroll(): string {
+
+		$this->prepare_templates_data();
+
+		$total_templates = count( $this->prepared_templates );
+		$initial_limit   = 11;
+
+		// Get the first batch of templates (11 because 1 additional item is added dynamically in JS).
+		$initial_batch = array_slice( $this->prepared_templates, 0, $initial_limit );
+
+		ob_start();
+		/** This action is documented in src/Admin/Traits/FormTemplates.php. */
+		do_action( 'wpforms_admin_form_templates_list_before', [] );
+
+		foreach ( $initial_batch as $template ) {
+			echo wpforms_render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				'builder/templates-item',
+				$template,
+				true
+			);
+		}
+		$list_content = ob_get_clean();
+
+		$list_attributes = sprintf(
+			'data-total-templates="%d" data-loaded-templates="%d"',
+			absint( $total_templates ),
+			absint( count( $initial_batch ) )
+		);
+
+		return $this->get_templates_wrapper_html( $list_content, $list_attributes, true );
+	}
+
+	/**
+	 * Get filtered templates with pagination.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param int    $offset      Offset for pagination.
+	 * @param int    $limit       Number of templates to return.
+	 * @param string $category    Category filter.
+	 * @param string $subcategory Subcategory filter.
+	 * @param string $search      Search query.
+	 * @param bool   $favorite    Filter favorites only.
+	 *
+	 * @return array {
+	 *     Filtered templates' data.
+	 *
+	 *     @type array $templates Array of template data.
+	 *     @type int   $total     Total matching templates.
+	 *     @type bool  $has_more  More templates available.
+	 * }
+	 */
+	public function get_filtered_templates(
+		int $offset = 0,
+		int $limit = 12,
+		string $category = 'all',
+		string $subcategory = '',
+		string $search = '',
+		bool $favorite = false
+	): array {
+
+		$filtered = [];
+
+		// Apply filters to prepared templates.
+		foreach ( $this->prepared_templates as $template_data ) {
+			if ( ! $this->template_matches_filters( $template_data, $category, $subcategory, $search, $favorite ) ) {
+				continue;
+			}
+
+			$filtered[] = $template_data;
+		}
+
+		$total    = count( $filtered );
+		$slice    = array_slice( $filtered, $offset, $limit );
+		$has_more = ( $offset + $limit ) < $total;
+
+		return [
+			'templates' => $slice,
+			'total'     => $total,
+			'has_more'  => $has_more,
+		];
+	}
+
+	/**
+	 * Check if the template matches filters.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array  $template_data Template data.
+	 * @param string $category      Category filter.
+	 * @param string $subcategory   Subcategory filter.
+	 * @param string $search        Search query.
+	 * @param bool   $favorite      Favorites filter.
+	 *
+	 * @return bool True if the template matches all filters.
+	 */
+	private function template_matches_filters(
+		array $template_data,
+		string $category,
+		string $subcategory,
+		string $search,
+		bool $favorite
+	): bool {
+
+		// Favorite filter.
+		if ( $favorite && empty( $template_data['template']['favorite'] ) ) {
+			return false;
+		}
+
+		// Category filter.
+		if ( $category !== 'all' ) {
+			$categories = explode( ',', $template_data['categories'] );
+
+			if ( $category === 'available' && empty( $template_data['template']['has_access'] ) ) {
+				return false;
+			}
+
+			if ( $category === 'favorites' && empty( $template_data['template']['favorite'] ) ) {
+				return false;
+			}
+
+			if (
+				! in_array( $category, [ 'available', 'favorites' ], true ) &&
+				! in_array( $category, $categories, true )
+			) {
+				return false;
+			}
+		}
+
+		// Subcategory filter.
+		if ( ! empty( $subcategory ) ) {
+			$subcategories = explode( ',', $template_data['subcategories'] );
+
+			if ( ! in_array( $subcategory, $subcategories, true ) ) {
+				return false;
+			}
+		}
+
+		// Search filter.
+		if ( ! empty( $search ) ) {
+			$search_lower = strtolower( $search );
+			$name_lower   = strtolower( $template_data['template']['name'] );
+			$desc_lower   = strtolower( $template_data['template']['description'] );
+			$fields_lower = strtolower( $template_data['fields'] );
+
+			if (
+				strpos( $name_lower, $search_lower ) === false &&
+				strpos( $desc_lower, $search_lower ) === false &&
+				strpos( $fields_lower, $search_lower ) === false
+			) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
