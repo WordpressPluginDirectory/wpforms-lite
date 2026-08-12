@@ -3,7 +3,7 @@
 namespace WPForms\SetupWizard;
 
 use WPForms\Migrations\Base as MigrationsBase;
-use WPForms\SetupChecklist\Page;
+use WPForms\SetupWizard\Service\CrossPluginOnboarding;
 use WPForms\SetupWizard\Service\StateManager;
 
 /**
@@ -24,7 +24,7 @@ class SetupWizard {
 	 *
 	 * @var string
 	 */
-	private const QUERY_ARG = 'wpforms_setup_wizard';
+	public const QUERY_ARG = 'wpforms_setup_wizard';
 
 	/**
 	 * Option name storing the plugin version present at first activation.
@@ -122,6 +122,24 @@ class SetupWizard {
 	private $failed_installs_notice;
 
 	/**
+	 * Launch screen.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @var Screen
+	 */
+	private $screen;
+
+	/**
+	 * Cross-plugin onboarding suppression service.
+	 *
+	 * @since 2.0.0.4
+	 *
+	 * @var CrossPluginOnboarding
+	 */
+	private $cross_plugin_onboarding;
+
+	/**
 	 * Initialize the orchestrator.
 	 *
 	 * Wires services and hooks. The capability gate lives in `maybe_launch()`
@@ -149,10 +167,12 @@ class SetupWizard {
 		$auth    = $this->load_dependency( Auth::class );
 		$service = $this->load_dependency( StateManager::class );
 
-		$this->stripe_connect         = $this->load_dependency( StripeConnect::class );
-		$this->bridge                 = $this->load_dependency( Bridge::class, [ $auth ] );
-		$this->rest_api               = $this->load_dependency( RestApi::class, [ $auth, $service ] );
-		$this->failed_installs_notice = $this->load_dependency( FailedInstallsNotice::class );
+		$this->stripe_connect          = $this->load_dependency( StripeConnect::class );
+		$this->bridge                  = $this->load_dependency( Bridge::class, [ $auth ] );
+		$this->rest_api                = $this->load_dependency( RestApi::class, [ $auth, $service ] );
+		$this->failed_installs_notice  = $this->load_dependency( FailedInstallsNotice::class );
+		$this->screen                  = $this->load_dependency( Screen::class, [ $this->bridge, $service ] );
+		$this->cross_plugin_onboarding = $this->load_dependency( CrossPluginOnboarding::class );
 	}
 
 	/**
@@ -191,6 +211,14 @@ class SetupWizard {
 		add_action( 'admin_notices', [ $this->failed_installs_notice, 'maybe_display' ] );
 
 		$this->stripe_connect->hooks();
+		$this->screen->hooks();
+
+		// Suppression is permanent, so it is scoped to the wizard's own install
+		// call: users installing through the Setup Checklist or an Education
+		// one-click link never entered our onboarding and keep their own.
+		if ( RestApi::is_install_request() ) {
+			$this->cross_plugin_onboarding->hooks();
+		}
 	}
 
 	/**
@@ -234,30 +262,15 @@ class SetupWizard {
 			return;
 		}
 
-		// Consume the one-shot first-run signal so auto-launch fires exactly once.
-		// If the preflight below sends the user to the Welcome fallback, they get
-		// the fallback experience rather than a re-launch on the next pageview.
+		// Consume the one-shot first-run signal so auto-launch fires exactly once,
+		// whether or not the launch below actually reaches the user.
 		if ( ! $manual ) {
 			delete_transient( self::TRANSIENT_FIRST_RUN );
 		}
 
-		// Preflight: a top-level POST abandons the bridge page, so the only way to
-		// recover from an unreachable or erroring SPA is to check it here, before
-		// the handoff, and send the user to the Welcome fallback instead.
-		if ( ! $this->bridge->is_spa_reachable() ) {
-			wp_safe_redirect( $this->get_fallback_url() );
-
-			exit;
+		if ( $this->screen->launch() ) {
+			$this->failed_installs_notice->clear();
 		}
-
-		$this->failed_installs_notice->clear();
-
-		$payload = $this->bridge->build_payload(
-			$this->get_exit_url(),
-			$this->get_restart_url()
-		);
-
-		$this->bridge->render( $payload );
 
 		exit;
 	}
@@ -471,34 +484,6 @@ class SetupWizard {
 	}
 
 	/**
-	 * Get the URL the wizard should return the user to on exit.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return string
-	 */
-	private function get_exit_url(): string {
-
-		return Page::get_url();
-	}
-
-	/**
-	 * Get the URL the wizard should restart from.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return string
-	 */
-	private function get_restart_url(): string {
-
-		return add_query_arg(
-			self::QUERY_ARG,
-			1,
-			$this->get_exit_url()
-		);
-	}
-
-	/**
 	 * Get the URL that launches the wizard manually from any admin page.
 	 *
 	 * Shared with the Welcome page so its "Launch Setup Wizard" notice and the
@@ -515,20 +500,5 @@ class SetupWizard {
 			1,
 			admin_url( 'admin.php?page=wpforms-overview' )
 		);
-	}
-
-	/**
-	 * Get the Welcome getting-started URL used as the client-side fallback.
-	 *
-	 * If the external SPA never takes over after the handoff, the bridge sends
-	 * the user here instead of leaving them on the spinner.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return string
-	 */
-	private function get_fallback_url(): string {
-
-		return admin_url( 'index.php?page=wpforms-getting-started' );
 	}
 }

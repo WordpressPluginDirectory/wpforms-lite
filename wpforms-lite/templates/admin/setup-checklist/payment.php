@@ -83,7 +83,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		printf(
 			wp_kses(
 				/* translators: %1$s - PayPal icon, %2$s - Square icon, %3$s - Payment Settings link. */
-				__( 'WPForms also supports other payment gateways, including %1$s PayPal, %2$s Square, and Authorize.net which can be configured from %3$s.', 'wpforms-lite' ),
+				__( 'WPForms also supports other payment gateways, including %1$s PayPal, %2$s Square, Authorize.net, and Mercado Pago which can be configured from %3$s.', 'wpforms-lite' ),
 				[
 					'img' => [
 						'class'  => [],

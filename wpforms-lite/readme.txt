@@ -3,7 +3,7 @@ Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 7.0
-Stable tag: 2.0.0.2
+Stable tag: 2.0.0.4
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -68,7 +68,7 @@ Bloggers and publishers can use our WordPress post submission forms to accept gu
 
 While WPForms started out as a contact form plugin, it has evolved into a powerful custom forms solution for any type of payment or booking form.
 
-WPForms integrates with PayPal, Stripe, Square Payments, and Authorize.Net so you can easily accept credit card payments or take payments via PayPal. Bonus: you can also take signatures.
+WPForms integrates with PayPal, Stripe, Square Payments, Authorize.Net, and Mercado Pago so you can easily accept credit card payments or take payments via PayPal. Bonus: you can also take signatures.
 
 We're proud to be a Stripe Verified Partner. This partnership allows us to build the best Stripe integration with early access to features. You can use our Stripe integration to accept both one-time payments as well as recurring payments while syncing all form data to your Stripe account.
 
@@ -135,6 +135,7 @@ We also know that our developer friends may want more control, so we added tons 
 * [Stripe](https://wpforms.com/features/stripe-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin) - We're a Stripe Verified Partner for Payments.
 * [Square](https://wpforms.com/features/square-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Authorize.Net](https://wpforms.com/features/authorize-net-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
+* [Mercado Pago](https://wpforms.com/features/mercado-pago-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Mailchimp](https://wpforms.com/features/mailchimp-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [AWeber](https://wpforms.com/features/aweber-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
 * [Campaign Monitor](https://wpforms.com/features/campaign-monitor-addon/?utm_source=wprepo&utm_medium=link&utm_campaign=liteplugin)
@@ -280,7 +281,7 @@ Here is a list of our Payment Fields that will help you create an order form, do
 * Checkbox Items
 * Dropdown Items
 * Total (Calculation Field)
-* Credit Card (Stripe, Square, and Authorize.Net)
+* Credit Card (Stripe, Square, Authorize.Net, and Mercado Pago)
 * PayPal
 
 = Can I integrate WPForms with my CRM or Email Marketing Service? =
@@ -339,9 +340,9 @@ Note: WPForms was voted Zapier's 6th fastest-growing app in the world.
 
 Yes, WPForms is not your average contact form plugin. You can use it to create any type of form including payment forms.
 
-We make it easy for you to accept payments using Stripe, Square, Authorize.Net, and PayPal Commerce.
+We make it easy for you to accept payments using Stripe, Square, Authorize.Net, Mercado Pago, and PayPal Commerce.
 
-Both our Stripe and Authorize.Net integrations help you easily accept credit card payments online.
+Our Stripe, Authorize.Net, and Mercado Pago integrations help you easily accept credit card payments online.
 
 Our PayPal integration allows you to accept PayPal payments online.
 
@@ -392,6 +393,15 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+= 2.0.0.4 =
+- Fixed: Lite Connect site registration failed permanently when the admin user profile had an empty first or last name, blocking entry backups.
+- Fixed: The Onboarding Wizard would time out in some cases.
+
+= 2.0.0.3 =
+- Added: New supported currencies.
+- Fixed: Permission handling in the Export Forms tool was improved.
+- Fixed: Form data handling in the Block Editor was improved.
+
 = 2.0.0.2 =
 - Fixed: Form submissions could still be blocked by stricter web application firewall configurations that flagged the JSON structure of the Form Analytics data; the data attached to each submission is now base64-encoded.
 - Fixed: A cross-site scripting vulnerability when a page combined a WPForms captcha with a specially crafted OptinMonster campaign.

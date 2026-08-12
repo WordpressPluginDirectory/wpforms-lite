@@ -296,10 +296,11 @@ class CompletionDetector {
 
 		$detector = new SettingsDetector();
 
-		// Any supported gateway — Stripe, PayPal Commerce, Square, or Authorize.Net — connected in the CURRENT payment mode completes the item.
+		// Any supported gateway — Stripe, PayPal Commerce, Square, Authorize.Net, or Mercado Pago — connected in the CURRENT payment mode completes the item.
 		return $detector->is_stripe_configured()
 			|| $detector->is_paypal_commerce_configured()
 			|| $detector->is_square_configured()
-			|| $detector->is_authorize_net_configured();
+			|| $detector->is_authorize_net_configured()
+			|| $detector->is_mercado_pago_configured();
 	}
 }

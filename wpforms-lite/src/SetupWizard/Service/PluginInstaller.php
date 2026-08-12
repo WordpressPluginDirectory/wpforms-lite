@@ -54,7 +54,11 @@ class PluginInstaller {
 		$failed       = [];
 
 		foreach ( $plugin_files as $plugin_file ) {
-			$result = wpforms_install_plugin( $this->catalog->main_file( $plugin_file ) );
+			// Never upgrade a plugin that is already present. The user asked to install
+			// it, not to update it, and `wpforms_install_plugin()` otherwise overwrites
+			// an existing copy with the current wp.org release — a version jump nobody
+			// requested, on a plugin someone may be holding back deliberately.
+			$result = wpforms_install_plugin( $this->catalog->main_file( $plugin_file ), true, false );
 
 			if ( is_wp_error( $result ) ) {
 				$failed[ $plugin_file ] = $result->get_error_message();

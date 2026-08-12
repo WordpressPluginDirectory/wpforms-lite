@@ -555,6 +555,8 @@ abstract class FormSelector implements IntegrationInterface {
 			'forms'             => $this->get_form_list(),
 			'strings'           => $strings,
 			'isAdmin'           => current_user_can( 'manage_options' ),
+			'canViewForms'      => $this->current_user_can_view_forms(),
+			'canCreateForms'    => wpforms_current_user_can( 'create_forms' ),
 			'isPro'             => wpforms()->is_pro(),
 			'defaults'          => self::DEFAULT_ATTRIBUTES,
 			'is_modern_markup'  => $this->render_engine === 'modern',
@@ -580,23 +582,79 @@ abstract class FormSelector implements IntegrationInterface {
 	 */
 	public function get_form_list(): array {
 
+		// Restrict the form list to users entitled to view forms.
+		if ( ! $this->current_user_can_view_forms() ) {
+			return [];
+		}
+
 		$forms = wpforms()->obj( 'form' )->get( '', [ 'order' => 'DESC' ] );
 
 		if ( empty( $forms ) ) {
 			return [];
 		}
 
-		return array_map(
-			static function ( $form ) {
-				$form->post_title = htmlspecialchars_decode( $form->post_title, ENT_QUOTES );
-				$max_length       = 47;
-				$form->post_title = trim( mb_substr( trim( $form->post_title ), 0, $max_length ) );
-				$form->post_title = mb_strlen( $form->post_title ) === $max_length ? $form->post_title . '…' : $form->post_title;
+		return array_map( [ $this, 'get_form_list_item' ], $forms );
+	}
 
-				return $form;
-			},
-			$forms
-		);
+	/**
+	 * Get the form list item data exposed to the block editor.
+	 *
+	 * Only the data the block editor consumes is included: field types and theme settings.
+	 * The full form definition (notifications, confirmations, integrations)
+	 * must never reach the page source.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @param object $form Form post object.
+	 *
+	 * @return array
+	 */
+	private function get_form_list_item( $form ): array {
+
+		$max_length = 47;
+		$title      = htmlspecialchars_decode( $form->post_title, ENT_QUOTES );
+		$title      = trim( mb_substr( trim( $title ), 0, $max_length ) );
+		$title      = mb_strlen( $title ) === $max_length ? $title . '…' : $title;
+
+		$form_data = (array) wpforms_decode( $form->post_content );
+		$fields    = isset( $form_data['fields'] ) && is_array( $form_data['fields'] ) ? $form_data['fields'] : [];
+
+		$content = [
+			'fields'   => array_map(
+				static function ( $field ) {
+
+					return [ 'type' => $field['type'] ?? '' ];
+				},
+				$fields
+			),
+			'settings' => [
+				'themes' => $form_data['settings']['themes'] ?? null,
+			],
+		];
+
+		return [
+			'ID'           => $form->ID,
+			'post_title'   => $title,
+			'post_content' => (string) wp_json_encode( $content ),
+		];
+	}
+
+	/**
+	 * Determine whether the current user is entitled to view forms.
+	 *
+	 * See wpforms_current_user_can_view_forms() for the Lite and Pro difference.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @return bool
+	 */
+	private function current_user_can_view_forms(): bool {
+
+		if ( ! wpforms()->is_pro() ) {
+			return true;
+		}
+
+		return wpforms_current_user_can( 'view_forms' );
 	}
 
 	/**
@@ -639,6 +697,12 @@ abstract class FormSelector implements IntegrationInterface {
 		$this->current_form_id = $id;
 
 		if ( empty( $id ) ) {
+			return '';
+		}
+
+		// Core's block-renderer REST endpoint is open to anyone who can edit posts,
+		// so the render must enforce the same gate as get_form_list().
+		if ( $this->is_block_renderer_request() && ! $this->current_user_can_view_forms() ) {
 			return '';
 		}
 
@@ -909,6 +973,28 @@ abstract class FormSelector implements IntegrationInterface {
 		// TODO: Find a better way to check if is GB editor API call.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		return defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && $_REQUEST['context'] === 'edit';
+	}
+
+	/**
+	 * Determine whether the current request is a REST block-renderer request.
+	 *
+	 * Core exposes dynamic blocks via the /wp/v2/block-renderer/ REST endpoint.
+	 * The context query argument is not checked on purpose: it defaults to `view`
+	 * and can be set freely by the requester, unlike the route itself.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @return bool
+	 */
+	private function is_block_renderer_request(): bool {
+
+		if ( ! wpforms_is_rest() ) {
+			return false;
+		}
+
+		$rest_route = $GLOBALS['wp']->query_vars['rest_route'] ?? '';
+
+		return strpos( (string) $rest_route, '/block-renderer/' ) !== false;
 	}
 
 	/**

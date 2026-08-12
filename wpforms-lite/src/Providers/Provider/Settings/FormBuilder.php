@@ -308,7 +308,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 	 *
 	 * @since 1.4.7
 	 */
-	public function process_ajax(): void {
+	public function process_ajax(): void { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
 		// Run a security check.
 		check_ajax_referer( 'wpforms-builder', 'nonce' );
@@ -352,6 +352,11 @@ abstract class FormBuilder implements FormBuilderInterface {
 			wp_send_json_error( $error );
 		}
 
+		// Object-level authorization: the caller must be able to edit this specific form.
+		if ( ! $this->current_user_can_edit_form( $form_id ) ) {
+			wp_send_json_error( $error );
+		}
+
 		$data = apply_filters( // phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation, WPForms.PHP.ValidateHooks.InvalidHookName
 			'wpforms_providers_settings_builder_ajax_' . $task . '_' . $this->core->slug,
 			null
@@ -366,6 +371,45 @@ abstract class FormBuilder implements FormBuilderInterface {
 		}
 
 		wp_send_json_error( $error );
+	}
+
+	/**
+	 * Determine whether the current user may edit the given form.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @param int $form_id Form id to check.
+	 *
+	 * @return bool
+	 */
+	protected function current_user_can_edit_form( int $form_id ): bool {
+
+		return wpforms_current_user_can( 'edit_form_single', $form_id );
+	}
+
+	/**
+	 * Determine whether the given account id is attached to one of this form's saved
+	 * connections for the current provider.
+	 *
+	 * This is a helper method for mainly using in addons.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @param string $account_id Account id to check.
+	 *
+	 * @return bool
+	 */
+	protected function account_belongs_to_form( string $account_id ): bool {
+
+		$connections = (array) ( $this->form_data['providers'][ $this->core->slug ] ?? [] );
+
+		foreach ( $connections as $connection ) {
+			if ( is_array( $connection ) && ! empty( $connection['account_id'] ) && (string) $connection['account_id'] === $account_id ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

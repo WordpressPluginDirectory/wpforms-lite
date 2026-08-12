@@ -69,11 +69,7 @@ class Bridge {
 
 		$style = 'html,body{margin:0}body{min-height:100vh;background:#FFFFFF}';
 
-		nocache_headers();
-		header( 'Referrer-Policy: no-referrer' );
-		header( 'X-Frame-Options: DENY' );
-		header( 'X-Content-Type-Options: nosniff' );
-		header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
+		self::send_standalone_document_headers();
 
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '<!DOCTYPE html><html lang="' . $language . '"><head>'
@@ -89,6 +85,23 @@ class Bridge {
 			. '<script>document.getElementById("wpforms-setup-wizard-bridge").submit();</script>'
 			. '</body></html>';
 		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
+	 * Send the security headers shared by the wizard's standalone documents.
+	 *
+	 * Used by both the bridge handoff page and the Lite Welcome screen, so a
+	 * future hardening pass only needs to change this one place.
+	 *
+	 * @since 2.0.0.3
+	 */
+	public static function send_standalone_document_headers(): void {
+
+		nocache_headers();
+		header( 'Referrer-Policy: no-referrer' );
+		header( 'X-Frame-Options: DENY' );
+		header( 'X-Content-Type-Options: nosniff' );
+		header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
 	}
 
 	/**
@@ -122,6 +135,28 @@ class Bridge {
 		 * @param array $payload Handshake payload.
 		 */
 		return (array) apply_filters( 'wpforms_setup_wizard_bridge_payload', $payload );
+	}
+
+	/**
+	 * Get the handoff form data for a client-side submit.
+	 *
+	 * The Lite Welcome screen POSTs the handshake from JS after its AJAX
+	 * round-trip, so it needs the form action and payload rather than a
+	 * rendered document.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @param string $exit_url    Where to send the user on close.
+	 * @param string $restart_url Where to send the user on restart.
+	 *
+	 * @return array{action: string, payload: array}
+	 */
+	public function get_handoff_data( string $exit_url, string $restart_url ): array {
+
+		return [
+			'action'  => $this->get_handoff_url(),
+			'payload' => $this->build_payload( $exit_url, $restart_url ),
+		];
 	}
 
 	/**

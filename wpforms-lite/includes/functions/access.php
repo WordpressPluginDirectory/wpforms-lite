@@ -265,6 +265,62 @@ function wpforms_current_user_can( $caps = [], $id = 0 ): bool {
 }
 
 /**
+ * Determine whether the current user is entitled to view forms.
+ *
+ * The capability is enforced in Pro only, where Access Controls can grant it. In Lite every
+ * capability check collapses to manage_options, which would leave editors and authors without
+ * a form to embed at all.
+ *
+ * @since 2.0.0.3
+ *
+ * @return bool
+ */
+function wpforms_current_user_can_view_forms(): bool {
+
+	if ( ! wpforms()->is_pro() ) {
+		return true;
+	}
+
+	return wpforms_current_user_can( 'view_forms' );
+}
+
+/**
+ * Add the author restriction the current user's view capabilities imply to form query arguments.
+ *
+ * Page builders assemble their form list from an editor preview, which is a frontend request, and
+ * from admin-ajax, whose classification depends on the request's HTTP referer. The Pro owner-scoping
+ * filter ( wpforms_get_multiple_forms_args ) is not registered in either context, so a caller there
+ * scopes the query itself instead of relying on the filter.
+ *
+ * Callers are expected to have consulted wpforms_current_user_can_view_forms() first. A user holding
+ * neither half of the view_forms category gets no restriction from this function.
+ *
+ * @since 2.0.0.3
+ *
+ * @param array $args Form query arguments to add the author restriction to.
+ *
+ * @return array
+ */
+function wpforms_get_viewable_forms_args( array $args = [] ): array {
+
+	// Lite has no per-author form access, so there is nothing to scope.
+	if ( ! wpforms()->is_pro() ) {
+		return $args;
+	}
+
+	// A role can hold either half of the view_forms category on its own, so both halves are asked
+	// about: without others' forms the list is limited to the requester, and without own forms it
+	// excludes them.
+	if ( ! wpforms_current_user_can( 'view_others_forms' ) ) {
+		$args['author'] = get_current_user_id();
+	} elseif ( ! wpforms_current_user_can( 'view_own_forms' ) ) {
+		$args['author__not_in'] = get_current_user_id();
+	}
+
+	return $args;
+}
+
+/**
  * Search for posts editable by the user.
  *
  * @since 1.7.9

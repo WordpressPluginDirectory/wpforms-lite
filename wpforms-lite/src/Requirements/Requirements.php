@@ -292,6 +292,7 @@ class Requirements {
 			self::LICENSE => self::PLUS_PRO_AND_TOP,
 		],
 		'wpforms-make/wpforms-make.php'                                 => [],
+		'wpforms-mercado-pago/wpforms-mercado-pago.php'                 => [],
 		'wpforms-n8n/wpforms-n8n.php'                                   => [
 			self::LICENSE => self::PRO_AND_TOP,
 		],

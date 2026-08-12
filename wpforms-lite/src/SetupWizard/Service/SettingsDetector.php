@@ -8,6 +8,7 @@ use WPForms\Integrations\Square\Helpers as SquareHelpers;
 use WPForms\Integrations\Stripe\Admin\Connect as StripeAdminConnect;
 use WPForms\Integrations\Stripe\Helpers as StripeHelpers;
 use WPFormsAuthorizeNet\Helpers as AuthorizeNetHelpers;
+use WPFormsMercadoPago\Helpers as MercadoPagoHelpers;
 
 /**
  * Setup Wizard settings detector.
@@ -90,5 +91,17 @@ class SettingsDetector {
 	public function is_authorize_net_configured(): bool {
 
 		return class_exists( AuthorizeNetHelpers::class ) && AuthorizeNetHelpers::has_authorize_net_keys();
+	}
+
+	/**
+	 * Whether Mercado Pago is connected for the current payment mode.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @return bool
+	 */
+	public function is_mercado_pago_configured(): bool {
+
+		return class_exists( MercadoPagoHelpers::class ) && MercadoPagoHelpers::is_configured();
 	}
 }

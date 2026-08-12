@@ -13,6 +13,7 @@ use WPForms\Integrations\Square\Square;
 use WPForms\Integrations\PayPalCommerce\Connection as PayPalCommerceConnection;
 use WPForms\Integrations\PayPalCommerce\PayPalCommerce;
 use WPFormsAuthorizeNet\Helpers as AuthorizeNetHelpers;
+use WPFormsMercadoPago\Helpers as MercadoPagoHelpers;
 
 /**
  * Payments Overview Page class.
@@ -391,15 +392,15 @@ class Page implements PaymentsViewsInterface {
 	 */
 	private function get_started_gateways(): array {
 
-		$gateways = array_filter(
+		return array_filter(
 			[
 				'stripe'          => Stripe::get_started_gateway(),
 				'paypal-commerce' => PayPalCommerce::get_started_gateway(),
 				'square'          => Square::get_started_gateway(),
+				'authorize-net'   => $this->add_authorize_net_gateway(),
+				'mercado-pago'    => $this->add_mercado_pago_gateway(),
 			]
 		);
-
-		return $this->add_authorize_net_gateway( $gateways );
 	}
 
 	/**
@@ -407,11 +408,9 @@ class Page implements PaymentsViewsInterface {
 	 *
 	 * @since 1.10.1.1
 	 *
-	 * @param array $gateways Existing gateway entries.
-	 *
 	 * @return array
 	 */
-	private function add_authorize_net_gateway( array $gateways ): array {
+	private function add_authorize_net_gateway(): array {
 
 		$is_elite_tier           = in_array( wpforms_get_license_type(), [ 'elite', 'agency', 'ultimate' ], true );
 		$is_authorize_net_active = class_exists( '\WPFormsAuthorizeNet\Loader' );
@@ -429,7 +428,7 @@ class Page implements PaymentsViewsInterface {
 			$cta = __( 'Upgrade', 'wpforms-lite' );
 		}
 
-		$gateways['authorize-net'] = [
+		return [
 			'icon'        => WPFORMS_PLUGIN_URL . 'assets/images/addon-icon-authorize-net.png',
 			'name'        => __( 'Authorize.Net', 'wpforms-lite' ),
 			'description' => __( 'Accept credit cards and eChecks with enterprise-grade fraud protection.', 'wpforms-lite' ),
@@ -439,12 +438,47 @@ class Page implements PaymentsViewsInterface {
 			'cta_target'  => $is_elite_tier ? '_self' : '_blank',
 			'cta_class'   => $is_elite_tier ? '' : 'wpforms-upgrade-modal',
 		];
-
-		return $gateways;
 	}
 
 	/**
-	 * Determine whether Stripe or Square payment gateway is configured.
+	 * Append the Mercado Pago tile to the Get Started gateway list.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @return array
+	 */
+	private function add_mercado_pago_gateway(): array {
+
+		$is_pro_tier            = in_array( wpforms_get_license_type(), [ 'pro', 'elite', 'agency', 'ultimate' ], true );
+		$is_mercado_pago_active = class_exists( '\WPFormsMercadoPago\Loader' );
+		$settings_payments_url  = admin_url( 'admin.php?page=wpforms-settings&view=payments' );
+		$addons_url             = admin_url( 'admin.php?page=wpforms-addons' );
+
+		if ( $is_mercado_pago_active ) {
+			$url = $settings_payments_url . '#wpforms-setting-row-mercado_pago-heading';
+			$cta = __( 'Connect', 'wpforms-lite' );
+		} elseif ( $is_pro_tier ) {
+			$url = $addons_url . '&search=mercado';
+			$cta = __( 'Install', 'wpforms-lite' );
+		} else {
+			$url = wpforms_admin_upgrade_link( 'Payments Dashboard', 'Splash - Mercado Pago Upgrade' );
+			$cta = __( 'Upgrade', 'wpforms-lite' );
+		}
+
+		return [
+			'icon'        => WPFORMS_PLUGIN_URL . 'assets/images/addon-icon-mercado-pago.png',
+			'name'        => __( 'Mercado Pago', 'wpforms-lite' ),
+			'description' => __( 'Accept credit and debit cards with installments across Latin America.', 'wpforms-lite' ),
+			'url'         => $url,
+			'badge'       => $is_pro_tier ? '' : __( 'Pro', 'wpforms-lite' ),
+			'cta'         => $cta,
+			'cta_target'  => $is_pro_tier ? '_self' : '_blank',
+			'cta_class'   => $is_pro_tier ? '' : 'wpforms-upgrade-modal',
+		];
+	}
+
+	/**
+	 * Determine whether any supported payment gateway is configured.
 	 *
 	 * @since 1.8.2
 	 *
@@ -455,7 +489,8 @@ class Page implements PaymentsViewsInterface {
 		$is_configured = StripeHelpers::has_stripe_keys()
 			|| SquareHelpers::is_square_configured()
 			|| self::is_paypal_commerce_configured()
-			|| self::is_authorize_net_configured();
+			|| self::is_authorize_net_configured()
+			|| self::is_mercado_pago_configured();
 
 		/**
 		 * Allow to modify a status whether a payment gateway is configured.
@@ -495,6 +530,22 @@ class Page implements PaymentsViewsInterface {
 		}
 
 		return (bool) AuthorizeNetHelpers::has_authorize_net_keys();
+	}
+
+	/**
+	 * Determine whether the Mercado Pago addon is active and has a valid connection.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @return bool
+	 */
+	private static function is_mercado_pago_configured(): bool {
+
+		if ( ! class_exists( MercadoPagoHelpers::class ) ) {
+			return false;
+		}
+
+		return MercadoPagoHelpers::is_configured();
 	}
 
 	/**

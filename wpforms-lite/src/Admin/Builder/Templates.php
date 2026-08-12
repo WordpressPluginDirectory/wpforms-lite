@@ -910,6 +910,7 @@ class Templates {
 			'square'          => [ 'square' ],
 			'paypal_commerce' => [ 'paypal-commerce' ],
 			'authorize_net'   => [ 'authorize_net' ],
+			'mercado_pago'    => [ 'mercado_pago' ],
 		];
 
 		foreach ( array_keys( $form_data['payments'] ) as $gateway ) {

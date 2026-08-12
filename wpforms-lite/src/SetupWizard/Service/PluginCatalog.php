@@ -37,6 +37,10 @@ class PluginCatalog {
 	 * treats them uniformly, so the checklist's recommendations also surface in the wizard's
 	 * cross-plugins detection.
 	 *
+	 * Adding an entry here? Check whether the plugin arms its own onboarding
+	 * redirect on activation and needs a matching entry in
+	 * \WPForms\SetupWizard\Service\CrossPluginOnboarding.
+	 *
 	 * @since 2.0.0
 	 *
 	 * @var array<string, array{name: string, pro?: string}>

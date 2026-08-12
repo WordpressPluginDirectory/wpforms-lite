@@ -195,18 +195,10 @@ class Page implements ExportViewsInterface {
 	 */
 	private function process_export(): void {
 
-		$export = [];
-		$forms  = get_posts(
-			[
-				'post_type' => 'wpforms',
-				'nopaging'  => true,
-				'post__in'  => isset( $_POST['forms'] ) ? array_map( 'intval', $_POST['forms'] ) : [], // phpcs:ignore WordPress.Security.NonceVerification
-			]
-		);
-
-		foreach ( $forms as $form ) {
-			$export[] = wpforms_decode( $form->post_content );
-		}
+		// Nonce is verified in process().
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$form_ids = isset( $_POST['forms'] ) ? array_map( 'absint', (array) $_POST['forms'] ) : [];
+		$export   = $this->get_forms_data( $form_ids );
 
 		ignore_user_abort( true );
 
@@ -219,5 +211,48 @@ class Page implements ExportViewsInterface {
 
 		echo wp_json_encode( $export );
 		exit;
+	}
+
+	/**
+	 * Get the exportable data for the given form IDs.
+	 *
+	 * Only published forms of the `wpforms` post type are exportable, matching
+	 * the query this method replaced. Forms the current user is not allowed to
+	 * read are skipped: the form handler applies the object-level capability
+	 * check per form when access controls are active.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @param array $form_ids Requested form IDs.
+	 *
+	 * @return array
+	 */
+	private function get_forms_data( array $form_ids ): array {
+
+		$form_obj = wpforms()->obj( 'form' );
+
+		if ( ! $form_obj ) {
+			return [];
+		}
+
+		$export = [];
+
+		foreach ( array_unique( array_filter( $form_ids ) ) as $form_id ) {
+			// Only published forms may be exported: the form handler alone would also return templates and trashed forms.
+			if ( get_post_type( $form_id ) !== 'wpforms' || get_post_status( $form_id ) !== 'publish' ) {
+				continue;
+			}
+
+			// The form handler applies the `view_form_single` capability check when access controls are active.
+			$form_data = $form_obj->get( $form_id, [ 'content_only' => true ] );
+
+			if ( empty( $form_data ) ) {
+				continue;
+			}
+
+			$export[] = $form_data;
+		}
+
+		return $export;
 	}
 }

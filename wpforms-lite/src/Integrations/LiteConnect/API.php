@@ -2,6 +2,7 @@
 
 namespace WPForms\Integrations\LiteConnect;
 
+use WP_User;
 use WPForms\Helpers\Transient;
 
 /**
@@ -158,11 +159,14 @@ class API {
 
 		$admin_email = Integration::get_enabled_email();
 		$user        = get_user_by( 'email', $admin_email );
-		$data        = [
+
+		[ $first_name, $last_name ] = $this->get_registration_names( $user, $admin_email );
+
+		$data = [
 			'domain'      => $this->domain,
 			'admin_email' => $admin_email,
-			'first_name'  => ! empty( $user->first_name ) ? $user->first_name : '',
-			'last_name'   => ! empty( $user->last_name ) ? $user->last_name : '',
+			'first_name'  => $first_name,
+			'last_name'   => $last_name,
 			'nonce'       => $this->create_not_logged_in_nonce(),
 			'callback'    => add_query_arg( [ LiteConnect::AUTH_KEY_ARG => '' ], trailingslashit( home_url() ) ),
 		];
@@ -181,6 +185,64 @@ class API {
 		// At this point, we do not have the site key.
 		// It will be sent to us in the 'wpforms/auth/key/nonce' callback.
 		return false;
+	}
+
+	/**
+	 * Get non-empty first and last names to register the site with.
+	 *
+	 * The remote API rejects empty first/last name params, but a blank profile name
+	 * (or an email with no WordPress user behind it) is a valid state.
+	 *
+	 * @since 2.0.0.4
+	 *
+	 * @param WP_User|false $user        User matched by the Lite Connect email.
+	 * @param string|false  $admin_email Email that enabled Lite Connect.
+	 *
+	 * @return string[] First and last name.
+	 */
+	private function get_registration_names( $user, $admin_email ): array {
+
+		$first_name = ! empty( $user->first_name ) ? $user->first_name : '';
+		$last_name  = ! empty( $user->last_name ) ? $user->last_name : '';
+
+		if ( $first_name !== '' && $last_name !== '' ) {
+			return [ $first_name, $last_name ];
+		}
+
+		$fallback = $this->get_fallback_name( $user, $admin_email );
+
+		if ( $first_name === '' && $last_name === '' ) {
+			// Split a multi-word fallback between the params.
+			$parts = preg_split( '/\s+/', trim( $fallback ), 2 );
+
+			return [ $parts[0], $parts[1] ?? $parts[0] ];
+		}
+
+		return [
+			$first_name === '' ? $fallback : $first_name,
+			$last_name === '' ? $fallback : $last_name,
+		];
+	}
+
+	/**
+	 * Get a non-empty name to register the site with.
+	 *
+	 * @since 2.0.0.4
+	 *
+	 * @param WP_User|false $user        User matched by the Lite Connect email.
+	 * @param string|false  $admin_email Email that enabled Lite Connect.
+	 *
+	 * @return string
+	 */
+	private function get_fallback_name( $user, $admin_email ) {
+
+		if ( ! empty( $user->display_name ) ) {
+			return $user->display_name;
+		}
+
+		$local_part = strstr( (string) $admin_email, '@', true );
+
+		return ! empty( $local_part ) ? $local_part : 'WPForms';
 	}
 
 	/**

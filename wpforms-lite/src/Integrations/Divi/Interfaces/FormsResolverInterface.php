@@ -14,7 +14,7 @@ use WP_Post;
 interface FormsResolverInterface {
 
 	/**
-	 * Get all available forms.
+	 * Get the forms the current user is entitled to view.
 	 *
 	 * @since 1.9.9
 	 *
@@ -35,9 +35,9 @@ interface FormsResolverInterface {
 	public function add_form_in_options( array $options, WP_Post $form ): array;
 
 	/**
-	 * Get form options for all available forms.
+	 * Get form options for the forms the current user is entitled to view.
 	 *
-	 * Retrieves all forms and formats them as an option array.
+	 * Retrieves those forms and formats them as an option array.
 	 *
 	 * @since 1.9.9
 	 *

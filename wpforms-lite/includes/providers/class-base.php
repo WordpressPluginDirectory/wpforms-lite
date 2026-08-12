@@ -172,11 +172,20 @@ abstract class WPForms_Provider {
 
 		$name          = ! empty( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
 		$task          = ! empty( $_POST['task'] ) ? sanitize_text_field( wp_unslash( $_POST['task'] ) ) : '';
-		$id            = ! empty( $_POST['id'] ) ? sanitize_text_field( wp_unslash( $_POST['id'] ) ) : '';
+		$id            = ! empty( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 		$connection_id = ! empty( $_POST['connection_id'] ) ? sanitize_text_field( wp_unslash( $_POST['connection_id'] ) ) : '';
 		$account_id    = ! empty( $_POST['account_id'] ) ? sanitize_text_field( wp_unslash( $_POST['account_id'] ) ) : '';
 		$list_id       = ! empty( $_POST['list_id'] ) ? sanitize_text_field( wp_unslash( $_POST['list_id'] ) ) : '';
 		$data          = ! empty( $_POST['data'] ) ? array_map( 'sanitize_text_field', wp_parse_args( wp_unslash( $_POST['data'] ) ) ) : []; //phpcs:ignore
+
+		// The `edit_forms` check above is form-agnostic - re-check ownership of this specific form. See #18350.
+		if ( ! $id || ! wpforms_current_user_can( 'edit_form_single', $id ) ) {
+			wp_send_json_error(
+				[
+					'error' => esc_html__( 'You do not have permission', 'wpforms-lite' ),
+				]
+			);
+		}
 
 		/*
 		 * Create a new connection.
@@ -388,7 +397,13 @@ abstract class WPForms_Provider {
 		} elseif ( is_numeric( $form ) ) {
 			$form_obj = wpforms()->obj( 'form' );
 			$form     = $form_obj
-				? $form_obj->get( $form, [ 'content_only' => true ] )
+				? $form_obj->get(
+					$form,
+					[
+						'content_only' => true,
+						'cap'          => 'edit_form_single',
+					]
+				)
 				: [];
 		}
 
@@ -671,7 +686,7 @@ abstract class WPForms_Provider {
 			return '';
 		}
 
-		$output = sprintf( '<div class="wpforms-provider-connection" data-provider="%s" data-connection_id="%s">', $this->slug, $connection_id );
+		$output = sprintf( '<div class="wpforms-provider-connection" data-provider="%s" data-connection_id="%s">', $this->slug, esc_attr( $connection_id ) );
 
 		$output .= $this->output_connection_header( $connection_id, $connection );
 
@@ -718,7 +733,7 @@ abstract class WPForms_Provider {
 
 		$output .= '<button class="wpforms-provider-connection-delete"><i class="fa fa-trash-o"></i></button>';
 
-		$output .= sprintf( '<input type="hidden" name="providers[%s][%s][connection_name]" value="%s">', $this->slug, $connection_id, esc_attr( $connection['connection_name'] ) );
+		$output .= sprintf( '<input type="hidden" name="providers[%s][%s][connection_name]" value="%s">', $this->slug, esc_attr( $connection_id ), esc_attr( $connection['connection_name'] ) );
 
 		$output .= '</div>';
 
@@ -763,7 +778,7 @@ abstract class WPForms_Provider {
 		$output = '<div class="wpforms-provider-accounts wpforms-connection-block">';
 
 		$output .= sprintf( '<h4>%s</h4>', esc_html__( 'Select Account', 'wpforms-lite' ) );
-		$output .= sprintf( '<select name="providers[%s][%s][account_id]">', $this->slug, $connection_id );
+		$output .= sprintf( '<select name="providers[%s][%s][account_id]">', $this->slug, esc_attr( $connection_id ) );
 
 		foreach ( $providers[ $this->slug ] as $key => $provider_details ) {
 			$selected = ! empty( $connection['account_id'] ) ? $connection['account_id'] : '';
@@ -810,7 +825,7 @@ abstract class WPForms_Provider {
 
 		$output .= sprintf( '<h4>%s</h4>', esc_html__( 'Select List', 'wpforms-lite' ) );
 
-		$output .= sprintf( '<select name="providers[%s][%s][list_id]">', $this->slug, $connection_id );
+		$output .= sprintf( '<select name="providers[%s][%s][list_id]">', $this->slug, esc_attr( $connection_id ) );
 
 		if ( ! empty( $lists ) ) {
 			foreach ( $lists as $list ) {
@@ -877,7 +892,7 @@ abstract class WPForms_Provider {
 					esc_attr( $group['id'] ),
 					esc_attr( $group['name'] ),
 					$this->slug,
-					$connection_id,
+					esc_attr( $connection_id ),
 					$groupset['id'],
 					$group['id'],
 					checked( $selected, true, false ),
@@ -947,7 +962,7 @@ abstract class WPForms_Provider {
 
 			$output .= '<td>';
 
-			$output .= sprintf( '<select name="providers[%s][%s][fields][%s]">', $this->slug, $connection_id, esc_attr( $provider_field['tag'] ) );
+			$output .= sprintf( '<select name="providers[%s][%s][fields][%s]">', $this->slug, esc_attr( $connection_id ), esc_attr( $provider_field['tag'] ) );
 
 			$output .= '<option value=""></option>';
 

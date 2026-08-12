@@ -110,6 +110,7 @@ class ErrorHandler {
 			WP_PLUGIN_DIR . '/wpforms-lead-forms/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-mailchimp/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-mailerlite/vendor/',
+			WP_PLUGIN_DIR . '/wpforms-mercado-pago/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-offline-forms/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-paypal-commerce/vendor/',
 			WP_PLUGIN_DIR . '/wpforms-paypal-standard/vendor/',

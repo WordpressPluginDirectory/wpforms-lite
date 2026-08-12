@@ -272,10 +272,15 @@ function wpforms_new_form() { // phpcs:ignore Generic.Metrics.CyclomaticComplexi
 
 	check_ajax_referer( 'wpforms-builder', 'nonce' );
 
-	// Prevent the second form creating if a user has no license set.
-	// Redirect will lead to the warning page.
+	// An unlicensed Pro install is limited to a single form. The old redirect target (the builder
+	// license overlay) is deprecated, so the limit is reported as a regular error message instead.
 	if ( wpforms()->is_pro() && empty( wpforms_get_license_type() ) && wp_count_posts( 'wpforms' )->publish >= 1 ) {
-		wp_send_json_success( [ 'redirect' => admin_url( 'admin.php?page=wpforms-builder&view=setup' ) ] );
+		wp_send_json_error(
+			[
+				'error_type' => 'license_required',
+				'message'    => esc_html__( 'A WPForms license key is required. To create more forms, please verify your WPForms license.', 'wpforms-lite' ),
+			]
+		);
 	}
 
 	if ( empty( $_POST['title'] ) ) {

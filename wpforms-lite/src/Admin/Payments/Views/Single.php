@@ -930,8 +930,6 @@ class Single implements PaymentsViewsInterface {
 			$fields
 		);
 
-		add_filter( 'wp_kses_allowed_html', [ $this, 'modify_allowed_tags_payment_field_value' ], 10, 2 );
-
 		/**
 		 * Allow modifying the entry fields before rendering the entry details.
 		 *
@@ -965,8 +963,6 @@ class Single implements PaymentsViewsInterface {
 			],
 			true
 		);
-
-		remove_filter( 'wp_kses_allowed_html', [ $this, 'modify_allowed_tags_payment_field_value' ] );
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $entry_output;
@@ -1020,7 +1016,7 @@ class Single implements PaymentsViewsInterface {
 
 			$field_value = isset( $field['value'] ) ? $field['value'] : '';
 			/** This filter is documented in src/SmartTags/SmartTag/FieldHtmlId.php.*/
-			$prepared_fields[ $key ]['field_value'] = apply_filters( 'wpforms_html_field_value', wp_strip_all_tags( $field_value ), $field, $form_data, 'payment-single' );
+			$prepared_fields[ $key ]['field_value'] = apply_filters( 'wpforms_html_field_value', wpforms_neutralize_html_tags( $field_value ), $field, $form_data, 'payment-single' );
 			// phpcs:enable WPForms.PHP.ValidateHooks.InvalidHookName
 
 			$prepared_fields[ $key ]['field_class'] = sanitize_html_class( 'wpforms-field-' . $field_type );
@@ -1052,24 +1048,18 @@ class Single implements PaymentsViewsInterface {
 	 * Allow additional tags for the wp_kses_post function.
 	 *
 	 * @since 1.8.2
+	 * @deprecated 2.0.0.3
 	 *
-	 * @param array  $allowed_html List of allowed HTML.
-	 * @param string $context      Context name.
+	 * @param array|mixed  $allowed_html List of allowed HTML.
+	 * @param string|mixed $context      Context name.
 	 *
 	 * @return array
 	 */
-	public function modify_allowed_tags_payment_field_value( $allowed_html, $context ) {
+	public function modify_allowed_tags_payment_field_value( $allowed_html, $context ): array {
 
-		if ( $context !== 'post' ) {
-			return $allowed_html;
-		}
+		_deprecated_function( __METHOD__, '2.0.0.3 of the WPForms plugin', 'wpforms_get_allowed_html_tags_for_entry_field_value()' );
 
-		$allowed_html['iframe'] = [
-			'data-src' => [],
-			'class'    => [],
-		];
-
-		return $allowed_html;
+		return wpforms_get_allowed_html_tags_for_entry_field_value( $allowed_html, (string) $context );
 	}
 
 	/**

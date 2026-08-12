@@ -743,14 +743,18 @@ class WPForms_WP_Emails {
 				);
 
 				$field_item = str_replace( '{field_name}', $field_name, $field_item );
+
+				// The filtered value may contain markup built from stored submission data, so sanitize it before it enters the email body.
 				$field_item = str_replace(
 					'{field_value}',
-					apply_filters(
-						'wpforms_html_field_value',
-						$field_val,
-						isset( $this->fields[ $field_id ] ) ? $this->fields[ $field_id ] : $field,
-						$this->form_data,
-						'email-html'
+					wp_kses_post(
+						apply_filters( // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName, WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+							'wpforms_html_field_value',
+							$field_val,
+							isset( $this->fields[ $field_id ] ) ? $this->fields[ $field_id ] : $field,
+							$this->form_data,
+							'email-html'
+						)
 					),
 					$field_item
 				);
@@ -766,7 +770,7 @@ class WPForms_WP_Emails {
 				 */
 				$message .= apply_filters( 'wpforms_wp_emails_html_field_value_message_html', wpautop( $field_item ), $field, $this->form_data );
 
-				$x ++;
+				++$x;
 			}
 		} else {
 			/*

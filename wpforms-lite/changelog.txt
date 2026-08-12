@@ -1,4 +1,14 @@
 == Changelog ==
+
+= 2.0.0.4 =
+- Fixed: Lite Connect site registration failed permanently when the admin user profile had an empty first or last name, blocking entry backups.
+- Fixed: The Onboarding Wizard would time out in some cases.
+
+= 2.0.0.3 =
+- Added: New supported currencies.
+- Fixed: Permission handling in the Export Forms tool was improved.
+- Fixed: Form data handling in the Block Editor was improved.
+
 = 2.0.0.2 =
 - Fixed: Form submissions could still be blocked by stricter web application firewall configurations that flagged the JSON structure of the Form Analytics data; the data attached to each submission is now base64-encoded.
 - Fixed: A cross-site scripting vulnerability when a page combined a WPForms captcha with a specially crafted OptinMonster campaign.

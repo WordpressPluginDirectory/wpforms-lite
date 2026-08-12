@@ -228,6 +228,16 @@ class Fields {
 				'order'    => '95',
 			],
 			[
+				'icon'     => 'fa-credit-card',
+				'name'     => esc_html__( 'Mercado Pago', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'store, ecommerce, credit card, pay, payment, debit card, installments, latam', 'wpforms-lite' ),
+				'name_en'  => 'Mercado Pago',
+				'type'     => 'mercado_pago',
+				'group'    => 'payment',
+				'addon'    => 'wpforms-mercado-pago',
+				'order'    => '96',
+			],
+			[
 				'icon'     => 'fa-ticket',
 				'name'     => esc_html__( 'Coupon', 'wpforms-lite' ),
 				'keywords' => esc_html__( 'discount, sale', 'wpforms-lite' ),

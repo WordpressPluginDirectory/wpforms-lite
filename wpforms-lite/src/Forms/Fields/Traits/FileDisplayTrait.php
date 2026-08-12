@@ -113,6 +113,75 @@ trait FileDisplayTrait {
 	}
 
 	/**
+	 * Determine whether the given source is an existing local file.
+	 *
+	 * A stream-wrapper source ( phar://, glob://, compress.zlib://, ftp://, … ) must never
+	 * reach a filesystem function: on PHP < 8.0 a phar:// stat eagerly deserializes the
+	 * archive metadata, which turns request input into object injection.
+	 * Legitimate sources here are always public http(s) URLs, for which file_exists()
+	 * already returns false ( the HTTP wrapper implements no url_stat ), so rejecting every
+	 * wrapped value changes no existing behavior.
+	 * Every `scheme://` value is rejected, which is deliberately broader than wp_is_stream():
+	 * that helper matches only schemes present in stream_get_wrappers(), so an unregistered
+	 * one would still reach file_exists() and emit an "Unable to find the wrapper" warning.
+	 * A plain containment test is also used in preference to a scheme pattern because PHP
+	 * accepts digit-initial scheme names, which a `^[a-z]…` pattern would let through.
+	 * The one slash-less wrapper form, data:, is not matched — it implements no url_stat and
+	 * no deserialization, so it is inert here.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @param string $src File source to check.
+	 *
+	 * @return bool
+	 */
+	private function is_existing_local_file( string $src ): bool {
+
+		if ( strpos( $src, '://' ) !== false ) {
+			return false;
+		}
+
+		return file_exists( $src );
+	}
+
+	/**
+	 * Sanitize a submitted file item before the entry preview renders it.
+	 *
+	 * The item is read from `$_POST['wpforms']['complete']`, which the form processor fills
+	 * with its own trusted field data on the confirmation path ( see WPForms_Process ) but
+	 * which is entirely client-supplied on the public `wpforms_get_entry_preview` endpoint.
+	 * Keys the confirmation path depends on are therefore sanitized in place rather than
+	 * replaced by a whitelist: dropping `protection_hash` would turn a protected file from a
+	 * bare filename into an inline thumbnail carrying the file's direct URL.
+	 * Both URL keys are covered because the caller may copy `url` into `value`.
+	 *
+	 * @since 2.0.0.3
+	 *
+	 * @param mixed $file Submitted file item.
+	 *
+	 * @return array
+	 */
+	private function sanitize_submitted_file_item( $file ): array {
+
+		$file = (array) $file;
+
+		// Force the keys the renderer reads to strings: a nested value would otherwise reach
+		// pathinfo() during normalization and raise a TypeError on PHP 8.
+		foreach ( [ 'value', 'url', 'file_original', 'name', 'ext' ] as $key ) {
+			$value        = $file[ $key ] ?? '';
+			$file[ $key ] = is_scalar( $value ) ? (string) $value : '';
+		}
+
+		$file['value']         = esc_url_raw( $file['value'] );
+		$file['url']           = esc_url_raw( $file['url'] );
+		$file['file_original'] = sanitize_text_field( $file['file_original'] );
+		$file['name']          = sanitize_text_field( $file['name'] );
+		$file['ext']           = sanitize_key( $file['ext'] );
+
+		return $file;
+	}
+
+	/**
 	 * Get the name of a file.
 	 *
 	 * @since 1.9.8
@@ -204,7 +273,8 @@ trait FileDisplayTrait {
 						$name = $file['name'] ?? '';
 
 						return [
-							'value'         => $file['url'] ?? '',
+							// The URL is client-supplied, so sanitize it as the submit path does.
+							'value'         => esc_url_raw( $file['url'] ?? '' ),
 							'file_original' => $name,
 							'ext'           => strtolower( pathinfo( $name, PATHINFO_EXTENSION ) ),
 						];
@@ -283,8 +353,12 @@ trait FileDisplayTrait {
 			$src = $this->get_file_url( $file );
 
 			// If the temp file doesn't exist, fallback to submitted field data if set.
-			if ( $is_entry_preview && ! file_exists( $src ) && isset( $submitted_fields['complete'][ $field['id'] ]['value_raw'][ $key ] ) ) {
-				$file = $submitted_fields['complete'][ $field['id'] ]['value_raw'][ $key ];
+			if (
+				$is_entry_preview &&
+				isset( $submitted_fields['complete'][ $field['id'] ]['value_raw'][ $key ] ) &&
+				! $this->is_existing_local_file( $src )
+			) {
+				$file = $this->sanitize_submitted_file_item( $submitted_fields['complete'][ $field['id'] ]['value_raw'][ $key ] );
 				$src  = $this->get_file_url( $file );
 			}
 

@@ -20,6 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</p>
 
 	<div class="wpforms-payment-entry-field-value">
-		<?php echo wp_kses_post( nl2br( make_clickable( $field['field_value'] ) ) ); ?>
+		<?php echo wpforms_esc_entry_field_value( nl2br( make_clickable( $field['field_value'] ) ) ); ?>
 	</div>
 </div>

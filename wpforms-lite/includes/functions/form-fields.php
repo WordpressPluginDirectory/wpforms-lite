@@ -529,6 +529,7 @@ function wpforms_get_payments_fields(): array {
 		'payment-coupon',
 		'credit-card', // Legacy Credit Card field.
 		'authorize_net',
+		'mercado_pago',
 		'paypal-commerce',
 		'square',
 		'stripe-credit-card',

@@ -30,11 +30,14 @@ class StripeConnect extends AbstractStripeConnect {
 	/**
 	 * Transient storing the forced step to resume after OAuth.
 	 *
+	 * Public so the launch screen can consult it to distinguish a mid-wizard
+	 * resume (Stripe OAuth return) from a first launch.
+	 *
 	 * @since 2.0.0
 	 *
 	 * @var string
 	 */
-	private const TRANSIENT_FORCE_STEP = 'wpforms_setup_wizard_force_step';
+	public const TRANSIENT_FORCE_STEP = 'wpforms_setup_wizard_force_step';
 
 	/**
 	 * Query argument used by the main wizard launcher.

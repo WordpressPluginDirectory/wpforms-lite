@@ -423,7 +423,16 @@ class Elementor implements IntegrationInterface {
 
 		check_ajax_referer( 'wpforms-elementor-integration', 'nonce' );
 
-		wp_send_json_success( ( new Widget() )->get_form_selector_options() );
+		$widget = new Widget();
+
+		// In Pro the form list is not public data, so callers without a WPForms capability are denied.
+		// A nonce is CSRF protection, not authorization, it is minted for any user who can open the
+		// Elementor editor.
+		if ( ! $widget->current_user_can_view_forms() ) {
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action.', 'wpforms-lite' ), 403 );
+		}
+
+		wp_send_json_success( $widget->get_form_selector_options() );
 	}
 
 	/**
