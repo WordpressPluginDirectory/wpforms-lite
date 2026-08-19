@@ -3,7 +3,7 @@ Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 7.0
-Stable tag: 2.0.0.4
+Stable tag: 2.0.0.5
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -393,6 +393,9 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+= 2.0.0.5 =
+- The WPForms admin menu left a large empty gap below it on mobile screens when viewing non-WPForms admin pages.
+
 = 2.0.0.4 =
 - Fixed: Lite Connect site registration failed permanently when the admin user profile had an empty first or last name, blocking entry backups.
 - Fixed: The Onboarding Wizard would time out in some cases.

@@ -357,6 +357,7 @@ function wpforms_get_form_fields( $form = false, $allowlist = [] ) { // phpcs:ig
 		'payment-total',
 		'phone',
 		'radio',
+		'ranking',
 		'rating',
 		'richtext',
 		'select',

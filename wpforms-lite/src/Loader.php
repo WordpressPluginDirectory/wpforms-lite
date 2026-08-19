@@ -590,6 +590,12 @@ class Loader {
 		];
 
 		$this->classes[] = [
+			'name'        => 'Forms\Fields\Addons\Ranking\Field',
+			'addon_class' => 'WPFormsSurveys\Fields\Ranking\Field',
+			'addon_slug'  => 'surveys-polls',
+		];
+
+		$this->classes[] = [
 			'name'        => 'Forms\Fields\Addons\Map\Field',
 			'addon_class' => 'WPFormsGeolocation\Forms\Field',
 			'addon_slug'  => 'geolocation',
@@ -1025,6 +1031,7 @@ class Loader {
 			'Builder\DidYouKnow',
 			'Builder\Geolocation',
 			'Builder\Quiz',
+			'Builder\Ranking',
 			'Builder\Confirmations',
 			'Builder\Notifications',
 			'Builder\PDF',

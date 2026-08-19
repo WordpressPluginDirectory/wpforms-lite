@@ -425,8 +425,8 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 	 */
 	public function field_display( $field, $deprecated, $form_data ) {
 
-		$using_image_choices = empty( $field['dynamic_choices'] ) && ! empty( $field['choices_images'] );
-		$using_icon_choices  = empty( $field['dynamic_choices'] ) && empty( $field['choices_images'] ) && ! empty( $field['choices_icons'] );
+		$using_image_choices = $this->is_image_choices( $field );
+		$using_icon_choices  = $this->is_icon_choices( $field );
 
 		// Define data.
 		$container = $field['properties']['input_container'];

@@ -154,6 +154,7 @@ class Help {
 			'fields/field_options/richtext'           => 'rich text',
 			'fields/field_options/layout'             => 'layout',
 			'fields/field_options/likert_scale'       => 'likert scale',
+			'fields/field_options/ranking'            => 'ranking',
 			'fields/field_options/payment-single'     => 'single item',
 			'fields/field_options/payment-multiple'   => 'multiple items',
 			'fields/field_options/payment-checkbox'   => 'checkbox items',
@@ -774,6 +775,20 @@ class Help {
 			],
 			'scale'                     => [
 				'/docs/how-to-add-a-likert-scale-field-to-wpforms/',
+				'/docs/how-to-install-and-use-the-surveys-and-polls-addon/',
+				'/docs/how-to-customize-form-field-options/',
+				'/docs/how-to-use-conditional-logic-with-wpforms/',
+				'/docs/how-to-customize-the-style-of-individual-form-fields/',
+			],
+			'ranking'                   => [
+				'/docs/ranking-field/',
+				'/docs/how-to-install-and-use-the-surveys-and-polls-addon/',
+				'/docs/how-to-customize-form-field-options/',
+				'/docs/how-to-use-conditional-logic-with-wpforms/',
+				'/docs/how-to-customize-the-style-of-individual-form-fields/',
+			],
+			'rank'                      => [
+				'/docs/ranking-field/',
 				'/docs/how-to-install-and-use-the-surveys-and-polls-addon/',
 				'/docs/how-to-customize-form-field-options/',
 				'/docs/how-to-use-conditional-logic-with-wpforms/',

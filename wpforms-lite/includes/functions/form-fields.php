@@ -672,6 +672,7 @@ function wpforms_get_multi_fields(): array {
 		'checkbox',
 		'select',
 		'payment-checkbox',
+		'ranking',
 	];
 }
 

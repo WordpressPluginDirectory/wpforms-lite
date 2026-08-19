@@ -179,6 +179,13 @@ class Menu {
 			. $submenu_sel . ' .wp-submenu-head{order:-2;}'
 			. $submenu_sel . ' li:has(> a.' . self::ITEM_CLASS . '){order:-1;}';
 
+		// On mobile, core hides closed submenus with `display:none`, which the
+		// higher-specificity flex rule above would override — re-hide them here.
+		$styles .=
+			'@media screen and (max-width:782px){'
+			. '#adminmenu #toplevel_page_' . self::PARENT_SLUG . ':not(.wp-menu-open):not(.selected) .wp-submenu{display:none;}'
+			. '}';
+
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		printf( '<style id="wpforms-setup-checklist-menu-styles">%s</style>', $styles );
 	}

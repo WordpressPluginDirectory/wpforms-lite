@@ -48,7 +48,8 @@ class FieldOption {
 
 		$type    = $args['type'] ?? 'default';
 		$data    = [
-			'field-id' => $field['id'],
+			'field-id'   => $field['id'],
+			'field-type' => $field['type'],
 		];
 		$classes = [
 			'wpforms-btn-purple',

@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms Lite 2.0.0.4\n"
+"Project-Id-Version: WPForms Lite 2.0.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpforms-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-12T09:46:03+00:00\n"
+"POT-Creation-Date: 2026-08-18T10:58:31+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpforms-lite\n"
@@ -46,20 +46,20 @@ msgstr ""
 
 #: includes/admin/admin.php:189
 #: includes/admin/admin.php:325
-#: includes/fields/class-base.php:4079
+#: includes/fields/class-base.php:4087
 #: src/Admin/Forms/Tags.php:179
 msgid "Loading..."
 msgstr ""
 
 #: includes/admin/admin.php:190
 #: includes/admin/builder/class-builder.php:1018
-#: includes/fields/class-base.php:4080
+#: includes/fields/class-base.php:4088
 #: src/Admin/Forms/Tags.php:180
 msgid "No results found"
 msgstr ""
 
 #: includes/admin/admin.php:191
-#: includes/fields/class-base.php:4081
+#: includes/fields/class-base.php:4089
 msgid "No choices to choose from"
 msgstr ""
 
@@ -445,21 +445,21 @@ msgstr ""
 
 #: includes/admin/ajax-actions.php:23
 #: includes/admin/ajax-actions.php:1048
-#: includes/fields/class-base.php:3409
+#: includes/fields/class-base.php:3417
 #: src/Admin/FormEmbedWizard.php:603
 #: src/Integrations/AI/Admin/Ajax/Choices.php:57
 #: src/Integrations/AI/Admin/Ajax/FormEditor.php:61
 #: src/Integrations/AI/Admin/Ajax/FormEditor.php:155
-#: src/Integrations/AI/Admin/Ajax/Forms.php:91
-#: src/Integrations/AI/Admin/Ajax/Forms.php:130
-#: src/Integrations/AI/Admin/Ajax/Forms.php:280
-#: src/Integrations/AI/Admin/Ajax/Forms.php:421
+#: src/Integrations/AI/Admin/Ajax/Forms.php:92
+#: src/Integrations/AI/Admin/Ajax/Forms.php:131
+#: src/Integrations/AI/Admin/Ajax/Forms.php:281
+#: src/Integrations/AI/Admin/Ajax/Forms.php:422
 msgid "Your session expired. Please reload the builder."
 msgstr ""
 
 #: includes/admin/ajax-actions.php:28
 #: includes/admin/ajax-actions.php:396
-#: includes/fields/class-base.php:3414
+#: includes/fields/class-base.php:3422
 #: src/Admin/Builder/Ajax/PanelLoader.php:134
 #: src/Admin/FormEmbedWizard.php:290
 #: src/Admin/FormEmbedWizard.php:610
@@ -621,17 +621,17 @@ msgstr ""
 
 #: includes/admin/builder/class-builder.php:151
 #: includes/admin/builder/class-builder.php:177
-#: src/Integrations/AI/Admin/Ajax/Forms.php:320
+#: src/Integrations/AI/Admin/Ajax/Forms.php:321
 msgid "It looks like the form you are trying to access is no longer available."
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:165
-#: src/Integrations/AI/Admin/Ajax/Forms.php:295
+#: src/Integrations/AI/Admin/Ajax/Forms.php:296
 msgid "Sorry, you are not allowed to create new forms."
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:169
-#: src/Integrations/AI/Admin/Ajax/Forms.php:301
+#: src/Integrations/AI/Admin/Ajax/Forms.php:302
 msgid "Sorry, you are not allowed to edit this form."
 msgstr ""
 
@@ -687,18 +687,18 @@ msgstr ""
 
 #. translators: %1$s - data source name (e.g., Categories, Posts), %2$s - data source type (e.g., post type, taxonomy).
 #: includes/admin/builder/class-builder.php:877
-#: includes/fields/class-base.php:4802
+#: includes/fields/class-base.php:4841
 #, php-format
 msgid "This field will not be displayed in your form since there are no %2$s belonging to %1$s."
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:882
-#: includes/fields/class-base.php:4788
+#: includes/fields/class-base.php:4827
 msgid "posts"
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:883
-#: includes/fields/class-base.php:4793
+#: includes/fields/class-base.php:4832
 msgid "terms"
 msgstr ""
 
@@ -879,7 +879,7 @@ msgstr ""
 
 #: includes/admin/builder/class-builder.php:942
 #: includes/admin/builder/panels/class-fields.php:502
-#: includes/fields/class-base.php:3535
+#: includes/fields/class-base.php:3543
 msgid "Duplicate Field"
 msgstr ""
 
@@ -1073,7 +1073,7 @@ msgstr ""
 #. translators: %s - choice number.
 #. translators: %s is the choice number.
 #: includes/admin/builder/class-builder.php:996
-#: includes/fields/class-base.php:4511
+#: includes/fields/class-base.php:4550
 #: includes/fields/class-checkbox.php:136
 #: includes/fields/class-checkbox.php:756
 #: includes/fields/class-radio.php:183
@@ -1118,7 +1118,7 @@ msgid "This field cannot be moved."
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:1010
-#: includes/fields/class-base.php:3020
+#: includes/fields/class-base.php:3100
 msgid "Empty Label"
 msgstr ""
 
@@ -1341,6 +1341,7 @@ msgstr ""
 #: src/Admin/Builder/Settings/Themes.php:967
 #: src/Admin/Settings/Email.php:369
 #: src/Forms/Fields/Addons/Map/Field.php:750
+#: src/Forms/Fields/Addons/Ranking/Field.php:264
 #: src/Forms/Fields/Rating/Field.php:233
 #: src/Forms/IconChoices.php:133
 #: src/Integrations/Elementor/WidgetModern.php:78
@@ -1358,6 +1359,7 @@ msgstr ""
 #: src/Admin/Builder/Settings/Themes.php:966
 #: src/Admin/Settings/Email.php:368
 #: src/Forms/Fields/Addons/Map/Field.php:749
+#: src/Forms/Fields/Addons/Ranking/Field.php:265
 #: src/Forms/Fields/Password/Field.php:132
 #: src/Forms/Fields/Rating/Field.php:232
 #: src/Forms/IconChoices.php:137
@@ -1376,6 +1378,7 @@ msgstr ""
 #: src/Admin/Builder/Settings/Themes.php:965
 #: src/Admin/Settings/Email.php:367
 #: src/Forms/Fields/Addons/Map/Field.php:748
+#: src/Forms/Fields/Addons/Ranking/Field.php:266
 #: src/Forms/Fields/Rating/Field.php:231
 #: src/Forms/IconChoices.php:141
 #: src/Integrations/Elementor/WidgetModern.php:76
@@ -1526,22 +1529,22 @@ msgid "Enabled"
 msgstr ""
 
 #: includes/admin/builder/panels/class-fields.php:508
-#: includes/fields/class-base.php:3541
+#: includes/fields/class-base.php:3549
 msgid "Delete Field"
 msgstr ""
 
 #: includes/admin/builder/panels/class-fields.php:523
-#: includes/fields/class-base.php:3556
+#: includes/fields/class-base.php:3564
 msgid "Click to Edit"
 msgstr ""
 
 #: includes/admin/builder/panels/class-fields.php:524
-#: includes/fields/class-base.php:3557
+#: includes/fields/class-base.php:3565
 msgid "Drag to Reorder"
 msgstr ""
 
 #: includes/admin/builder/panels/class-fields.php:525
-#: includes/fields/class-base.php:3558
+#: includes/fields/class-base.php:3566
 msgid "Hide Helper"
 msgstr ""
 
@@ -1557,6 +1560,7 @@ msgstr ""
 #: includes/fields/class-internal-information.php:456
 #: includes/fields/class-internal-information.php:684
 #: lite/templates/education/builder/did-you-know.php:27
+#: src/Admin/Education/Builder/Ranking.php:91
 #: src/Admin/Education/FeatureTooltip.php:93
 #: src/Admin/Notifications/EventDriven.php:591
 #: src/Admin/Notifications/EventDriven.php:651
@@ -3100,7 +3104,7 @@ msgid "Checkbox Selection Limit"
 msgstr ""
 
 #: includes/admin/class-settings.php:550
-#: includes/fields/class-base.php:5121
+#: includes/fields/class-base.php:5160
 #: src/Frontend/Frontend.php:1863
 msgid "You have exceeded the number of allowed selections: {#}."
 msgstr ""
@@ -3505,7 +3509,7 @@ msgstr ""
 #: src/Admin/Tools/Importers/NinjaForms.php:152
 #: src/Admin/Tools/Importers/NinjaForms.php:441
 #: src/Admin/Tools/Importers/PirateForms.php:467
-#: src/Integrations/AI/Admin/Ajax/Forms.php:227
+#: src/Integrations/AI/Admin/Ajax/Forms.php:228
 #, php-format
 msgid "New Entry: %s"
 msgstr ""
@@ -3724,7 +3728,7 @@ msgstr ""
 #. translators: %d - Choice ID.
 #: includes/fields/class-base.php:607
 #: includes/fields/class-base.php:645
-#: includes/fields/class-base.php:4847
+#: includes/fields/class-base.php:4886
 #: src/Integrations/PayPalCommerce/Process/Base.php:290
 #: src/Integrations/PayPalCommerce/Process/Process.php:1270
 #: src/Integrations/Square/Process.php:803
@@ -4077,52 +4081,52 @@ msgstr ""
 msgid "Limit the number of checkboxes a user can select. Leave empty for unlimited."
 msgstr ""
 
-#: includes/fields/class-base.php:3021
+#: includes/fields/class-base.php:3101
 msgid "Label Hidden"
 msgstr ""
 
-#: includes/fields/class-base.php:3022
+#: includes/fields/class-base.php:3102
 msgid "To ensure your form is accessible, every field should have a descriptive label. If you'd like to hide the label, you can do so by enabling Hide Label in the Advanced Field Options tab."
 msgstr ""
 
-#. translators: %s - total number of choices.
-#: includes/fields/class-base.php:3362
-#, php-format
-msgid "Showing the first %1$s choices.<br> All %2$s choices will be displayed when viewing the form."
-msgstr ""
-
-#: includes/fields/class-base.php:3419
+#: includes/fields/class-base.php:3427
 msgid "No form ID found"
 msgstr ""
 
-#: includes/fields/class-base.php:3424
+#: includes/fields/class-base.php:3432
 msgid "No field type found"
 msgstr ""
 
-#: includes/fields/class-base.php:4082
+#: includes/fields/class-base.php:4090
 msgid "Only unique values can be added"
 msgstr ""
 
-#: includes/fields/class-base.php:4083
+#: includes/fields/class-base.php:4091
 msgid "Only values matching specific conditions can be added"
 msgstr ""
 
-#: includes/fields/class-base.php:4744
+#: includes/fields/class-base.php:4783
 msgid "The selected option is invalid."
 msgstr ""
 
-#: includes/fields/class-base.php:4782
+#: includes/fields/class-base.php:4821
 msgid "Dynamic choices"
 msgstr ""
 
-#: includes/fields/class-base.php:4783
+#: includes/fields/class-base.php:4822
 msgid "items"
 msgstr ""
 
 #. translators: %d - choice number.
-#: includes/fields/class-base.php:4847
+#: includes/fields/class-base.php:4886
 #, php-format
 msgid "Item %d"
+msgstr ""
+
+#. translators: %1$s - limit, %2$s - total number of choices.
+#: includes/fields/class-base.php:5202
+#, php-format
+msgid "Showing the first %1$s choices.<br> All %2$s choices will be displayed when viewing the form."
 msgstr ""
 
 #: includes/fields/class-checkbox.php:22
@@ -4177,17 +4181,20 @@ msgstr ""
 #: includes/fields/class-checkbox.php:247
 #: includes/fields/class-radio.php:283
 #: includes/fields/class-select.php:217
+#: src/Forms/Fields/Addons/Ranking/Field.php:147
 #: src/Integrations/AI/Admin/Builder/Enqueues.php:183
 msgid "Generate Choices"
 msgstr ""
 
 #: includes/fields/class-checkbox.php:313
 #: includes/fields/class-radio.php:358
+#: src/Forms/Fields/Addons/Ranking/Field.php:204
 msgid "Randomize Choices"
 msgstr ""
 
 #: includes/fields/class-checkbox.php:314
 #: includes/fields/class-radio.php:359
+#: src/Forms/Fields/Addons/Ranking/Field.php:205
 msgid "Check this option to randomize the order of the choices."
 msgstr ""
 
@@ -8242,6 +8249,7 @@ msgstr ""
 #: src/Admin/Education/Builder/Calculations.php:139
 #: src/Admin/Education/Builder/Calculations.php:178
 #: src/Admin/Education/Builder/Quiz.php:123
+#: src/Admin/Education/Builder/Ranking.php:85
 #: templates/education/admin/edit-post/classic-notice.php:27
 msgid "Dismiss this notice."
 msgstr ""
@@ -8437,6 +8445,19 @@ msgstr ""
 msgid "Include in Quiz Scoring"
 msgstr ""
 
+#: src/Admin/Education/Builder/Ranking.php:87
+msgid "Let People Rank Their Choices"
+msgstr ""
+
+#: src/Admin/Education/Builder/Ranking.php:88
+#: src/Admin/Forms/Analytics.php:468
+msgid "NEW"
+msgstr ""
+
+#: src/Admin/Education/Builder/Ranking.php:89
+msgid "Want to know what your visitors really prioritize? Add a Ranking Field and let them sort choices. Perfect for surveys, product feedback, and voting."
+msgstr ""
+
 #: src/Admin/Education/Core.php:98
 msgid "Please specify a section."
 msgstr ""
@@ -8490,6 +8511,7 @@ msgid "Password"
 msgstr ""
 
 #: src/Admin/Education/Fields.php:102
+#: src/Forms/Fields/Addons/Ranking/Field.php:348
 msgid "Layout"
 msgstr ""
 
@@ -8565,28 +8587,38 @@ msgid "survey, nps"
 msgstr ""
 
 #: src/Admin/Education/Fields.php:222
+#: src/Forms/Fields/Addons/Ranking/Field.php:25
+msgid "Ranking"
+msgstr ""
+
+#: src/Admin/Education/Fields.php:223
+#: src/Forms/Fields/Addons/Ranking/Field.php:26
+msgid "rank, order, priority, survey"
+msgstr ""
+
+#: src/Admin/Education/Fields.php:232
 #: src/Admin/Payments/Views/Overview/Page.php:433
 msgid "Authorize.Net"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:223
+#: src/Admin/Education/Fields.php:233
 #: src/Integrations/PayPalCommerce/Fields/PayPalCommerce.php:44
 #: src/Integrations/Square/Fields/Square.php:25
 #: src/Integrations/Stripe/Fields/Traits/CreditCard.php:23
 msgid "store, ecommerce, credit card, pay, payment, debit card"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:232
+#: src/Admin/Education/Fields.php:242
 #: src/Admin/Payments/Views/Overview/Page.php:470
 #: src/Db/Payments/ValueValidator.php:74
 msgid "Mercado Pago"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:233
+#: src/Admin/Education/Fields.php:243
 msgid "store, ecommerce, credit card, pay, payment, debit card, installments, latam"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:242
+#: src/Admin/Education/Fields.php:252
 #: src/Admin/Payments/Views/Overview/Table.php:96
 #: src/Admin/Payments/Views/Single.php:372
 #: src/Admin/Payments/Views/Single.php:856
@@ -8594,12 +8626,12 @@ msgstr ""
 msgid "Coupon"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:243
+#: src/Admin/Education/Fields.php:253
 #: src/Forms/Fields/Addons/Coupon/Field.php:35
 msgid "discount, sale"
 msgstr ""
 
-#: src/Admin/Education/Fields.php:303
+#: src/Admin/Education/Fields.php:313
 msgid "captcha, spam, antispam"
 msgstr ""
 
@@ -8849,10 +8881,6 @@ msgstr ""
 msgid "Upgrade to Pro to unlock Conversion Rate"
 msgstr ""
 
-#: src/Admin/Forms/Analytics.php:468
-msgid "NEW"
-msgstr ""
-
 #: src/Admin/Forms/Analytics.php:469
 msgid "Monitor views, conversions, and field-level activity to optimize performance."
 msgstr ""
@@ -9018,6 +9046,7 @@ msgstr ""
 
 #: src/Admin/Forms/Page.php:345
 #: src/Forms/Fields/Addons/LikertScale/Field.php:175
+#: src/Forms/Fields/Addons/Ranking/Field.php:393
 msgid "Columns"
 msgstr ""
 
@@ -11558,6 +11587,88 @@ msgstr ""
 msgid "Extremely Likely"
 msgstr ""
 
+#: src/Forms/Fields/Addons/Ranking/Field.php:41
+msgid "Option 1"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:45
+msgid "Option 2"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:49
+msgid "Option 3"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:80
+msgid "Put these options in order, with your most preferred at the top."
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:81
+msgid "Put these options in order, with your most preferred first."
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:274
+msgid "Image Size"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:275
+msgid "Select the size for image choices."
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:317
+msgid "Hide Choice Label"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:318
+msgid "Check this option to hide the label for each choice and rely on the image."
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:349
+msgid "Select the display layout for the ranking field."
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:361
+msgid "List"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:362
+msgid "Grid"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:394
+msgid "Number of columns to display in grid layout."
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:441
+msgid "Arrows"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:442
+msgid "Control when the reorder arrow buttons are visible."
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:454
+msgid "On Hover"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:455
+msgid "Visible"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:456
+msgid "Never"
+msgstr ""
+
+#: src/Forms/Fields/Addons/Ranking/Field.php:461
+msgid "Arrows are always displayed on touch devices."
+msgstr ""
+
+#. translators: %d - option number.
+#: src/Forms/Fields/Addons/Ranking/Field.php:758
+#, php-format
+msgid "Option %d"
+msgstr ""
+
 #: src/Forms/Fields/Addons/Signature/Field.php:130
 msgid "Input Method"
 msgstr ""
@@ -13281,31 +13392,31 @@ msgid "Missing session ID."
 msgstr ""
 
 #: src/Integrations/AI/Admin/Ajax/FormEditor.php:122
-#: src/Integrations/AI/Admin/Ajax/Forms.php:99
+#: src/Integrations/AI/Admin/Ajax/Forms.php:100
 msgid "Empty prompt."
 msgstr ""
 
-#: src/Integrations/AI/Admin/Ajax/Forms.php:140
+#: src/Integrations/AI/Admin/Ajax/Forms.php:141
 msgid "Empty field data."
 msgstr ""
 
-#: src/Integrations/AI/Admin/Ajax/Forms.php:289
+#: src/Integrations/AI/Admin/Ajax/Forms.php:290
 msgid "Empty form data."
 msgstr ""
 
-#: src/Integrations/AI/Admin/Ajax/Forms.php:309
+#: src/Integrations/AI/Admin/Ajax/Forms.php:310
 msgid "Form database object not found."
 msgstr ""
 
-#: src/Integrations/AI/Admin/Ajax/Forms.php:376
+#: src/Integrations/AI/Admin/Ajax/Forms.php:377
 msgid "Form could not be created."
 msgstr ""
 
-#: src/Integrations/AI/Admin/Ajax/Forms.php:433
+#: src/Integrations/AI/Admin/Ajax/Forms.php:434
 msgid "Please specify an element."
 msgstr ""
 
-#: src/Integrations/AI/Admin/Ajax/Forms.php:440
+#: src/Integrations/AI/Admin/Ajax/Forms.php:441
 msgid "Sorry, you are not allowed to dismiss."
 msgstr ""
 
@@ -13390,11 +13501,11 @@ msgstr ""
 msgid "30 household item categories for a marketplace"
 msgstr ""
 
-#: src/Integrations/AI/Admin/Builder/FieldOption.php:68
+#: src/Integrations/AI/Admin/Builder/FieldOption.php:69
 msgid "Open AI Modal"
 msgstr ""
 
-#: src/Integrations/AI/Admin/Builder/FieldOption.php:125
+#: src/Integrations/AI/Admin/Builder/FieldOption.php:126
 #: src/Integrations/AI/Admin/Builder/FormEditor.php:212
 #: src/Integrations/AI/Admin/Builder/Forms.php:176
 #: src/Integrations/AI/Admin/Pages/Templates.php:70
@@ -17363,7 +17474,7 @@ msgid "Customize Emails"
 msgstr ""
 
 #: src/SetupChecklist/Menu.php:120
-#: src/SetupChecklist/Menu.php:204
+#: src/SetupChecklist/Menu.php:211
 msgid "Setup Checklist"
 msgstr ""
 
@@ -17372,7 +17483,7 @@ msgid "WPForms Setup Checklist"
 msgstr ""
 
 #. translators: %d: setup checklist completion percentage.
-#: src/SetupChecklist/Menu.php:209
+#: src/SetupChecklist/Menu.php:216
 #, php-format
 msgid "%d%% complete"
 msgstr ""

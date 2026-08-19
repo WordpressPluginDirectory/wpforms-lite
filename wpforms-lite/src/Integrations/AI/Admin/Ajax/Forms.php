@@ -38,6 +38,7 @@ class Forms extends Base {
 	public const FORM_GENERATOR_ADDON_FIELDS = [
 		'likert_scale'       => 'surveys-polls',
 		'net_promoter_score' => 'surveys-polls',
+		'ranking'            => 'surveys-polls',
 		'signature'          => 'signatures',
 		'payment-coupon'     => 'coupons',
 	];

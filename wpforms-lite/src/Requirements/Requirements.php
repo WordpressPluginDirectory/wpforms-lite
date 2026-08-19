@@ -329,7 +329,7 @@ class Requirements {
 		'wpforms-square/wpforms-square.php'                             => [],
 		'wpforms-stripe/wpforms-stripe.php'                             => [],
 		'wpforms-surveys-polls/wpforms-surveys-polls.php'               => [
-			self::ADDON => '1.15.0',
+			self::ADDON => '1.20.0',
 		],
 		'wpforms-twilio/wpforms-twilio.php'                             => [
 			self::LICENSE => self::PLUS_PRO_AND_TOP,

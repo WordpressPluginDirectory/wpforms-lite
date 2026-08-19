@@ -218,6 +218,16 @@ class Fields {
 				'order'    => '410',
 			],
 			[
+				'icon'     => 'fa-chart-simple',
+				'name'     => esc_html__( 'Ranking', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'rank, order, priority, survey', 'wpforms-lite' ),
+				'name_en'  => 'Ranking',
+				'type'     => 'ranking',
+				'group'    => 'fancy',
+				'addon'    => 'wpforms-surveys-polls',
+				'order'    => '307',
+			],
+			[
 				'icon'     => 'fa-credit-card',
 				'name'     => esc_html__( 'Authorize.Net', 'wpforms-lite' ),
 				'keywords' => esc_html__( 'store, ecommerce, credit card, pay, payment, debit card', 'wpforms-lite' ),
