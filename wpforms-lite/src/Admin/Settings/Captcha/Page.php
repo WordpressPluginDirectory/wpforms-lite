@@ -227,7 +227,7 @@ class Page {
 
 			// Prepare HTML for CAPTCHA preview.
 			$placeholder_description = $settings[ self::VIEW ][ self::VIEW . '-preview' ]['content'];
-			$captcha_description     = esc_html__( 'This CAPTCHA is generated using your site and secret keys. If an error is displayed, please double-check your keys.', 'wpforms-lite' );
+			$captcha_description     = esc_html__( 'This preview is generated using your site key. Your secret key is verified when a form is submitted. If an error is displayed, please double-check your keys.', 'wpforms-lite' );
 			$captcha_preview         = sprintf(
 				'<div class="wpforms-captcha-container" style="pointer-events:none!important;cursor:default!important;">
 					<div %s></div>
@@ -273,7 +273,7 @@ class Page {
 			return;
 		}
 
-		Notice::info( esc_html__( 'A preview of your CAPTCHA is displayed below. Please view to verify the CAPTCHA settings are correct.', 'wpforms-lite' ) );
+		Notice::info( esc_html__( 'A preview of your CAPTCHA is displayed below. It is generated using your site key only, and your secret key is verified when a form is submitted.', 'wpforms-lite' ) );
 	}
 
 	/**

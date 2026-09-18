@@ -2,6 +2,7 @@
 
 namespace WPForms\Integrations\UsageTracking;
 
+use WPForms\Admin\Builder\Settings\QrCode;
 use WPForms\Admin\Builder\Templates;
 use WPForms\Integrations\AI\Helpers as AIHelpers;
 use WPForms\Integrations\IntegrationInterface;
@@ -201,6 +202,7 @@ class UsageTracking implements IntegrationInterface {
 			'wpforms_form_fields_count'      => $form_fields_count,
 			'wpforms_form_templates_total'   => $form_templates_total,
 			'wpforms_form_antispam_stat'     => $this->get_form_antispam_stat( $forms ),
+			'wpforms_qr_code_stat'           => $this->get_qr_code_stat( $forms ),
 			'wpforms_challenge_stats'        => get_option( 'wpforms_challenge', [] ),
 			'wpforms_lite_installed_date'    => $this->get_installed( $activated_dates, 'lite' ),
 			'wpforms_pro_installed_date'     => $this->get_installed( $activated_dates, 'pro' ),
@@ -223,6 +225,7 @@ class UsageTracking implements IntegrationInterface {
 			'wpforms_ai_killswitch'          => AIHelpers::is_disabled(),
 			'wpforms_disabled_entries_count' => count( $this->get_forms_with_disabled_entries( $forms ) ),
 			'wpforms_addons_dates'           => $this->get_addons_dates_data(),
+			'wpforms_adoption_tooltips'      => $this->get_adoption_tooltips_data(),
 			'wpforms_setup_checklist'        => $this->get_setup_checklist_data(),
 		];
 
@@ -663,7 +666,7 @@ class UsageTracking implements IntegrationInterface {
 	/**
 	 * Forms with field-level conditional logic.
 	 *
-	 * @since 2.0.0.2
+	 * @since 2.0.1
 	 *
 	 * @param array $forms List of forms to check.
 	 *
@@ -673,12 +676,12 @@ class UsageTracking implements IntegrationInterface {
 
 		return array_filter(
 			$forms,
-			static function ( $form ) {
+			function ( $form ) {
 
 				$fields = $form->post_content['fields'] ?? [];
 
 				foreach ( (array) $fields as $field ) {
-					if ( ! empty( $field['conditional_logic'] ) && ! empty( $field['conditionals'] ) ) {
+					if ( $this->field_has_configured_conditional_logic( (array) $field ) ) {
 						return true;
 					}
 				}
@@ -686,6 +689,41 @@ class UsageTracking implements IntegrationInterface {
 				return false;
 			}
 		);
+	}
+
+	/**
+	 * Whether a field has Conditional Logic enabled with at least one complete rule.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param array $field Field data.
+	 *
+	 * @return bool
+	 */
+	private function field_has_configured_conditional_logic( array $field ): bool {
+
+		if ( empty( $field['conditional_logic'] ) || empty( $field['conditionals'] ) ) {
+			return false;
+		}
+
+		foreach ( (array) $field['conditionals'] as $group ) {
+			foreach ( (array) $group as $rule ) {
+				$rule = (array) $rule;
+
+				if ( empty( $rule['operator'] ) || ! isset( $rule['field'] ) || trim( (string) $rule['field'] ) === '' ) {
+					continue;
+				}
+
+				if (
+					in_array( $rule['operator'], [ 'e', '!e' ], true ) ||
+					( isset( $rule['value'] ) && trim( (string) $rule['value'] ) !== '' )
+				) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -1260,6 +1298,55 @@ class UsageTracking implements IntegrationInterface {
 	}
 
 	/**
+	 * Get the QR Code setting adoption stat: counts only, no URLs or page IDs leave the site.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param array $forms Published forms.
+	 *
+	 * @return array
+	 */
+	private function get_qr_code_stat( array $forms ): array {
+
+		$stat = [
+			'forms_with_qr'    => 0,
+			'forms_generated'  => 0,
+			'destination_page' => 0,
+			'destination_url'  => 0,
+			'logo_none'        => 0,
+			'logo_wpforms'     => 0,
+			'logo_custom'      => 0,
+		];
+
+		foreach ( $forms as $form ) {
+			$settings    = $form->post_content['settings'] ?? [];
+			$destination = $settings['qr_code'] ?? 'none';
+
+			// Skip forms with the QR Code setting off.
+			if ( ! in_array( $destination, [ 'page', 'url' ], true ) ) {
+				continue;
+			}
+
+			$logo = $settings['qr_code_logo'] ?? 'wpforms';
+
+			// Guard the dynamic stat key against values saved in bypass of the builder sanitization.
+			if ( ! in_array( $logo, QrCode::LOGOS, true ) ) {
+				$logo = 'wpforms';
+			}
+
+			++$stat['forms_with_qr'];
+
+			$stat['forms_generated']              += empty( $settings['qr_code_generated'] ) ? 0 : 1;
+			$stat[ 'destination_' . $destination ] = ( $stat[ 'destination_' . $destination ] ?? 0 ) + 1;
+			$stat[ 'logo_' . $logo ]               = ( $stat[ 'logo_' . $logo ] ?? 0 ) + 1;
+		}
+
+		$stat['logo_upsell'] = QrCode::get_logo_upsell_events();
+
+		return $stat;
+	}
+
+	/**
 	 * Count how many field have a specific setting enabled.
 	 *
 	 * @since 1.9.0.3
@@ -1317,5 +1404,24 @@ class UsageTracking implements IntegrationInterface {
 		 * @param array $addons_dates Addons dates data.
 		 */
 		return (array) apply_filters( 'wpforms_integrations_usage_tracking_usage_tracking_get_addons_dates', [] );
+	}
+
+	/**
+	 * Get adoption tooltips data.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @return array
+	 */
+	private function get_adoption_tooltips_data(): array {
+
+		/**
+		 * Filter adoption tooltips data for usage tracking.
+		 *
+		 * @since 2.0.1
+		 *
+		 * @param array $events Adoption tooltip event counters.
+		 */
+		return (array) apply_filters( 'wpforms_integrations_usage_tracking_usage_tracking_get_adoption_tooltips_data', [] );
 	}
 }

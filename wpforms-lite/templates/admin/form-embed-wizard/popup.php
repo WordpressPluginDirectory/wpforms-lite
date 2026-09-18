@@ -6,6 +6,7 @@
  * @since 1.6.2
  * @since 1.10.1 Redesigned to a six-card grid that combines existing embed
  *                  actions with product education items for Pro features.
+ * @since 2.0.1 Moved the documentation line below the title; added the QR Code promo line.
  *
  * @var array $args Template arguments.
  */
@@ -62,6 +63,24 @@ $render_education_card = static function ( array $item, bool $is_lite ): void {
 		<div class="wpforms-admin-popup-content">
 			<div id="wpforms-admin-form-embed-wizard-content-initial">
 				<h3><?php esc_html_e( 'How Would You Like to Publish Your Form?', 'wpforms-lite' ); ?></h3>
+
+				<p class="secondary wpforms-admin-form-embed-wizard-docs">
+					<?php
+					printf(
+						wp_kses( /* translators: %s - link to the embed documentation. */
+							__( '<a href="%s" target="_blank" rel="noopener noreferrer">Read documentation</a> to learn about all the ways you can embed forms.', 'wpforms-lite' ),
+							[
+								'a' => [
+									'href'   => [],
+									'target' => [],
+									'rel'    => [],
+								],
+							]
+						),
+						esc_url( wpforms_utm_link( 'https://wpforms.com/docs/displaying-forms-on-your-site/', 'Builder Embed Modal', 'Embed Documentation' ) )
+					);
+					?>
+				</p>
 
 				<div class="wpforms-admin-form-embed-wizard-grid">
 					<?php // Row 1: Existing Page + Conversational Form. ?>
@@ -159,22 +178,20 @@ $render_education_card = static function ( array $item, bool $is_lite ): void {
 			</div>
 
 			<div id="wpforms-admin-form-embed-wizard-section-toggles" class="wpforms-admin-popup-bottom">
-				<p class="secondary">
+				<p class="secondary wpforms-admin-form-embed-wizard-qr-promo">
 					<?php
-					$allowed_tags = [
-						'a' => [
-							'href'   => [],
-							'target' => [],
-							'rel'    => [],
-						],
-					];
-
 					printf(
-						wp_kses( /* translators: %s - link to the manual embed documentation. */
-							__( 'You can also <a href="%s" target="_blank" rel="noopener noreferrer">embed your form manually</a> in any page or post.', 'wpforms-lite' ),
-							$allowed_tags
-						),
-						esc_url( wpforms_utm_link( 'https://wpforms.com/docs/displaying-forms-on-your-site/', 'Builder Embed Modal', 'Embed Manually Documentation' ) )
+						// The span keeps the sentence a single flex item, so its mid-sentence link is not reordered in RTL.
+						'<i class="fa fa-qrcode" aria-hidden="true"></i><span>%s</span>',
+						wp_kses(
+							__( 'You can also <a href="#" id="wpforms-admin-form-embed-wizard-qr-link">generate a QR Code</a> that can be used to share your form.', 'wpforms-lite' ),
+							[
+								'a' => [
+									'href' => [],
+									'id'   => [],
+								],
+							]
+						)
 					);
 					?>
 				</p>

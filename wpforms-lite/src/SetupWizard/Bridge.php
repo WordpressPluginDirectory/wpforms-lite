@@ -93,7 +93,7 @@ class Bridge {
 	 * Used by both the bridge handoff page and the Lite Welcome screen, so a
 	 * future hardening pass only needs to change this one place.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public static function send_standalone_document_headers(): void {
 
@@ -144,7 +144,7 @@ class Bridge {
 	 * round-trip, so it needs the form action and payload rather than a
 	 * rendered document.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param string $exit_url    Where to send the user on close.
 	 * @param string $restart_url Where to send the user on restart.

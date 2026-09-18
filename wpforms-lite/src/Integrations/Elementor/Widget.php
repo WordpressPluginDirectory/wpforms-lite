@@ -265,7 +265,7 @@ class Widget extends Widget_Base {
 	 * A user who may not view forms gets an empty selector for a different reason than a user who
 	 * has no forms yet, so the two states are worded differently.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @noinspection PhpUndefinedMethodInspection
 	 */
@@ -447,7 +447,7 @@ class Widget extends Widget_Base {
 	 * Exposed on the widget because the form selector AJAX handler asks the same question before
 	 * answering. See wpforms_current_user_can_view_forms() for the Lite and Pro difference.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */

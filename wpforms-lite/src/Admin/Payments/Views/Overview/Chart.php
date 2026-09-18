@@ -19,6 +19,26 @@ class Chart {
 	const ACTIVE_REPORT = 'total_payments';
 
 	/**
+	 * Per-report empty-state chart headings, keyed by report. Shared by the Payments
+	 * Overview chart and the Dashboard Payments widget so both stay in sync.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return array
+	 */
+	public static function get_no_data_headings(): array {
+
+		return [
+			'total_payments'             => esc_html__( 'No Payments for Selected Period', 'wpforms-lite' ),
+			'total_sales'                => esc_html__( 'No Sales for Selected Period', 'wpforms-lite' ),
+			'total_refunded'             => esc_html__( 'No Refunds for Selected Period', 'wpforms-lite' ),
+			'total_subscription'         => esc_html__( 'No New Subscriptions for Selected Period', 'wpforms-lite' ),
+			'total_renewal_subscription' => esc_html__( 'No Subscription Renewals for the Selected Period', 'wpforms-lite' ),
+			'total_coupons'              => esc_html__( 'No Coupons Applied During the Selected Period', 'wpforms-lite' ),
+		];
+	}
+
+	/**
 	 * Whether the chart should be displayed.
 	 *
 	 * @since 1.8.2
@@ -165,7 +185,7 @@ class Chart {
 			[
 				'id'     => 'payments',
 				'notice' => [
-					'heading'     => esc_html__( 'No payments for selected period', 'wpforms-lite' ),
+					'heading'     => esc_html__( 'No Payments for Selected Period', 'wpforms-lite' ),
 					'description' => esc_html__( 'Please select a different period or check back later.', 'wpforms-lite' ),
 				],
 			],
@@ -214,12 +234,16 @@ class Chart {
 		return [
 			'total_payments'             => [
 				'label'          => esc_html__( 'Total Payments', 'wpforms-lite' ),
+				'icon'           => 'fa-regular fa-credit-card',
+				'tint'           => 'green',
 				'button_classes' => [
 					'total-payments',
 				],
 			],
 			'total_sales'                => [
 				'label'          => esc_html__( 'Total Sales', 'wpforms-lite' ),
+				'icon'           => 'fa-regular fa-money-bill-1',
+				'tint'           => 'green',
 				'funnel'         => [
 					'not_in' => [
 						'status'              => [ 'failed' ],
@@ -233,6 +257,8 @@ class Chart {
 			],
 			'total_refunded'             => [
 				'label'          => esc_html__( 'Total Refunded', 'wpforms-lite' ),
+				'icon'           => 'fa-solid fa-rotate-left',
+				'tint'           => 'gray',
 				'has_count'      => true,
 				'meta_key'       => 'refunded_amount', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				'button_classes' => [
@@ -242,6 +268,8 @@ class Chart {
 			],
 			'total_subscription'         => [
 				'label'          => esc_html__( 'New Subscriptions', 'wpforms-lite' ),
+				'icon'           => 'fa-solid fa-arrows-rotate',
+				'tint'           => 'green',
 				'condition'      => wpforms()->obj( 'payment_queries' )->has_subscription(),
 				'has_count'      => true,
 				'funnel'         => [
@@ -259,6 +287,8 @@ class Chart {
 			],
 			'total_renewal_subscription' => [
 				'label'          => esc_html__( 'Subscription Renewals', 'wpforms-lite' ),
+				'icon'           => 'fa-solid fa-arrows-rotate',
+				'tint'           => 'green',
 				'condition'      => wpforms()->obj( 'payment_queries' )->has_subscription(),
 				'has_count'      => true,
 				'funnel'         => [
@@ -276,6 +306,8 @@ class Chart {
 			],
 			'total_coupons'              => [
 				'label'          => esc_html__( 'Coupons Redeemed', 'wpforms-lite' ),
+				'icon'           => 'fa-solid fa-tags',
+				'tint'           => 'green',
 				'meta_key'       => 'coupon_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				'funnel'         => [
 					'not_in' => [

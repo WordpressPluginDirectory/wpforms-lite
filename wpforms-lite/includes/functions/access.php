@@ -235,7 +235,11 @@ function wpforms_current_user_can( $caps = [], $id = 0 ): bool {
 
 	$id       = (int) $id;
 	$caps_str = is_array( $caps ) ? implode( ' ', $caps ) : (string) $caps;
-	$hash     = md5( $caps_str . $id );
+
+	// Key by the current user: the result is user-specific, so a process that swaps the
+	// current user (batch user processing, integration tests) must not read a prior
+	// user's cached result.
+	$hash = md5( $caps_str . '|' . $id . '|' . get_current_user_id() ); // NOSONAR.
 
 	// Return a cached result.
 	if ( isset( $results[ $hash ] ) ) {
@@ -271,7 +275,7 @@ function wpforms_current_user_can( $caps = [], $id = 0 ): bool {
  * capability check collapses to manage_options, which would leave editors and authors without
  * a form to embed at all.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @return bool
  */
@@ -295,7 +299,7 @@ function wpforms_current_user_can_view_forms(): bool {
  * Callers are expected to have consulted wpforms_current_user_can_view_forms() first. A user holding
  * neither half of the view_forms category gets no restriction from this function.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @param array $args Form query arguments to add the author restriction to.
  *
@@ -444,6 +448,7 @@ function wpforms_search_posts( $search_term = '', $args = [] ): array {
  * `value` and `label` which is the post ID and post title respectively.
  *
  * @since 1.7.9
+ * @since 2.0.1 Each item also carries the page permalink in `customProperties.permalink`.
  *
  * @param string $search_term The search term.
  * @param array  $args        Optional. An array of arguments.
@@ -457,9 +462,25 @@ function wpforms_search_pages_for_dropdown( $search_term, $args = [] ): array {
 
 	// Prepare for ChoicesJS render.
 	foreach ( $search_results as $search_result ) {
+		// The search selects only a few columns, and get_permalink() needs the whole post to build the URL.
+		$page = get_post( $search_result->ID );
+
+		/**
+		 * Filter the page permalink attached to the dropdown search results, e.g., for multilingual plugins.
+		 *
+		 * @since 2.0.1
+		 *
+		 * @param string  $permalink Resolved page permalink.
+		 * @param WP_Post $page      Page object.
+		 */
+		$permalink = (string) apply_filters( 'wpforms_search_pages_for_dropdown_permalink', get_permalink( $page ), $page ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+
 		$result_pages[] = [
-			'value' => absint( $search_result->ID ),
-			'label' => esc_html( $search_result->post_title ),
+			'value'            => absint( $search_result->ID ),
+			'label'            => esc_html( $search_result->post_title ),
+			'customProperties' => [
+				'permalink' => esc_url_raw( $permalink ),
+			],
 		];
 	}
 

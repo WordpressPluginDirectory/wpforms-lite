@@ -103,6 +103,48 @@ class Datepicker {
 	}
 
 	/**
+	 * Resolve the timespan tuple from an explicit date-range string.
+	 *
+	 * Same shape as `process_timespan()`, but takes the range as an argument
+	 * so AJAX handlers can reuse it. Falls back to `process_timespan()` when
+	 * the string is empty or fails to parse.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $dates Date-range string, e.g. "2023-01-16 - 2023-02-15", or empty.
+	 *
+	 * @return array
+	 */
+	public static function process_timespan_from_string( string $dates ): array {
+
+		$parsed = $dates !== '' ? self::process_string_timespan( $dates ) : false;
+
+		if ( ! is_array( $parsed ) ) {
+			return self::process_timespan();
+		}
+
+		list( $start_date, $end_date ) = $parsed;
+
+		$timezone     = wp_timezone();
+		$current_date = date_create_immutable( 'now', $timezone )->setTime( 23, 59, 59 );
+		$days_diff    = '';
+
+		// Match process_timespan(): days only counts when the range ends today.
+		if ( ! $current_date->diff( $end_date )->format( '%a' ) ) {
+			$days_diff = $end_date->diff( $start_date )->format( '%a' );
+		}
+
+		list( $days, $timespan_label ) = self::get_date_filter_choices( $days_diff );
+
+		return [
+			$start_date,     // WP timezone.
+			$end_date,       // WP timezone.
+			$days,           // e.g., 22.
+			$timespan_label, // e.g., Custom.
+		];
+	}
+
+	/**
 	 * Sets the timespan (or date range) for performing mysql queries.
 	 *
 	 * Includes:
@@ -210,6 +252,9 @@ class Datepicker {
 	 * @param null|array $timespan Given timespan (dates) preferably in WP timezone.
 	 *
 	 * @since 1.8.2
+	 * @since 2.0.2 Added a `data-preset` attribute (the choice array key) to each radio,
+	 *                  so consumers can identify a choice without parsing its `value` (a
+	 *                  computed date-range string).
 	 *
 	 * @return array
 	 */
@@ -233,10 +278,11 @@ class Datepicker {
 			$timespan_dates = self::get_timespan_dates( $choice );
 			$checked        = checked( $selected, $choice, false );
 			$choices[]      = sprintf(
-				'<label class="%s">%s<input type="radio" aria-hidden="true" name="timespan" value="%s" %s></label>',
+				'<label class="%s">%s<input type="radio" aria-hidden="true" name="timespan" value="%s" data-preset="%s" %s></label>',
 				$checked ? 'is-selected' : '',
 				esc_html( $label ),
 				esc_attr( self::concat_dates( ...$timespan_dates ) ),
+				esc_attr( $choice ),
 				esc_attr( $checked )
 			);
 		}
@@ -344,15 +390,16 @@ class Datepicker {
 	}
 
 	/**
-	 * The number of days is converted to the start and end date range.
+	 * Convert a preset "last N days" count into its timespan tuple.
 	 *
 	 * @since 1.8.2
 	 *
-	 * @param string $days Timespan days.
+	 * @param string $days Timespan days, e.g. '30'. Non-numeric input yields empty date slots.
 	 *
-	 * @return array
+	 * @return array Tuple [ start_date, end_date, days_key, label ]. Dates are
+	 *               DateTimeImmutable in WP timezone (or '' when $days is non-numeric).
 	 */
-	private static function get_timespan_dates( $days ) {
+	public static function get_timespan_dates( $days ) {
 
 		list( $timespan_key, $timespan_label ) = self::get_date_filter_choices( $days );
 
@@ -435,7 +482,11 @@ class Datepicker {
 	/**
 	 * Concatenate given dates into a single string. i.e. "2023-01-16 - 2023-02-15".
 	 *
+	 * Emits the shape `process_timespan_from_string()` parses, so a caller that clamps a
+	 * range can round-trip it back through the parser.
+	 *
 	 * @since 1.8.2
+	 * @since 2.0.2 Made public for the Dashboard AJAX range clamp.
 	 *
 	 * @param DateTimeImmutable $start_date Start date.
 	 * @param DateTimeImmutable $end_date   End date.
@@ -443,7 +494,7 @@ class Datepicker {
 	 *
 	 * @return string
 	 */
-	private static function concat_dates( $start_date, $end_date, $fallback = '' ) {
+	public static function concat_dates( $start_date, $end_date, $fallback = '' ) {
 
 		// Bail early, if the given dates are not valid.
 		if ( ! ( $start_date instanceof DateTimeImmutable ) || ! ( $end_date instanceof DateTimeImmutable ) ) {

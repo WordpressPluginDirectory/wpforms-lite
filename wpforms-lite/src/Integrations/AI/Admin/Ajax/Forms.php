@@ -41,6 +41,7 @@ class Forms extends Base {
 		'ranking'            => 'surveys-polls',
 		'signature'          => 'signatures',
 		'payment-coupon'     => 'coupons',
+		'map'                => 'geolocation',
 	];
 
 	/**

@@ -25,6 +25,9 @@ use WPForms\Db\Payments\Meta as PaymentsMeta;
 use WPForms\Db\Payments\Payment;
 use WPForms\Logger\Repository;
 use WPForms\Pro\Db\Analytics\DB as ProAnalyticsDB;
+use WPForms\Pro\Db\Dashboard\FormDaily as DashboardFormDaily;
+use WPForms\Pro\Db\Dashboard\LocationDaily as DashboardLocationDaily;
+use WPForms\Pro\Db\Dashboard\PaymentDaily as DashboardPaymentDaily;
 use WPForms\Tasks\Meta as TasksMeta;
 use WPForms\Tasks\Tasks;
 
@@ -100,6 +103,17 @@ if ( class_exists( ProAnalyticsDB::class ) ) {
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . ProAnalyticsDB::snapshot_fields_table() );
 	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . ProAnalyticsDB::fields_table() );
+}
+
+// Delete the Dashboard rollup tables. Pro-only, so they are dropped only when
+// the Pro DB classes are loadable.
+if ( class_exists( DashboardFormDaily::class ) ) {
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . DashboardFormDaily::get_table_name() );
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . DashboardLocationDaily::get_table_name() );
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . DashboardPaymentDaily::get_table_name() );
 }
 
 /**

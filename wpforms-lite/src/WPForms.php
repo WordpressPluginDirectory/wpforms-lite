@@ -30,6 +30,7 @@ namespace WPForms {
 		 */
 		private const HEARTBEAT_ALLOWED_SCREEN_IDS = [
 			'wpforms_page_wpforms-entries',
+			'wpforms_page_wpforms-dashboard',
 		];
 
 		/**

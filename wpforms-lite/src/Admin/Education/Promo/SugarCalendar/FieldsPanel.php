@@ -12,14 +12,14 @@ use WPForms\Education\SugarCalendar\Helper;
  * view — the user has already seen the templates grid banner there
  * (issue #18310: "banners should not be sequential").
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  */
 class FieldsPanel extends Banner {
 
 	/**
 	 * Unique banner id, product qualified so other products can add their own placements.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -31,7 +31,7 @@ class FieldsPanel extends Banner {
 	/**
 	 * Dismissal section slug.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -43,7 +43,7 @@ class FieldsPanel extends Banner {
 	/**
 	 * Placement hooks.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	protected function hooks(): void {
 
@@ -55,7 +55,7 @@ class FieldsPanel extends Banner {
 	/**
 	 * Banner copy.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array
 	 */
@@ -74,7 +74,7 @@ class FieldsPanel extends Banner {
 	/**
 	 * Render the banner when the form was created from a targeted template.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param array $form_data Form data and settings.
 	 */
@@ -94,7 +94,7 @@ class FieldsPanel extends Banner {
 	 * picked, so the rule stops applying as soon as the form is opened again: the
 	 * stored category alone would suppress the banner forever (issue #18310).
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param array $form_data Form data and settings.
 	 *
@@ -117,7 +117,7 @@ class FieldsPanel extends Banner {
 	 * fetches the single-template cache, which costs file and database reads and
 	 * schedules a usage-tracking request we would only throw away.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param array $form_data Form data and settings.
 	 *

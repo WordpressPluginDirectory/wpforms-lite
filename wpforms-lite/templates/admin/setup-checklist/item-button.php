@@ -25,7 +25,7 @@ $is_disabled = ! empty( $cta['disabled'] );
 
 $classes = [
 	'wpforms-btn',
-	'wpforms-btn-sm',
+	'wpforms-btn-md',
 	$variants[ $cta['modifier'] ?? '' ] ?? 'wpforms-btn-orange',
 	'wpforms-setup-checklist-item__button',
 ];

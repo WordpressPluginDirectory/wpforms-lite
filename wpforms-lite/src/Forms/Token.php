@@ -2,6 +2,8 @@
 
 namespace WPForms\Forms;
 
+use WPForms\Helpers\Crypto;
+
 /**
  * Class Token.
  *
@@ -65,7 +67,7 @@ class Token {
 		}
 
 		// Combine our token date and our token salt, and md5 it.
-		return md5( $token_data . \WPForms\Helpers\Crypto::get_secret_key() );
+		return md5( $token_data . Crypto::get_secret_key() ); // NOSONAR.
 	}
 
 	/**
@@ -169,6 +171,94 @@ class Token {
 		$attrs['atts']['data-token-time'] = time();
 
 		return $attrs;
+	}
+
+	/**
+	 * Get the signed render time token.
+	 *
+	 * The token carries the server-side render timestamp along with its signature,
+	 * so the elapsed submission time cannot be forged on the client.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param array $form_data Form data and settings.
+	 *
+	 * @return string Token in the `{time}.{signature}` format.
+	 */
+	public function get_time_token( array $form_data ): string {
+
+		$time      = time();
+		$signature = $this->sign_time( $time, absint( $form_data['id'] ?? 0 ) );
+
+		return "{$time}.{$signature}";
+	}
+
+	/**
+	 * Verify the signed render time token and return the render timestamp it carries.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $token   Token to verify.
+	 * @param int    $form_id Form ID the token has to be bound to.
+	 *
+	 * The token has no maximum age, and that is a deliberate limit on what this check can do. A page
+	 * cache serves the markup it stored, so the render time inside it is the cache fill time rather
+	 * than the moment this visitor received the form, and the minimum time to submit check therefore
+	 * has no effect on a cached page older than its own duration. Expiring the token instead would
+	 * reject legitimate entries it cannot tell apart: the server sees the same old signed timestamp
+	 * whether the visitor has been reading the page or the markup came out of a cache. Telling those
+	 * two apart needs proof that the same client has been present since the render, which a single
+	 * stateless timestamp cannot carry.
+	 *
+	 * @return int Render timestamp, or 0 when the token carries no usable one: missing, malformed,
+	 *             wrongly signed, or dated ahead of the server clock.
+	 */
+	public function verify_time_token( string $token, int $form_id ): int {
+
+		$parts = explode( '.', $token );
+
+		if ( count( $parts ) !== 2 ) {
+			return 0;
+		}
+
+		[ $time, $signature ] = $parts;
+
+		if ( ! ctype_digit( $time ) ) {
+			return 0;
+		}
+
+		$render_time = (int) $time;
+
+		if ( ! hash_equals( $this->sign_time( $render_time, $form_id ), $signature ) ) {
+			return 0;
+		}
+
+		// Only this site signs these tokens and it only ever signs the present, so a render time
+		// ahead of the clock means the clock moved backwards. Report no render time rather than let
+		// the caller subtract into a negative elapsed time it cannot tell apart from a fast submission.
+		if ( $render_time > time() ) {
+			return 0;
+		}
+
+		return $render_time;
+	}
+
+	/**
+	 * Sign the render timestamp for the given form.
+	 *
+	 * An HMAC is used rather than `Crypto::encrypt()`: it is deterministic, short enough for an HTML
+	 * attribute, and can be compared in constant time.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param int $time    Render timestamp.
+	 * @param int $form_id Form ID.
+	 *
+	 * @return string Signature.
+	 */
+	private function sign_time( int $time, int $form_id ): string {
+
+		return hash_hmac( 'sha256', "{$time}|{$form_id}", Crypto::get_secret_key() );
 	}
 
 	/**
@@ -366,14 +456,22 @@ class Token {
 	 * Update token via ajax handler.
 	 *
 	 * @since 1.8.8
+	 * @since 2.0.2 Added the signed render time token to the response, and the form ID validation.
 	 */
 	public function ajax_get_token() {
 
-		$form_data       = [];
-		$form_data['id'] = filter_input( INPUT_POST, 'formId', FILTER_VALIDATE_INT );
+		$form_id = filter_input( INPUT_POST, 'formId', FILTER_VALIDATE_INT );
+
+		// Both tokens are bound to the form, so neither could ever be verified without a valid ID.
+		if ( ! is_int( $form_id ) || $form_id < 1 ) {
+			wp_send_json_error();
+		}
+
+		$form_data = [ 'id' => $form_id ];
 
 		$response = [
-			'token' => $this->get( true, $form_data ),
+			'token'      => $this->get( true, $form_data ),
+			'time_token' => $this->get_time_token( $form_data ),
 		];
 
 		wp_send_json_success( $response );

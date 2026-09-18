@@ -3,6 +3,7 @@
 namespace WPForms\Admin\Education\Promo;
 
 use WPForms\Admin\Education\EducationInterface;
+use WPForms\Admin\Education\Helpers;
 
 /**
  * Base class for cross-promo banners.
@@ -13,21 +14,21 @@ use WPForms\Admin\Education\EducationInterface;
  * class owns the shared gates (installed check, capability, dismissal),
  * the template rendering, and the shared assets.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  */
 abstract class Banner implements EducationInterface {
 
 	/**
 	 * Shared script handle.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const SCRIPT_HANDLE = 'wpforms-education-promo-banner';
 
 	/**
 	 * Unique banner id (kebab-case, used in data attributes and template ids).
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -36,7 +37,7 @@ abstract class Banner implements EducationInterface {
 	/**
 	 * Education dismissal section slug (stored as `edu-<slug>` in user meta).
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -45,7 +46,7 @@ abstract class Banner implements EducationInterface {
 	/**
 	 * Arguments for the promo-banner template.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array
 	 */
@@ -54,7 +55,7 @@ abstract class Banner implements EducationInterface {
 	/**
 	 * Whether the promoted plugin is installed (Lite or Pro, active or not).
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
@@ -66,7 +67,7 @@ abstract class Banner implements EducationInterface {
 	 * Descendants override this, call `parent::hooks()`, and add their
 	 * placement-specific hooks.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	protected function hooks(): void {
 
@@ -76,7 +77,7 @@ abstract class Banner implements EducationInterface {
 	/**
 	 * Whether the current admin page hosts this banner.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
@@ -92,7 +93,7 @@ abstract class Banner implements EducationInterface {
 	 * one the placement declared itself, and outside the builder there is no builder
 	 * enqueue hook to use.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -104,7 +105,7 @@ abstract class Banner implements EducationInterface {
 	/**
 	 * Indicate whether the banner is allowed to load.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
@@ -123,7 +124,7 @@ abstract class Banner implements EducationInterface {
 	/**
 	 * Init.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function init(): void {
 
@@ -137,21 +138,19 @@ abstract class Banner implements EducationInterface {
 	/**
 	 * Whether the current user has dismissed this banner.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
 	protected function is_dismissed(): bool {
 
-		$dismissed = (array) get_user_meta( get_current_user_id(), 'wpforms_dismissed', true );
-
-		return ! empty( $dismissed[ 'edu-' . $this->get_dismiss_section() ] );
+		return Helpers::is_dismissed( $this->get_dismiss_section() );
 	}
 
 	/**
 	 * Render the banner markup.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -173,7 +172,7 @@ abstract class Banner implements EducationInterface {
 	 * `wpforms-admin-education-core` dependency, and the only value left here is
 	 * the install label, which is the same for all placements.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function enqueue_assets(): void {
 

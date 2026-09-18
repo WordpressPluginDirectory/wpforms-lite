@@ -10,6 +10,15 @@ namespace WPForms\Admin\Education;
 class Helpers {
 
 	/**
+	 * Field types a visitor does not fill in.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @var array
+	 */
+	private const NON_FILLABLE_FIELD_TYPES = [ 'pagebreak', 'divider', 'html', 'hidden', 'captcha', 'layout', 'repeater', 'content', 'internal-information', 'entry-preview' ];
+
+	/**
 	 * Get badge HTML.
 	 *
 	 * @since 1.8.5
@@ -168,5 +177,43 @@ class Helpers {
 		$addons = $addons_obj->get_available();
 
 		return $addons;
+	}
+
+	/**
+	 * Count form fields a visitor actually fills in.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param array $form_data Form data and settings.
+	 *
+	 * @return int
+	 */
+	public static function count_fillable_fields( array $form_data ): int {
+
+		$count = 0;
+
+		foreach ( (array) ( $form_data['fields'] ?? [] ) as $field ) {
+			if ( ! in_array( $field['type'] ?? '', self::NON_FILLABLE_FIELD_TYPES, true ) ) {
+				++$count;
+			}
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Whether the current user has dismissed the education section.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param string $section Education dismissal section slug.
+	 *
+	 * @return bool
+	 */
+	public static function is_dismissed( string $section ): bool {
+
+		$dismissed = (array) get_user_meta( get_current_user_id(), 'wpforms_dismissed', true );
+
+		return ! empty( $dismissed[ 'edu-' . $section ] );
 	}
 }

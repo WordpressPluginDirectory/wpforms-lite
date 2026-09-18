@@ -77,7 +77,7 @@ class Analytics {
 		 * JSON. This prevents WAF products (e.g. Cloudflare OWASP CRS) from
 		 * flagging the nested JSON structure as a false-positive anomaly.
 		 *
-		 * @since 2.0.0.2
+		 * @since 2.0.1
 		 *
 		 * @param bool $enabled Whether to base64-encode the analytics envelope.
 		 */

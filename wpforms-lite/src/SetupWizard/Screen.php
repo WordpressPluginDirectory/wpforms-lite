@@ -14,14 +14,14 @@ use WPForms\SetupWizard\Service\StateManager;
  * The Lite override renders the local Welcome screen instead (the wizard's
  * first screen must live on the WP site, see #18533).
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  */
 class Screen {
 
 	/**
 	 * Bridge service.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @var Bridge
 	 */
@@ -33,7 +33,7 @@ class Screen {
 	 * Unused by the base flow; stored because the constructor is shared with
 	 * the Lite override, which persists the Welcome consent through it.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @var StateManager
 	 */
@@ -42,7 +42,7 @@ class Screen {
 	/**
 	 * Constructor.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param Bridge       $bridge        Bridge service.
 	 * @param StateManager $state_manager State manager service.
@@ -58,7 +58,7 @@ class Screen {
 	 *
 	 * The base flow has none; the Lite override registers its AJAX endpoint.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function hooks(): void {
 	}
@@ -68,7 +68,7 @@ class Screen {
 	 *
 	 * Never exits; `SetupWizard::maybe_launch()` exits after this returns.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool Whether a real launch happened (as opposed to a fallback redirect).
 	 */
@@ -97,7 +97,7 @@ class Screen {
 	 * launch argument and a forced-step transient; such a launch must resume
 	 * in the SPA, not restart at the first screen.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
@@ -110,7 +110,7 @@ class Screen {
 		 *
 		 * Allows other OAuth-style round-trips to signal a resume without editing this shared class.
 		 *
-		 * @since 2.0.0.3
+		 * @since 2.0.1
 		 *
 		 * @param bool $is_resume_request Whether the current launch should resume in the SPA.
 		 */
@@ -120,7 +120,7 @@ class Screen {
 	/**
 	 * Get the URL the wizard should return the user to on exit.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -132,7 +132,7 @@ class Screen {
 	/**
 	 * Get the URL the wizard should restart from.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -144,7 +144,7 @@ class Screen {
 	/**
 	 * Get the Welcome getting-started URL used as the launch fallback.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */

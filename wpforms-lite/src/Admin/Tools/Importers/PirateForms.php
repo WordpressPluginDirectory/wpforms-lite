@@ -686,7 +686,7 @@ class PirateForms extends Base {
 			// Activate, do not redirect, run the plugin activation routine.
 			$activated = activate_plugin( $plugin_basename );
 
-			if ( ! is_wp_error( $activated ) ) {
+			if ( ! wpforms_is_plugin_activation_failed( $activated ) ) {
 				return true;
 			}
 		}

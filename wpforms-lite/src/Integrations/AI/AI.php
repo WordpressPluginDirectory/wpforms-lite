@@ -18,6 +18,7 @@ use WPForms\Integrations\AI\Admin\Builder\Forms as FormsEnqueues;
 use WPForms\Integrations\AI\Admin\Ajax\FormEditor as FormEditorAjax;
 use WPForms\Integrations\AI\Admin\Chat\Chat as ChatPage;
 use WPForms\Integrations\AI\Admin\Pages\Templates as TemplatesPage;
+use WPForms\Integrations\AI\Admin\PrivacyPolicy;
 
 /**
  * Integration of the AI features.
@@ -51,6 +52,12 @@ class AI implements IntegrationInterface {
 	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
 	public function load() {
+
+		// The suggested text is registered only while the AI features are enabled, matching
+		// plugin-deactivation semantics: text already copied into a policy is unaffected.
+		if ( is_admin() ) {
+			( new PrivacyPolicy() )->init();
+		}
 
 		if ( wpforms_is_admin_page( 'builder' ) ) {
 			( new Enqueues() )->init();

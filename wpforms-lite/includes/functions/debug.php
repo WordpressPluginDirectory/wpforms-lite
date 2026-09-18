@@ -33,6 +33,119 @@ function wpforms_debug(): bool {
 }
 
 /**
+ * Replace sensitive values with a placeholder, to keep credentials out of debug output and logs.
+ *
+ * Matching is exact-key and case-insensitive: only the keys listed below (and any added via the filter)
+ * are redacted, so non-secret lookalikes like `password-strength` keep their real values. A sensitive
+ * key holding an array or an object is redacted as a whole, so a credential stored under a generic
+ * child key (e.g. `'token' => [ 'value' => 'secret' ]`) does not slip through.
+ * Empty values are left as they are — redacting them would wrongly suggest that a credential
+ * is configured.
+ *
+ * Arrays and objects are copied, never redacted in place, so the caller keeps its own data intact.
+ * Objects are traversed through their accessible properties only: a credential kept in a private
+ * or protected property is out of reach and is still printed by `print_r()`.
+ *
+ * @since 2.0.1
+ *
+ * @param mixed $data Data to redact. Arrays and objects are traversed, any other type is returned as it is.
+ *
+ * @return mixed Data with sensitive values replaced by `[redacted]`.
+ */
+function wpforms_debug_redact_sensitive_data( $data ) {
+
+	$default_keys = [
+		'password',
+		'form_locker_password',
+		'protection_password',
+		'protection_password_confirm',
+		'secret',
+		'client_secret',
+		'api_key',
+		'apikey',
+		'access_token',
+		'refresh_token',
+		'private_key',
+		'tgm-updater-key',
+	];
+
+	/**
+	 * Filters the list of array keys whose values are redacted in debug output and logs.
+	 *
+	 * Keys are matched exactly and case-insensitively, so the casing they are given in does not matter.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param string[] $keys Sensitive array keys.
+	 */
+	$keys = apply_filters( 'wpforms_debug_redact_sensitive_data_keys', $default_keys );
+
+	// A callback that returns nothing must not silently turn the redaction off.
+	$keys = is_array( $keys ) ? $keys : $default_keys;
+
+	// Lowercase the whole list, so that a key given with natural casing still matches.
+	$keys = array_map( 'strtolower', array_filter( $keys, 'is_string' ) );
+
+	return wpforms_debug_redact_sensitive_data_value( $data, $keys );
+}
+
+/**
+ * Redact the sensitive values of a single array or object, recursively.
+ *
+ * Internal helper of `wpforms_debug_redact_sensitive_data()`, which is the function to call.
+ *
+ * @since 2.0.1
+ *
+ * @param mixed    $value Value to redact.
+ * @param string[] $keys  Sensitive array keys, lowercase.
+ * @param int      $depth Current nesting level.
+ *
+ * @return mixed Value with sensitive data replaced by `[redacted]`.
+ */
+function wpforms_debug_redact_sensitive_data_value( $value, array $keys, int $depth = 0 ) {
+
+	// Stop on absurdly deep data: a self-referencing array or object would otherwise never end.
+	// An array or an object is replaced rather than returned, because the keys inside it have
+	// not been looked at, so printing it would leak every credential it holds.
+	if ( $depth > 32 ) {
+		return is_array( $value ) || is_object( $value ) ? '[max depth reached]' : $value;
+	}
+
+	if ( is_array( $value ) ) {
+		$redacted = [];
+
+		foreach ( $value as $key => $item ) {
+			// An empty value is kept as it is: redacting it would suggest that a credential is configured.
+			$redacted[ $key ] = in_array( strtolower( (string) $key ), $keys, true ) && ! empty( $item )
+				? '[redacted]'
+				: wpforms_debug_redact_sensitive_data_value( $item, $keys, $depth + 1 );
+		}
+
+		return $redacted;
+	}
+
+	if ( ! is_object( $value ) ) {
+		return $value;
+	}
+
+	$properties = get_object_vars( $value );
+	$redacted   = wpforms_debug_redact_sensitive_data_value( $properties, $keys, $depth );
+
+	// Nothing to hide: the object is returned as it was given, keeping its `print_r()` shape.
+	if ( $redacted === $properties ) {
+		return $value;
+	}
+
+	$clone = clone $value;
+
+	foreach ( $redacted as $key => $item ) {
+		$clone->{$key} = $item;
+	}
+
+	return $clone;
+}
+
+/**
  * Helper function to display debug data.
  *
  * @since 1.0.0
@@ -49,6 +162,8 @@ function wpforms_debug_data( $data, bool $do_echo = true ) {
 	}
 
 	if ( is_array( $data ) || is_object( $data ) ) {
+		$data = wpforms_debug_redact_sensitive_data( $data );
+
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 		$data = print_r( $data, true );
 	}
@@ -166,8 +281,9 @@ function wpforms_log( $title = '', $message = '', $args = [] ) { // phpcs:ignore
 	 */
 	$message = apply_filters( 'wpforms_log_message', $message, $title, $args );
 
-	// Make arrays and objects look nice.
+	// Make arrays and objects look nice, keeping credentials out of the stored log message.
 	if ( is_array( $message ) || is_object( $message ) ) {
+		$message = wpforms_debug_redact_sensitive_data( $message );
 		$message = '<pre>' . esc_html( print_r( $message, true ) ) . '</pre>'; // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 	}
 

@@ -88,7 +88,7 @@ class Gdpr {
 			'gdpr-disable-details' => [
 				'id'              => 'gdpr-disable-details',
 				'name'            => esc_html__( 'Disable User Details', 'wpforms-lite' ),
-				'desc'            => esc_html__( 'Disable storage IP addresses and User Agent on all forms. If unchecked, then this can be managed on a form-by-form basis inside the form builder under Settings → General', 'wpforms-lite' ),
+				'desc'            => esc_html__( 'Disable storage IP addresses, User Agent, and browser language on all forms. If unchecked, then this can be managed on a form-by-form basis inside the form builder under Settings → General', 'wpforms-lite' ),
 				'type'            => 'toggle',
 				'status'          => false,
 				'disabled'        => true,

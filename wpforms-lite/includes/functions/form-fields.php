@@ -770,3 +770,47 @@ function wpforms_get_icon_svg( string $icon, string $style, int $size ): string 
 
 	return str_replace( 'viewBox=', 'width="' . $width . '" height="' . $height . '" viewBox=', $svg );
 }
+
+/**
+ * Get the list of scalar values stored in a field value.
+ *
+ * Malformed entries can store a list of files where a string is expected.
+ *
+ * @since 2.0.1
+ *
+ * @param mixed $value Field value.
+ *
+ * @return array
+ */
+function wpforms_get_field_value_list( $value ): array {
+
+	if ( ! is_array( $value ) ) {
+		return [ is_scalar( $value ) || $value === null ? (string) $value : '' ];
+	}
+
+	// A single file array holds its URL in the `value` key.
+	if ( isset( $value['value'] ) && is_scalar( $value['value'] ) ) {
+		return [ (string) $value['value'] ];
+	}
+
+	$values = array_column( $value, 'value' );
+	$values = $values ? $values : $value;
+
+	return array_values( array_filter( $values, 'is_scalar' ) );
+}
+
+/**
+ * Flatten a field value to a string.
+ *
+ * Multi-value entry field values are stored as newline-separated strings.
+ *
+ * @since 2.0.1
+ *
+ * @param mixed $value Field value.
+ *
+ * @return string
+ */
+function wpforms_flatten_field_value( $value ): string {
+
+	return implode( "\n", wpforms_get_field_value_list( $value ) );
+}

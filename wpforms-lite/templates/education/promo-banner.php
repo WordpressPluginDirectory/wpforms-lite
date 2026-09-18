@@ -4,7 +4,7 @@
  *
  * Used by WPForms\Admin\Education\Promo\Banner descendants.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @var string $banner_id       Unique banner identifier (kebab-case).
  * @var string $icon            Font Awesome icon classes.

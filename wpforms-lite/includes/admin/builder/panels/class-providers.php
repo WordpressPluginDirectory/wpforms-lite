@@ -142,8 +142,8 @@ class WPForms_Builder_Panel_Providers extends WPForms_Builder_Panel {
 			// Everything is good - display default instructions.
 			echo '<div class="wpforms-panel-content-section wpforms-panel-content-section-default">
 				<div class="illustration illustration-marketing"></div>
-				<h5>' . esc_html__( 'Select Your Marketing Integration', 'wpforms-lite' ) . '</h5>
-				<p>' . esc_html__( /** @lang text */ 'Select your email marketing service provider or CRM from the options on the left. If you don\'t see your email marketing service listed, then let us know and we\'ll do our best to get it added as fast as possible.', 'wpforms-lite' ) . '</p>
+				<h5>' . esc_html__( 'Select an Integration', 'wpforms-lite' ) . '</h5>
+				<p>' . esc_html__( /** @lang text */ 'Choose a service on the left: email marketing, CRM, SMS, and collaboration. Don\'t see yours? Use an automation tool like Zapier, Make, n8n, or Uncanny Automator to connect WPForms to thousands more apps.', 'wpforms-lite' ) . '</p>
 			</div>';
 		}
 

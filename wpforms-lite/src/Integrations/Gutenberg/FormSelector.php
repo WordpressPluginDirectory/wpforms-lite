@@ -603,7 +603,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 * The full form definition (notifications, confirmations, integrations)
 	 * must never reach the page source.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param object $form Form post object.
 	 *
@@ -644,17 +644,13 @@ abstract class FormSelector implements IntegrationInterface {
 	 *
 	 * See wpforms_current_user_can_view_forms() for the Lite and Pro difference.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
 	private function current_user_can_view_forms(): bool {
 
-		if ( ! wpforms()->is_pro() ) {
-			return true;
-		}
-
-		return wpforms_current_user_can( 'view_forms' );
+		return wpforms_current_user_can_view_forms();
 	}
 
 	/**
@@ -982,7 +978,7 @@ abstract class FormSelector implements IntegrationInterface {
 	 * The context query argument is not checked on purpose: it defaults to `view`
 	 * and can be set freely by the requester, unlike the route itself.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */

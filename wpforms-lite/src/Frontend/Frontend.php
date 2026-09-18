@@ -1370,6 +1370,9 @@ class Frontend {
 
 		echo '<input type="hidden" name="wpforms[id]" value="' . absint( $form_id ) . '">';
 
+		// Rendered for every form, so that the frontend recovery check does not fire when the time limit is off.
+		echo '<input type="hidden" name="wpforms[time_token]" value="' . esc_attr( wpforms()->obj( 'token' )->get_time_token( $form_data ) ) . '">';
+
 		if ( is_user_logged_in() ) {
 			?>
 			<input

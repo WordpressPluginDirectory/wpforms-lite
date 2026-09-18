@@ -89,7 +89,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php
 					foreach ( $features['tiles'] as $tile ) {
 						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wpforms_render() returns escaped HTML.
-						echo wpforms_render( 'admin/setup-checklist/promo-tile', [ 'tile' => $tile ], true );
+						echo wpforms_render( 'admin/addons/feature-tile', [ 'tile' => $tile ], true );
 					}
 					?>
 				</div>
@@ -119,7 +119,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php
 					foreach ( $integrations['cards'] as $card ) {
 						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wpforms_render() returns escaped HTML.
-						echo wpforms_render( 'admin/setup-checklist/integration-card', [ 'card' => $card ], true );
+						echo wpforms_render( 'admin/addons/integration-card', [ 'card' => $card ], true );
 					}
 					?>
 				</div>
@@ -150,7 +150,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php
 					foreach ( $growth_tools['tiles'] as $tile ) {
 						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wpforms_render() returns escaped HTML.
-						echo wpforms_render( 'admin/setup-checklist/promo-tile', [ 'tile' => $tile ], true );
+						echo wpforms_render( 'admin/addons/feature-tile', [ 'tile' => $tile ], true );
 					}
 					?>
 				</div>

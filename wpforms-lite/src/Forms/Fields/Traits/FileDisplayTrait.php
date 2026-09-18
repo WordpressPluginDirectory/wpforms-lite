@@ -88,7 +88,7 @@ trait FileDisplayTrait {
 	 */
 	public function get_file_url( array $file, array $args = [] ): string {
 
-		$file_url = $file['value'] ?? '';
+		$file_url = wpforms_get_field_value_list( $file['value'] ?? '' )[0] ?? '';
 
 		if ( ! empty( $file['protection_hash'] ) ) {
 			$args = wp_parse_args(
@@ -129,7 +129,7 @@ trait FileDisplayTrait {
 	 * The one slash-less wrapper form, data:, is not matched — it implements no url_stat and
 	 * no deserialization, so it is inert here.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param string $src File source to check.
 	 *
@@ -155,7 +155,7 @@ trait FileDisplayTrait {
 	 * bare filename into an inline thumbnail carrying the file's direct URL.
 	 * Both URL keys are covered because the caller may copy `url` into `value`.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param mixed $file Submitted file item.
 	 *
@@ -227,7 +227,7 @@ trait FileDisplayTrait {
 	 */
 	public function file_icon_html( array $file_data ): string {
 
-		$src       = esc_url( $file_data['value'] );
+		$src       = esc_url( wpforms_get_field_value_list( $file_data['value'] ?? '' )[0] ?? '' );
 		$ext_types = wp_get_ext_types();
 
 		if ( $this->is_file_protected( $file_data ) || ! in_array( $file_data['ext'], $ext_types['image'], true ) ) {
@@ -455,8 +455,9 @@ trait FileDisplayTrait {
 	 * Format the field value for smart tags.
 	 *
 	 * @since 1.10.0
+	 * @since 2.0.1 The `$value` argument accepts any type.
 	 *
-	 * @param string $value     The field value.
+	 * @param mixed  $value     The field value.
 	 * @param int    $field_id  The field ID.
 	 * @param array  $fields    The form fields.
 	 * @param string $field_key The field key.
@@ -467,10 +468,7 @@ trait FileDisplayTrait {
 	 */
 	public function smart_tags_formatted_field_value( $value, $field_id, $fields, $field_key ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
-		$value = (string) $value;
-		$field = $fields[ $field_id ] ?? [];
-
-		return $this->get_formatted_value( $value, $field );
+		return $this->get_formatted_value( $value, $fields[ $field_id ] ?? [] );
 	}
 
 	/**
@@ -497,13 +495,16 @@ trait FileDisplayTrait {
 	 * Get formatted value.
 	 *
 	 * @since 1.10.0
+	 * @since 2.0.1 The `$value` argument accepts any type.
 	 *
-	 * @param string $value Field value.
-	 * @param array  $field Field settings.
+	 * @param mixed $value Field value.
+	 * @param array $field Field settings.
 	 *
 	 * @return string
 	 */
-	private function get_formatted_value( string $value, array $field ): string {
+	private function get_formatted_value( $value, array $field ): string {
+
+		$value = wpforms_flatten_field_value( $value );
 
 		$type = $field['type'] ?? '';
 
@@ -512,7 +513,8 @@ trait FileDisplayTrait {
 		}
 
 		if ( empty( $field['style'] ) ) {
-			return $this->get_file_url( $field );
+			// Read the files from the field, an earlier callback may have stringified the value.
+			return implode( "\n", $this->get_file_urls( $this->get_value_files( $field ) ) );
 		}
 
 		$values = (array) $field['value_raw'];
@@ -521,5 +523,33 @@ trait FileDisplayTrait {
 		$urls = $this->get_file_urls( $values );
 
 		return empty( $urls ) ? $value : implode( "\n", $urls );
+	}
+
+	/**
+	 * Get the list of files stored in a field value.
+	 *
+	 * Malformed entries can store several files where a single one is expected.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param array $field Field data.
+	 *
+	 * @return array
+	 */
+	private function get_value_files( array $field ): array {
+
+		if ( ! is_array( $field['value'] ?? '' ) ) {
+			return [ $field ];
+		}
+
+		$files = [];
+
+		foreach ( $field['value'] as $file ) {
+			// A malformed value holds either the file data or a bare URL. Merging over the field
+			// keeps its protection_hash when the element lacks one, so the URL stays gated.
+			$files[] = array_merge( $field, is_array( $file ) ? $file : [ 'value' => $file ] );
+		}
+
+		return $files;
 	}
 }

@@ -288,4 +288,71 @@ class DB {
 			Transient::delete( self::EXISTING_TABLES_TRANSIENT_NAME );
 		}
 	}
+
+	/**
+	 * Check whether an index exists on a table.
+	 *
+	 * Always queried live: a cached answer goes stale the moment an `ALTER` runs.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $table Prefixed table name.
+	 * @param string $index Index name.
+	 *
+	 * @return bool
+	 */
+	public static function index_exists( string $table, string $index ): bool {
+
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return (bool) $wpdb->get_var( $wpdb->prepare( "SHOW INDEX FROM {$table} WHERE Key_name = %s", $index ) );
+	}
+
+	/**
+	 * Add an index to a table via online DDL, unless it already exists.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $table   Prefixed table name.
+	 * @param string $index   Index name.
+	 * @param string $columns Column list, e.g. `( date, form_id )`.
+	 *
+	 * @return bool Whether the ALTER was executed (false when the index already existed).
+	 */
+	public static function add_index_if_missing( string $table, string $index, string $columns ): bool {
+
+		global $wpdb;
+
+		if ( self::index_exists( $table, $index ) ) {
+			return false;
+		}
+
+		// Suppress errors: a concurrent request may add the same index between check and ALTER.
+		$suppressed = $wpdb->suppress_errors( true );
+
+		// Prefer online DDL (no table lock) where supported.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$added = $wpdb->query( "ALTER TABLE {$table} ADD INDEX {$index} {$columns}, ALGORITHM=INPLACE, LOCK=NONE" );
+
+		if ( $added === false && ! self::index_exists( $table, $index ) ) {
+			// Fallback for hosts without online-DDL support.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "ALTER TABLE {$table} ADD INDEX {$index} {$columns}" );
+		}
+
+		$wpdb->suppress_errors( $suppressed );
+
+		if ( ! self::index_exists( $table, $index ) ) {
+			wpforms_log(
+				'Index build failed',
+				"Table: {$table}, Index: {$index}",
+				[ 'type' => [ 'error' ] ]
+			);
+
+			return false;
+		}
+
+		return true;
+	}
 }

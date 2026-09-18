@@ -23,7 +23,7 @@ namespace WPForms\SetupWizard\Service;
  * Suppression is permanent and never restored: WPForms' own onboarding is the one
  * the user chose, and each plugin's wizard stays reachable from its own admin menu.
  *
- * @since 2.0.0.4
+ * @since 2.0.1
  */
 class CrossPluginOnboarding {
 
@@ -40,7 +40,7 @@ class CrossPluginOnboarding {
 	 * degrades silently to an unsuppressed redirect, so re-verify these citations
 	 * when touching this list.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 *
 	 * @var array<string, array{op: string, flag?: string}>
 	 */
@@ -111,7 +111,7 @@ class CrossPluginOnboarding {
 	 * Called by `SetupWizard::hooks()` only for the wizard's own install request,
 	 * so simply being loaded does not arm the listener.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 */
 	public function hooks(): void {
 
@@ -125,7 +125,7 @@ class CrossPluginOnboarding {
 	 * WPForms addon activation and from third-party code, so the value is
 	 * validated rather than type-hinted.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 *
 	 * @param string $plugin_basename Path to the activated plugin file relative to the plugins directory.
 	 *
@@ -155,7 +155,7 @@ class CrossPluginOnboarding {
 	 * Every operation is best-effort: a failed write cannot break the install that
 	 * triggered it, and every entry is idempotent under re-activation.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 *
 	 * @param array $entry Registry entry for the activated plugin.
 	 */
@@ -197,7 +197,7 @@ class CrossPluginOnboarding {
 	 * version still triggers its `update_1_0_5()` cache clear, and
 	 * includes/class-wpconsent-install.php:79 stamps the real version afterwards.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 */
 	private function seed_wpconsent(): void {
 

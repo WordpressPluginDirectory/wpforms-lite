@@ -69,7 +69,13 @@ class Response {
 	}
 
 	/**
-	 * Retrieve only the response message from the raw response.
+	 * Retrieve the user-facing response message.
+	 *
+	 * Every AI surface renders this string as the error title in the chat, so it
+	 * only ever returns copy written for a user. `error_message` is authored by
+	 * the middleware and passes through; a transport failure or a bare HTTP
+	 * status phrase is technical and is replaced with the network notice. The
+	 * raw text is kept for the log by get_raw_response_message().
 	 *
 	 * @since 1.9.1
 	 *
@@ -77,21 +83,20 @@ class Response {
 	 */
 	public function get_response_message(): string {
 
-		if ( is_wp_error( $this->response ) ) {
-			if ( $this->response->get_error_code() === 'http_request_failed' ) {
-				return __( 'There appears to be a network error.', 'wpforms-lite' );
-			}
+		$body = is_wp_error( $this->response ) ? [] : $this->get_body();
 
-			return $this->response->get_error_message();
+		if ( ! empty( $body['error_message'] ) ) {
+			return (string) $body['error_message'];
 		}
 
-		$body = $this->get_body();
-
-		return $body['error_message'] ?? wp_remote_retrieve_response_message( $this->response );
+		return __( 'There appears to be a network error.', 'wpforms-lite' );
 	}
 
 	/**
 	 * Get the error log message.
+	 *
+	 * Logs the raw transport detail rather than `$error_data['error']`, which
+	 * carries the user-facing copy from get_response_message().
 	 *
 	 * @since 1.9.2
 	 *
@@ -104,7 +109,35 @@ class Response {
 		return sprintf( /* translators: %1$s - error code, %2$s - error message. */
 			__( 'API response: %1$s %2$s', 'wpforms-lite' ),
 			$error_data['code'],
-			$error_data['error']
+			$this->get_raw_response_message()
+		);
+	}
+
+	/**
+	 * Retrieve the unfiltered response message for logging.
+	 *
+	 * `error` is preferred because the middleware reports every gate failure there
+	 * and nowhere else — "Missing batch ID", "Invalid scope", "Rate limit exceeded".
+	 * Only the chat endpoint pairs it with a user-facing `error_message`, and there
+	 * `error` holds the code, which is the more useful half for a log. Without this
+	 * the reason phrase ("Bad Request") is all that survives.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return string The raw transport or middleware error text.
+	 */
+	private function get_raw_response_message(): string {
+
+		if ( is_wp_error( $this->response ) ) {
+			return $this->response->get_error_message();
+		}
+
+		$body = $this->get_body();
+
+		return (string) (
+			$body['error'] ??
+			$body['error_message'] ??
+			wp_remote_retrieve_response_message( $this->response )
 		);
 	}
 

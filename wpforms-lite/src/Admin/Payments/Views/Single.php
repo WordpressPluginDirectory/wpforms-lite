@@ -1014,7 +1014,7 @@ class Single implements PaymentsViewsInterface {
 				continue;
 			}
 
-			$field_value = isset( $field['value'] ) ? $field['value'] : '';
+			$field_value = wpforms_flatten_field_value( $field['value'] ?? '' );
 			/** This filter is documented in src/SmartTags/SmartTag/FieldHtmlId.php.*/
 			$prepared_fields[ $key ]['field_value'] = apply_filters( 'wpforms_html_field_value', wpforms_neutralize_html_tags( $field_value ), $field, $form_data, 'payment-single' );
 			// phpcs:enable WPForms.PHP.ValidateHooks.InvalidHookName
@@ -1048,7 +1048,7 @@ class Single implements PaymentsViewsInterface {
 	 * Allow additional tags for the wp_kses_post function.
 	 *
 	 * @since 1.8.2
-	 * @deprecated 2.0.0.3
+	 * @deprecated 2.0.1
 	 *
 	 * @param array|mixed  $allowed_html List of allowed HTML.
 	 * @param string|mixed $context      Context name.
@@ -1057,7 +1057,7 @@ class Single implements PaymentsViewsInterface {
 	 */
 	public function modify_allowed_tags_payment_field_value( $allowed_html, $context ): array {
 
-		_deprecated_function( __METHOD__, '2.0.0.3 of the WPForms plugin', 'wpforms_get_allowed_html_tags_for_entry_field_value()' );
+		_deprecated_function( __METHOD__, '2.0.1 of the WPForms plugin', 'wpforms_get_allowed_html_tags_for_entry_field_value()' );
 
 		return wpforms_get_allowed_html_tags_for_entry_field_value( $allowed_html, (string) $context );
 	}

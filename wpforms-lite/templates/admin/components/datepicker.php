@@ -4,6 +4,7 @@
  *
  * @since 1.8.2
  * @since 1.8.8 Added the `$hidden_fields` parameter.
+ * @since 2.0.2 Allowed the `data-preset` attribute on each choice's radio.
  *
  * @var string $action        The URL that processes the form submission. Ideally points out to the current admin page URL.
  * @var string $id            Identifier to outline the context of where the datepicker will be used. e.g., "entries".
@@ -25,6 +26,7 @@ $choices_allowed_html = [
 		'value'       => [],
 		'checked'     => [],
 		'aria-hidden' => [],
+		'data-preset' => [],
 	],
 ];
 

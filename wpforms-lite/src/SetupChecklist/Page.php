@@ -2,6 +2,7 @@
 
 namespace WPForms\SetupChecklist;
 
+use WPForms\Admin\Addons\Install;
 use WPForms\Education\ActiveLayer\Helper as ActiveLayer;
 use WPForms\SetupWizard\Service\SettingsDetector;
 use WPForms\Integrations\Stripe\Stripe;
@@ -137,7 +138,7 @@ class Page {
 			[
 				'ajax_url'      => admin_url( 'admin-ajax.php' ),
 				'dismiss_nonce' => wp_create_nonce( Ajax::DISMISS_ACTION ),
-				'install_nonce' => wp_create_nonce( Ajax::INSTALL_PLUGIN_ACTION ),
+				'install_nonce' => wp_create_nonce( Install::ACTION ),
 				'dismiss'       => [
 					'title'   => esc_html__( 'Are you sure?', 'wpforms-lite' ),
 					'content' => esc_html__( 'This will permanently dismiss the Setup Checklist, and you will not be able to bring it back. This cannot be undone.', 'wpforms-lite' ),
@@ -344,6 +345,19 @@ class Page {
 			return $cta;
 		}
 
+		return $this->activelayer_cta();
+	}
+
+	/**
+	 * Build the ActiveLayer checklist CTA: set up when active, otherwise install or activate
+	 * in place — or, when the user cannot do either, the out-of-band fallback.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return array Renderable CTA data, or an empty array when ActiveLayer is unavailable.
+	 */
+	private function activelayer_cta(): array {
+
 		if ( ! class_exists( ActiveLayer::class ) ) {
 			return [];
 		}
@@ -356,12 +370,19 @@ class Page {
 			];
 		}
 
+		$is_installed = ActiveLayer::is_installed();
+		$install      = __( 'Install ActiveLayer', 'wpforms-lite' );
+		$activate     = __( 'Activate ActiveLayer', 'wpforms-lite' );
+		$action       = $is_installed ? 'activate-plugin' : 'install-plugin';
+
+		if ( ! Install::can_install_and_activate( $action, 'plugin' ) ) {
+			return $this->plugin_fallback_cta( ActiveLayer::FILE, $is_installed, $install, $activate );
+		}
+
 		return [
-			'label'    => ActiveLayer::is_installed()
-				? __( 'Activate ActiveLayer', 'wpforms-lite' )
-				: __( 'Install ActiveLayer', 'wpforms-lite' ),
+			'label'    => $is_installed ? $activate : $install,
 			'modifier' => 'grey',
-			'action'   => ActiveLayer::is_installed() ? 'activate-plugin' : 'install-plugin',
+			'action'   => $action,
 			'plugin'   => ActiveLayer::FILE,
 			'reload'   => true,
 		];
@@ -396,6 +417,10 @@ class Page {
 			];
 		}
 
+		if ( ! Install::can_install_and_activate( $link['action'], 'plugin' ) ) {
+			return $this->plugin_fallback_cta( $file, (bool) $link['installed'], $install, $activate );
+		}
+
 		return [
 			'label'    => $link['installed'] ? $activate : $install,
 			'modifier' => 'grey',
@@ -403,6 +428,42 @@ class Page {
 			'plugin'   => $link['plugin'],
 			'reload'   => true,
 		];
+	}
+
+	/**
+	 * Build the out-of-band CTA for a wordpress.org plugin the user cannot install in place.
+	 *
+	 * An installed-but-inactive plugin can still be activated from the Plugins screen — multisite
+	 * site admins keep `activate_plugins` while losing `install_plugins` — so a user who holds that
+	 * capability is sent there. Everyone else gets the plugin's wordpress.org page, which stays
+	 * useful when file modifications are disabled and the install must happen out of band. Neither
+	 * shape carries `action` or `reload`, so the install JS ignores it and it navigates normally.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $file         Plugin main-file path (folder/file.php).
+	 * @param bool   $is_installed Whether the plugin is already on disk.
+	 * @param string $install      Label when the plugin is absent.
+	 * @param string $activate     Label when the plugin is installed but inactive.
+	 *
+	 * @return array
+	 */
+	private function plugin_fallback_cta( string $file, bool $is_installed, string $install, string $activate ): array {
+
+		$fallback = Install::get_fallback_destination( $file, $is_installed );
+
+		$cta = [
+			'label'    => $fallback['is_activate'] ? $activate : $install,
+			'url'      => $fallback['url'],
+			'modifier' => 'grey',
+		];
+
+		// Only the wordpress.org route leaves the admin, so only it carries the external flag.
+		if ( ! $fallback['is_activate'] ) {
+			$cta['external'] = true;
+		}
+
+		return $cta;
 	}
 
 	/**

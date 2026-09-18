@@ -652,7 +652,25 @@ trait FormTemplates {
 		 */
 		$fields = (array) apply_filters( 'wpforms_setup_template_fields', $fields );
 
-		return implode( ',', $fields );
+		/*
+		 * Keywords are appended after the filter on purpose.
+		 * WPForms_Field::enhance_template_fields_with_keywords() replaces every entry that exactly matches
+		 * a field type slug ( e.g. "password", "email", "name" ) with that field's display name,
+		 * so a keyword merged before the filter could be silently rewritten.
+		 */
+		if ( ! empty( $template['keywords'] ) ) {
+			$fields = array_merge( $fields, array_map( 'trim', explode( ',', $template['keywords'] ) ) );
+		}
+
+		/*
+		 * The wpforms_setup_template_fields filter can return non-string entries, so cast before
+		 * filtering: strlen() raises a TypeError on an array where implode() only ever cast it.
+		 * Filtering on length rather than truthiness keeps a field literally labelled "0".
+		 */
+		$fields = array_filter( array_map( 'strval', $fields ), 'strlen' );
+
+		// Drop the repeated terms, the way WPForms_Field::enhance_template_fields_with_keywords() does.
+		return implode( ',', array_unique( $fields ) );
 	}
 
 	/**

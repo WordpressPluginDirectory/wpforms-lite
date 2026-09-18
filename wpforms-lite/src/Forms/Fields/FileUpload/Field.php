@@ -62,11 +62,12 @@ class Field extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name  = esc_html__( 'File Upload', 'wpforms-lite' );
-		$this->type  = 'file-upload';
-		$this->icon  = 'fa-upload';
-		$this->order = 100;
-		$this->group = 'fancy';
+		$this->name     = esc_html__( 'File Upload', 'wpforms-lite' );
+		$this->keywords = esc_html__( 'attach, attachment, document, upload, resume, cv', 'wpforms-lite' );
+		$this->type     = 'file-upload';
+		$this->icon     = 'fa-upload';
+		$this->order    = 100;
+		$this->group    = 'fancy';
 
 		$this->default_settings = [
 			'style' => self::STYLE_MODERN,

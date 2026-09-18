@@ -13,6 +13,29 @@ use WPForms\Integrations\AI\API\FormEditor as FormEditorAPI;
 class FormEditor extends Base {
 
 	/**
+	 * Field properties the Form Builder rebuilds as lists from a `fieldsToUpdate` entry.
+	 *
+	 * Kept in sync with `listProperties` in
+	 * assets/js/integrations/ai/form-editor/modules/applicators.js — that set
+	 * decides which properties are handed to `applyListUpdate()`, and it skips
+	 * anything that is not a JS Array. It does not apply to `fieldsToAdd`, whose
+	 * lists are consumed server-side by the field class rendering the HTML.
+	 *
+	 * @since 2.0.2
+	 */
+	private const LIST_PROPERTIES = [ 'choices', 'questions', 'rows', 'columns' ];
+
+	/**
+	 * Changes keys the Form Builder iterates without any server-side enrichment.
+	 *
+	 * Consumed by `applyFieldChanges()` via `forEach()` and `.length`, so both
+	 * must reach JS as arrays.
+	 *
+	 * @since 2.0.2
+	 */
+	private const PLAIN_LIST_CHANGES = [ 'fieldsToDelete', 'fieldsOrder' ];
+
+	/**
 	 * Form Editor API instance.
 	 *
 	 * @since 1.10.1
@@ -63,6 +86,14 @@ class FormEditor extends Base {
 		}
 
 		$scope = sanitize_key( $this->get_post_data( 'scope' ) );
+
+		// The restore scope is applied entirely client-side via the builder undo
+		// history and must never be forwarded to the middleware.
+		if ( $scope === 'restore' ) {
+			wp_send_json_error(
+				[ 'error' => esc_html__( 'The restore scope is performed in the form builder and cannot be requested directly.', 'wpforms-lite' ) ]
+			);
+		}
 
 		// The analyze scope is always allowed — it is the initial prompt, not a pipeline scope.
 		if ( $scope !== 'analyze' ) {
@@ -236,23 +267,28 @@ class FormEditor extends Base {
 			$response = $this->replace_ai_ids_in_message( $response );
 		}
 
+		foreach ( self::PLAIN_LIST_CHANGES as $key ) {
+			if ( ! empty( $response['changes'][ $key ] ) ) {
+				$response['changes'][ $key ] = array_values( (array) $response['changes'][ $key ] );
+			}
+		}
+
 		if ( empty( $response['changes']['fieldsToUpdate'] ) ) {
 			return $response;
 		}
 
-		// Sanitize fields data.
-		foreach ( $response['changes']['fieldsToUpdate'] as $key => $field_data ) {
-			$field_data = $this->get_sanitized_field_data( $field_data );
+		// Sanitize fields data. Collect into a fresh list so non-sequential keys
+		// from the middleware can't turn the wp_json_encode() output into a JSON
+		// object — JS iterates fieldsToUpdate with Array methods.
+		$fields_to_update = [];
 
-			// Re-pack choices into a sequential 0-indexed array so the JSON wire
-			// stays a JS Array (not an Object) for `applyListUpdate()`. JS writes
-			// its own 1-indexed `data-key` attributes on rebuild.
-			if ( ! empty( $field_data['choices'] ) && is_array( $field_data['choices'] ) ) {
-				$field_data['choices'] = $this->get_sanitized_choices( $field_data['choices'], 0 );
-			}
+		foreach ( (array) $response['changes']['fieldsToUpdate'] as $field_data ) {
+			$field_data = $this->get_sanitized_field_data( (array) $field_data );
 
-			$response['changes']['fieldsToUpdate'][ $key ] = $field_data;
+			$fields_to_update[] = $this->get_reindexed_list_properties( $field_data );
 		}
+
+		$response['changes']['fieldsToUpdate'] = $fields_to_update;
 
 		return $response;
 	}
@@ -328,6 +364,9 @@ class FormEditor extends Base {
 			// Re-index choices from 1 before HTML is rendered server-side.
 			// New SFE fields are inserted via `preview_html` / `options_html`,
 			// so 1-indexed keys are baked into the markup and survive the form save (#17447).
+			// Only `choices` is touched here: the other list properties are consumed by
+			// the field class rendering the HTML, and each owns its own key convention
+			// (Likert Scale seeds `rows` and `columns` from 1 and matches on `r1_`).
 			if ( ! empty( $field_data['choices'] ) && is_array( $field_data['choices'] ) ) {
 				$field_data['choices'] = $this->get_sanitized_choices( $field_data['choices'] );
 			}
@@ -343,7 +382,9 @@ class FormEditor extends Base {
 			$fields[ $key ] = $field_data;
 		}
 
-		return $fields;
+		// Re-index after unset(): non-sequential keys make wp_json_encode()
+		// emit a JSON object instead of an array, breaking Array methods in JS.
+		return array_values( $fields );
 	}
 
 	/**
@@ -373,6 +414,33 @@ class FormEditor extends Base {
 	}
 
 	/**
+	 * Get the field data with every list property re-indexed.
+	 *
+	 * The AI middleware can return sparse lists, and stripping nulls in
+	 * get_sanitized_field_data() leaves holes of its own. Both make
+	 * wp_json_encode() emit a JSON object instead of an array, and
+	 * `applyListUpdate()` silently skips any property that is not a JS Array.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param array $field_data Sanitized field data from the AI response.
+	 *
+	 * @return array Field data with re-indexed list properties.
+	 */
+	private function get_reindexed_list_properties( array $field_data ): array {
+
+		foreach ( self::LIST_PROPERTIES as $property ) {
+			if ( empty( $field_data[ $property ] ) || ! is_array( $field_data[ $property ] ) ) {
+				continue;
+			}
+
+			$field_data[ $property ] = array_values( $field_data[ $property ] );
+		}
+
+		return $field_data;
+	}
+
+	/**
 	 * Get sanitized choices with sequential numeric keys.
 	 *
 	 * The AI middleware can return sparse or 0-indexed choices, but WPForms
@@ -380,12 +448,10 @@ class FormEditor extends Base {
 	 * submitted input value and bail out in format() when the value is "0"
 	 * (PHP's empty( "0" ) === true).
 	 *
-	 * The `fieldsToAdd` path uses the default 1-indexed start because the
-	 * sanitized array feeds server-rendered preview/options HTML, where the
-	 * keys become persisted choice indices. The `fieldsToUpdate` path uses a
-	 * 0-indexed start because the array is JSON-encoded on the wire and JS
-	 * `applyListUpdate()` expects a proper Array (not an Object) — JS writes
-	 * its own 1-indexed `data-key` attributes on rebuild.
+	 * Only the `fieldsToAdd` path needs the offset, because the sanitized array
+	 * feeds server-rendered preview/options HTML where the keys become persisted
+	 * choice indices. On the `fieldsToUpdate` path `applyListUpdate()` re-keys
+	 * positionally, so plain array_values() is enough there.
 	 *
 	 * @since 1.10.1
 	 *

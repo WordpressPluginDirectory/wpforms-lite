@@ -96,7 +96,7 @@ class SettingsDetector {
 	/**
 	 * Whether Mercado Pago is connected for the current payment mode.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */

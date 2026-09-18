@@ -18,14 +18,14 @@ use WPForms\SetupWizard\SetupWizard;
  * every hydrate, so it survives refreshes and resume handshakes without
  * depending on a session.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  */
 class Screen extends BaseScreen {
 
 	/**
 	 * Nonce action for the first-screen AJAX endpoint.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Screen extends BaseScreen {
 	/**
 	 * Register hooks.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function hooks(): void {
 
@@ -48,7 +48,7 @@ class Screen extends BaseScreen {
 	 * reachability is checked at CTA time by `handle_update()`, which surfaces
 	 * an inline error instead of a redirect.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool Whether a real launch happened (as opposed to a fallback redirect).
 	 */
@@ -81,7 +81,7 @@ class Screen extends BaseScreen {
 	/**
 	 * `wp_ajax` handler: save the Lite Connect consent and return the handoff data.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function handle_update(): void {
 
@@ -140,7 +140,7 @@ class Screen extends BaseScreen {
 	 * only consumed inside the bridge payload filter, so an abandoned OAuth return
 	 * leaves it armed for every administrator on the site.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
@@ -154,7 +154,7 @@ class Screen extends BaseScreen {
 	/**
 	 * Render the Welcome view.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -183,7 +183,7 @@ class Screen extends BaseScreen {
 	/**
 	 * JS configuration printed into the shell as JSON.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array
 	 */
@@ -201,7 +201,7 @@ class Screen extends BaseScreen {
 	/**
 	 * Compiled asset URLs for the shell template.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array{css: string[], js: string[]}
 	 */

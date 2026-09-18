@@ -63,6 +63,79 @@ function wpforms_get_ip(): string {
 }
 
 /**
+ * Get the visitor's preferred language tag from the request, e.g. `pt-br` from
+ * `pt-BR,pt;q=0.9,en-US;q=0.8`.
+ *
+ * Read from the request header rather than a form field, so it cannot be spoofed from the
+ * client. Only the highest-quality tag is kept: a translation is chosen by one language,
+ * and the rest of the list would be user data with no use for it.
+ *
+ * Only the parts the translation lookup reads are kept, so `ca-valencia` is stored as `ca`
+ * and resolves to the same translation. That also keeps what a client can put in the table
+ * bounded: the free-form subtag a tag may legally carry is where an unlimited number of
+ * distinct values would otherwise come from, and nothing ever reads it.
+ *
+ * Sites behind a proxy that normalizes the header, and multilingual plugins that hold a
+ * better signal in a cookie or a URL prefix, can supply the tag through the filter below.
+ * A filtered value goes through the same shape and the same trimming, so a hook can neither
+ * put arbitrary text in the entry nor store more of a tag than the header path would.
+ *
+ * @since 2.0.2
+ *
+ * @return string Lowercase language tag, or an empty string when the request carries none.
+ */
+function wpforms_get_visitor_language(): string {
+
+	// A tag is a two or three letter language, an optional four-letter script and an
+	// optional region: letters like `BR`, or the UN M49 digits browsers send for `es-419`.
+	// Any further subtag still matches, so the tag is recognised, but is not captured.
+	$tag_pattern = '([a-z]{2,3})(?:-([a-z]{4}))?(?:-([a-z]{2}|\d{3}))?(?:-[a-z\d]{1,8})*';
+
+	// Join the captured parts back into the tag that gets stored.
+	$to_tag = static function ( array $parts ): string {
+		return strtolower( implode( '-', array_filter( [ $parts[1] ?? '', $parts[2] ?? '', $parts[3] ?? '' ] ) ) );
+	};
+
+	$language  = '';
+	$preferred = 0;
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each tag is matched against the pattern above.
+	$header = isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ? (string) wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) : '';
+
+	// The header is attacker-controlled and the winning tag is stored with the entry, so
+	// it is capped like the user agent (see WPForms\Forms\Submission::get_user_info()).
+	foreach ( explode( ',', substr( $header, 0, 256 ) ) as $entry ) {
+		// Anything else, including the `*` wildcard, is skipped. The spacing is part of the
+		// pattern because the header may arrive as `en-US; q=0.8`.
+		if ( ! preg_match( '/^\s*' . $tag_pattern . '\s*(?:;\s*q=([\d.]+))?\s*$/i', $entry, $parts ) ) {
+			continue;
+		}
+
+		// An explicit `q=0` means "not acceptable", so it never wins.
+		$quality = isset( $parts[4] ) && $parts[4] !== '' ? (float) $parts[4] : 1;
+
+		if ( $quality > $preferred ) {
+			$language  = $to_tag( $parts );
+			$preferred = $quality;
+		}
+	}
+
+	/**
+	 * Filter the visitor language tag read from the request.
+	 *
+	 * Lets a site read the language from somewhere better than the header: a proxy that
+	 * normalizes it away, or a multilingual plugin holding it in a cookie or URL prefix.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $language Lowercase language tag, or an empty string when the request carries none.
+	 */
+	$language = (string) apply_filters( 'wpforms_get_visitor_language', $language );
+
+	return preg_match( '/^' . $tag_pattern . '$/i', $language, $parts ) ? $to_tag( $parts ) : '';
+}
+
+/**
  * Determine if collecting user's IP is allowed by GDPR setting (globally or per form).
  * Majority of our users have GDPR disabled.
  * So we remove this data from the request only when it's not needed:

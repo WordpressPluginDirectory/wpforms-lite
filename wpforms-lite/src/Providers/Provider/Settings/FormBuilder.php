@@ -223,7 +223,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 									<# } #>
 								</td>
 								<td>
-									<select class="wpforms-builder-provider-connection-field-value"
+									<select class="wpforms-builder-provider-connection-field-value" data-support-subfields="{{ data.isSupportSubfields }}"
 										name="providers[{{ data.provider.slug }}][{{ data.connection.id }}][fields_meta][0][field_id]">
 										<option value=""><?php esc_html_e( '--- Select Form Field ---', 'wpforms-lite' ); ?></option>
 
@@ -376,7 +376,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 	/**
 	 * Determine whether the current user may edit the given form.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param int $form_id Form id to check.
 	 *
@@ -393,7 +393,7 @@ abstract class FormBuilder implements FormBuilderInterface {
 	 *
 	 * This is a helper method for mainly using in addons.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param string $account_id Account id to check.
 	 *

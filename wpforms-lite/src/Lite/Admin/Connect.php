@@ -102,7 +102,7 @@ class Connect {
 		// Verify pro version is not installed.
 		$active = activate_plugin( self::PRO_PLUGIN, false, false, true );
 
-		if ( ! is_wp_error( $active ) ) {
+		if ( ! wpforms_is_plugin_activation_failed( $active ) ) {
 
 			// Deactivate Lite.
 		 	deactivate_plugins( $current_plugin );
@@ -206,7 +206,7 @@ class Connect {
 		// Verify pro not installed.
 		$active = activate_plugin( self::PRO_PLUGIN, $url, false, true );
 
-		if ( ! is_wp_error( $active ) ) {
+		if ( ! wpforms_is_plugin_activation_failed( $active ) ) {
 			$plugin = plugin_basename( WPFORMS_PLUGIN_FILE );
 
 		 	deactivate_plugins( $plugin );
@@ -273,7 +273,7 @@ class Connect {
 			// Activate the plugin silently.
 			$activated = activate_plugin( $plugin_basename, '', false, true );
 
-			if ( ! is_wp_error( $activated ) ) {
+			if ( ! wpforms_is_plugin_activation_failed( $activated ) ) {
 			 	add_option( 'wpforms_install', 1 );
 			 	wp_send_json_success( esc_html__( 'Plugin installed & activated.', 'wpforms-lite' ) );
 			} else {

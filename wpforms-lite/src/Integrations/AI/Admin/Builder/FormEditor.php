@@ -128,6 +128,7 @@ class FormEditor {
 		return (array) apply_filters(
 			'wpforms_integrations_ai_admin_builder_form_editor_get_allowed_scopes',
 			[
+				'restore'           => [ 'priority' => 5 ],
 				'fields'            => [ 'priority' => 10 ],
 				'calculation'       => [ 'priority' => 20 ],
 				'conditional_logic' => [ 'priority' => 30 ],
@@ -321,7 +322,10 @@ class FormEditor {
 				'clear'   => esc_html__( 'Clear chat history', 'wpforms-lite' ),
 			],
 			'noChanges'          => esc_html__( 'No changes needed.', 'wpforms-lite' ),
+			'restoreSuccess'     => esc_html__( 'I undid the last change to the form. You can also use Undo and Redo in the builder toolbar, or Form Revisions, for finer control.', 'wpforms-lite' ),
+			'restoreNothing'     => esc_html__( 'There are no changes to undo in this session. To roll back earlier changes, check Form Revisions.', 'wpforms-lite' ),
 			'scopeProgress'      => [
+				'restore'           => esc_html__( 'Undoing the last change...', 'wpforms-lite' ),
 				'fields'            => esc_html__( 'Generating field changes...', 'wpforms-lite' ),
 				'settings'          => esc_html__( 'Updating form settings...', 'wpforms-lite' ),
 				'calculation'       => esc_html__( 'Generating calculations...', 'wpforms-lite' ),

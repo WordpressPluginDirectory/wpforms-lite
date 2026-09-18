@@ -1228,6 +1228,7 @@ class Templates {
 				'has_access'  => $this->has_access( [ 'license' => [ 'pro' ] ] ),
 				'source'      => 'wpforms-addon',
 				'description' => esc_html__( 'Create customized WordPress user registration forms and add them anywhere on your website.', 'wpforms-lite' ),
+				'keywords'    => esc_html__( 'sign up, register, create account, new user, membership', 'wpforms-lite' ),
 			],
 			[
 				'name'        => esc_html__( 'User Login Form', 'wpforms-lite' ),
@@ -1237,6 +1238,7 @@ class Templates {
 				'has_access'  => $this->has_access( [ 'license' => [ 'pro' ] ] ),
 				'source'      => 'wpforms-addon',
 				'description' => esc_html__( 'Allow your users to easily log in to your site with their username and password.', 'wpforms-lite' ),
+				'keywords'    => esc_html__( 'login, log in, sign in, user login, member login', 'wpforms-lite' ),
 			],
 			[
 				'name'        => esc_html__( 'User Password Reset Form', 'wpforms-lite' ),
@@ -1246,6 +1248,7 @@ class Templates {
 				'has_access'  => $this->has_access( [ 'license' => [ 'pro' ] ] ),
 				'source'      => 'wpforms-addon',
 				'description' => esc_html__( 'Allow your users to easily reset their password.', 'wpforms-lite' ),
+				'keywords'    => esc_html__( 'reset password, forgot password, lost password, password recovery', 'wpforms-lite' ),
 			],
 		];
 

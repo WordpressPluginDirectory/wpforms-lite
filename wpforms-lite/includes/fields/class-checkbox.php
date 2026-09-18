@@ -733,7 +733,13 @@ class WPForms_Field_Checkbox extends WPForms_Field {
 						// Check if the submitted value is the same as the choice value or if the value is empty and the key matches.
 						// Skip if the submitted value is empty.
 						if ( ( ! empty( $item ) && $item === $choice['value'] ) || ( empty( $choice['value'] ) && (int) str_replace( 'Choice ', '', $item ) === $key ) ) {
-							$value[]       = isset( $choice['label'] ) ? $choice['label'] : '';
+							$label = $this->get_choices_label( $choice['label'] ?? '', $key, $field );
+
+							// Icon and Image choices resolve an empty label to an empty string: skip it, so the combined value never contains empty lines.
+							if ( ! wpforms_is_empty_string( $label ) ) {
+								$value[] = $label;
+							}
+
 							$choice_keys[] = $key;
 
 							break;

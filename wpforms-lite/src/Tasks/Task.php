@@ -361,8 +361,6 @@ class Task {
 		return as_unschedule_action( $this->action, [ 'tasks_meta_id' => $this->meta_id ], Tasks::GROUP );
 	}
 
-
-
 	/**
 	 * Log message to WPForms logger and standard debug.log file.
 	 *

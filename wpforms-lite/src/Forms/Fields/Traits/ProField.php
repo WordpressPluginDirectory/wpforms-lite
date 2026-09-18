@@ -198,6 +198,7 @@ trait ProField {
 	 * Get the Pro field options notice.
 	 *
 	 * @since 1.9.4
+	 * @since 2.0.1 The addon message is also passed for the `configure` action.
 	 *
 	 * @noinspection HtmlUnknownAttribute
 	 */
@@ -220,7 +221,7 @@ trait ProField {
 				esc_attr( wp_create_nonce( 'wpforms-admin' ) ),
 				$this->addon_edu_data['path'] ?? '',
 				$this->addon_edu_data['url'] ?? '',
-				$action === 'incompatible' ? $this->addon_edu_data['message'] : '',
+				in_array( $action, [ 'incompatible', 'configure' ], true ) ? ( $this->addon_edu_data['message'] ?? '' ) : '',
 				esc_attr( $this->type ),
 				esc_attr( $name )
 			);
@@ -249,6 +250,7 @@ trait ProField {
 	 * Get the Pro field options notice texts.
 	 *
 	 * @since 1.9.4
+	 * @since 2.0.1 Added the `configure` action texts.
 	 */
 	private function get_field_options_notice_texts(): array {
 
@@ -262,6 +264,7 @@ trait ProField {
 				$name
 			),
 			'incompatible' => esc_html__( 'Incompatible Addon', 'wpforms-lite' ),
+			'configure'    => esc_html__( 'Setup Required', 'wpforms-lite' ),
 		];
 
 		$contents = [
@@ -281,6 +284,10 @@ trait ProField {
 				esc_html__( 'The %1$s is not compatible with this version of WPForms and requires an update.', 'wpforms-lite' ),
 				$addon_name
 			),
+			'configure'    => sprintf( /* translators: %1$s - Addon name. */
+				esc_html__( 'The %1$s requires configuration before this field can be used.', 'wpforms-lite' ),
+				$addon_name
+			),
 		];
 
 		$button_labels = [
@@ -288,12 +295,13 @@ trait ProField {
 			'install'      => esc_html__( 'Install Addon', 'wpforms-lite' ),
 			'activate'     => esc_html__( 'Activate Addon', 'wpforms-lite' ),
 			'incompatible' => esc_html__( 'Update Addon', 'wpforms-lite' ),
+			'configure'    => esc_html__( 'Configure Addon', 'wpforms-lite' ),
 		];
 
 		// If it's not an upgrade action, use the addon data.
 		if ( $action !== 'upgrade' ) {
 			$name     = $addon_name;
-			$utm_name = $this->addon_edu_data['utm_content'];
+			$utm_name = $this->addon_edu_data['utm_content'] ?? $addon_name;
 		} else {
 			$edu_fields = wpforms()->obj( 'education_fields' );
 			$edu_field  = $edu_fields ? $edu_fields->get_field( $this->type ) : null;
@@ -355,6 +363,7 @@ trait ProField {
 	 * Get the Pro field preview badge.
 	 *
 	 * @since 1.9.4
+	 * @since 2.0.1 Added the Setup Required badge for the `configure` action.
 	 */
 	private function get_field_preview_badge(): string {
 
@@ -365,7 +374,12 @@ trait ProField {
 		$action = $this->addon_edu_data['action'] ?? '';
 
 		if ( $action === 'incompatible' ) {
-			return Helpers::get_badge( esc_html__( 'Update required', 'wpforms-lite' ) , 'lg', 'inline', 'red' );
+			return Helpers::get_badge( esc_html__( 'Update Required', 'wpforms-lite' ), 'lg', 'inline', 'red' );
+		}
+
+		// The addon is up to date but still needs configuring, which is a fixable warning, not an error.
+		if ( $action === 'configure' ) {
+			return Helpers::get_badge( esc_html__( 'Setup Required', 'wpforms-lite' ), 'lg', 'inline', 'orange' );
 		}
 
 		// If it's an addon field in Pro AND the addon is not initialized, show the ADDON badge.
@@ -374,6 +388,23 @@ trait ProField {
 		}
 
 		return Helpers::get_badge( 'Pro', 'lg', 'inline', 'green' );
+	}
+
+	/**
+	 * Determine whether the given addon education action is supported by the current core version.
+	 *
+	 * Addons release on their own cadence, so before emitting a newer action they must check
+	 * that this method exists and returns true, and fall back to an older action otherwise.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param string $action Addon education action.
+	 *
+	 * @return bool
+	 */
+	protected function is_addon_edu_action_supported( string $action ): bool {
+
+		return in_array( $action, [ 'upgrade', 'install', 'activate', 'incompatible', 'configure' ], true );
 	}
 
 	/**

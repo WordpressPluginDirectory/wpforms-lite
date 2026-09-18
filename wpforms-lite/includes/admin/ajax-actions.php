@@ -1014,7 +1014,7 @@ function wpforms_install_addon() { // phpcs:ignore Generic.Metrics.CyclomaticCom
 	// Activate the plugin silently.
 	$activated = activate_plugin( $plugin_basename );
 
-	if ( ! is_wp_error( $activated ) ) {
+	if ( ! wpforms_is_plugin_activation_failed( $activated ) ) {
 
 		/**
 		 * Fire after the plugin activating via the WPForms installer.

@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<i class="fa fa-question-circle-o wpforms-help-tooltip" title="<?php esc_html_e( 'Map custom meta to form field values.', 'wpforms-lite' ); ?>"></i>
 	</p>
 
-	<table class="wpforms-panel-content-section-stripe-custom-metadata-table">
+	<table class="wpforms-panel-content-section-stripe-custom-metadata-table wpforms-undo-redo-container">
 		<thead>
 		<tr>
 			<th>

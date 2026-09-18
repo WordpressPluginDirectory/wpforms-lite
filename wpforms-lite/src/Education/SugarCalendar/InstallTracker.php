@@ -13,35 +13,35 @@ use WP_Upgrader;
  * request, and the source option is written on the wpforms_plugin_activated
  * hook fired after activation (includes/admin/ajax-actions.php).
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  */
 class InstallTracker {
 
 	/**
 	 * Sugar Calendar option key — install source.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const SOURCE_OPTION = 'sugar_calendar_source';
 
 	/**
 	 * Sugar Calendar option key — suppress the post-activation setup wizard redirect.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const PREVENT_REDIRECT_OPTION = 'sugar_calendar_prevent_redirect';
 
 	/**
 	 * Own option key — marks the redirect flag as written by us.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const OWN_REDIRECT_OPTION = 'wpforms_sugar_calendar_prevent_redirect';
 
 	/**
 	 * Whether the current request is a Sugar Calendar install started from WPForms.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @var bool
 	 */
@@ -50,7 +50,7 @@ class InstallTracker {
 	/**
 	 * Whether this request created the redirect flag.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @var bool
 	 */
@@ -59,7 +59,7 @@ class InstallTracker {
 	/**
 	 * Whether Sugar Calendar was activated in this request.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @var bool
 	 */
@@ -68,7 +68,7 @@ class InstallTracker {
 	/**
 	 * Init.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function init() {
 
@@ -78,7 +78,7 @@ class InstallTracker {
 	/**
 	 * Register hooks.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	private function hooks() {
 
@@ -97,7 +97,7 @@ class InstallTracker {
 	 * are in place, so a failed download or unzip does not leave the flag behind and
 	 * silently break the wizard of a later manual install.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function maybe_watch_install() {
 
@@ -117,7 +117,7 @@ class InstallTracker {
 	 * the AJAX handler activates the plugin. Limited to our own request, so a manual
 	 * install from the Plugins page keeps its welcome screen.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param WP_Upgrader $upgrader   Upgrader instance.
 	 * @param array       $hook_extra Extra arguments passed to hooked filters.
@@ -156,7 +156,7 @@ class InstallTracker {
 	/**
 	 * Record WPForms as the install source when Sugar Calendar Lite is activated.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param string $plugin_basename Path to the activated plugin file relative to the plugins directory.
 	 */
@@ -179,7 +179,7 @@ class InstallTracker {
 	 * activate_plugin(), or a user who may install plugins but not activate them. Leaving
 	 * the flag behind would silently skip the wizard of a later manual activation.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function maybe_revert_prevent_redirect(): void {
 
@@ -198,7 +198,7 @@ class InstallTracker {
 	 * so the flag we wrote for one install would keep suppressing the setup wizard of any
 	 * later manual install. A flag stored by somebody else carries no ownership marker and stays.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param string $plugin_file Path to the deleted plugin file relative to the plugins directory.
 	 * @param bool   $deleted     Whether the deletion succeeded.

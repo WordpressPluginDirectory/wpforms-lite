@@ -49,6 +49,7 @@ class LiteConnect implements Education\EducationInterface {
 			wpforms_is_admin_page( 'overview' ) ||
 			wpforms_is_admin_page( 'entries' ) ||
 			wpforms_is_admin_page( 'setup-checklist' ) ||
+			wpforms_is_admin_page( 'dashboard' ) ||
 			$this->is_dashboard() ||
 			$this->is_embed_page();
 	}
@@ -132,7 +133,7 @@ class LiteConnect implements Education\EducationInterface {
 		$min = wpforms_get_min_suffix();
 
 		// On the Dashboard and form embedding pages we should load additional scripts and styles.
-		if ( $this->is_dashboard() || $this->is_embed_page() ) {
+		if ( $this->is_dashboard() || $this->is_embed_page() || wpforms_is_admin_page( 'dashboard' ) ) {
 			$this->dashboard_enqueues();
 		}
 
@@ -200,6 +201,25 @@ class LiteConnect implements Education\EducationInterface {
 			[],
 			WPFORMS_VERSION
 		);
+
+		// The Dashboard-page footer help tip is a shared admin tooltip
+		// (`wpf.initTooltips()`), which needs the Tooltipster library.
+		if ( wpforms_is_admin_page( 'dashboard' ) ) {
+			wp_enqueue_style(
+				'tooltipster',
+				WPFORMS_PLUGIN_URL . 'assets/lib/jquery.tooltipster/jquery.tooltipster.min.css',
+				null,
+				'4.2.6'
+			);
+
+			wp_enqueue_script(
+				'tooltipster',
+				WPFORMS_PLUGIN_URL . 'assets/lib/jquery.tooltipster/jquery.tooltipster.min.js',
+				[ 'jquery' ],
+				'4.2.6',
+				true
+			);
+		}
 	}
 
 	/**

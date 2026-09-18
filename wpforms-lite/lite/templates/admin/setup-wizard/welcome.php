@@ -6,7 +6,7 @@
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1,
  * Code: MIT License) Copyright 2026 Fonticons, Inc., except `wpforms-ai`, a custom WPForms mark.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @var bool   $is_consent_checked Whether the Lite Connect consent box starts checked.
  * @var string $exit_url           Skip Guided Setup destination.

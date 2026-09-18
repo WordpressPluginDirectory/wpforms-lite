@@ -271,9 +271,6 @@ class DB {
 
 		$placeholders = implode( ',', array_fill( 0, count( $form_ids ), '%d' ) );
 		$forms_table  = self::forms_table();
-		$snaps_table  = self::snapshots_table();
-
-		[ $today_start, $tomorrow_start ] = $this->today_boundaries();
 
 		// Layer 1: lifetime sentinel rows (PK lookup).
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -289,9 +286,43 @@ class DB {
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-		// Layer 2: today's unprocessed snapshots (index-friendly range filter).
+		// Layer 2: today's unprocessed snapshots (live count since the last nightly aggregation).
+		$today_rows = $this->get_today_stats( $form_ids );
+
+		return $this->merge_overview_layers( $sentinel_rows, $today_rows, $form_ids );
+	}
+
+	/**
+	 * Get today's unprocessed snapshot counts for the given forms.
+	 *
+	 * The live layer over the nightly aggregates: the aggregation task never
+	 * processes the current day, so today's activity exists only as unprocessed
+	 * snapshot rows. Serves get_overview_stats() and the Dashboard cache, which
+	 * add these counts on top of their aggregate-table reads.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param array $form_ids Form IDs to count.
+	 *
+	 * @return array Rows carrying form_id, views, submissions.
+	 */
+	public function get_today_stats( array $form_ids ): array {
+
+		$form_ids = array_values( array_filter( array_map( 'absint', $form_ids ) ) );
+
+		if ( empty( $form_ids ) ) {
+			return [];
+		}
+
+		global $wpdb;
+
+		$placeholders = implode( ',', array_fill( 0, count( $form_ids ), '%d' ) );
+		$snaps_table  = self::snapshots_table();
+
+		[ $today_start, $tomorrow_start ] = $this->today_boundaries();
+
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
-		$today_rows = $wpdb->get_results(
+		return (array) $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT form_id,
 				        COUNT(DISTINCT session_id)  AS views,
@@ -308,8 +339,6 @@ class DB {
 			ARRAY_A
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
-
-		return $this->merge_overview_layers( $sentinel_rows, $today_rows, $form_ids );
 	}
 
 	/**

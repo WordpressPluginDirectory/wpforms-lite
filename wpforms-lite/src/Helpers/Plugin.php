@@ -171,7 +171,7 @@ class Plugin {
 
 		$activated = activate_plugin( $plugin_file );
 
-		if ( is_wp_error( $activated ) ) {
+		if ( wpforms_is_plugin_activation_failed( $activated ) ) {
 			return $activated;
 		}
 
@@ -346,6 +346,25 @@ class Plugin {
 		if ( ! function_exists( 'get_plugins' ) || ! function_exists( 'get_plugin_data' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
+	}
+
+	/**
+	 * Whether a plugin is active, by its basename.
+	 *
+	 * Loads the plugin admin functions first, so it is safe to call in REST/cron
+	 * contexts where `is_plugin_active()` is not otherwise available.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $plugin Plugin basename, e.g. 'wp-mail-smtp/wp_mail_smtp.php'.
+	 *
+	 * @return bool
+	 */
+	public static function is_active( string $plugin ): bool {
+
+		self::ensure_plugin_functions();
+
+		return is_plugin_active( $plugin );
 	}
 
 	/**

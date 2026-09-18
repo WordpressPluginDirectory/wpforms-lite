@@ -513,7 +513,7 @@ function wpforms_esc_unselected_choices( $formatted_field ) {
  * Use wpforms_is_entry_field_value_iframe_allowed() to decide, so the allowance is granted per
  * field rather than per screen.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @param string $value             Field value HTML.
  * @param bool   $is_iframe_allowed Whether the iframe tag is allowed in the value.
@@ -558,7 +558,7 @@ function wpforms_esc_entry_field_value( $value, bool $is_iframe_allowed = false 
  *
  * Makes kses run wp_kses_bad_protocol() on `data-src`, stripping `javascript:` and `data:` URIs.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @param array|mixed $uri_attributes List of attributes treated as URIs by kses.
  *
@@ -594,7 +594,7 @@ function wpforms_add_data_src_uri_attribute( $uri_attributes ): array {
  * Callers that hand the result to another escaper must make sure it does not re-encode the entities
  * produced here.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @param mixed $value Value to neutralize.
  *
@@ -613,7 +613,7 @@ function wpforms_neutralize_html_tags( $value ): string {
  * granting the allowance per field instead of per screen keeps a stored iframe from surviving to the
  * entry screens, where the field-value script copies `data-src` into `src`.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @param array $field Entry field data.
  *
@@ -629,7 +629,7 @@ function wpforms_is_entry_field_value_iframe_allowed( array $field ): bool {
 	 * Addons that render an entry field value through an iframe must register their field type here,
 	 * otherwise the iframe is stripped on the entry View and Print screens.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param array $types Field types allowed to render an iframe.
 	 * @param array $field Entry field data.
@@ -645,7 +645,7 @@ function wpforms_is_entry_field_value_iframe_allowed( array $field ): bool {
  * The `data-src` attribute is safe to allow only because the sink URL-validates it: the calling
  * context registers wpforms_add_data_src_uri_attribute() so kses rejects unsafe protocols in it.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @param array|mixed $tags    List of allowed HTML.
  * @param string      $context Context name.

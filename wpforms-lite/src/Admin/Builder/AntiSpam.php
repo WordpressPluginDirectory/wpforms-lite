@@ -137,6 +137,7 @@ class AntiSpam {
 				'default'    => 'opened',
 				'group'      => 'also_available',
 				'title'      => __( 'Also Available', 'wpforms-lite' ),
+				'title_attr' => __( 'Toggle Also Available Section', 'wpforms-lite' ),
 				'borders'    => [ 'top' ],
 			]
 		);

@@ -27,7 +27,7 @@ function wpforms_datetime_format( $date, $format = '', $gmt_offset = false ) {
 	}
 
 	if ( $gmt_offset ) {
-		$date += (int) ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+		$date += (int) ( (float) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
 	}
 
 	if ( $format === '' ) {
@@ -102,7 +102,7 @@ function wpforms_get_day_period_date( $period, $timestamp = '', $format = 'Y-m-d
 		$timestamp = time();
 	}
 
-	$offset_sec = $use_gmt_offset ? get_option( 'gmt_offset' ) * 3600 : 0;
+	$offset_sec = $use_gmt_offset ? (float) get_option( 'gmt_offset' ) * 3600 : 0;
 
 	switch ( $period ) {
 		case 'start_of_day':

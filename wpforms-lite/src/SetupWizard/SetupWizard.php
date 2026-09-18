@@ -79,7 +79,7 @@ class SetupWizard {
 	 * register the `wpforms_setup_wizard_setup_wizard_is_disabled` filter on the later
 	 * pageviews where the wizard actually launches. Read by `is_disabled()`.
 	 *
-	 * @since 2.0.0.2
+	 * @since 2.0.1
 	 *
 	 * @var string
 	 */
@@ -124,7 +124,7 @@ class SetupWizard {
 	/**
 	 * Launch screen.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @var Screen
 	 */
@@ -133,7 +133,7 @@ class SetupWizard {
 	/**
 	 * Cross-plugin onboarding suppression service.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 *
 	 * @var CrossPluginOnboarding
 	 */
@@ -402,7 +402,7 @@ class SetupWizard {
 	 * wp-config-level control, and the filter is the runtime override that
 	 * can force either direction.
 	 *
-	 * @since 2.0.0.2
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
@@ -418,7 +418,7 @@ class SetupWizard {
 		 * launch via the `wpforms_setup_wizard` query argument, and the
 		 * Welcome page fallback activation redirect.
 		 *
-		 * @since 2.0.0.2
+		 * @since 2.0.1
 		 *
 		 * @param bool $disabled Whether the wizard is disabled. Defaults to true
 		 *                       when the `wpforms_setup_wizard_disabled` option

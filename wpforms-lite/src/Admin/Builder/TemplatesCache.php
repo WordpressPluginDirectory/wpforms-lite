@@ -62,9 +62,19 @@ class TemplatesCache extends CacheBase {
 	private const PREPARED_DATA_REGISTRY = 'wpforms_prepared_templates_registry';
 
 	/**
+	 * Option name to store the core plugin version the cache was validated against.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @var string
+	 */
+	private const CACHE_VERSION_OPTION = 'wpforms_templates_cache_version';
+
+	/**
 	 * List of plugins that can use the templates cache.
 	 *
 	 * @since 1.8.7
+	 * @deprecated 2.0.2
 	 *
 	 * @var array
 	 */
@@ -104,22 +114,53 @@ class TemplatesCache extends CacheBase {
 	 *
 	 * @since 1.8.7
 	 */
-	public function init(): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+	public function init(): void {
 
 		parent::init();
 
-		// Upgrade cached templates data after the plugin update.
-		add_action( 'upgrader_process_complete', [ $this, 'upgrade_templates' ] );
+		$this->maybe_invalidate_on_core_update();
+	}
+
+	/**
+	 * Invalidate the cache when the core plugin version changes.
+	 *
+	 * Covers every update path, including those the WP upgrader does not perform
+	 * (manual replacement, host tooling, etc.).
+	 * Downgrades are ignored, mirroring the Migrations system behavior.
+	 * Invalidation is lazy: the cache is re-fetched on the next templates request.
+	 *
+	 * @since 2.0.2
+	 */
+	private function maybe_invalidate_on_core_update(): void {
+
+		// Detect the core update on the same request types the Migrations system does.
+		if ( ! wp_doing_cron() && ! is_admin() && ! wpforms_doing_wp_cli() ) {
+			return;
+		}
+
+		$stored_version = (string) get_option( self::CACHE_VERSION_OPTION );
+
+		if ( $stored_version && wpforms_version_compare( $stored_version, WPFORMS_VERSION, '>=' ) ) {
+			return;
+		}
+
+		$this->invalidate_cache();
+		$this->clear_all();
+
+		update_option( self::CACHE_VERSION_OPTION, wpforms_normalize_version( WPFORMS_VERSION ) );
 	}
 
 	/**
 	 * Upgrade cached templates data after the plugin update.
 	 *
 	 * @since 1.8.7
+	 * @deprecated 2.0.2
 	 *
 	 * @param object $upgrader WP_Upgrader instance.
 	 */
 	public function upgrade_templates( $upgrader ): void {
+
+		_deprecated_function( __METHOD__, '2.0.2 of the WPForms plugin' );
 
 		if ( $this->allow_update_cache( $upgrader ) ) {
 			$this->update( true );
@@ -139,13 +180,13 @@ class TemplatesCache extends CacheBase {
 
 		$result = $upgrader->result ?? null;
 
-		// Check if the plugin was updated.
-		if ( ! $result ) {
+		// The result is a WP_Error when the update fails.
+		if ( ! is_array( $result ) ) {
 			return false;
 		}
 
 		// Check if updated plugin is WPForms.
-		if ( ! in_array( $result['destination_name'], self::PLUGINS, true ) ) {
+		if ( ! in_array( $result['destination_name'] ?? '', self::PLUGINS, true ) ) {
 			return false;
 		}
 

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit01ec7d5549eab212e4ce3230e637bb98
+class ComposerStaticInit29ed1be7fb3f9dc5c9ba17a66c6e47ef
 {
     public static $files = array (
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
@@ -388,9 +388,6 @@ class ComposerStaticInit01ec7d5549eab212e4ce3230e637bb98
         'WPForms\\Vendor\\Psr\\Log\\LoggerInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/LoggerInterface.php',
         'WPForms\\Vendor\\Psr\\Log\\LoggerTrait' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/LoggerTrait.php',
         'WPForms\\Vendor\\Psr\\Log\\NullLogger' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/NullLogger.php',
-        'WPForms\\Vendor\\Psr\\Log\\Test\\DummyTest' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/DummyTest.php',
-        'WPForms\\Vendor\\Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
-        'WPForms\\Vendor\\Psr\\Log\\Test\\TestLogger' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/TestLogger.php',
         'WPForms\\Vendor\\Rs\\Json\\Pointer' => __DIR__ . '/../..' . '/vendor_prefixed/php-jsonpointer/php-jsonpointer/src/Rs/Json/Pointer.php',
         'WPForms\\Vendor\\Rs\\Json\\Pointer\\InvalidJsonException' => __DIR__ . '/../..' . '/vendor_prefixed/php-jsonpointer/php-jsonpointer/src/Rs/Json/Pointer/InvalidJsonException.php',
         'WPForms\\Vendor\\Rs\\Json\\Pointer\\InvalidPointerException' => __DIR__ . '/../..' . '/vendor_prefixed/php-jsonpointer/php-jsonpointer/src/Rs/Json/Pointer/InvalidPointerException.php',
@@ -2987,9 +2984,9 @@ class ComposerStaticInit01ec7d5549eab212e4ce3230e637bb98
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit01ec7d5549eab212e4ce3230e637bb98::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit01ec7d5549eab212e4ce3230e637bb98::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit01ec7d5549eab212e4ce3230e637bb98::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit29ed1be7fb3f9dc5c9ba17a66c6e47ef::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit29ed1be7fb3f9dc5c9ba17a66c6e47ef::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit29ed1be7fb3f9dc5c9ba17a66c6e47ef::$classMap;
 
         }, null, ClassLoader::class);
     }

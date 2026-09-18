@@ -204,7 +204,7 @@ class RestApi extends BaseRestApi {
 
 		$activated = activate_plugin( self::PRO_PLUGIN, '', false, true );
 
-		if ( is_wp_error( $activated ) ) {
+		if ( wpforms_is_plugin_activation_failed( $activated ) ) {
 			// Roll back so the site is never left with neither version active.
 			activate_plugin( $lite_plugin, '', false, true );
 

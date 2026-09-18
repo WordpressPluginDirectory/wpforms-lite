@@ -170,7 +170,7 @@ abstract class Base {
 
 			if (
 				( isset( $this->migrated[ $upgrade_version ] ) && $this->migrated[ $upgrade_version ] >= 0 ) ||
-				version_compare( $upgrade_version, static::CURRENT_VERSION, '>' ) ||
+				wpforms_version_compare( $upgrade_version, static::CURRENT_VERSION, '>' ) ||
 				! class_exists( $class )
 			) {
 				continue;
@@ -215,8 +215,12 @@ abstract class Base {
 		/**
 		 * Store the current version upgrade timestamp even if there were no migrations to it.
 		 * We need it in wpforms_get_upgraded_timestamp() for further usage in Event Driven Plugin Notifications.
+		 * The version key is normalized (the '-RCn' suffix is stripped) to keep the stored state
+		 * consistent with the normalized version comparisons in migrate() and update_previous_core_version().
 		 */
-		$migrated[ static::CURRENT_VERSION ] = $migrated[ static::CURRENT_VERSION ] ?? time();
+		$current_version = wpforms_normalize_version( static::CURRENT_VERSION );
+
+		$migrated[ $current_version ] = $migrated[ $current_version ] ?? time();
 
 		uksort( $last_migrated, 'version_compare' );
 		uksort( $migrated, 'version_compare' );
@@ -264,7 +268,7 @@ abstract class Base {
 
 		if (
 			$previous_core_version === self::INITIAL_FAKE_VERSION ||
-			version_compare( $previous_core_version, static::CURRENT_VERSION, '>=' )
+			wpforms_version_compare( $previous_core_version, static::CURRENT_VERSION, '>=' )
 		) {
 			return;
 		}

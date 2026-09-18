@@ -47,13 +47,15 @@ class ProcessSubscriptionAjax extends Base {
 			wp_send_json_error( esc_html__( 'Something went wrong. Please contact site administrator.', 'wpforms-lite' ) );
 		}
 
-		$this->connection  = Connection::get();
-		$this->form_data   = wpforms()->obj( 'form' )->get( $this->form_id, [ 'content_only' => true ] );
-		$subscription_data = $this->prepare_subscription_order_data();
+		$this->connection = Connection::get();
+		$this->form_data  = wpforms()->obj( 'form' )->get( $this->form_id, [ 'content_only' => true ] );
 
+		// The connection must be validated before the order data is prepared: preparing relies on it.
 		if ( ! $this->is_form_ok() ) {
 			wp_send_json_error( $this->errors );
 		}
+
+		$subscription_data = $this->prepare_subscription_order_data();
 
 		$error_title = esc_html__( 'This subscription cannot be created because there was an error with the create subscription API call.', 'wpforms-lite' );
 		$api         = PayPalCommerce::get_api( $this->connection );

@@ -88,6 +88,8 @@ class Notifications implements IntegrationInterface {
 	public function form_builder_strings( $strings, $form ) {
 
 		$strings['empty_email_address']     = esc_html__( 'Please enter a valid email address. Your notifications won\'t be sent if the field is not filled in correctly.', 'wpforms-lite' );
+		$strings['empty_recipient_email']   = esc_html__( 'No recipient is set. This notification won\'t be delivered. Add an email address or a smart tag like {admin_email}.', 'wpforms-lite' );
+		$strings['invalid_copy_email']      = esc_html__( 'Please enter a valid email address. A copy of the notification won\'t be sent if the field is not filled in correctly.', 'wpforms-lite' );
 		$strings['allow_only_one_email']    = esc_html__( 'Notifications can only use 1 From Email. Please do not enter multiple addresses.', 'wpforms-lite' );
 		$strings['allow_only_email_fields'] = esc_html__( 'This smart tag does not point to an Email field in your form.', 'wpforms-lite' );
 
@@ -184,10 +186,7 @@ class Notifications implements IntegrationInterface {
 		$install_wp_mail_smtp_text = '';
 
 		// If WP Mail SMTP is not active, show a message to install it.
-		if (
-			! is_plugin_active( 'wp-mail-smtp-pro/wp_mail_smtp.php' ) &&
-			! is_plugin_active( 'wp-mail-smtp/wp_mail_smtp.php' )
-		) {
+		if ( ! Helpers::is_active() ) {
 			$install_wp_mail_smtp_text .= sprintf(
 				wp_kses( /* translators: %1$s - WP Mail SMTP install page URL. */
 					__(

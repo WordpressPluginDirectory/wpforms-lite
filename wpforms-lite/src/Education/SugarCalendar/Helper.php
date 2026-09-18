@@ -10,56 +10,56 @@ namespace WPForms\Education\SugarCalendar;
  * post-install onboarding URL, and the data-* attribute payload the promo
  * banner install handler understands. Mirrors WPForms\Education\WPConsent\Helper.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  */
 class Helper {
 
 	/**
 	 * Lite plugin folder slug.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const SLUG = 'sugar-calendar-lite';
 
 	/**
 	 * Pro plugin folder slug.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const PRO_SLUG = 'sugar-calendar';
 
 	/**
 	 * Canonical WordPress.org zip download URL.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const INSTALL_ZIP_URL = 'https://downloads.wordpress.org/plugin/sugar-calendar-lite.zip';
 
 	/**
 	 * WordPress.org plugin page URL.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const WPORG_URL = 'https://wordpress.org/plugins/sugar-calendar-lite/';
 
 	/**
 	 * Onboarding (Getting Started) admin page slug.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const ONBOARDING_PAGE = 'sugar-calendar-getting-started';
 
 	/**
 	 * Form templates categories targeted by the Sugar Calendar promo banners.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	const TEMPLATES_CATEGORIES = [ 'event-planning', 'registrations' ];
 
 	/**
 	 * Cached resolved plugin basename.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @var string|null
 	 */
@@ -68,7 +68,7 @@ class Helper {
 	/**
 	 * Resolve the installed Sugar Calendar basename (lite or pro), '' if absent.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -100,7 +100,7 @@ class Helper {
 	/**
 	 * Whether a Sugar Calendar plugin folder (Lite or Pro) is present.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param bool $refresh Whether to resolve the basename again, for callers that changed
 	 *                      the installed plugins in the current request.
@@ -119,7 +119,7 @@ class Helper {
 	/**
 	 * Onboarding wizard URL.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -134,7 +134,7 @@ class Helper {
 	 * Only the install state is covered: the banners never render once the
 	 * plugin is installed, so there is nothing to activate from them.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array
 	 */

@@ -20,7 +20,7 @@ $modifier = $modifier ?? '';
 // only sets the gap before the trailing arrow. Default orange; `secondary` is blue.
 $cta_classes = [
 	'wpforms-btn',
-	'wpforms-btn-sm',
+	'wpforms-btn-md',
 	$modifier === 'secondary' ? 'wpforms-btn-blue' : 'wpforms-btn-orange',
 	'wpforms-setup-checklist-promo__footer-cta',
 ];

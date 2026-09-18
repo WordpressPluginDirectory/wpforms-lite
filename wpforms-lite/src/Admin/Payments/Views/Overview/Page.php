@@ -157,14 +157,7 @@ class Page implements PaymentsViewsInterface {
 				'label'                       => esc_html__( 'Payments', 'wpforms-lite' ),
 				'delete_button'               => esc_html__( 'Delete', 'wpforms-lite' ),
 				'subscription_delete_confirm' => $this->get_subscription_delete_confirmation_message(),
-				'no_dataset'                  => [
-					'total_payments'             => esc_html__( 'No payments for selected period', 'wpforms-lite' ),
-					'total_sales'                => esc_html__( 'No sales for selected period', 'wpforms-lite' ),
-					'total_refunded'             => esc_html__( 'No refunds for selected period', 'wpforms-lite' ),
-					'total_subscription'         => esc_html__( 'No new subscriptions for selected period', 'wpforms-lite' ),
-					'total_renewal_subscription' => esc_html__( 'No subscription renewals for the selected period', 'wpforms-lite' ),
-					'total_coupons'              => esc_html__( 'No coupons applied during the selected period', 'wpforms-lite' ),
-				],
+				'no_dataset'                  => Chart::get_no_data_headings(),
 			],
 			'page_uri'    => $this->get_current_uri(),
 		];
@@ -443,7 +436,7 @@ class Page implements PaymentsViewsInterface {
 	/**
 	 * Append the Mercado Pago tile to the Get Started gateway list.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array
 	 */
@@ -535,7 +528,7 @@ class Page implements PaymentsViewsInterface {
 	/**
 	 * Determine whether the Mercado Pago addon is active and has a valid connection.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */

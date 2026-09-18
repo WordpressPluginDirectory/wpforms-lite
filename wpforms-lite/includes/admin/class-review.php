@@ -33,6 +33,7 @@ class WPForms_Review {
 		'wpforms-about',
 		'wpforms-addons',
 		'wpforms-analytics',
+		'wpforms-dashboard',
 		'wpforms-community',
 		'wpforms-entries',
 		'wpforms-overview',

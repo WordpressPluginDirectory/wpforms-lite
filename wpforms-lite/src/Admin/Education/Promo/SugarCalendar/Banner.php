@@ -11,14 +11,14 @@ use WPForms\Education\SugarCalendar\Helper;
  * Everything the promoted product owns lives here, so a placement only supplies
  * its own copy and its own placement hooks.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  */
 abstract class Banner extends PromoBanner {
 
 	/**
 	 * Copy of the placement: the `heading` and the `body` of the banner.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array
 	 */
@@ -27,7 +27,7 @@ abstract class Banner extends PromoBanner {
 	/**
 	 * Whether Sugar Calendar (Lite or Pro) is installed.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
@@ -39,7 +39,7 @@ abstract class Banner extends PromoBanner {
 	/**
 	 * Template arguments.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array
 	 */

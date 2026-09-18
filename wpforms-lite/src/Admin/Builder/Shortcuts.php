@@ -39,6 +39,7 @@ class Shortcuts {
 	 * Get a shortcut list.
 	 *
 	 * @since 1.6.9
+	 * @since 2.0.2 Added Move Field Up/Down shortcuts.
 	 *
 	 * @return array
 	 */
@@ -46,22 +47,24 @@ class Shortcuts {
 
 		return [
 			'left'  => [
-				'ctrl s' => __( 'Save Form', 'wpforms-lite' ),
-				'ctrl p' => __( 'Preview Form', 'wpforms-lite' ),
-				'ctrl b' => __( 'Embed Form', 'wpforms-lite' ),
-				'ctrl f' => __( 'Search Fields', 'wpforms-lite' ),
-				'ctrl c' => __( 'Copy Fields', 'wpforms-lite' ),
-				'ctrl v' => __( 'Paste Fields', 'wpforms-lite' ),
-				'd'      => __( 'Duplicate Fields', 'wpforms-lite' ),
+				'ctrl s'           => __( 'Save Form', 'wpforms-lite' ),
+				'ctrl p'           => __( 'Preview Form', 'wpforms-lite' ),
+				'ctrl b'           => __( 'Embed Form', 'wpforms-lite' ),
+				'ctrl f'           => __( 'Search Fields', 'wpforms-lite' ),
+				'ctrl c'           => __( 'Copy Fields', 'wpforms-lite' ),
+				'ctrl v'           => __( 'Paste Fields', 'wpforms-lite' ),
+				'd'                => __( 'Duplicate Fields', 'wpforms-lite' ),
+				'ctrl shift alt t' => __( 'Move Field Up', 'wpforms-lite' ),
 			],
 			'right' => [
-				'ctrl z'       => __( 'Undo', 'wpforms-lite' ),
-				'ctrl shift z' => __( 'Redo', 'wpforms-lite' ),
-				'ctrl h'       => __( 'Open Help', 'wpforms-lite' ),
-				'ctrl t'       => __( 'Toggle Sidebar', 'wpforms-lite' ), // It is 'alt s' on Windows/Linux, dynamically changed in the modal in admin-builder.js openKeyboardShortcutsModal().
-				'ctrl e'       => __( 'View Entries', 'wpforms-lite' ),
-				'ctrl q'       => __( 'Close Builder', 'wpforms-lite' ),
-				'delete'       => __( 'Delete Fields', 'wpforms-lite' ),
+				'ctrl z'           => __( 'Undo', 'wpforms-lite' ),
+				'ctrl shift z'     => __( 'Redo', 'wpforms-lite' ),
+				'ctrl h'           => __( 'Open Help', 'wpforms-lite' ),
+				'ctrl t'           => __( 'Toggle Sidebar', 'wpforms-lite' ), // It is 'alt s' on Windows/Linux; keys are adjusted per platform in keyboard-shortcuts.js openKeyboardShortcutsModal().
+				'ctrl e'           => __( 'View Entries', 'wpforms-lite' ),
+				'ctrl q'           => __( 'Close Builder', 'wpforms-lite' ),
+				'delete'           => __( 'Delete Fields', 'wpforms-lite' ),
+				'ctrl shift alt y' => __( 'Move Field Down', 'wpforms-lite' ),
 			],
 		];
 	}
@@ -89,6 +92,7 @@ class Shortcuts {
 	 * Generate and output shortcuts modal content as the wp.template.
 	 *
 	 * @since 1.6.9
+	 * @since 2.0.2 Render any number of key parts per shortcut.
 	 */
 	public function output(): void {
 
@@ -102,35 +106,17 @@ class Shortcuts {
 
 				foreach ( $list as $key => $label ) {
 
-					$key_parts = explode( ' ', $key );
+					printf(
+						'<li>%1$s<span class="shortcut-key shortcut-key-%2$s">',
+						esc_html( $label ),
+						esc_attr( str_replace( ' ', '-', $key ) )
+					);
 
-					if ( count( $key_parts ) > 1 ) {
-						printf(
-							'<li>
-								%1$s
-								<span class="shortcut-key shortcut-key-%2$s">
-									<i>%3$s</i><i>%4$s</i><i>%5$s</i>
-								</span>
-							</li>',
-							esc_html( $label ),
-							esc_html( str_replace( ' ', '-', $key ) ),
-							esc_html( $key_parts[0] ),
-							esc_html( $key_parts[1] ?? '' ),
-							esc_html( $key_parts[2] ?? '' )
-						);
-					} else {
-						// Single key like 'delete' or 'd'.
-						printf(
-							'<li>
-								%1$s
-								<span class="shortcut-key shortcut-key-%2$s">
-									<i>%2$s</i>
-								</span>
-							</li>',
-							esc_html( $label ),
-							esc_html( $key )
-						);
+					foreach ( explode( ' ', $key ) as $key_part ) {
+						echo '<i>' . esc_html( $key_part ) . '</i>';
 					}
+
+					echo '</span></li>';
 				}
 
 				echo '</ul>';

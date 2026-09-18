@@ -355,7 +355,8 @@ class Payment extends WPForms_DB {
 			KEY customer_id (customer_id(32)),
 			KEY subscription_id (subscription_id(32)),
 			KEY subscription_status (subscription_status(8)),
-			KEY title (title(64))
+			KEY title (title(64)),
+			KEY created_form (date_created_gmt, form_id)
 		) $charset_collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';

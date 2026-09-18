@@ -65,6 +65,15 @@ abstract class WPForms_Template {
 	public $includes = '';
 
 	/**
+	 * Template keywords for search, e.g. "edit profile, update profile".
+	 *
+	 * @since 2.0.1
+	 *
+	 * @var string
+	 */
+	public $keywords = '';
+
+	/**
 	 * URL of the icon to display in the admin area.
 	 *
 	 * @since 1.0.0
@@ -183,6 +192,7 @@ abstract class WPForms_Template {
 			'categories'  => $this->categories,
 			'description' => $this->description,
 			'includes'    => $this->includes,
+			'keywords'    => $this->keywords,
 			'icon'        => $this->icon,
 			'url'         => ! empty( $this->url ) ? $this->url : '',
 			'plugin_dir'  => $this->get_plugin_dir(),

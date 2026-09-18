@@ -632,9 +632,14 @@ class WPForms_Field_Select extends WPForms_Field {
 			if ( ! empty( $field['show_values'] ) && (int) $field['show_values'] === 1 ) {
 
 				foreach ( $field_submit as $item ) {
-					foreach ( $field['choices'] as $choice ) {
+					foreach ( $field['choices'] as $key => $choice ) {
 						if ( $item === $choice['value'] ) {
-							$value[] = isset( $choice['label'] ) ? $choice['label'] : '';
+							$label = $this->get_choices_label( $choice['label'] ?? '', $key, $field );
+
+							// Skip an empty label, so the combined value never contains empty lines.
+							if ( ! wpforms_is_empty_string( $label ) ) {
+								$value[] = $label;
+							}
 
 							break;
 						}

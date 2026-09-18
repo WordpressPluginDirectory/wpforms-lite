@@ -1,5 +1,6 @@
 <?php
 
+use WPForms\Emails\AllFieldsTag;
 use WPForms\Helpers\Templates;
 use WPForms\Tasks\Actions\EntryEmailsTask;
 
@@ -390,7 +391,7 @@ class WPForms_WP_Emails {
 		// Plain text email shortcut.
 		if ( false === $this->html ) {
 			$message = $this->process_tag( $message );
-			$message = str_replace( '{all_fields}', $this->wpforms_html_field_value( false ), $message );
+			$message = $this->replace_all_fields_tag( $message, false );
 
 			return apply_filters( 'wpforms_email_message', wpforms_decode_string( $message ), $this );
 		}
@@ -422,10 +423,30 @@ class WPForms_WP_Emails {
 		$body = ob_get_clean();
 
 		$message = str_replace( '{email}', $message, $body );
-		$message = str_replace( '{all_fields}', $this->wpforms_html_field_value( true ), $message );
+		$message = $this->replace_all_fields_tag( $message, true );
 		$message = make_clickable( $message );
 
 		return apply_filters( 'wpforms_email_message', $message, $this );
+	}
+
+	/**
+	 * Replace every {all_fields} tag, honoring its exclusion parameters.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $message       Message.
+	 * @param bool   $is_html_email Toggle to use HTML or plaintext.
+	 *
+	 * @return string
+	 */
+	private function replace_all_fields_tag( string $message, bool $is_html_email ): string {
+
+		return AllFieldsTag::replace(
+			$message,
+			function ( array $options ) use ( $is_html_email ) {
+				return $this->wpforms_html_field_value( $is_html_email, $options );
+			}
+		);
 	}
 
 	/**
@@ -606,16 +627,20 @@ class WPForms_WP_Emails {
 	 * Process the all fields smart tag if present.
 	 *
 	 * @since 1.1.3
+	 * @since 2.0.2 The `$exclude` parameter was added.
 	 *
-	 * @param bool $is_html_email Toggle to use HTML or plaintext.
+	 * @param bool  $is_html_email Toggle to use HTML or plaintext.
+	 * @param array $exclude       Exclusion options as returned by AllFieldsTag::parse().
 	 *
 	 * @return string
 	 */
-	public function wpforms_html_field_value( $is_html_email = true ) { // phpcs:ignore
+	public function wpforms_html_field_value( $is_html_email = true, array $exclude = [] ) { // phpcs:ignore
 
 		if ( empty( $this->fields ) ) {
 			return '';
 		}
+
+		$exclude = AllFieldsTag::expand( (array) $exclude, (array) $this->form_data );
 
 		if ( empty( $this->form_data['fields'] ) ) {
 			$is_html_email = false;
@@ -642,6 +667,10 @@ class WPForms_WP_Emails {
 			$x = 1;
 
 			foreach ( $this->form_data['fields'] as $field_id => $field ) {
+
+				if ( AllFieldsTag::is_excluded( $field, $exclude ) ) {
+					continue;
+				}
 
 				$field_name = '';
 				$field_val  = '';
@@ -777,6 +806,10 @@ class WPForms_WP_Emails {
 			 * Plain Text emails.
 			 */
 			foreach ( $this->fields as $field ) {
+
+				if ( AllFieldsTag::is_excluded( $field, $exclude ) ) {
+					continue;
+				}
 
 				if (
 					! apply_filters( 'wpforms_email_display_empty_fields', false ) &&

@@ -122,6 +122,13 @@ class ProcessHelper {
 			return '';
 		}
 
-		return sanitize_email( $submitted_data['fields'][ $settings['shipping_email'] ] );
+		$email = $submitted_data['fields'][ $settings['shipping_email'] ];
+
+		// The Email field with the Confirm Email option enabled submits an array with `primary` and `secondary` values.
+		if ( is_array( $email ) ) {
+			$email = $email['primary'] ?? '';
+		}
+
+		return is_string( $email ) ? sanitize_email( $email ) : '';
 	}
 }

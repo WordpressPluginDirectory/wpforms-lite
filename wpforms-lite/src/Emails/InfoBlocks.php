@@ -184,7 +184,7 @@ class InfoBlocks {
 			return $block;
 		}
 
-		$blocks_sent = \get_option( 'wpforms_emails_infoblocks_sent' );
+		$blocks_sent = get_option( 'wpforms_email_summaries_info_blocks_sent' );
 
 		if ( empty( $blocks_sent ) || ! \is_array( $blocks_sent ) ) {
 			$block = $this->get_first_with_id( $data );

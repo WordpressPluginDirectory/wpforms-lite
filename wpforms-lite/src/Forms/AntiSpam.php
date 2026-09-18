@@ -72,7 +72,7 @@ class AntiSpam {
 	 */
 	public function get_random_field( $fields_data ) {
 
-		if ( ! is_array( $fields_data ) ) {
+		if ( ! is_array( $fields_data ) || ! $fields_data ) {
 			return $fields_data;
 		}
 

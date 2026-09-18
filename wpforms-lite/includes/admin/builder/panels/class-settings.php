@@ -218,6 +218,15 @@ class WPForms_Builder_Panel_Settings extends WPForms_Builder_Panel {
 				]
 			);
 
+			/**
+			 * Fires after the main General settings fields, before the Advanced group.
+			 *
+			 * @since 2.0.1
+			 *
+			 * @param WPForms_Builder_Panel_Settings $settings Current settings.
+			 */
+			do_action( 'wpforms_form_settings_general_main_after', $this ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+
 			$this->general_setting_advanced();
 
 			$this->ai_mcp_section();
@@ -380,6 +389,7 @@ class WPForms_Builder_Panel_Settings extends WPForms_Builder_Panel {
 				'unfoldable' => true,
 				'group'      => 'settings_advanced',
 				'title'      => esc_html__( 'Advanced', 'wpforms-lite' ),
+				'title_attr' => __( 'Toggle Advanced Settings', 'wpforms-lite' ),
 			]
 		);
 	}
@@ -415,6 +425,7 @@ class WPForms_Builder_Panel_Settings extends WPForms_Builder_Panel {
 				'unfoldable'  => true,
 				'group'       => 'settings_ai_mcp',
 				'title'       => esc_html__( 'AI MCP', 'wpforms-lite' ),
+				'title_attr'  => __( 'Toggle AI MCP Settings', 'wpforms-lite' ),
 				'title_badge' => '<span class="wpforms-badge wpforms-badge-sm wpforms-badge-inline wpforms-badge-rounded wpforms-badge-green">' . esc_html__( 'New', 'wpforms-lite' ) . '</span>',
 				'default'     => 'opened',
 			]

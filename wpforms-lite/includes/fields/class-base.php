@@ -7,6 +7,7 @@
 
 use WPForms\Forms\Fields\Base\Frontend as FrontendBase;
 use WPForms\Forms\Fields\Helpers\RequirementsAlerts;
+use WPForms\Forms\Fields\Traits\MoveButtons as MoveButtonsTrait;
 use WPForms\Forms\Fields\Traits\MultiFieldMenu as MultiFieldMenuTrait;
 use WPForms\Forms\Fields\Traits\ReadOnlyField as ReadOnlyFieldTrait;
 use WPForms\Forms\IconChoices;
@@ -19,6 +20,7 @@ use WPForms\Integrations\AI\Helpers as AIHelpers;
  */
 abstract class WPForms_Field {
 
+	use MoveButtonsTrait;
 	use MultiFieldMenuTrait;
 	use ReadOnlyFieldTrait;
 
@@ -740,13 +742,16 @@ abstract class WPForms_Field {
 
 		// Do not populate if there are errors for that field.
 
-		// Require form id being the same for submitted and currently rendered form.
+		// Require form id being submitted and the same for submitted and currently rendered form.
+		// Without the id requirement, a submission that omits it populates every rendered form silently.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		if (
-			! empty( $_POST['wpforms']['id'] ) && // phpcs:ignore
-			(int) $_POST['wpforms']['id'] !== (int) $this->form_data['id'] // phpcs:ignore
+			empty( $_POST['wpforms']['id'] ) ||
+			(int) $_POST['wpforms']['id'] !== (int) $this->form_data['id']
 		) {
 			$allowed = false;
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// Require $_POST of the submitted field.
 		if ( empty( $_POST['wpforms']['fields'] ) ) { // phpcs:ignore
@@ -3522,12 +3527,14 @@ abstract class WPForms_Field {
 
 		$prev    = ob_get_clean();
 		$preview = sprintf(
-			'<div class="wpforms-field wpforms-field-%1$s %2$s %3$s" id="wpforms-field-%4$s" data-field-id="%4$s" data-field-type="%1$s">',
+			'<div class="wpforms-field wpforms-field-%1$s %2$s %3$s" id="wpforms-field-%4$s" data-field-id="%4$s" data-field-type="%1$s" tabindex="0">',
 			esc_attr( $field_type ),
 			esc_attr( $field_required ),
 			esc_attr( $field_class ),
 			$field_id
 		);
+
+		$preview .= $this->get_move_buttons_html();
 
 		/**
 		 * Allow the duplicate button to be hidden.
@@ -3539,13 +3546,13 @@ abstract class WPForms_Field {
 		 */
 		if ( (bool) apply_filters( 'wpforms_field_new_display_duplicate_button', true, $field ) ) { // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 			$preview .= sprintf(
-				'<a href="#" class="wpforms-field-duplicate" title="%s"><i class="fa fa-files-o" aria-hidden="true"></i></a>',
+				'<a href="#" role="button" tabindex="-1" class="wpforms-field-duplicate" title="%1$s" aria-label="%1$s"><i class="fa fa-files-o" aria-hidden="true"></i></a>',
 				esc_attr__( 'Duplicate Field', 'wpforms-lite' )
 			);
 		}
 
 		$preview .= sprintf(
-			'<a href="#" class="wpforms-field-delete" title="%s"><i class="fa fa-trash-o"></i></a>',
+			'<a href="#" role="button" tabindex="-1" class="wpforms-field-delete" title="%1$s" aria-label="%1$s"><i class="fa fa-trash-o" aria-hidden="true"></i></a>',
 			esc_attr__( 'Delete Field', 'wpforms-lite' )
 		);
 

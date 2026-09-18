@@ -220,7 +220,7 @@ class WPForms_Lite {
 						],
 						'parent'      => 'settings',
 						'subsection'  => $id,
-						'class'       => 'email-recipient',
+						'class'       => 'email-recipient js-wpforms-recipient-email-validation',
 						'input_class' => 'wpforms-smart-tags-enabled',
 					]
 				);
@@ -239,6 +239,7 @@ class WPForms_Lite {
 							],
 							'parent'      => 'settings',
 							'subsection'  => $id,
+							'class'       => 'js-wpforms-recipient-email-validation js-wpforms-copy-recipient',
 							'input_class' => 'wpforms-smart-tags-enabled',
 						]
 					);

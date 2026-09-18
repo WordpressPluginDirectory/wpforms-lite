@@ -57,6 +57,9 @@ class Forms extends API {
 		// Add prompt debug info support.
 		$args['debug'] = defined( 'WPFORMS_AI_DEBUG' ) && WPFORMS_AI_DEBUG;
 
+		// Add global settings (captcha, geolocation) to the request arguments.
+		$args['global_settings'] = $this->get_global_settings();
+
 		$response = $this->request->post( self::ENDPOINT, $args );
 
 		if ( $response->has_errors() ) {

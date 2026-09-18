@@ -2,7 +2,8 @@
 
 namespace WPForms\Integrations\LiteConnect;
 
-use WP_User;
+use WP_Error; // phpcs:ignore WPForms.PHP.UseStatement.UnusedUseStatement
+use WP_User; // phpcs:ignore WPForms.PHP.UseStatement.UnusedUseStatement
 use WPForms\Helpers\Transient;
 
 /**
@@ -193,7 +194,7 @@ class API {
 	 * The remote API rejects empty first/last name params, but a blank profile name
 	 * (or an email with no WordPress user behind it) is a valid state.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 *
 	 * @param WP_User|false $user        User matched by the Lite Connect email.
 	 * @param string|false  $admin_email Email that enabled Lite Connect.
@@ -227,7 +228,7 @@ class API {
 	/**
 	 * Get a non-empty name to register the site with.
 	 *
-	 * @since 2.0.0.4
+	 * @since 2.0.1
 	 *
 	 * @param WP_User|false $user        User matched by the Lite Connect email.
 	 * @param string|false  $admin_email Email that enabled Lite Connect.
@@ -311,6 +312,55 @@ class API {
 	}
 
 	/**
+	 * Build the user-agent string for Lite Connect API requests.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return string
+	 */
+	private static function get_user_agent(): string {
+
+		return 'WPForms/' . WPFORMS_VERSION . '; ' . home_url();
+	}
+
+	/**
+	 * Send a POST request to a Lite Connect API endpoint.
+	 *
+	 * Shared transport for both instance-based `request()` and static callers
+	 * like `Integration::get_stats()`. Applies the canonical timeout filter
+	 * and user-agent header.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @param string $url     Full endpoint URL.
+	 * @param array  $body    Request body.
+	 * @param array  $headers HTTP headers.
+	 *
+	 * @return array|WP_Error Raw `wp_remote_post()` response.
+	 */
+	public static function post( string $url, array $body, array $headers = [] ) {
+
+		/**
+		 * Allow to filter Lite Connect request timeout.
+		 *
+		 * @since 1.8.8
+		 *
+		 * @param int $timeout Timeout value in seconds.
+		 */
+		$timeout = (int) apply_filters( 'wpforms_integrations_lite_connect_api_request_timeout', 60 );
+
+		return wp_remote_post(
+			$url,
+			[
+				'timeout'    => $timeout,
+				'headers'    => $headers,
+				'body'       => $body,
+				'user-agent' => self::get_user_agent(),
+			]
+		);
+	}
+
+	/**
 	 * Send a request to the Lite Connect API.
 	 *
 	 * @since 1.7.4
@@ -323,28 +373,8 @@ class API {
 	 */
 	protected function request( $uri, $body, $headers = [] ) {
 
-		$url        = $this->api_url . $uri;
-		$user_agent = 'WPForms/' . WPFORMS_VERSION . '; ' . home_url();
-
-		/**
-		 * Allow to filter Lite Connect request timeout.
-		 *
-		 * @since 1.8.8
-		 *
-		 * @param int $timeout Timeout value in seconds.
-		 */
-		$timeout = (int) apply_filters( 'wpforms_integrations_lite_connect_api_request_timeout', 60 );
-
-		$response = wp_remote_post(
-			$url,
-			[
-				'method'     => 'POST',
-				'timeout'    => $timeout,
-				'headers'    => $headers,
-				'body'       => $body,
-				'user-agent' => $user_agent,
-			]
-		);
+		$url      = $this->api_url . $uri;
+		$response = self::post( $url, $body, $headers );
 
 		if (
 			is_wp_error( $response ) ||
@@ -373,7 +403,7 @@ class API {
 						'url'        => $url,
 						'body'       => $this->prepare_log_data( $body ),
 						'headers'    => $this->prepare_log_data( $headers ),
-						'user-agent' => $user_agent,
+						'user-agent' => self::get_user_agent(),
 					],
 				],
 				$args

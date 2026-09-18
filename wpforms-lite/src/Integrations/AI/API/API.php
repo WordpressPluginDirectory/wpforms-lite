@@ -121,4 +121,64 @@ class API {
 		// Remove any extra characters.
 		return trim( $prompt, ' .,!?:' );
 	}
+
+	/**
+	 * Get global settings to pass to the AI middleware.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return array
+	 */
+	protected function get_global_settings(): array {
+
+		$captcha  = wpforms_get_captcha_settings();
+		$provider = $captcha['provider'] ?? 'none';
+
+		return [
+			'captcha'     => [
+				'provider'       => $provider,
+				'configured'     => $provider !== 'none'
+									&& ! empty( $captcha['site_key'] )
+									&& ! empty( $captcha['secret_key'] ),
+				'recaptcha_type' => $provider === 'recaptcha' ? ( $captcha['recaptcha_type'] ?? null ) : null,
+			],
+			'geolocation' => $this->get_geolocation_settings(),
+			'privacy'     => [
+				// Not the master GDPR toggle, which travels as the top-level `gdpr` body value.
+				// This is `gdpr && gdpr-disable-uuid` resolved, the fact the Quiz addon needs:
+				// quizzes identify takers by cookie and cannot run without one.
+				'disable_user_cookies' => ! wpforms_is_collecting_cookies_allowed(),
+			],
+		];
+	}
+
+	/**
+	 * Get Geolocation addon settings to pass to the AI middleware.
+	 *
+	 * Reads the saved provider/API-key settings directly (the same settings the
+	 * Geolocation addon's own provider classes check internally) rather than
+	 * depending on the addon's classes, so this works whether or not the addon
+	 * is installed.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return array
+	 */
+	private function get_geolocation_settings(): array {
+
+		$provider = (string) wpforms_setting( 'geolocation-field-provider', '' );
+
+		$configured = false;
+
+		if ( $provider === 'google-places' ) {
+			$configured = ! empty( wpforms_setting( 'geolocation-google-places-api-key' ) );
+		} elseif ( $provider === 'mapbox-search' ) {
+			$configured = ! empty( wpforms_setting( 'geolocation-mapbox-search-access-token' ) );
+		}
+
+		return [
+			'provider'   => $provider !== '' ? $provider : 'none',
+			'configured' => $configured,
+		];
+	}
 }

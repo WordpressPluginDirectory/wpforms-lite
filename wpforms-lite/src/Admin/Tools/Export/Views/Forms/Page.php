@@ -221,7 +221,7 @@ class Page implements ExportViewsInterface {
 	 * read are skipped: the form handler applies the object-level capability
 	 * check per form when access controls are active.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @param array $form_ids Requested form IDs.
 	 *

@@ -245,7 +245,14 @@ class Connection {
 		// Default to the current class.
 		$class = static::class;
 
-		if ( Helpers::is_pro() && Helpers::is_legacy() ) {
+		// The addon class is only guaranteed to be loaded when the addon's autoloader has run.
+		// On multisite is_pro() can be true from an activation record alone.
+		if (
+			Helpers::is_pro() &&
+			Helpers::is_legacy() &&
+			// phpcs:ignore WPForms.PHP.BackSlash.UseShortSyntax
+			class_exists( \WPFormsPaypalCommerce\Connection::class )
+		) {
 			// phpcs:ignore WPForms.PHP.BackSlash.UseShortSyntax
 			$class = \WPFormsPaypalCommerce\Connection::class;
 		}

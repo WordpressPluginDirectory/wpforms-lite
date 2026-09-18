@@ -51,7 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 		</div>
 		<?php if ( ! $is_stripe_connected ) : ?>
-			<a class="wpforms-btn wpforms-btn-sm wpforms-setup-checklist-payment__btn" href="<?php echo esc_url( $gateway['url'] ); ?>">
+			<a class="wpforms-btn wpforms-btn-md wpforms-setup-checklist-payment__btn" href="<?php echo esc_url( $gateway['url'] ); ?>">
 				<img class="wpforms-setup-checklist-payment__btn-icon" src="<?php echo esc_url( $gateway['btn_icon'] ); ?>" alt="" width="12" height="16">
 				<span class="wpforms-setup-checklist-payment__btn-divider" aria-hidden="true"></span>
 				<span class="wpforms-setup-checklist-payment__btn-text"><?php echo esc_html( $gateway['btn_text'] ); ?></span>

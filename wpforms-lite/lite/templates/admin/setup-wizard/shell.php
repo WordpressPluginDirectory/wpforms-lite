@@ -10,7 +10,7 @@
  * padding and margins in setup-wizard.scss still will not mirror, because
  * WPForms has no RTL CSS pipeline. Revisit if one is adopted.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  *
  * @var string $view     Screen view HTML.
  * @var array  $config   JS configuration.

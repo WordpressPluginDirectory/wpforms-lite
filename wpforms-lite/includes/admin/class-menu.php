@@ -78,6 +78,25 @@ class WPForms_Admin_Menu {
 			apply_filters( 'wpforms_menu_position', '58.9' ) // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 		);
 
+		// Dashboard sub menu item — first entry, so it becomes the default landing for admins.
+		add_submenu_page(
+			'wpforms-overview',
+			esc_html__( 'WPForms Dashboard', 'wpforms-lite' ),
+			esc_html__( 'Dashboard', 'wpforms-lite' ),
+			$manage_cap,
+			'wpforms-dashboard',
+			[ $this, 'admin_page' ]
+		);
+
+		global $submenu;
+
+		// WP auto-inserts the parent page as the first submenu item because the first
+		// registered submenu slug differs from the parent slug. Remove that duplicate
+		// so the Dashboard is genuinely first and becomes the top-level menu target.
+		if ( ( $submenu['wpforms-overview'][0][2] ?? '' ) === 'wpforms-overview' ) {
+			unset( $submenu['wpforms-overview'][0] );
+		}
+
 		// All Forms sub menu item.
 		add_submenu_page(
 			'wpforms-overview',
@@ -112,7 +131,7 @@ class WPForms_Admin_Menu {
 		add_submenu_page(
 			'wpforms-overview',
 			esc_html__( 'Payments', 'wpforms-lite' ),
-			esc_html__( 'Payments', 'wpforms-lite' ) . $this->get_new_badge_html(),
+			esc_html__( 'Payments', 'wpforms-lite' ),
 			$manage_cap,
 			WPForms\Admin\Payments\Payments::SLUG,
 			[ $this, 'admin_page' ]
@@ -575,29 +594,17 @@ class WPForms_Admin_Menu {
 	}
 
 	/**
-	 * Get the HTML for the "NEW!" badge.
-	 *
-	 * @since 1.7.8
-	 *
-	 * @return string
-	 */
-	private function get_new_badge_html(): string {
-
-		return '<span class="wpforms-menu-new">&nbsp;NEW!</span>';
-	}
-
-	/**
 	 * Output inline styles for the admin menu.
 	 *
 	 * @since 1.7.8
 	 */
 	public function admin_menu_styles(): void {
 
-		$styles = '#adminmenu .wpforms-menu-new { display: inline-block; color: #f18500; vertical-align: super; font-size: 9px; font-weight: 600; padding-inline-start: 2px; }';
-
-		if ( ! wpforms()->is_pro() ) {
-			$styles .= 'a.wpforms-sidebar-upgrade-pro { background-color: #00a32a !important; color: #fff !important; font-weight: 600 !important; }';
+		if ( wpforms()->is_pro() ) {
+			return;
 		}
+
+		$styles = 'a.wpforms-sidebar-upgrade-pro { background-color: #00a32a !important; color: #fff !important; font-weight: 600 !important; }';
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		printf( '<style>%s</style>', $styles );

@@ -212,7 +212,7 @@ class Field extends WPForms_Field {
 					$field,
 					[
 						'slug'  => 'show_locations_list',
-						'value' => isset( $field['show_locations_list'] ) ? '1' : '0',
+						'value' => ! empty( $field['show_locations_list'] ) ? '1' : '0',
 						'desc'  => esc_html__( 'Show List of Locations', 'wpforms-lite' ),
 					],
 					false
@@ -230,7 +230,7 @@ class Field extends WPForms_Field {
 					$field,
 					[
 						'slug'  => 'allow_location_selection',
-						'value' => isset( $field['allow_location_selection'] ) ? '1' : '0',
+						'value' => ! empty( $field['allow_location_selection'] ) ? '1' : '0',
 						'desc'  => esc_html__( 'Allow Location Selection', 'wpforms-lite' ),
 					],
 					false
@@ -307,7 +307,7 @@ class Field extends WPForms_Field {
 							'map-control' => 'fullscreenControl',
 						],
 						'slug'  => 'hide_full_screen',
-						'value' => isset( $field['hide_full_screen'] ) ? '1' : '0',
+						'value' => ! empty( $field['hide_full_screen'] ) ? '1' : '0',
 						'desc'  => esc_html__( 'Hide Full Screen ', 'wpforms-lite' ),
 					],
 					false
@@ -330,7 +330,7 @@ class Field extends WPForms_Field {
 								'map-control' => 'mapTypeControl',
 							],
 							'slug'  => 'hide_map_type',
-							'value' => isset( $field['hide_map_type'] ) ? '1' : '0',
+							'value' => ! empty( $field['hide_map_type'] ) ? '1' : '0',
 							'desc'  => esc_html__( 'Hide Map Type ', 'wpforms-lite' ),
 						],
 						false
@@ -348,7 +348,7 @@ class Field extends WPForms_Field {
 						$field,
 						[
 							'slug'  => 'hide_location_info',
-							'value' => isset( $field['hide_location_info'] ) ? '1' : '0',
+							'value' => ! empty( $field['hide_location_info'] ) ? '1' : '0',
 							'desc'  => esc_html__( 'Hide Location Info ', 'wpforms-lite' ),
 						],
 						false
@@ -370,7 +370,7 @@ class Field extends WPForms_Field {
 								'map-control' => 'streetViewControl',
 							],
 							'slug'  => 'hide_street_view',
-							'value' => isset( $field['hide_street_view'] ) ? '1' : '0',
+							'value' => ! empty( $field['hide_street_view'] ) ? '1' : '0',
 							'desc'  => esc_html__( 'Hide Street View ', 'wpforms-lite' ),
 						],
 						false
@@ -394,7 +394,7 @@ class Field extends WPForms_Field {
 								'map-control' => 'cameraControl',
 							],
 							'slug'  => 'hide_camera_control',
-							'value' => isset( $field['hide_camera_control'] ) ? '1' : '0',
+							'value' => ! empty( $field['hide_camera_control'] ) ? '1' : '0',
 							'desc'  => esc_html__( 'Hide Camera Control ', 'wpforms-lite' ),
 						],
 						false
@@ -417,7 +417,7 @@ class Field extends WPForms_Field {
 							'map-control' => 'zoomControl',
 						],
 						'slug'  => 'hide_zoom',
-						'value' => isset( $field['hide_zoom'] ) ? '1' : '0',
+						'value' => ! empty( $field['hide_zoom'] ) ? '1' : '0',
 						'desc'  => esc_html__( 'Hide Zoom ', 'wpforms-lite' ),
 					],
 					false
@@ -435,7 +435,7 @@ class Field extends WPForms_Field {
 					$field,
 					[
 						'slug'  => 'disable_dragging',
-						'value' => isset( $field['disable_dragging'] ) ? '1' : '0',
+						'value' => ! empty( $field['disable_dragging'] ) ? '1' : '0',
 						'desc'  => esc_html__( 'Disable Dragging ', 'wpforms-lite' ),
 					],
 					false
@@ -453,7 +453,7 @@ class Field extends WPForms_Field {
 					$field,
 					[
 						'slug'  => 'disable_mouse_zooming',
-						'value' => isset( $field['disable_mouse_zooming'] ) ? '1' : '0',
+						'value' => ! empty( $field['disable_mouse_zooming'] ) ? '1' : '0',
 						'desc'  => esc_html__( 'Disable Mouse Zooming ', 'wpforms-lite' ),
 					],
 					false
@@ -473,7 +473,7 @@ class Field extends WPForms_Field {
 					$field,
 					[
 						'slug'  => 'show_in_entry',
-						'value' => isset( $field['show_in_entry'] ) ? '1' : '0',
+						'value' => ! empty( $field['show_in_entry'] ) ? '1' : '0',
 						'desc'  => esc_html__( 'Show in Entry ', 'wpforms-lite' ),
 					],
 					false
@@ -491,7 +491,7 @@ class Field extends WPForms_Field {
 					$field,
 					[
 						'slug'  => 'show_thumbnail_in_entry',
-						'value' => isset( $field['show_thumbnail_in_entry'] ) ? '1' : '0',
+						'value' => ! empty( $field['show_thumbnail_in_entry'] ) ? '1' : '0',
 						'desc'  => esc_html__( 'Show Thumbnail in Entry ', 'wpforms-lite' ),
 					],
 					false
@@ -677,7 +677,8 @@ class Field extends WPForms_Field {
 		);
 
 		printf(
-			'<ul class="choices-list wpforms-undo-redo-container" data-next-id="%1$d" data-field-id="%2$d" data-field-type="location">',
+			'<ul id="%1$s" class="choices-list wpforms-undo-redo-container" data-next-id="%2$d" data-field-id="%3$d" data-field-type="location">',
+			esc_attr( 'wpforms-field-option-' . $field_id . '-choices-list' ),
 			(int) $next_id,
 			(int) $field_id
 		);
@@ -729,15 +730,15 @@ class Field extends WPForms_Field {
 		?>
 		<li data-key="<?php echo absint( $location_index ); ?>" class="wpforms-geolocation-map-field-location-size-<?php echo esc_attr( $location['size'] ); ?> wpforms-geolocation-map-field-location-<?php echo esc_attr( $location['marker_type'] ); ?>">
 			<span class="move"><i class="fa fa-grip-lines"></i></span>
-			<input type="text" name="<?php echo esc_attr( $base ); ?>[name]" value="<?php echo esc_attr( $location['name'] ); ?>" data-1p-ignore="true" class="label wpforms-geolocation-map-field-location-name" placeholder="<?php esc_attr_e( 'Name', 'wpforms-lite' ); ?>">
+			<input type="text" name="<?php echo esc_attr( $base ); ?>[name]" value="<?php echo esc_attr( $location['name'] ); ?>" data-1p-ignore="true" class="label name wpforms-geolocation-map-field-location-name" placeholder="<?php esc_attr_e( 'Name', 'wpforms-lite' ); ?>">
 
 			<a class="add" href="#"><i class="fa fa-plus-circle"></i></a>
 			<a class="remove" href="#"><i class="fa fa-minus-circle"></i></a>
 
-			<input type="text" name="<?php echo esc_attr( $base ); ?>[address]" id="<?php echo esc_attr( $id_base ); ?>address" value="<?php echo esc_attr( $location['address'] ); ?>" class="wpforms-geolocation-map-field-location-address" placeholder="<?php esc_attr_e( 'Address', 'wpforms-lite' ); ?>">
-			<input type="hidden" name="<?php echo esc_attr( $base ); ?>[latitude]" value="<?php echo esc_attr( $location['latitude'] ); ?>" class="wpforms-geolocation-map-field-location-latitude">
-			<input type="hidden" name="<?php echo esc_attr( $base ); ?>[longitude]" value="<?php echo esc_attr( $location['longitude'] ); ?>" class="wpforms-geolocation-map-field-location-longitude">
-			<input type="text" name="<?php echo esc_attr( $base ); ?>[description]" value="<?php echo esc_attr( $location['description'] ); ?>" class="wpforms-geolocation-map-field-location-description" placeholder="<?php esc_attr_e( 'Description', 'wpforms-lite' ); ?>">
+			<input type="text" name="<?php echo esc_attr( $base ); ?>[address]" id="<?php echo esc_attr( $id_base ); ?>address" value="<?php echo esc_attr( $location['address'] ); ?>" class="address wpforms-geolocation-map-field-location-address" placeholder="<?php esc_attr_e( 'Address', 'wpforms-lite' ); ?>">
+			<input type="hidden" name="<?php echo esc_attr( $base ); ?>[latitude]" value="<?php echo esc_attr( $location['latitude'] ); ?>" class="latitude wpforms-geolocation-map-field-location-latitude">
+			<input type="hidden" name="<?php echo esc_attr( $base ); ?>[longitude]" value="<?php echo esc_attr( $location['longitude'] ); ?>" class="longitude wpforms-geolocation-map-field-location-longitude">
+			<input type="text" name="<?php echo esc_attr( $base ); ?>[description]" value="<?php echo esc_attr( $location['description'] ); ?>" class="description wpforms-geolocation-map-field-location-description" placeholder="<?php esc_attr_e( 'Description', 'wpforms-lite' ); ?>">
 
 			<select name="<?php echo esc_attr( $base ); ?>[marker_type]" class="wpforms-geolocation-map-field-location-marker-type">
 				<option value="icon" <?php selected( 'icon', $location['marker_type'] ); ?>><?php esc_html_e( 'Icon', 'wpforms-lite' ); ?></option>

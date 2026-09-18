@@ -16,14 +16,14 @@ use WPForms\Education\SugarCalendar\Helper;
  * (TemplatesCache content file + batch transients), so per-user banner
  * state must never be rendered into it.
  *
- * @since 2.0.0.3
+ * @since 2.0.1
  */
 class TemplatesGrid extends Banner {
 
 	/**
 	 * Unique banner id, product qualified so other products can add their own placements.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -35,7 +35,7 @@ class TemplatesGrid extends Banner {
 	/**
 	 * Dismissal section slug.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return string
 	 */
@@ -47,7 +47,7 @@ class TemplatesGrid extends Banner {
 	/**
 	 * Whether the current admin page renders the templates grid.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 */
@@ -59,7 +59,7 @@ class TemplatesGrid extends Banner {
 	/**
 	 * Placement hooks.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	protected function hooks(): void {
 
@@ -72,7 +72,7 @@ class TemplatesGrid extends Banner {
 	/**
 	 * Banner copy.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 *
 	 * @return array
 	 */
@@ -96,7 +96,7 @@ class TemplatesGrid extends Banner {
 	 * The install URL identifies the product, so the banner is not injected anymore
 	 * once it was installed from another placement in the same session.
 	 *
-	 * @since 2.0.0.3
+	 * @since 2.0.1
 	 */
 	public function print_banner_template(): void {
 

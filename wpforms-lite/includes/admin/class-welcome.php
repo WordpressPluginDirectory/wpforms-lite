@@ -207,7 +207,7 @@ class WPForms_Welcome {
 	 * unintended screens from a single switch. Guarded so the page degrades to
 	 * its legacy behaviour if the wizard class is unavailable.
 	 *
-	 * @since 2.0.0.2
+	 * @since 2.0.1
 	 *
 	 * @return bool
 	 * @noinspection ClassConstantCanBeUsedInspection

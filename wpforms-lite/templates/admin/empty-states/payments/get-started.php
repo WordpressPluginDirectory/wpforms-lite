@@ -35,7 +35,7 @@ $grid_gateways  = $gateways;
 unset( $grid_gateways['stripe'] );
 
 ?>
-<div class="wpforms-admin-empty-state-container wpforms-admin-no-payments">
+<div class="wpforms-admin-empty-state-container wpforms-admin-no-payments wpforms-admin-payments-get-started">
 
 	<div class="wpforms-empty-payments-header">
 		<h2 class="waving-hand-emoji"><?php esc_html_e( 'Ready to Accept Payments?', 'wpforms-lite' ); ?></h2>

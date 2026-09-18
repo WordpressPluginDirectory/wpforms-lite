@@ -503,6 +503,15 @@ class Challenge {
 			return false;
 		}
 
+		// The challenge should not start on the Dashboard page: it initiates when the
+		// user creates their first form instead.
+		if ( wpforms_is_admin_page( 'dashboard' ) ) {
+			$can_start = false;
+
+			// No need to check something else in this case.
+			return false;
+		}
+
 		// Force start the Challenge.
 		if ( $this->challenge_force_start() && ! $this->is_builder_page() && ! $this->is_form_embed_page() ) {
 			$can_start = true;
