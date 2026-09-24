@@ -226,7 +226,11 @@ class WPForms_Field_Textarea extends WPForms_Field {
 		$value   = '';
 
 		if ( isset( $primary['attr']['value'] ) ) {
-			$value = esc_textarea( html_entity_decode( $primary['attr']['value'] ) );
+			// Escaping runs on the decoded value, then the delimiters are encoded again, because
+			// esc_textarea() would otherwise double-encode the entities population already wrote.
+			$value = wpforms_encode_shortcode_delimiters(
+				esc_textarea( html_entity_decode( $primary['attr']['value'] ) )
+			);
 
 			unset( $primary['attr']['value'] );
 		}

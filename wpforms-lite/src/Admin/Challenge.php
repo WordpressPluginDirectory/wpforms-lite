@@ -361,6 +361,16 @@ class Challenge {
 		$option = ! $option || ! is_array( $option ) ? $schema : $option;
 
 		update_option( 'wpforms_challenge', array_merge( $option, $replace ) );
+
+		/**
+		 * Fires after Challenge parameters were saved.
+		 *
+		 * @since 2.0.2.1
+		 *
+		 * @param array $replace Parameters written, sanitized, keyed by schema key.
+		 * @param array $option  Challenge option as it was before this write.
+		 */
+		do_action( 'wpforms_admin_challenge_set_challenge_option', $replace, $option );
 	}
 
 	/**

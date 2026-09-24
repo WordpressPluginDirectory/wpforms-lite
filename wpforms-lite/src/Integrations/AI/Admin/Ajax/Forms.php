@@ -29,6 +29,16 @@ class Forms extends Base {
 	];
 
 	/**
+	 * Value of `$data['source']` handed to Form::add() for a form the generator built.
+	 *
+	 * A key of its own rather than `template`, which the creation filters look up in the
+	 * template catalog and would apply if a template ever took that slug.
+	 *
+	 * @since 2.0.2.1
+	 */
+	public const CREATION_SOURCE = 'ai';
+
+	/**
 	 * The addon fields.
 	 *
 	 * @since 1.9.4
@@ -369,7 +379,8 @@ class Forms extends Base {
 
 		// Add a new form if it is a new form.
 		if ( empty( $form_id ) ) {
-			$form_id = $form_obj->add( $form_data['form_title'] );
+			// Tells a wpforms_create_form listener this form came from the generator.
+			$form_id = $form_obj->add( $form_data['form_title'], [], [ 'source' => self::CREATION_SOURCE ] );
 		}
 
 		// Check if the form was created.

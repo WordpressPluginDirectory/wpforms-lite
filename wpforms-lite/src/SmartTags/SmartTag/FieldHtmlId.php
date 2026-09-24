@@ -51,6 +51,10 @@ class FieldHtmlId extends SmartTag {
 		 * @param array  $form_data Processed form settings/data, prepared to be used later.
 		 * @param string $context   Context usage.
 		 */
-		return (string) apply_filters( 'wpforms_html_field_value', $value, $fields[ $field_id ], $form_data, 'smart-tag' );
+		$value = (string) apply_filters( 'wpforms_html_field_value', $value, $fields[ $field_id ], $form_data, 'smart-tag' ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+
+		// The callbacks build their own markup, so the escaping above says nothing about what they
+		// return. The admin entry surfaces gate the same filter this way.
+		return wpforms_esc_entry_field_value( $value, wpforms_is_entry_field_value_iframe_allowed( $fields[ $field_id ] ) );
 	}
 }

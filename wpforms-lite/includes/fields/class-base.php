@@ -409,6 +409,8 @@ abstract class WPForms_Field {
 			return $properties;
 		}
 
+		$original = $properties;
+
 		// Iterate over each GET key, parse, and scrap data from there.
 		foreach ( $_GET as $key => $raw_value ) { // phpcs:ignore
 			preg_match( '/wpf(\d+)_(\d+)(.*)/i', $key, $matches );
@@ -477,7 +479,7 @@ abstract class WPForms_Field {
 			}
 		}
 
-		return $properties;
+		return $this->encode_shortcode_delimiters( $properties, $original );
 	}
 
 	/**
@@ -795,6 +797,8 @@ abstract class WPForms_Field {
 			return $properties;
 		}
 
+		$original = $properties;
+
 		// We got user submitted raw data (not processed, will be done later).
 		$raw_value = $_POST['wpforms']['fields'][ $field['id'] ]; // phpcs:ignore
 		$input     = 'primary';
@@ -814,6 +818,39 @@ abstract class WPForms_Field {
 			}
 		} else {
 			$properties = $this->get_field_populated_single_property_value( $raw_value, sanitize_key( $input ), $properties, $field );
+		}
+
+		return $this->encode_shortcode_delimiters( $properties, $original );
+	}
+
+	/**
+	 * Encode shortcode delimiters in the input values that population has changed.
+	 *
+	 * A form rendered before do_shortcode() runs on the_content has its markup re-scanned,
+	 * so a raw `[` in a submitted value executes. Browsers decode the entities back.
+	 *
+	 * @since 2.0.2.1
+	 *
+	 * @param array $properties Field properties after population.
+	 * @param array $original   Field properties before population.
+	 *
+	 * @return array Modified field properties.
+	 */
+	protected function encode_shortcode_delimiters( array $properties, array $original ): array {
+
+		if ( empty( $properties['inputs'] ) || ! is_array( $properties['inputs'] ) ) {
+			return $properties;
+		}
+
+		foreach ( $properties['inputs'] as $key => $input ) {
+			$value = $input['attr']['value'] ?? null;
+
+			// Admin-defined values are left alone: AMP choice bindings compare them as JSON strings.
+			if ( ! is_string( $value ) || $value === ( $original['inputs'][ $key ]['attr']['value'] ?? null ) ) {
+				continue;
+			}
+
+			$properties['inputs'][ $key ]['attr']['value'] = wpforms_encode_shortcode_delimiters( $value );
 		}
 
 		return $properties;

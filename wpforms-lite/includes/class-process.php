@@ -2440,6 +2440,7 @@ class WPForms_Process {
 	 * Validate action value for ajax form submission.
 	 *
 	 * @since 1.9.3
+	 * @since 2.0.2.1 Added the wp_doing_ajax() requirement.
 	 *
 	 * @return bool
 	 */
@@ -2450,8 +2451,10 @@ class WPForms_Process {
 			return true;
 		}
 
+		// The action parameter alone is supplied by the request, so a native POST can forge it.
+		// Only the AJAX endpoint reaches process() through wp_ajax_wpforms_submit.
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		return ! empty( $_POST['action'] ) && $_POST['action'] === 'wpforms_submit';
+		return wp_doing_ajax() && ! empty( $_POST['action'] ) && $_POST['action'] === 'wpforms_submit';
 	}
 
 	/**

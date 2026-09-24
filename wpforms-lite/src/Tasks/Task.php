@@ -330,6 +330,32 @@ class Task {
 	}
 
 	/**
+	 * Unschedule every action registered for a hook.
+	 *
+	 * Static on purpose. Cancelling through an instance runs the subclass constructor,
+	 * and several tasks schedule themselves from there, so `( new SomeTask() )->cancel()`
+	 * schedules the action on the line before it removes it.
+	 *
+	 * @since 2.0.2.1
+	 *
+	 * @param string $action Action hook name.
+	 *
+	 * @return bool Whether the unschedule was attempted.
+	 *
+	 * @noinspection PhpUndefinedFunctionInspection
+	 */
+	public static function unschedule_action( string $action ): bool {
+
+		if ( ! function_exists( 'as_unschedule_all_actions' ) ) {
+			return false;
+		}
+
+		as_unschedule_all_actions( $action );
+
+		return true;
+	}
+
+	/**
 	 * Cancel all occurrences of this task.
 	 *
 	 * @since 1.6.1

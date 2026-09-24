@@ -17,6 +17,7 @@ use WPForms\Db\Analytics\Forms;
 use WPForms\Db\Analytics\Snapshots;
 use WPForms\Db\Payments\Meta as PaymentsMeta;
 use WPForms\Db\Payments\Payment;
+use WPForms\Db\ProductEvents\Queue as ProductEventsQueue;
 use WPForms\Lite\Integrations\LiteConnect\Integration as LiteConnectIntegration;
 use WPForms\Lite\Integrations\LiteConnect\LiteConnect;
 use WPForms\Logger\Repository;
@@ -35,12 +36,13 @@ class WPForms_Lite {
 	 * @since 1.9.0
 	 */
 	public const CUSTOM_TABLES = [
-		'wpforms_payments'            => Payment::class,
-		'wpforms_payment_meta'        => PaymentsMeta::class,
-		'wpforms_tasks_meta'          => TasksMeta::class,
-		'wpforms_logs'                => Repository::class,
-		'wpforms_analytics_snapshots' => Snapshots::class,
-		'wpforms_analytics_forms'     => Forms::class,
+		'wpforms_payments'             => Payment::class,
+		'wpforms_payment_meta'         => PaymentsMeta::class,
+		'wpforms_tasks_meta'           => TasksMeta::class,
+		'wpforms_logs'                 => Repository::class,
+		'wpforms_analytics_snapshots'  => Snapshots::class,
+		'wpforms_analytics_forms'      => Forms::class,
+		'wpforms_product_events_queue' => ProductEventsQueue::class,
 	];
 
 	/**

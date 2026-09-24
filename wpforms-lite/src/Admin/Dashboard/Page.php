@@ -6,6 +6,7 @@ use WPForms\Admin\Addons\Install;
 use WPForms\Admin\Dashboard\Widgets\Entries;
 use WPForms\Admin\Helpers\Datepicker;
 use WPForms\Admin\Payments\Views\Overview\Chart;
+use WPForms\Integrations\ProductApi\ProductEvents;
 
 /**
  * Dashboard admin page controller.
@@ -255,6 +256,15 @@ class Page {
 				'1.0.1',
 				true
 			);
+		}
+
+		// Ahead of the page script, which reports the page view as it parses. The client
+		// registers its handle for the header today, so print order would be right either
+		// way, but that is the client's choice to change and this does not depend on it.
+		$product_events = wpforms()->obj( 'ProductApi\ProductEvents' );
+
+		if ( $product_events instanceof ProductEvents ) {
+			$product_events->enqueue_script();
 		}
 
 		wp_enqueue_script(

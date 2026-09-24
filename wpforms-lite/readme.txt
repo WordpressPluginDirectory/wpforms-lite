@@ -3,7 +3,7 @@ Contributors: wpforms, smub, slaFFik
 Tags: contact form, contact form plugin, forms, form builder, custom form
 Requires at least: 5.5
 Tested up to: 7.1
-Stable tag: 2.0.2
+Stable tag: 2.0.2.1
 Requires PHP: 7.2
 License: GNU General Public License v2.0 or later
 
@@ -392,6 +392,11 @@ Thank you,
 Syed Balkhi
 
 == Changelog ==
+= 2.0.2.1 =
+- Changed: The Keyboard Shortcuts modal in the Form Builder was reorganized into a single two-column list that pairs related shortcuts side by side, and widened so no shortcut wraps onto a second line.
+- Fixed: Values submitted to a form embedded with the WPForms block were echoed back into the re-rendered form with shortcode delimiters intact.
+- Fixed: A Smart Tag placed inside an HTML attribute in a Confirmation message, a form description, a field description or a User Registration message could alter the markup around it, or turn a link into a script, once its value contained a quote or an unsafe URL.
+
 = 2.0.2 =
 - Added: New Dashboard that displays form views and recommended next steps across all forms at a glance is now the first page you see when opening WPForms.
 - Added: Links in AI Chat responses are now clickable and open in a new tab.

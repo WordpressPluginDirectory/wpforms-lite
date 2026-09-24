@@ -903,3 +903,22 @@ function wpforms_sanitize_svg_markup( string $markup ) {
 		$sanitized
 	);
 }
+
+/**
+ * Encode the shortcode delimiters in a value that is rendered into re-scanned markup.
+ *
+ * A form rendered before do_shortcode() runs on the_content has its markup re-scanned, so a raw
+ * `[` in a visitor-supplied value executes. The three-digit entities are deliberate:
+ * unescape_invalid_shortcodes() maps `&#91;` and `&#93;` back to brackets at the end of every
+ * do_shortcode() call, while a browser decodes either form and posts the character back unchanged.
+ *
+ * @since 2.0.2.1
+ *
+ * @param mixed $value Value to encode.
+ *
+ * @return string
+ */
+function wpforms_encode_shortcode_delimiters( $value ): string {
+
+	return str_replace( [ '[', ']' ], [ '&#091;', '&#093;' ], (string) $value );
+}

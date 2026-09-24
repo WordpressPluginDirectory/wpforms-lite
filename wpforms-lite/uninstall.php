@@ -23,6 +23,7 @@
 use WPForms\Db\Analytics\DB as AnalyticsDB;
 use WPForms\Db\Payments\Meta as PaymentsMeta;
 use WPForms\Db\Payments\Payment;
+use WPForms\Db\ProductEvents\Queue as ProductEventsQueue;
 use WPForms\Logger\Repository;
 use WPForms\Pro\Db\Analytics\DB as ProAnalyticsDB;
 use WPForms\Pro\Db\Dashboard\FormDaily as DashboardFormDaily;
@@ -82,6 +83,10 @@ $wpdb->query( 'DROP TABLE IF EXISTS ' . TasksMeta::get_table_name() );
 // Delete logger table.
 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 $wpdb->query( 'DROP TABLE IF EXISTS ' . Repository::get_table_name() );
+
+// Delete product events buffer table.
+// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+$wpdb->query( 'DROP TABLE IF EXISTS ' . ProductEventsQueue::get_table_name() );
 
 // Delete file restrictions table.
 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared

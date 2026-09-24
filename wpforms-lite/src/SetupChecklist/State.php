@@ -61,6 +61,15 @@ class State {
 		$state['progress_at_dismissal'] = max( 0, min( 100, $progress_percent ) );
 
 		$this->update( $state );
+
+		/**
+		 * Fires after the Setup Checklist has been dismissed for this site.
+		 *
+		 * @since 2.0.2.1
+		 *
+		 * @param int $progress_percent Completion percentage at the moment of dismissal.
+		 */
+		do_action( 'wpforms_setup_checklist_state_dismiss', $progress_percent );
 	}
 
 	/**

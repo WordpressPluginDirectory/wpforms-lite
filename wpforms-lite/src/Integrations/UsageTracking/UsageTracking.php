@@ -557,15 +557,7 @@ class UsageTracking implements IntegrationInterface {
 					return false;
 				}
 
-				$active_integrations = [];
-
-				foreach ( $form->post_content['providers'] as $provider_slug => $connections ) {
-					if ( ! empty( $connections ) ) {
-						$active_integrations[] = $provider_slug;
-					}
-				}
-
-				return $active_integrations;
+				return self::get_connected_providers( (array) $form->post_content['providers'] );
 			},
 			$forms
 		);
@@ -577,6 +569,28 @@ class UsageTracking implements IntegrationInterface {
 		}
 
 		return array_count_values( $integrations );
+	}
+
+	/**
+	 * The providers a form actually uses: those with at least one connection.
+	 *
+	 * @since 2.0.2.1
+	 *
+	 * @param array $providers The form's `providers` data, keyed by provider slug.
+	 *
+	 * @return array Provider slugs, in the form's order.
+	 */
+	public static function get_connected_providers( array $providers ): array {
+
+		$connected = [];
+
+		foreach ( $providers as $slug => $connections ) {
+			if ( ! empty( $connections ) ) {
+				$connected[] = (string) $slug;
+			}
+		}
+
+		return $connected;
 	}
 
 	/**
@@ -788,7 +802,7 @@ class UsageTracking implements IntegrationInterface {
 	 *
 	 * @return int
 	 */
-	private function get_entries_total( string $period = 'all' ): int {
+	public function get_entries_total( string $period = 'all' ): int {
 
 		if ( ! wpforms()->is_pro() ) {
 			return $this->get_entries_total_lite( $period );
